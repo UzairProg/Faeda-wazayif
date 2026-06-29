@@ -1,0 +1,395 @@
+{% if request.path == '/editmypost/' + job_id|string %}
+
+
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Amazing Design Form</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+
+
+            color: var(--black-coral);
+            font-size: 1.6rem;
+            line-height: 1.7;
+        }
+
+        .container2 {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        .content {
+            text-align: right;
+        }
+
+        .main {
+            margin-top: 20px;
+        }
+
+        form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #2e399b !important;
+            color: #fff !important;
+        }
+
+        footer {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div dir="ltr">
+    {% include "main_navbar.html" %}
+    {% block content %}
+    {%endblock%}
+  </div>
+
+<div class="container">
+
+<div class="content">
+
+
+    <div class="container2">
+        <div class="content">
+            <div class="main">
+                <h3>  تعديل بيانات الوظيفة  </h3>
+                <form class="mt-4" method="POST"   action="/editmypost/{{job.id}}">
+                    <!-- 2 column grid layout with text inputs for the first and last names -->
+                    <div class="row mb-4" style="margin-bottom: 50px !important;">
+                        <div class="col-6">
+                            <label class="form-label" for="form6Example3">نوع فرصة العمل أو التدريب</label>
+                            <select data-mdb-select-init class="select" name="job_type">
+                                <option name="job_type" {% if job.job_type == '' %}selected{% endif %} value="">اختر</option>
+                                <option name="job_type" {% if job.job_type == 'دوام كامل' %}selected{% endif %} value="دوام كامل">دوام كامل</option>
+                                <option name="job_type" {% if job.job_type == 'دوام جزئي' %}selected{% endif %} value="دوام جزئي">دوام جزئي</option>
+                                <option name="job_type" {% if job.job_type == 'تمهير' %}selected{% endif %} value="تمهير">تمهير</option>
+                                <option name="job_type" {% if job.job_type == 'تدريب صيفي' %}selected{% endif %} value="تدريب صيفي">تدريب صيفي</option>
+                                <option name="job_type" {% if job.job_type == 'تدريب تعاوني' %}selected{% endif %} value="تدريب تعاوني">تدريب تعاوني</option>
+                                <option name="job_type" {% if job.job_type == 'تطوع' %}selected{% endif %} value="تطوع">تطوع</option>
+                            </select>
+                            
+                        </div>
+    
+    
+                        <div class="col-6">
+                            <label class="form-label" for="form6Example3">المدينة</label>
+                            <select data-mdb-select-init class="select" name="city">
+                                {% if job.town %}
+                                <option value="{{job.town}}">{{job.town}}</option>
+                                {% endif %}
+                                <option value="0">اختر المدينة</option>
+                            
+                                <option value="الرياض">الرياض</option>
+                                <option value="جدة">جدة</option>
+                                <option value="مكة">مكة</option>
+                                <option value="المدينة">المدينة</option>
+                                <option value="الدمام">الدمام</option>
+                                <option value="الخبر">الخبر</option>
+                                <option value="الظهران">الظهران</option>
+                                <option value="الطائف">الطائف</option>
+                                <option value="تبوك">تبوك</option>
+                                <option value="بريدة">بريدة</option>
+                                <option value="خميس مشيط">خميس مشيط</option>
+                                <option value="أبها">أبها</option>
+                                <option value="حائل">حائل</option>
+                                <option value="نجران">نجران</option>
+                                <option value="القصيم">القصيم</option>
+                                <option value="الجبيل">الجبيل</option>
+                                <option value="ينبع">ينبع</option>
+                                <option value="الهفوف">الهفوف</option>
+                                <option value="جيزان">جيزان</option>
+                                <option value="سكاكا">سكاكا</option>
+                                <option value="عرعر">عرعر</option>
+                                <option value="الباحة">الباحة</option>
+                                <option value="رهط">رهط</option>
+                                <option value="حفر الباطن">حفر الباطن</option>
+                                <option value="القطيف">القطيف</option>
+                                <option value="المبرز">المبرز</option>
+                                <option value="الخرج">الخرج</option>
+                                <option value="القيصومة">القيصومة</option>
+                                <option value="الخبر">الخبر</option>
+                                <option value="أبقيق">أبقيق</option>
+                                <option value="بدر حنين">بدر حنين</option>
+                                <option value="الزلفي">الزلفي</option>
+                                <option value="الظهران">الظهران</option>
+                                <option value="وادي الدواسر">وادي الدواسر</option>
+                                <option value="بلجرشي">بلجرشي</option>
+                                <option value="تاروت">تاروت</option>
+                                <option value="أن نماص">أن نماص</option>
+                                <option value="مدينة صفوى">مدينة صفوى</option>
+                                <option value="عفيف">عفيف</option>
+                                <option value="المبرز">المبرز</option>
+                                <option value="المجمعة">المجمعة</option>
+                                <option value="البكيرية">البكيرية</option>
+                                <option value="طريف">طريف</option>
+                                <option value="الجوف">الجوف</option>
+                                <option value="الدوادمي">الدوادمي</option>
+                                <option value="المذنب">المذنب</option>
+                                <option value="القريات">القريات</option>
+                                <option value="الرس">الرس</option>
+                            </select>
+                            
+    
+    
+                        </div>
+    
+                    </div>
+    
+                    <div class="row mb-4" style="margin-bottom: 50px !important;">
+                        <div class="col">
+                            <label class="form-label" for="form6Example3">عنوان الوظيفة أو التدريب</label>
+                            <input type="text" id="form6Example3" placeholder="{{job.title}}" value="{{job.title}}" class="form-control" name="title" />
+                        </div>
+    
+    
+                    </div>
+    
+                    <div class="row mb-4" style="margin-bottom: 50px !important;">
+                        <div class="col-6">
+                            <label class="form-label" for="form6Example3">حول الشركة</label>
+                            <textarea class="form-control" name="company_about" id="form6Example7" rows="4">{{job.company_about}}</textarea>
+                        </div>
+    
+                        <div class="col-6">
+                            <label class="form-label" for="form6Example3">وصف الوظيفة</label>
+                            <textarea class="form-control" name="job_description" id="form6Example7" rows="4">{{job.job_description}}</textarea>
+                        </div>
+    
+    
+    
+                    </div>
+    
+    
+                    <div class="row mb-4" style="margin-bottom: 50px !important;">
+                        <div class="col-3">
+                            <label class="form-label" for="form6Example3">التخصص</label>
+                            <select data-mdb-select-init class="select" name="specialization">
+                                {% if job.specialization %}
+                                <option name="specialization" value="{{job.specialization}}">{{job.specialization}}</option>
+                                {% endif %}
+                                <option name="specialization" value="">اختر</option>
+                                <option name="specialization" value="غير محدد">غير محدد</option>
+                                <option name="specialization" value="محاسبة">محاسبة</option>
+                                <option name="specialization" value="مالية">مالية</option>
+                                <option name="specialization" value="موارد بشرية">موارد بشرية</option>
+                                <option name="specialization" value="تأمين">تأمين</option>
+                                <option name="specialization" value="تسويق">تسويق</option>
+                                <option name="specialization" value="إقتصاد">إقتصاد</option>
+                                <option name="specialization" value="علوم سياسية">علوم سياسية</option>
+                                <option name="specialization" value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
+                                <option name="specialization" value="إدارة أعمال">إدارة أعمال</option>
+                                <option name="specialization" value="إدارة البيع و التجزئة">إدارة البيع و التجزئة</option>
+                                <option name="specialization" value="إدارة سلسلة الإمداد">إدارة سلسلة الإمداد</option>
+                                <option name="specialization" value="هندسة البرمجيات">هندسة البرمجيات</option>
+                                <option name="specialization" value="هندسة تطبيقية">هندسة تطبيقية</option>
+                                <option name="specialization" value="هندسة مدنية">هندسة مدنية</option>
+                                <option name="specialization" value="هندسة معمارية">هندسة معمارية</option>
+                                <option name="specialization" value="هندسة صناعية">هندسة صناعية</option>
+                                <option name="specialization" value="هندسة كهربائية">هندسة كهربائية</option>
+                                <option name="specialization" value="هندسة ميكانيكية">هندسة ميكانيكية</option>
+                                <option name="specialization" value="هندسة الطيران والفضاء">هندسة الطيران والفضاء</option>
+                                <option name="specialization" value="هندسة التعدين">هندسة التعدين</option>
+                                <option name="specialization" value="هندسة نووية">هندسة نووية</option>
+                                <option name="specialization" value="هندسة بيئية">هندسة بيئية</option>
+                                <option name="specialization" value="هندسة كميائية">هندسة كميائية</option>
+                                <option name="specialization" value="هندسة حرارية">هندسة حرارية</option>
+                                <option name="specialization" value="هندسة الإنتاج">هندسة الإنتاج</option>
+                                <option name="specialization" value="هندسة البرتول">هندسة البرتول</option>
+                                <option name="specialization" value="علوم الحاسب">علوم الحاسب</option>
+                                <option name="specialization" value="نظم معلومات">نظم معلومات</option>
+                                <option name="specialization" value="الإعلان و الإتصال التسويقي">الإعلان و الإتصال التسويقي</option>
+                                <option name="specialization" value="إدارة الإعلانات">إدارة الإعلانات</option>
+                                <option name="specialization" value="تصميم إبتكاري">تصميم إبتكاري</option>
+                                <option name="specialization" value="النقل المائي - البحرية">النقل المائي - البحرية</option>
+                                <option name="specialization" value="الدراسات الإسلامية">الدراسات الإسلامية</option>
+                                <option name="specialization" value="تربية فنية">تربية فنية</option>
+                                <option name="specialization" value="خدمة مجتمعية">خدمة مجتمعية</option>
+                                <option name="specialization" value="التاريخ">التاريخ</option>
+                                <option name="specialization" value="الجغرافيا">الجغرافيا</option>
+                                <option name="specialization" value="علم المعلومات">علم المعلومات</option>
+                                <option name="specialization" value="إعلام">إعلام</option>
+                                <option name="specialization" value="مصمم جرافيك">مصمم جرافيك</option>
+                                <option name="specialization" value="علم نفس">علم نفس</option>
+                                <option name="specialization" value="العلاج الوظيفي">العلاج الوظيفي</option>
+                                <option name="specialization" value="إضطرابات السمع و النطق">إضطرابات السمع و النطق</option>
+                                <option name="specialization" value="التربية الخاصة">التربية الخاصة</option>
+                                <option name="specialization" value="الفيزياء">الفيزياء</option>
+                                <option name="specialization" value="الكيمياء">الكيمياء</option>
+                                <option name="specialization" value="الرياضيات">الرياضيات</option>
+                                <option name="specialization" value="الأحياء">الأحياء</option>
+                                <option name="specialization" value="علم الفلك">علم الفلك</option>
+                                <option name="specialization" value="الإحصاء">الإحصاء</option>
+                                <option name="specialization" value="الطب">الطب</option>
+                                <option name="specialization" value="الصيدلة">الصيدلة</option>
+                                <option name="specialization" value="طب الأسنان">طب الأسنان</option>
+                                <option name="specialization" value="التمريض">التمريض</option>
+                                <option name="specialization" value="العلاج الطبيعي">العلاج الطبيعي</option>
+                                <option name="specialization" value="سياحة">سياحة</option>
+                                <option name="specialization" value="اللغة العربية">اللغة العربية</option>
+                                <option name="specialization" value="قانون عام">قانون عام</option>
+                                <option name="specialization" value="قانون خاص">قانون خاص</option>
+                            </select>
+                            
+                        </div>
+    
+    
+                        <div class="col-3">
+                            <label class="form-label" for="form6Example3">الخبرة</label>
+                            <select data-mdb-select-init class="select" name="skills_years">
+                                {% if job.skills_years %}
+                                <option name="skills_years" value="{{job.skills_years}}">{{job.skills_years}}</option>
+                                {% endif %}
+                                <option name="skills_years" value="">اختر</option>
+                                <option name="skills_years" value="بدون خبرة">بدون خبرة</option>
+                                <option name="skills_years" value="خبرة عام واحد">خبرة عام واحد</option>
+                                <option name="skills_years" value="خبرة عامين">خبرة عامين</option>
+                                <option name="skills_years" value="خبرة 3-4 أعوام">خبرة 3-4 أعوام</option>
+                                <option name="skills_years" value="خبرة 5+ أعوام">خبرة 5+ أعوام</option>
+                                <option name="skills_years" value="غير محدد">غير محدد</option>
+                            </select>
+                            
+                        </div>
+    
+                        <div class="col-3">
+                            <label class="form-label" for="form6Example3">المؤهل التعليمي المطلوب</label>
+                            <select data-mdb-select-init class="select" name="educational_qualification">
+                                {% if job.educational_qualification %}
+                                <option name="educational_qualification" value="{{job.educational_qualification}}">{{job.educational_qualification}}</option>
+                                {% endif %}
+                                <option name="educational_qualification" value="">اختر</option>
+                                <option name="educational_qualification" value="المرحلة الثانوية">المرحلة الثانوية</option>
+                                <option name="educational_qualification" value="دبلوم">دبلوم</option>
+                                <option name="educational_qualification" value="بكالوريوس">بكالوريوس</option>
+                                <option name="educational_qualification" value="ماجستير">ماجستير</option>
+                                <option name="educational_qualification" value="دكتوراه">دكتوراه</option>
+                                <option name="educational_qualification" value="غير محدد">غير محدد</option>
+                            </select>
+                            
+    
+                        </div>
+    
+    
+                        <div class="col-3">
+                            <label class="form-label" for="form6Example3">مكان العمل</label>
+                            <select data-mdb-select-init class="select" name="workplace">
+                                {% if job.workplace %}
+                                <option name="workplace" value="{{job.workplace}}">{{job.workplace}}</option>
+                                {% endif %}
+                                <option name="workplace" value="">اختر</option>
+                                <option name="workplace" value="العمل المكتبي">العمل المكتبي</option>
+                                <option name="workplace" value="العمل الميداني">العمل الميداني</option>
+                                <option name="workplace" value="العمل عن بعد">العمل عن بعد</option>
+                            </select>
+                            
+                        </div>
+    
+    
+                    </div>
+    
+                    <div class="row mb-4" style="margin-bottom: 50px !important;">
+                        <div class="col-3">
+                            <label class="form-label" for="form6Example3">أيام العمل</label>
+                            <select data-mdb-select-init class="select" name="workdays">
+                                {%if job.workdays%}
+                                <option name="workdays" value="{{job.workdays}}">{{job.workdays}} </option>
+                                {%endif%}
+                                <option name="workdays" value="">اختر</option>
+                                <option name="workdays" value="4 أيام">4 أيام
+                                </option>
+                                <option name="workdays" value="5 أيام">5 أيام
+                                </option>
+                                <option name="workdays" value="6 أيام">6 أيام
+                                </option>
+                            </select>
+    
+                        </div>
+    
+    
+                        <div class="col-3">
+                            <label class="form-label" for="form6Example3">أيام الراحة</label>
+                            <select data-mdb-select-init class="select" name="rest_days">
+                                {%if job.rest_days%}
+                                <option name="rest_days" value="{{job.rest_days}}">{{job.rest_days}}</option>
+                                {%endif%}
+                                <option name="rest_days" value="">اختر</option>
+                                <option name="rest_days" value="1 يوم">1 يوم
+                                </option>
+                                <option name="rest_days" value="2 أيام">2 أيام
+                                </option>
+                                <option name="rest_days" value="3 أيام">3 أيام
+                                </option>
+                            </select>
+                        </div>
+    
+                        <div class="col-3">
+                            <label class="form-label" for="form6Example3">ساعات العمل</label>
+                            <select data-mdb-select-init class="select" name="work_hours">
+                                {%if job.work_hours%}
+                                <option name="work_hours" value="{{job.work_hours}}">{{job.work_hours}}</option>
+                        
+                                {%endif%}
+                                <option name="work_hours" value="">اختر</option>
+                                <option name="work_hours" value="4 ساعات">4 ساعات
+                                </option>
+                                <option name="work_hours" value="5 ساعات">5 ساعات
+                                </option>
+                                <option name="work_hours" value="6 ساعات">6 ساعات
+                                </option>
+                                <option name="work_hours" value="7 ساعات">7 ساعات
+                                </option>
+                                <option name="work_hours" value="8 ساعات">8 ساعات
+                                </option>
+                                <option name="work_hours" value="9 ساعات">9 ساعات
+                                </option>
+                                <option name="work_hours" value="10 ساعات">10 ساعات
+                                </option>
+                                <option name="work_hours" value="11 ساعة">11 ساعة
+                                </option>
+                                <option name="work_hours" value="12 ساعة">12 ساعة
+                                </option>
+                            </select>
+                        </div>
+    
+    
+                        <div class="col-3">
+                            <label class="form-label" for="form6Example3">اللغة</label>
+                            <select data-mdb-select-init class="select" name="languages" multiple>
+                                <option value="العربية" {% if "Arabic" in selected_languages %} selected {% endif %}>العربية</option>
+                                <option value="الإنجليزية" {% if "English" in selected_languages %} selected {% endif %}>الإنجليزية</option>
+                                <option value="الإسبانية" {% if "Spanish" in selected_languages %} selected {% endif %}>الإسبانية</option>
+                                <option value="غيرمحدد" {% if "none" in selected_languages %} selected {% endif %}>غير محدد</option>
+                            </select>
+                        </div>
+    
+    
+                    </div>
+    
+                    <button data-mdb-ripple-init type="submit" class="btn btn-primary btn-block mb-4">إرسال</button>
+                </form>
+            </div>
+    
+            <footer class="text-center mt-5">
+                <p>&copy; 2024 فائدة. جميع الحقوق محفوظة.</p>
+            </footer>
+        </div>
+    </div>
+    
+    </body>
+    </html>
+    
+
+    {%endif%}

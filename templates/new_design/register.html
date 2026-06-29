@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='/new_design/css/bootstrap.min.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+
+  <style>
+     *{
+      margin: 0;
+      padding: 0;
+      }
+      body {
+      overflow-x: hidden; 
+    }
+
+    .background-1 {
+      position: fixed;
+      width: 40%;
+      height: 100%;
+      background-image: url("{{ url_for('static', filename='/new_design/images/register.png') }}");
+      background-size: cover;
+      background-repeat: no-repeat;
+      z-index: 1;
+      transform: translateX(-100%);
+      opacity: 0;
+      transition: transform 0.9s ease-out, opacity 0.9s ease-out;
+    }
+
+    .background-1.active {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .input-style {
+      border-radius: 6px;
+      padding: 5px;
+      transition: transform 0.3s ease;
+    }
+    .input-style:hover {
+      transform: scale(1.09); 
+    }
+
+    .almarai-light {
+      font-family: "Almarai", sans-serif;
+      font-weight: 300;
+      font-style: normal;
+    }
+
+    .almarai-regular {
+      font-family: "Almarai", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .almarai-bold {
+      font-family: "Almarai", sans-serif;
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    .almarai-extrabold {
+      font-family: "Almarai", sans-serif;
+      font-weight: 800;
+      font-style: normal;
+    }
+
+    .hover-effect a {
+      text-decoration: none;
+      color: inherit;
+      text-align: center;
+      
+    }
+
+    .hover-effect a img {
+      display: block;
+      margin: 0 auto;
+      padding: 5px;
+      background-color: #F8C44F;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      border-radius: 20%;
+    }
+
+    .hover-effect a:hover img {
+      transform: scale(1.1);
+    }
+    .btn-hover {
+            background-color: #4680EE;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .btn-hover:hover {
+            background-color: #3570D9; 
+            transform: scale(1.1);
+        }
+
+        .slide-in-right {
+      transform: translateX(100%);
+      opacity: 0;
+      transition: transform 0.9s ease-out, opacity 0.9s ease-out;
+    }
+
+    .slide-in-right.active {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 992px) {
+      .background-1 {
+        display: none;
+      }
+      .container{
+        margin-top: 5px;
+      }
+      .input-style {
+        font-size: 14px;
+      }
+      .btn {
+        font-size: 16px;
+        margin-right: 12px;
+      }
+      .on_mobile{
+        margin-left: 50px;
+      }
+      
+      .hover-effect a {
+        margin-bottom: 10px;
+      }
+
+      .hover-effect h5 {
+        font-size: 14px;
+      }
+
+      .col-order-md-1 {
+        order: 1;
+      }
+
+      .col-order-md-2 {
+        order: 2;
+      }
+      .btn-hover {
+            background-color: #4680EE;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .btn-hover:hover {
+            background-color: #3570D9; 
+            transform: scale(1.1);
+        }
+   
+    }
+
+    @media (min-width: 992px) and (max-width: 1199.98px) {
+      .background-1 {
+        display: none;
+      }
+      .container {
+        margin-top: 30px;
+      }
+      .l{
+        font-size: 20px;
+      }
+      .btn-hover {
+            background-color: #4680EE;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .btn-hover:hover {
+            background-color: #3570D9; 
+            transform: scale(1.1);
+        }
+    }
+    @media (min-width: 1200.00px) and (max-width: 1399.98px) {
+      .background-1 {
+        display: none;
+      }
+      .l{
+        font-size: 20px;
+      }
+      .btn-hover {
+            background-color: #4680EE;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .btn-hover:hover {
+            background-color: #3570D9; 
+            transform: scale(1.1);
+        }
+    }
+
+    .radio-btns input[type="radio"] {
+      display: none;
+    }
+
+    .radio-btns label {
+      display: inline-block;
+      width: 150px;
+      padding: 10px;
+      margin: 10px;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .radio-btns label img {
+      display: block;
+      margin: 0 auto;
+    }
+
+    .radio-btns input[type="radio"]:checked + label {
+      border-color: #4680EE;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background-1 " id="background"></div>
+  <div class="container-fluid almarai-regular p-2" style="background-color: #253048;">
+    <h1 class="text-right text-light almarai-regular p-3" style="font-size: 40px;">انشاء حساب</h1>
+  </div>
+
+  <div class="container almarai-extrabold slide-in-right  p-3 mr-2 " id="form-container" style="text-align: right; font-size: 15px;">
+    {% if msg != None %}
+    <h1 style="color: red;">{{msg}}</h1>
+    {% endif %}
+
+  <div class="container almarai-extrabold d-block justify-content-end p-1" style="text-align: right; font-size: 15px;">
+    <form class="login-form " action="/register" method="post"> 
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4 col-order-md-2">
+          <label class="l" for="lastName">الاسم الأخير</label>
+          <input type="text" class="form-control input-style" style="text-align: right;"  name="lName" placeholder="الاسم الأخير" required>
+        </div>
+        <div class="col-md-6 col-lg-4 col-order-md-1">
+          <label class="l" for="firstName">الاسم الأول</label>
+          <input type="text" class="form-control input-style" style="text-align: right;"  name="fName" placeholder="الاسم الاول" required>
+        </div>
+      </div>
+      <div class="row justify-content-center mt-4">
+        <div class="col-md-6 col-lg-4">
+          <label class="l" for="phone">رقم الجوال</label>
+          <div class="input-group">
+            <input type="text" class="form-control input-style" style="text-align: right;" name="phoneNumber" placeholder="e.g: +966, +20,..." required>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <label class="l" for="email">البريد الالكتروني</label>
+          <input type="email" class="form-control input-style" style="text-align: right;" name="email" placeholder="البريد الالكتروني" required>
+        </div>
+      </div>
+      <div class="row justify-content-center mt-4">
+        <div class="col-md-6 col-lg-4 col-order-md-2">
+          <label class="l" for="confirmPassword">تأكيد كلمة المرور</label>
+          <input type="password" class="form-control input-style" style="text-align: right;" name="passwordProve" placeholder="تأكيد كلمة المرور" required>
+        </div>
+        <div class="col-md-6 col-lg-4 col-order-md-1">
+          <label class="l" for="password">كلمة المرور</label>
+          <input type="password" class="form-control input-style" style="text-align: right;" name="password" placeholder="كلمة المرور" required>
+        </div>
+      </div>
+      
+      <div class="radio-btns on_mobile row d-flex justify-content-center mt-5">
+        <input type="radio" id="enterprise" name="userrole" value="company">
+        <label for="enterprise">
+          <img src="{{ url_for('static', filename='/new_design/images/enterprise.png') }}" height="45" alt="">
+          <h5 class="p-1 m-1">منشآت</h5>
+        </label>
+        <input type="radio" id="individual" name="userrole" value="customers">
+        <label for="individual">
+          <img src="{{ url_for('static', filename='/new_design/images/people.png') }}"   height="45" alt="">
+          <h5 class="p-1 m-1">أفراد</h5>
+        </label>
+        <h5 class="m-4">تسجيل كـ</h5>
+      </div>
+
+      <div class=" d-flex justify-content-center mt-2" style="margin-right: 10%;">
+        <button type="submit" class="btn btn-lg text-light btn-hover" style="font-size: 20px; background-color: #4680EE; padding-left: 60px; padding-right: 60px;">تسجيل</button>
+      </div>
+    </form>
+    <div class=" d-flex justify-content-center mt-3" style="margin-right: 9%;">
+      <a href="/login" class="text-danger almarai-bold pr-2" style="color: #BF2A4A;">تسجيل دخول</a>
+      <p class=" mb-0 mr-2 almarai-regular">لديك حساب؟</p>
+    </div>
+  </div>
+</div>
+
+  {% if submited %}
+  {% include 'welcomeMess.html' %}
+  {% endif %}
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      var background = document.getElementById('background');
+      var formContainer = document.getElementById('form-container');
+      background.classList.add('active');
+      formContainer.classList.add('active');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Members</title>
+</head>
+<body>
+    <h1>دعوة اعضاء جدد</h1>
+    <a href="/add_member_to_team/{{team.id}}">دعوة اعضاء</a>
+    <hr>
+    <h1>Team: {{ team.team_name }}</h1>
+    <h2>Members:</h2>
+    <ul>
+        {% for member in team_members %}
+            <li><a href="/visit_customer_profile/{{ member.user_id }}">{{ member.fullname }} - {{ member.status }}</a></li>
+        {% endfor %}
+    </ul>
+    
+</body>
+</html>

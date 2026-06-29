@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول</title>
+    <link rel="stylesheet" href="/static/adobe-login/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><img src="/static/adobe-login/images/Turquoise And White Modern Web Development Service Facebook Ad_20240524_150242_٠٠٠٠.png" height="200px" width="400px"> </h1>
+        </div>
+        <div class="login-container">
+            <h2> تأكيد الحساب</h2>
+
+            {% for message in get_flashed_messages() %}
+
+            <style>
+              .flash-message {
+                background-color: #ff0000;
+                color: #ffffff;
+                padding: 10px;
+                border-radius: 10px;
+                border: 2px solid #d45725; /* Amazing border color */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                opacity: 1;
+                transition: opacity 0.5s ease-in-out;
+              }
+            
+              .fadeOut {
+                opacity: 0;
+              }
+            </style>
+            
+            <div class="flash-message" role="alert">
+              {{ message|safe }}
+            </div>
+            
+            <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                var flashMessage = document.querySelector('.flash-message');
+            
+                setTimeout(function () {
+                  flashMessage.classList.add('fadeOut');
+                  setTimeout(function () {
+                    flashMessage.parentNode.removeChild(flashMessage);
+                  }, 500); // 500 milliseconds for fade-out animation
+                }, 5000); // 5000 milliseconds = 5 seconds
+              });
+            </script>
+            
+            {% endfor %}
+            <h3>من فضلك  افحص البريد الوارد في حسابك</h3>
+            <form action="/activate" method="post">
+                <label for="username"> ادخل الرمز </label>
+                <input type="text" id="username" name="activation_code" required>
+                
+               
+                <button type="submit" class="login_btn">تأكيد الحساب </button>
+            </form>
+            
+            <div class="get-help">
+                <h6>تحتاج مساعدة ؟ <a href="#"> تواصل معنا</a></h6>
+            </div>
+        </div>
+    </div>
+  
+</body>
+</html>

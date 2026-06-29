@@ -1,0 +1,41 @@
+.card-custom-body{
+    align-items: center;
+    text-align: center;
+}
+.img.custom-card-bg {
+    border-radius: 8px;
+}
+.newfont {
+   font-family: 'Scheherazade New', serif;
+}
+
+.card-content {
+  margin: .5em;
+  color: black;
+  font-weight: 600;
+}
+
+#test {
+  padding: 1em;
+}
+
+@media only screen and (max-width: 768px) {
+ .navbar>.container, .navbar>.container-fluid, .navbar>.container-lg, .navbar>.container-md, .navbar>.container-sm, .navbar>.container-xl, .navbar>.container-xxl {
+    display: block;
+}
+.navbar .form-control, .navbar .asColorPicker-input, .navbar .dataTables_wrapper select, .dataTables_wrapper .navbar select, .navbar .jsgrid .jsgrid-table .jsgrid-filter-row input[type=text], .jsgrid .jsgrid-table .jsgrid-filter-row .navbar input[type=text], .navbar .jsgrid .jsgrid-table .jsgrid-filter-row select, .jsgrid .jsgrid-table .jsgrid-filter-row .navbar select, .navbar .jsgrid .jsgrid-table .jsgrid-filter-row input[type=number], .jsgrid .jsgrid-table .jsgrid-filter-row .navbar input[type=number], .navbar .select2-container--default .select2-selection--single, .select2-container--default .navbar .select2-selection--single, .navbar .select2-container--default .select2-selection--single .select2-search__field, .select2-container--default .select2-selection--single .navbar .select2-search__field, .navbar .typeahead, .navbar .tt-query, .navbar .tt-hint {
+    width: 100%;
+    border-radius: 6px;
+}
+.ml-2, .mx-2 {
+    margin-left: 0.5rem!important;
+    width: 100%;
+}
+.padding-top{
+    padding-top:2em;
+}
+
+}
+a.dropdown-item {
+    text-align: center;
+}

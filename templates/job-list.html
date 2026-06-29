@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/static/panel/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="/static/panel/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+
+    <link rel="stylesheet" href="/static/job-list/nicepage.css">
+
+    <title>فائدة - البحث عن وظائف</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/logo_only.png" />
+
+    
+    <style>
+
+      i {
+        margin-right: 0px;
+      }
+  
+      /*----------bootstrap-navbar-css------------*/
+      .navbar-logo {
+        padding: 0px;
+        color: #fff;
+      }
+  
+      .navbar-mainbg {
+        background-color: #252f48;
+        padding: 0px;
+      }
+  
+      #navbarSupportedContent {
+        overflow: hidden;
+        position: relative;
+      }
+  
+      #navbarSupportedContent ul {
+        padding: 0px;
+        margin: 0px;
+      }
+  
+      #navbarSupportedContent ul li a i {
+        margin-right: 10px;
+      }
+  
+      #navbarSupportedContent li {
+        list-style-type: none;
+        float: left;
+      }
+  
+      #navbarSupportedContent ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+        display: block;
+        padding: 20px 20px;
+        transition-duration: 0.6s;
+        transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        position: relative;
+  
+      }
+  
+      #navbarSupportedContent > ul > li.active > a {
+        color: #252f48;
+        background-color: transparent;
+        transition: all 0.7s;
+      }
+  
+      #navbarSupportedContent a:not(:only-child):after {
+        content: "\f105";
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        font-size: 14px;
+        display: inline-block;
+        padding-right: 3px;
+        vertical-align: middle;
+        font-weight: 900;
+        transition: 0.5s;
+      }
+  
+      #navbarSupportedContent .active > a:not(:only-child):after {
+        transform: rotate(90deg);
+      }
+  
+      .hori-selector {
+        display: inline-block;
+        position: absolute;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        transition-duration: 0.6s;
+        transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        background-color: #fff;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        margin-top: 10px;
+      }
+  
+      .hori-selector .right,
+      .hori-selector .left {
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        background-color: #fff;
+        bottom: 10px;
+      }
+  
+      .hori-selector .right {
+        right: -25px;
+      }
+  
+      .hori-selector .left {
+        left: -25px;
+      }
+  
+      .hori-selector .right:before,
+      .hori-selector .left:before {
+        content: '';
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #252f48;
+      }
+  
+      .hori-selector .right:before {
+        bottom: 0;
+        right: -25px;
+      }
+  
+      .hori-selector .left:before {
+        bottom: 0;
+        left: -25px;
+      }
+  
+      @media(min-width: 992px) {
+        .navbar-expand-custom {
+          -ms-flex-flow: row nowrap;
+          flex-flow: row nowrap;
+          -ms-flex-pack: start;
+          justify-content: flex-start;
+        }
+  
+        .navbar-expand-custom .navbar-nav {
+          -ms-flex-direction: row;
+          flex-direction: row;
+        }
+  
+        .navbar-expand-custom .navbar-toggler {
+          display: none;
+        }
+  
+        .navbar-expand-custom .navbar-collapse {
+          display: -ms-flexbox !important;
+          display: flex !important;
+          -ms-flex-preferred-size: auto;
+          flex-basis: auto;
+        }
+      }
+  
+      @media (max-width: 991px) {
+        .navbar-mainbg {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+  
+        .navbar-logo {
+          order: 2;
+          margin-left: auto;
+          height: max-content;
+        }
+        .navbar-logo img{
+          height: 60px;
+          margin-right: -50px;
+        }
+  
+        .navbar-toggler {
+          order: 1;
+        }
+  
+        #navbarSupportedContent {
+          justify-content: flex-end;
+        }
+  
+        #navbarSupportedContent ul li a {
+          padding: 12px 30px;
+        }
+  
+        .hori-selector {
+          margin-top: 0px;
+          margin-left: 10px;
+          border-radius: 0;
+          border-top-left-radius: 25px;
+          border-bottom-left-radius: 25px;
+        }
+  
+        .hori-selector .left,
+        .hori-selector .right {
+          right: 10px;
+        }
+  
+        .hori-selector .left {
+          top: -25px;
+          left: auto;
+        }
+  
+        .hori-selector .right {
+          bottom: -25px;
+        }
+  
+        .hori-selector .left:before {
+          left: -25px;
+          top: -25px;
+        }
+  
+        .hori-selector .right:before {
+          bottom: -25px;
+          left: -25px;
+        }
+      }
+    </style>
+
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css">
+      <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        main {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        aside {
+            width: 200px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 100px;
+        }
+
+        section {
+            flex-grow: 1;
+            padding: 20px;
+            margin-left: 230px; /* Adjusted to accommodate the fixed aside */
+        }
+
+        .filterSection {
+            margin-bottom: 20px;
+        }
+
+        .filterSection h3 {
+            margin-bottom: 10px;
+            color: #252f48;
+        }
+
+        .filterSection select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .jobListing {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .jobListing h3 {
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .jobListing p {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .jobListing button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .jobListing button:hover {
+            background-color: #0056b3;
+        }
+
+
+        .jobListing {
+    display: flex;
+    align-items: center;
+}
+
+/* Adjustments for mobile layout */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+    aside {
+            width: 100%;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            top:0px;
+        }
+    .filter-section {
+        order: -1; /* Move filter section above search results */
+        margin-bottom: 20px; /* Add some space between filter section and search button */
+    }
+
+    /* Arrange filter inputs horizontally */
+
+    section {
+        margin-left: 0; /* Reset margin to make it centered */
+    }
+
+    input[type="submit"] {
+        width: 30%; /* Make search button full width */
+    }
+}
+
+
+.jobDetails {
+    flex-grow: 1;
+    padding-right: 20px; /* Adjust spacing between details and logo */
+}
+
+.companyLogo img {
+    max-width: 250px; /* Set maximum width for the logo */
+    height: auto;
+    border-radius: 30% !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0px 0px 5px #5f0418, inset 0 0 5px #f8c44f;
+}
+/* Add vertical line */
+.vertical-line {
+  border-right: 2px solid rgb(214, 0, 0);
+  background-color: #ff0000; /* Set the color of the vertical line */
+  
+  margin: 10px 10px;
+}
+
+/* Style navigation links */
+.navbar-nav .nav-item .nav-link {
+  font-weight: bold;
+  font-size: 1.2em; /* Adjust font size as needed */
+  color: white;
+  transition: color 0.3s;
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+  color: lightgray;
+}
+
+    </style>
+
+<style>
+  /* Your existing styles here */
+
+  /* Adjust dimensions inside aside */
+  aside {
+      width: 180px; /* Reduce width to fit smaller screens */
+      padding: 15px; /* Adjust padding to maintain spacing */
+  }
+
+  /* Adjust font sizes inside filterSection */
+  .filterSection h3 {
+      font-size: 14px; /* Reduce font size */
+  }
+
+  .filterSection select {
+      font-size: 14px; /* Reduce font size */
+      padding: 6px; /* Adjust padding */
+  }
+
+  /* Adjust submit button width */
+  input[type="submit"] {
+      width: 100%; /* Make button full width */
+      margin-top: 10px; /* Adjust spacing */
+      padding: 10px; /* Adjust padding */
+  }
+
+  /* Adjust other elements as needed */
+  @media (max-width: 768px) {
+      aside {
+          width: 100%; /* Full width for smaller screens */
+          position: relative; /* Reset position */
+          top: 0; /* Reset top position */
+      }
+
+      /* Adjust font sizes inside media query */
+      .filterSection h3 {
+          font-size: 12px; /* Further reduce font size */
+      }
+
+      .filterSection select {
+          font-size: 12px; /* Further reduce font size */
+          padding: 5px; /* Adjust padding */
+      }
+  }
+</style>
+
+</head>
+<body>
+  <nav class="navbar navbar-expand-custom navbar-mainbg">
+    <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars text-white"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <div class="hori-selector">
+          <div class="left"></div>
+          <div class="right"></div>
+        </div>
+        {% if session["session_customer"] != True and session["session_company"] != True %}
+        <li class="nav-item">
+          <a class="nav-link" href="/login"><i class="far fa-address-book"></i>تسجيل الدخول</a>
+        </li>
+        {% endif %}
+        {% if session["session_customer"] == True or session["session_company"] == True %}
+        <li class="nav-item">
+          <a class="nav-link" href="/logout"><i class="fas fa-door-open"></i>تسجيل الخروج</a>
+        </li>
+        {% endif %}
+        {% if session["session_customer"] == True or session["session_company"] == True %}
+        <li class="nav-item">
+          <a class="nav-link" href="/redirects"><i class="fa fa-sun"></i>لوحة التحكم</a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link" href="/#carousel_aa23"><i class="fa fa-envelope"></i>تواصل معنا</a>
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="/job-list"><i class="fa fa-search"></i>البحث عن عمل</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="/see_teams"><i class="fa fa-search"></i>استقطاب موظفين كوادر</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/"><i class="fa fa-home"></i>الرئيسية</a>
+        </li>
+      </ul>
+    </div>
+    <a href="/" class="navbar-brand navbar-logo" data-image-width="200" data-image-height="100">
+      <img src="/static/landing/images/home-banner-bg.jpg" class="u-logo-image u-logo-image-1">
+    </a>
+  </nav>
+    <script>
+      // ---------Responsive-navbar-active-animation-----------
+    function test(){
+        var tabsNewAnim = $('#navbarSupportedContent');
+        var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
+        var activeItemNewAnim = tabsNewAnim.find('.active');
+        var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
+        var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
+        var itemPosNewAnimTop = activeItemNewAnim.position();
+        var itemPosNewAnimLeft = activeItemNewAnim.position();
+        $(".hori-selector").css({
+            "top":itemPosNewAnimTop.top + "px", 
+            "left":itemPosNewAnimLeft.left + "px",
+            "height": activeWidthNewAnimHeight + "px",
+            "width": activeWidthNewAnimWidth + "px"
+        });
+        $("#navbarSupportedContent").on("click","li",function(e){
+            $('#navbarSupportedContent ul li').removeClass("active");
+            $(this).addClass('active');
+            var activeWidthNewAnimHeight = $(this).innerHeight();
+            var activeWidthNewAnimWidth = $(this).innerWidth();
+            var itemPosNewAnimTop = $(this).position();
+            var itemPosNewAnimLeft = $(this).position();
+            $(".hori-selector").css({
+                "top":itemPosNewAnimTop.top + "px", 
+                "left":itemPosNewAnimLeft.left + "px",
+                "height": activeWidthNewAnimHeight + "px",
+                "width": activeWidthNewAnimWidth + "px"
+            });
+        });
+    }
+    $(document).ready(function(){
+        setTimeout(function(){ test(); });
+    });
+    $(window).on('resize', function(){
+        setTimeout(function(){ test(); }, 500);
+    });
+    $(".navbar-toggler").click(function(){
+        $(".navbar-collapse").slideToggle(300);
+        setTimeout(function(){ test(); });
+    });
+    
+    
+    
+    // --------------add active class-on another-page move----------
+    jQuery(document).ready(function($){
+        // Get current path and find target link
+        var path = window.location.pathname.split("/").pop();
+    
+        // Account for home page with empty path
+        if ( path == '' ) {
+            path = 'index.html';
+        }
+    
+        var target = $('#navbarSupportedContent ul li a[href="'+path+'"]');
+        // Add active class to target link
+        target.parent().addClass('active');
+    });
+    
+    
+    
+    
+    // Add active class on another page linked
+    // ==========================================
+    // $(window).on('load',function () {
+    //     var current = location.pathname;
+    //     console.log(current);
+    //     $('#navbarSupportedContent ul li a').each(function(){
+    //         var $this = $(this);
+    //         // if the current path is like this link, make it active
+    //         if($this.attr('href').indexOf(current) !== -1){
+    //             $this.parent().addClass('active');
+    //             $this.parents('.menu-submenu').addClass('show-dropdown');
+    //             $this.parents('.menu-submenu').parent().addClass('active');
+    //         }else{
+    //             $this.parent().removeClass('active');
+    //         }
+    //     })
+    // });
+    </script>      
+      
+      
+    <main>
+        <form method="GET" action="/update-list" class="">
+        <aside>
+            <h2>البحث بواسطة</h2>
+            <div class="filterSection">
+                <h3>نوع الطلب </h3>
+                <select class="form-control min-width-auto" type="text" name="ttype">
+                    <option name="ttype" value="">اختر</option>
+                    <option name="ttype" value="">الكل</option>
+                    <option name="ttype" value="دوام كامل">دوام كامل</option>
+                    <option name="ttype" value="دوام جزئي">دوام جزئي</option>
+                    <option name="ttype" value="تمهير">تمهير</option>
+                    <option name="ttype" value="تدريب صيفي">تدريب صيفي</option>
+                    <option name="ttype" value="تدريب تعاوني">تدريب تعاوني</option>
+                    <option name="ttype" value="تطوع">تطوع</option>
+                </select>
+                
+      
+            </div>
+
+            <div class="filterSection">
+                <h3>التخصص</h3>
+                <select class="form-control min-width-auto" type="text" name="study">
+                    <option name="study" value="">اختر</option>
+                    <option name="study" value="">الكل</option>
+                    <option name="study" value="محاسبة">محاسبة</option>
+                    <option name="study" value="مالية">مالية</option>
+                    <option name="study" value="موارد بشرية">موارد بشرية</option>
+                    <option name="study" value="تأمين">تأمين</option>
+                    <option name="study" value="تسويق">تسويق</option>
+                    <option name="study" value="إقتصاد">إقتصاد</option>
+                    <option name="study" value="علوم سياسية">علوم سياسية</option>
+                    <option name="study" value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
+                    <option name="study" value="إدارة أعمال">إدارة أعمال</option>
+                    <option name="study" value="إدارة البيع و التجزئة">إدارة البيع و التجزئة</option>
+                    <option name="study" value="إدارة سلسلة الإمداد">إدارة سلسلة الإمداد</option>
+                    <option name="study" value="هندسة البرمجيات">هندسة البرمجيات</option>
+                    <option name="study" value="هندسة تطبيقية">هندسة تطبيقية</option>
+                    <option name="study" value="هندسة مدنية">هندسة مدنية</option>
+                    <option name="study" value="هندسة معمارية">هندسة معمارية</option>
+                    <option name="study" value="هندسة صناعية">هندسة صناعية</option>
+                    <option name="study" value="هندسة كهربائية">هندسة كهربائية</option>
+                    <option name="study" value="هندسة ميكانيكية">هندسة ميكانيكية</option>
+                    <option name="study" value="هندسة الطيران والفضاء">هندسة الطيران والفضاء</option>
+                    <option name="study" value="هندسة التعدين">هندسة التعدين</option>
+                    <option name="study" value="هندسة نووية">هندسة نووية</option>
+                    <option name="study" value="هندسة بيئية">هندسة بيئية</option>
+                    <option name="study" value="هندسة كميائية">هندسة كميائية</option>
+                    <option name="study" value="هندسة حرارية">هندسة حرارية</option>
+                    <option name="study" value="هندسة الإنتاج">هندسة الإنتاج</option>
+                    <option name="study" value="هندسة البرتول">هندسة البرتول</option>
+                    <option name="study" value="علوم الحاسب">علوم الحاسب</option>
+                    <option name="study" value="نظم معلومات">نظم معلومات</option>
+                    <option name="study" value="الإعلان و الإتصال التسويقي">الإعلان و الإتصال التسويقي</option>
+                    <option name="study" value="إدارة الإعلانات">إدارة الإعلانات</option>
+                    <option name="study" value="تصميم إبتكاري">تصميم إبتكاري</option>
+                    <option name="study" value="النقل المائي - البحرية">النقل المائي - البحرية</option>
+                    <option name="study" value="الدراسات الإسلامية">الدراسات الإسلامية</option>
+                    <option name="study" value="تربية فنية">تربية فنية</option>
+                    <option name="study" value="خدمة مجتمعية">خدمة مجتمعية</option>
+                    <option name="study" value="التاريخ">التاريخ</option>
+                    <option name="study" value="الجغرافيا">الجغرافيا</option>
+                    <option name="study" value="علم المعلومات">علم المعلومات</option>
+                    <option name="study" value="إعلام">إعلام</option>
+                    <option name="study" value="مصمم جرافيك">مصمم جرافيك</option>
+                    <option name="study" value="علم نفس">علم نفس</option>
+                    <option name="study" value="الفيزياء">الفيزياء</option>
+                    <option name="study" value="الكيمياء">الكيمياء</option>
+                    <option name="study" value="الرياضيات">الرياضيات</option>
+                    <option name="study" value="الأحياء">الأحياء</option>
+                    <option name="study" value="علم الفلك">علم الفلك</option>
+                    <option name="study" value="الإحصاء">الإحصاء</option>
+                    <option name="study" value="الطب">الطب</option>
+                    <option name="study" value="الصيدلة">الصيدلة</option>
+                    <option name="study" value="طب الأسنان">طب الأسنان</option>
+                    <option name="study" value="التمريض">التمريض</option>
+                    <option name="study" value="العلاج الطبيعي">العلاج الطبيعي</option>
+                    <option name="study" value="سياحة">سياحة</option>
+                    <option name="study" value="اللغة العربية">اللغة العربية</option>
+                    <option name="study" value="قانون عام">قانون عام</option>
+                    <option name="study" value="قانون خاص">قانون خاص</option>
+                    <option name="study" value="أخرى">أخرى</option>
+                </select>
+                            </div>
+
+            <div class="filterSection">
+                <h3>المدينة</h3>
+                <select class="form-control min-width-auto" type="search" name="city">
+                    <option disabled selected>اختر</option>
+                    <option value="">الكل</option>
+                    <option value="أبها">أبها</option>
+                    <option value="الأحساء">الأحساء</option>
+                    <option value="الباحة">الباحة</option>
+                    <option value="البكيرية">البكيرية</option>
+                    <option value="البريمي">البريمي</option>
+                    <option value="الجبيل">الجبيل</option>
+                    <option value="الخبر">الخبر</option>
+                    <option value="الدمام">الدمام</option>
+                    <option value="الرس">الرس</option>
+                    <option value="الرياض">الرياض</option>
+                    <option value="الزلفي">الزلفي</option>
+                    <option value="السليل">السليل</option>
+                    <option value="السليمانية">السليمانية</option>
+                    <option value="الطائف">الطائف</option>
+                    <option value="القطيف">القطيف</option>
+                    <option value="القنفذة">القنفذة</option>
+                    <option value="المدينة المنورة">المدينة المنورة</option>
+                    <option value="المجمعة">المجمعة</option>
+                    <option value="المزاحمية">المزاحمية</option>
+                    <option value="المدينة">المدينة</option>
+                    <option value="المظيلف">المظيلف</option>
+                    <option value="الهفوف">الهفوف</option>
+                    <option value="القويعية">القويعية</option>
+                    <option value="بيشة">بيشة</option>
+                    <option value="بقيق">بقيق</option>
+                    <option value="بريدة">بريدة</option>
+                    <option value="تبوك">تبوك</option>
+                    <option value="تاروت">تاروت</option>
+                    <option value="تثليث">تثليث</option>
+                    <option value="تربة">تربة</option>
+                    <option value="تنومة">تنومة</option>
+                    <option value="تيماء">تيماء</option>
+                    <option value="جدة">جدة</option>
+                    <option value="جيزان">جيزان</option>
+                    <option value="جازان">جازان</option>
+                    <option value="حفر الباطن">حفر الباطن</option>
+                    <option value="حريملاء">حريملاء</option>
+                    <option value="خميس مشيط">خميس مشيط</option>
+                    <option value="خميس البحر">خميس البحر</option>
+                    <option value="رأس تنورة">رأس تنورة</option>
+                    <option value="رابغ">رابغ</option>
+                    <option value="رفحاء">رفحاء</option>
+                    <option value="رياض الخبراء">رياض الخبراء</option>
+                    <option value="ساجر">ساجر</option>
+                    <option value="سبت العلايا">سبت العلايا</option>
+                    <option value="سكاكا">سكاكا</option>
+                    <option value="سلطانة">سلطانة</option>
+                    <option value="شقراء">شقراء</option>
+                    <option value="شرورة">شرورة</option>
+                    <option value="صبيا">صبيا</option>
+                    <option value="صفوى">صفوى</option>
+                    <option value="طريف">طريف</option>
+                    <option value="عنيزة">عنيزة</option>
+                    <option value="عرعر">عرعر</option>
+                    <option value="عسير">عسير</option>
+                    <option value="عفيف">عفيف</option>
+                    <option value="فرسان">فرسان</option>
+                    <option value="فيفا">فيفا</option>
+                    <option value="قائم السوق">قائم السوق</option>
+                </select>
+                
+            </div>
+
+
+            <input type="submit" value="البحث" class="btn  btn-primary search-btn form-control" style="color: white; background-color: #252f48; border-color: #0056b3;">
+
+        </aside>
+    </form>
+    <style>
+      .job-container {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          gap: 20px; /* إضافة فراغ بين العناصر */
+          
+      }
+
+      .job-item {
+          display: flex;
+          background-color: #252f48; /* لون خلفية العنصر */
+          border-radius: 45px; /* جعل الحواف دائرية */
+          color: white;
+          padding: 15px 20px;
+          width: 450px;
+          box-sizing: border-box;
+          direction: rtl; /* لضبط اتجاه النص من اليمين لليسار */
+          max-height: max-content;
+          margin-bottom: 10px;
+          font-weight: bold;
+      }
+
+      .job-item img {
+          width: 200px; /* عرض الصورة */
+          height: 130px;
+          border-radius: 10px; /* جعل حواف الصورة دائرية */
+          
+        }
+
+      .job-item div {
+          flex-grow: 1;
+          text-align: right; /* محاذاة النص إلى اليمين */
+      }
+
+      .job-item h1, .job-item a {
+          margin: 10px 0;
+          font-size: 1.25rem; /* حجم النص */
+          text-align: right; /* محاذاة النص إلى اليمين */
+      }
+
+      .job-item a {
+          display: inline-block;
+          background-color: #FFFFFF;
+          color: #252f48;
+          padding: 0 10px;
+          border-radius: 50px;
+          text-decoration: none;
+          height: 30px;
+          align-items: center;
+      }
+
+      .job-item a:hover {
+          background-color: #F0F0F0; /* تأثير عند التحويم */
+      }
+
+      @media (max-width: 767px) {
+          .job-item {
+              width: 99%; /* عرض العنصر في الشاشات الصغيرة */
+          }
+
+          .job-item img {
+              margin-bottom: 20px; /* فراغ أسفل الصورة في الشاشات الصغيرة */
+              width: 50%;
+          }
+
+          .job-item div {
+              text-align: right; /* محاذاة النص إلى اليمين */
+          }
+      }
+  </style>
+            
+        <section id="jobListings">
+            <div class="job-container" style="margin-bottom: 10px;">
+              {% for index in range(0, jobs.items|length, 2) %}
+              <div class="row">
+                  {% for offset in range(0, 2) %}
+                      {% set job = jobs.items[index + offset] %}
+                      {% if job %}
+                      <div class="job-item" style="margin-right: 20px; ">
+                          <div>
+                              <h1>الوظيفة: {{ job.title }}</h1>
+                              <h1>الشركة: {{ job.company.company_english_name }}</h1>
+                              <h1>التاريخ: {{ job.date_posted.strftime("%Y-%m-%d") }}</h1>
+                              <h1>المكان: {{ job.town }}</h1>
+                              <a href="/read_job/{{job.id}}" target="_blank">تقديم الطلب</a>
+                          </div>
+                          {% if job.company.company_logo %}
+                          <img src="/static/uploads/companies/logo/{{job.company.company_logo}}" alt="Company Logo">
+                          {% else %}
+                          <img src="/static/no_image.jpg" alt="Company Logo">
+                          {% endif %}
+                      </div>
+                      {% endif %}
+                  {% endfor %}
+              </div>
+              {% endfor %}
+          </div>
+          
+
+
+              
+            <!-- More job listings will be dynamically added here -->
+
+
+
+            <div class="pagination-container" style="justify-content: center;flex-direction: row-reverse;">
+                <nav>
+                    <ul class="pagination">
+                        {% if jobs.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('job.job_list_get', page=jobs.prev_num) }}">&lsaquo; Previous</a>
+                            </li>
+                        {% endif %}
+                        {% for page_num in jobs.iter_pages() %}
+                            <li class="page-item {{ 'active' if page_num == jobs.page else '' }}">
+                                <a class="page-link" href="{{ url_for('job.job_list_get', page=page_num) }}">{{ page_num }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if jobs.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('job.job_list_get', page=jobs.next_num) }}">Next &rsaquo;</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </section>
+    </main>
+
+
+    <script src="/static/panel/assets/vendor/js/bootstrap.js"></script>    
+    
+
+</body>
+</html>

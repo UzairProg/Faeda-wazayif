@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Example</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .almarai-regular {
+            font-family: 'Almarai', sans-serif;
+        }
+        .almarai-bold {
+            font-family: 'Almarai', sans-serif;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <!-- Button to trigger modal (hidden, as it's not needed for auto display) -->
+    <button type="button" class="almarai-regular btn btn-primary m-5" data-toggle="modal" data-target="#exampleModal" style="display: none;">
+        انشاء حساب
+    </button>
+
+    <!-- Modal -->
+    <div class="almarai-regular modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width: 700px;">
+            <div class="modal-content" style="background-color: #EFEFEF; padding:10px;">
+                <button type="button" class="close d-flex justify-content-end" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="text-center">
+                    <h4 class="text-center p-3"> {{title}}</h4>
+                    <h5 class="text-center p-3">{{body}}</h5>
+                </div>
+                <div class="d-flex">
+                    <div class="p-2">
+                        <img src="{{ url_for('static', filename='images/Group.png') }}" alt="" class="img-fluid">
+                    </div>
+                    <div class="p-2" style="margin-left: 30%;">
+                       <a href="/login"> <button style="background-color:#F0BF56; color: black; border-radius: 10px; border: 2px solid;" type="button" class="almarai-bold btn btn-confirm m-3">تأكيد</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#exampleModal').modal('show');
+        });
+    </script>
+</body>
+</html>

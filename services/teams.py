@@ -1,0 +1,83 @@
+####### data for teams.py#####
+from sqlalchemy import and_
+
+from services.customer import customer_jobs
+from services.database import db
+from datetime import datetime
+from sqlalchemy.orm import relationship
+
+# services/customer.py
+
+
+# Define the association table for the many-to-many relationship
+team_members_association = db.Table('team_members',
+    db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), primary_key=True),
+    db.Column('member_id', db.Integer, db.ForeignKey('customers.user_id'), primary_key=True),
+    db.Column('status', db.String(50), nullable=False, default='مدعو'),  # Status column added
+    db.Column('general_program', db.String(50), nullable=True),  
+    db.Column('semi_special_program', db.String(50), nullable=True),  
+    db.Column('special_program', db.String(50), nullable=True),  
+    db.Column('date_of_addition',db.DateTime, default=datetime.utcnow)
+)
+
+# Define the Teams class
+
+class Teams(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    admin_id =  db.Column(db.String(120), nullable=False)
+    team_name = db.Column(db.String(120), nullable=False)
+    about = db.Column(db.String(120), nullable=True)
+    achievements = db.Column(db.String(120), nullable=True)
+    general_program = db.Column(db.String(120), nullable=True)
+    special_program = db.Column(db.String(120), nullable=True)
+    semi_special_program = db.Column(db.String(120), nullable=True)
+    img = db.Column(db.String(80), nullable=True)
+    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    members = relationship("Customers", secondary=team_members_association, backref="teams")
+    jobs = db.relationship("Jobs", secondary="customer_jobs", back_populates="teams")
+    
+    @classmethod
+    def get_teams_for_admin(cls, admin_id):
+        query = cls.query.filter_by(admin_id=admin_id).all()
+        return query
+
+    @classmethod
+    def get_admin_id_by_id(cls, id):
+        query = cls.query.filter_by(id=id).first()
+        admin_id = query.admin_id
+        return admin_id
+
+
+    @classmethod
+    def get_job_status_by_team_id(cls, id, job_id):
+        query = db.session.query(customer_jobs.c.status).filter(
+            and_(customer_jobs.c.team_id == id, customer_jobs.c.job_id == job_id)
+        ).first()
+        if query:
+            return query[0]
+        return None
+    
+    @classmethod
+    def get_job_note_by_team_id(cls, id, job_id):
+        query = db.session.query(customer_jobs.c.note).filter(
+            and_(customer_jobs.c.team_id == id, customer_jobs.c.job_id == job_id)
+        ).first()
+        if query:
+            return query[0]
+        return None
+    
+    
+    @classmethod
+    def get_job_application_time_by_team_id(cls, id, job_id):
+        query = db.session.query(customer_jobs.c.timestamp).filter(
+            and_(customer_jobs.c.team_id == id, customer_jobs.c.job_id == job_id)
+        ).first()
+        if query:
+            return query[0]
+        return None
+    
+    @classmethod
+    def get_member_ids_by_team_id(cls, team_id):
+        query = db.session.query(team_members_association.c.member_id).filter_by(team_id=team_id, status = 'منضم').all()
+        member_ids = [result[0] for result in query]
+        return member_ids

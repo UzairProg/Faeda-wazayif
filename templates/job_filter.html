@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الوظائف</title>
+    <link rel="stylesheet" href="{{ url_for ('static' , filename= 'css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include Bootstrap Icons CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css"
+        rel="stylesheet">
+
+
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='/new_design/images/background.png') }}");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .almarai-light {
+            font-family: "Almarai", sans-serif;
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        .almarai-regular {
+            font-family: "Almarai", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .almarai-bold {
+            font-family: "Almarai", sans-serif;
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        .almarai-extrabold {
+            font-family: "Almarai", sans-serif;
+            font-weight: 800;
+            font-style: normal;
+        }
+
+
+
+
+        .nav-link {
+            color: white !important;
+
+        }
+
+        .styled-link {
+            align-items: center;
+            padding: 0.5rem 2rem;
+            background-color: #FCF6DB;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+
+        .styled-link:hover {
+            background-color: #FCF6DB;
+            transform: translateY(-2px);
+        }
+
+        .styled-link:hover svg {
+            fill: #FCF6DB;
+        }
+
+        .styled-link:hover img {
+            transform: scale(1.1);
+        }
+
+        .dropdown:hover>.dropdown-menu,
+        .dropend:hover>.dropdown-menu,
+        .dropdown.show>.dropdown-menu,
+        .dropend.show>.dropdown-menu {
+            background-color: #232E4C;
+            display: block;
+            margin-top: 0.125em;
+            z-index: 1000;
+            /* Ensure the dropdown menu is above other elements */
+        }
+
+        .dropend:hover>.dropdown-menu,
+        .dropend.show>.dropdown-menu {
+            position: absolute;
+            top: 0;
+            left: auto;
+            right: 100%;
+            z-index: 1000;
+            /* Ensure the dropdown menu is above other elements */
+        }
+
+
+        .custom-link {
+            color: white;
+            background-color: #253048;
+            text-decoration: none;
+        }
+
+        .custom-link:hover {
+            color: #253048 !important;
+            background-color: white !important;
+            text-decoration: none;
+        }
+
+        .onhover:hover {
+            background-color: white !important;
+            color: #232E4C !important;
+        }
+
+        .btn-danger:hover {
+            background-color: #763330 !important;
+        }
+
+
+        .carousel-nav h2 {
+            cursor: pointer;
+            padding: 10px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .carousel-nav h2:hover {
+            background-color: #232E4C;
+            color: white;
+
+        }
+
+        .carousel-nav h2.selected {
+            background-color: #232E4C;
+            color: white;
+        }
+
+        .styled-list li {
+            margin-bottom: 20px;
+        }
+
+        .styled-list li a {
+            text-decoration: none;
+
+            color: white;
+        }
+
+        .styled-list li a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            margin: 1px 50px;
+            margin-right: 100px;
+        }
+
+        .custom-button {
+
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            text-align: center;
+            transition: background-color 0.3s;
+
+        }
+
+        .custom-hover {
+            background-color: #232E4C;
+            color: #fff;
+        }
+
+        .custom-hover:hover {
+            background-color: #fff;
+            color: #232E4C;
+        }
+
+        .custom-button:hover {
+            color: #fff;
+            background-color: #232E4C;
+            transform: scale(1.05);
+        }
+        @media (max-width: 766px) { 
+            .mobile{
+                display: none;
+            }
+         }
+        
+    </style>
+</head>
+
+<body>
+    <!-- Nav Bar -->
+    <nav class="navbar navbar-expand-lg " style="background-color: #232E4C; color: #fff;">
+        <div class="dropdown ">
+            <a href="#" class="navbar-brand dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color: white;"
+                onmouseover="this.style.border='1px solid orange'; this.style.borderRadius='50px';"
+                onmouseout="this.style.border='none';">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 2.5em; height: 1.7em;" fill="currentColor"
+                    class="bi bi-person" viewBox="0 0 16 16">
+                    <path fill="orange"
+                        d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                </svg>
+                <img src="{{picture}}" alt="">
+            </a>
+            <div class="dropdown-menu text-right" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item custom-hover d-flex justify-content-end align-items-center" href="#">
+                    <div class="text-start">
+                        <i class="fa-solid fa-sliders pr-4"></i>
+                        لوحة التحكم
+                    </div>
+                </a>
+                <a class="dropdown-item custom-hover d-flex justify-content-end align-items-center" href="/logout">
+                    <i class="fas fa-sign-out-alt mr-2 pr-1"></i> تسجيل الخروج
+                </a>
+            </div>
+        </div>
+
+        <button class="navbar-toggler d-lg-none  text-left m-3" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+            style="color: white; background-color: #232E4C;">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="collapse navbar-collapse d-none d-lg-flex" id="navbarSupportedContent">
+            <ul class="navbar-nav mb-2 mx-auto ms-auto">
+                <li class="nav-item pb-1 dropdown almarai-extrabold mr-3">
+                    <a class="nav-link dropdown-toggle mt-3" href="#" id="navbarDropdown1" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> منشات </a>
+                    <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown1">
+                        <li class="nav-item dropend almarai-extrabold">
+                            <a class="nav-link  custom-link" href="#" id="navbarDropdown2" role="button" data-toggle=""
+                                aria-haspopup="true" aria-expanded="false">تسجيل منشات</a>
+                        </li>
+                        <li class="nav-item dropend almarai-extrabold">
+                            <a class="nav-link  custom-link" href="#" id="navbarDropdown3" role="button" data-toggle=""
+                                aria-haspopup="true" aria-expanded="false">تسجيل الدخول</a>
+
+                        </li>
+                        <li class="nav-item dropend almarai-extrabold">
+                            <a class="nav-link  custom-link" href="#" id="navbarDropdown4" role="button" data-toggle=""
+                                aria-haspopup="true" aria-expanded="false">استقطاب فريق</a>
+
+                        </li>
+                        <li class="nav-item dropend almarai-extrabold">
+                            <a class="nav-link  custom-link" href="#" id="navbarDropdown4" role="button" data-toggle=""
+                                aria-haspopup="true" aria-expanded="false">مشاهدة الافرقة </a>
+
+                        </li>
+                        <li class="nav-item dropend almarai-extrabold">
+                            <a class="nav-link  custom-link" href="#" id="navbarDropdown4" role="button" data-toggle=""
+                                aria-haspopup="true" aria-expanded="false">استقطاب أفراد </a>
+
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item pb-1 dropdown almarai-extrabold mr-3">
+                    <a class="nav-link dropdown-toggle mt-3 " href="#" id="navbarDropdown1" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> أفراد </a>
+                    <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown1">
+                        <li class="nav-item dropend almarai-extrabold">
+                            <a class="nav-link  custom-link " href="#" id="navbarDropdown2" role="button" data-toggle=""
+                                aria-haspopup="true" aria-expanded="false">البحث عن وظيفة كفرد </a>
+                        </li>
+                        <li class="nav-item dropend almarai-extrabold">
+                            <a class="nav-link  custom-link" href="#" id="navbarDropdown3" role="button" data-toggle=""
+                                aria-haspopup="true" aria-expanded="false">انشاء سيرة ذاتية</a>
+
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="nav-item pt-3 mr-3">
+                    <a class="nav-link active almarai-extrabold" aria-current="page" href="#"
+                        style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'"
+                        onmouseout="this.style.textDecoration='none'">البحث عن عمل</a>
+                </li>
+                <li class="nav-item pb-1 dropdown almarai-extrabold mr-3">
+                    <a class="nav-link dropdown-toggle mt-3" href="#" id="navbarDropdown1" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">تيم فائدة</a>
+                    <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown1">
+                        <!-- <li class="nav-item dropend almarai-extrabold">
+                            <a class="nav-link dropdown-toggle custom-link" href="#" id="navbarDropdown2" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">تيم فائدة</a>
+                            <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown2">
+                                <li>
+                                    <a class="dropdown-item custom-link custom-hover" href=""> تعرف اكثر على تيم
+                                        فائدة </a>
+                                </li>
+                            </ul>
+                        </li> -->
+                        <li class="nav-item dropend almarai-extrabold mr-3">
+                            <a class="nav-link dropdown-toggle custom-link" href="#" id="navbarDropdown3" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">أفراد</a>
+                            <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown3">
+                                <li><a class="dropdown-item custom-link custom-hover" href="#">انشاء فريق</a></li>
+                                <li><a class="dropdown-item custom-link custom-hover" href="#">فريقي</a></li>
+                                <li><a class="dropdown-item custom-link custom-hover" href="#">البحث عن فريق</a></li>
+                                <li><a class="dropdown-item custom-link custom-hover" href="#">مشاهدة الافرقة</a></li>
+                                <li><a class="dropdown-item custom-link custom-hover" href="#">التقديم كفريق</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropend almarai-extrabold mr-3">
+                            <a class="nav-link dropdown-toggle custom-link" href="#" id="navbarDropdown4" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">منشات</a>
+                            <ul class="dropdown-menu text-right " aria-labelledby="navbarDropdown4">
+                                <li><a class="dropdown-item custom-link custom-hover" href="#">استقطاب فريق</a></li>
+                                <li><a class="dropdown-item custom-link custom-hover" href="#">مشاهدة الافرقة</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item   pt-3">
+                    <a class="nav-link active almarai-extrabold" aria-current="page" href="#footer"
+                        style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'"
+                        onmouseout="this.style.textDecoration='none'">تواصل معنا</a>
+                </li>
+
+
+            </ul>
+
+            <img src="{{ url_for('static', filename='/new_design/images/logowhite.png') }}" height="35" class=" align-top mr-4"
+                alt="">
+        </div>
+
+        <div class="offcanvas offcanvas-end d-lg-none text-right" style="background-color: #1A2237;" tabindex="-1"
+            id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header nav-img-mobile">
+                <button type="button" class="btn-close d-flex " style="background-color: #fff; margin-right: 210px;" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+                <img src="{{ url_for('static', filename='/new_design/images/logowhite.png') }}" height="35" class=" align-top"
+                    alt="">
+                
+            </div>
+            <div class="offcanvas-body almarai-extrabold">
+                <div class="list-group">
+                    <a class="list-group-item border-0 almarai-extrabold" data-toggle="collapse" href="#z"
+                        style="background-color: #1A2237; color: white;"> تيم فائدة <i class="bi bi-caret-down-fill"
+                            style="margin-left: 10px;"></i></a>
+                    <div class="list-group">
+                        <div class="collapse" id="z">
+                            <!-- تيم فائدة -->
+                            <!-- <div class="list-group">
+                                <a class="list-group-item border-0 almarai-extrabold" data-toggle="collapse" href="#xx"
+                                    style="background-color: #1A2237; color: white;">تيم فائدة</a>
+                                <div class="list-group">
+                                    <div class="collapse" id="xx">
+                                        <li class="list-group-item border-0"
+                                            style="background-color: #1A2237; color: white;">
+                                            <a href="#" class="nav-link custom-link"
+                                                style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                تعرف اكثر على تيم فائدة</a>
+                                        </li>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <!-- أفراد -->
+                            <div class="list-group">
+                                <a class="list-group-item border-0 almarai-extrabold" data-bs-toggle="collapse"
+                                    href="#yy" style="background-color: #1A2237; color: white;">
+                                    أفراد
+                                    <i class="bi bi-caret-down-fill" style="margin-left: 10px;"></i>
+                                </a>
+                                <div class="list-group">
+                                    <div class="collapse" id="yy">
+                                        <li class="list-group-item border-0"
+                                            style="background-color: #1A2237; color: white;">
+                                            <a href="#" class="nav-link custom-link"
+                                                style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                انشاء فريق </a>
+                                        </li>
+                                        <li class="list-group-item border-0"
+                                            style="background-color: #1A2237; color: white;">
+                                            <a href="#" class="nav-link custom-link"
+                                                style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                فريقي </a>
+                                        </li>
+                                        <li class="list-group-item border-0"
+                                            style="background-color: #1A2237; color: white;">
+                                            <a href="#" class="nav-link custom-link"
+                                                style="text-decoration: none; background-color: #1A2237; color: white;">البحث
+                                                عن فريق </a>
+                                        </li>
+
+                                        <li class="list-group-item border-0"
+                                            style="background-color: #1A2237; color: white;">
+                                            <a href="#" class="nav-link custom-link"
+                                                style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                مشاهدة الافرقة </a>
+                                        </li>
+                                        <li class="list-group-item border-0"
+                                            style="background-color: #1A2237; color: white;">
+                                            <a href="#" class="nav-link custom-link"
+                                                style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                التقديم كفريق </a>
+                                        </li>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- منشات -->
+                            <div class="list-group">
+                                <a class="list-group-item border-0 almarai-extrabold" data-toggle="collapse" href="#zz"
+                                    style="background-color: #1A2237; color: white;"> منشات <i
+                                        class="bi bi-caret-down-fill" style="margin-left: 10px;"></i></a>
+
+                                <div class="list-group">
+                                    <div class="collapse" id="zz">
+
+                                        <li class="list-group-item border-0"
+                                            style="background-color: #1A2237; color: white;">
+                                            <a href="#" class="nav-link custom-link"
+                                                style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                استقطاب فريق </a>
+                                        </li>
+                                        <li class="list-group-item border-0"
+                                            style="background-color: #1A2237; color: white;">
+                                            <a href="#" class="nav-link custom-link"
+                                                style="text-decoration: none; background-color: #1A2237; color: white;">مشاهدة
+                                                الافرقة </a>
+                                        </li>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group">
+                    <a class="list-group-item border-0 almarai-extrabold" data-toggle="collapse" href="#x"
+                        style="background-color: #1A2237; color: white;"> منشات <i class="bi bi-caret-down-fill"
+                            style="margin-left: 10px;"></i></a>
+                    <div class="list-group">
+                        <div class="collapse" id="x">
+                            <li class="list-group-item border-0" style="background-color: #1A2237; color: white; ">
+                                <a href="#" class="nav-link custom-link"
+                                    style="text-decoration: none; background-color: #1A2237; color: white;">تسجيل
+                                    منشات </a>
+                            </li>
+                            <li class="list-group-item border-0" style="background-color: #1A2237; color: white;">
+                                <a href="#" class="nav-link custom-link"
+                                    style="text-decoration: none; background-color: #1A2237; color: white;">تسجيل
+                                    الدخول</a>
+                            </li>
+                            <li class="list-group-item border-0" style="background-color: #1A2237; color: white;">
+                                <a href="#" class="nav-link custom-link"
+                                    style="text-decoration: none; background-color: #1A2237; color: white;">استقطاب
+                                    فريق</a>
+                            </li>
+                            <li class="list-group-item border-0" style="background-color: #1A2237; color: white;">
+                                <a href="#" class="nav-link custom-link"
+                                    style="text-decoration: none; background-color: #1A2237; color: white;">مشاهدة
+                                    الافرقة</a>
+                            <li class="list-group-item border-0" style="background-color: #1A2237; color: white;">
+                                <a href="#" class="nav-link custom-link"
+                                    style="text-decoration: none; background-color: #1A2237; color: white;">استقطاب
+                                    أفراد</a>
+                            </li>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group">
+                    <a class="list-group-item border-0 almarai-extrabold" data-toggle="collapse" href="#y"
+                        style="background-color: #1A2237; color: white;">أفراد <i class="bi bi-caret-down-fill"
+                            style="margin-left: 10px;"></i></a>
+                    <div class="list-group">
+                        <div class="collapse" id="y">
+                            <li class="list-group-item border-0" style="background-color: #1A2237; color: white; ">
+                                <a href="#" class="nav-link custom-link"
+                                    style="text-decoration: none; background-color: #1A2237; color: white;">البحث عن
+                                    وظيفة كفرد </a>
+                            </li>
+                            <li class="list-group-item border-0" style="background-color: #1A2237; color: white;">
+                                <a href="#" class="nav-link custom-link"
+                                    style="text-decoration: none; background-color: #1A2237; color: white;">انشاء
+                                    سيرة ذاتية</a>
+                            </li>
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <a class="nav-link almarai-extrabold pt-3 pl-3" aria-current="page" href="#footer"
+                    style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'"
+                    onmouseout="this.style.textDecoration='none'">البحث عن عمل</a>
+
+
+
+                <a class="nav-link almarai-extrabold pt-3  pl-3" aria-current="page" href="#footer"
+                    style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'"
+                    onmouseout="this.style.textDecoration='none'">تواصل معنا</a>
+
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br>
+    <!-- Search Bar -->
+    <div class="row">
+        <div class="" id="formCollapse" style="background-color:#55648A; border-radius: 16px;">
+            <div class="container-fluid">
+                <div class="row align-items-center mb-4 mt-3">
+                    <form method="GET" action="/update-list" class="form-style text-right almarai-bold d-flex flex-wrap justify-content-center align-items-center col-12 col-md-9">
+
+
+                        <div class="col-12 col-md-3 text-right  d-lg-none  d-md-none  d-sm-grid ">
+                            <h5 class="card-title almarai-bold text-center" style="color: #fff; font-size: 30px;">:البحث بواسطة</h5>
+                        </div>
+                        <div class="col-12 col-md-3 mb-3 mb-md-0 order-5 order-md-1 d-flex justify-content-center">
+                            <button type="submit" class="btn btn-light btn-lg btn-block" style="max-width: 100px;">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                ابحث
+                            </button>
+                        </div>
+                        
+                        <div class="col-12 col-md-3 mb-3 mb-md-0 order-2 order-md-2">
+                            <label for="requestType" class="form-label" style="color: #fff;">نوع الطلب</label>
+                            <select class="form-control text-right" id="requestType"type="text" name="ttype">
+                                    <option name="ttype" value="">اختر</option>
+                                    <option name="ttype" value="">الكل</option>
+                                    <option name="ttype" value="دوام كامل">دوام كامل</option>
+                                    <option name="ttype" value="دوام جزئي">دوام جزئي</option>
+                                    <option name="ttype" value="تمهير">تمهير</option>
+                                    <option name="ttype" value="تدريب صيفي">تدريب صيفي</option>
+                                    <option name="ttype" value="تدريب تعاوني">تدريب تعاوني</option>
+                                    <option name="ttype" value="تطوع">تطوع</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3 mb-3 mb-md-0 order-3 order-md-3">
+                            <label for="specialty" class="form-label" style="color: #fff;">التخصص</label>
+                            <select class="form-control text-right" id="specialty"  type="text" name="study">
+                                    <option name="study" value="">اختر</option>
+                                    <option name="study" value="">الكل</option>
+                                    <option name="study" value="محاسبة">محاسبة</option>
+                                    <option name="study" value="مالية">مالية</option>
+                                    <option name="study" value="موارد بشرية">موارد بشرية</option>
+                                    <option name="study" value="تأمين">تأمين</option>
+                                    <option name="study" value="تسويق">تسويق</option>
+                                    <option name="study" value="إقتصاد">إقتصاد</option>
+                                    <option name="study" value="علوم سياسية">علوم سياسية</option>
+                                    <option name="study" value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
+                                    <option name="study" value="إدارة أعمال">إدارة أعمال</option>
+                                    <option name="study" value="إدارة البيع و التجزئة">إدارة البيع و التجزئة</option>
+                                    <option name="study" value="إدارة سلسلة الإمداد">إدارة سلسلة الإمداد</option>
+                                    <option name="study" value="هندسة البرمجيات">هندسة البرمجيات</option>
+                                    <option name="study" value="هندسة تطبيقية">هندسة تطبيقية</option>
+                                    <option name="study" value="هندسة مدنية">هندسة مدنية</option>
+                                    <option name="study" value="هندسة معمارية">هندسة معمارية</option>
+                                    <option name="study" value="هندسة صناعية">هندسة صناعية</option>
+                                    <option name="study" value="هندسة كهربائية">هندسة كهربائية</option>
+                                    <option name="study" value="هندسة ميكانيكية">هندسة ميكانيكية</option>
+                                    <option name="study" value="هندسة الطيران والفضاء">هندسة الطيران والفضاء</option>
+                                    <option name="study" value="هندسة التعدين">هندسة التعدين</option>
+                                    <option name="study" value="هندسة نووية">هندسة نووية</option>
+                                    <option name="study" value="هندسة بيئية">هندسة بيئية</option>
+                                    <option name="study" value="هندسة كميائية">هندسة كميائية</option>
+                                    <option name="study" value="هندسة حرارية">هندسة حرارية</option>
+                                    <option name="study" value="هندسة الإنتاج">هندسة الإنتاج</option>
+                                    <option name="study" value="هندسة البرتول">هندسة البرتول</option>
+                                    <option name="study" value="علوم الحاسب">علوم الحاسب</option>
+                                    <option name="study" value="نظم معلومات">نظم معلومات</option>
+                                    <option name="study" value="الإعلان و الإتصال التسويقي">الإعلان و الإتصال التسويقي</option>
+                                    <option name="study" value="إدارة الإعلانات">إدارة الإعلانات</option>
+                                    <option name="study" value="تصميم إبتكاري">تصميم إبتكاري</option>
+                                    <option name="study" value="النقل المائي - البحرية">النقل المائي - البحرية</option>
+                                    <option name="study" value="الدراسات الإسلامية">الدراسات الإسلامية</option>
+                                    <option name="study" value="تربية فنية">تربية فنية</option>
+                                    <option name="study" value="خدمة مجتمعية">خدمة مجتمعية</option>
+                                    <option name="study" value="التاريخ">التاريخ</option>
+                                    <option name="study" value="الجغرافيا">الجغرافيا</option>
+                                    <option name="study" value="علم المعلومات">علم المعلومات</option>
+                                    <option name="study" value="إعلام">إعلام</option>
+                                    <option name="study" value="مصمم جرافيك">مصمم جرافيك</option>
+                                    <option name="study" value="علم نفس">علم نفس</option>
+                                    <option name="study" value="الفيزياء">الفيزياء</option>
+                                    <option name="study" value="الكيمياء">الكيمياء</option>
+                                    <option name="study" value="الرياضيات">الرياضيات</option>
+                                    <option name="study" value="الأحياء">الأحياء</option>
+                                    <option name="study" value="علم الفلك">علم الفلك</option>
+                                    <option name="study" value="الإحصاء">الإحصاء</option>
+                                    <option name="study" value="الطب">الطب</option>
+                                    <option name="study" value="الصيدلة">الصيدلة</option>
+                                    <option name="study" value="طب الأسنان">طب الأسنان</option>
+                                    <option name="study" value="التمريض">التمريض</option>
+                                    <option name="study" value="العلاج الطبيعي">العلاج الطبيعي</option>
+                                    <option name="study" value="سياحة">سياحة</option>
+                                    <option name="study" value="اللغة العربية">اللغة العربية</option>
+                                    <option name="study" value="قانون عام">قانون عام</option>
+                                    <option name="study" value="قانون خاص">قانون خاص</option>
+                                    <option name="study" value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3 mb-3 mb-md-0 order-4 order-md-4">
+                            <label for="city" class="form-label" style="color: #fff;">المدينة</label>
+                            <select class="form-control text-right" id="city"name="city" type="search">
+                                    <option disabled selected>اختر</option>
+                                    <option value="">الكل</option>
+                                    <option value="أبها">أبها</option>
+                                    <option value="الأحساء">الأحساء</option>
+                                    <option value="الباحة">الباحة</option>
+                                    <option value="البكيرية">البكيرية</option>
+                                    <option value="البريمي">البريمي</option>
+                                    <option value="الجبيل">الجبيل</option>
+                                    <option value="الخبر">الخبر</option>
+                                    <option value="الدمام">الدمام</option>
+                                    <option value="الرس">الرس</option>
+                                    <option value="الرياض">الرياض</option>
+                                    <option value="الزلفي">الزلفي</option>
+                                    <option value="السليل">السليل</option>
+                                    <option value="السليمانية">السليمانية</option>
+                                    <option value="الطائف">الطائف</option>
+                                    <option value="القطيف">القطيف</option>
+                                    <option value="القنفذة">القنفذة</option>
+                                    <option value="المدينة المنورة">المدينة المنورة</option>
+                                    <option value="المجمعة">المجمعة</option>
+                                    <option value="المزاحمية">المزاحمية</option>
+                                    <option value="المدينة">المدينة</option>
+                                    <option value="المظيلف">المظيلف</option>
+                                    <option value="الهفوف">الهفوف</option>
+                                    <option value="القويعية">القويعية</option>
+                                    <option value="بيشة">بيشة</option>
+                                    <option value="بقيق">بقيق</option>
+                                    <option value="بريدة">بريدة</option>
+                                    <option value="تبوك">تبوك</option>
+                                    <option value="تاروت">تاروت</option>
+                                    <option value="تثليث">تثليث</option>
+                                    <option value="تربة">تربة</option>
+                                    <option value="تنومة">تنومة</option>
+                                    <option value="تيماء">تيماء</option>
+                                    <option value="جدة">جدة</option>
+                                    <option value="جيزان">جيزان</option>
+                                    <option value="جازان">جازان</option>
+                                    <option value="حفر الباطن">حفر الباطن</option>
+                                    <option value="حريملاء">حريملاء</option>
+                                    <option value="خميس مشيط">خميس مشيط</option>
+                                    <option value="خميس البحر">خميس البحر</option>
+                                    <option value="رأس تنورة">رأس تنورة</option>
+                                    <option value="رابغ">رابغ</option>
+                                    <option value="رفحاء">رفحاء</option>
+                                    <option value="رياض الخبراء">رياض الخبراء</option>
+                                    <option value="ساجر">ساجر</option>
+                                    <option value="سبت العلايا">سبت العلايا</option>
+                                    <option value="سكاكا">سكاكا</option>
+                                    <option value="سلطانة">سلطانة</option>
+                                    <option value="شقراء">شقراء</option>
+                                    <option value="شرورة">شرورة</option>
+                                    <option value="صبيا">صبيا</option>
+                                    <option value="صفوى">صفوى</option>
+                                    <option value="طريف">طريف</option>
+                                    <option value="عنيزة">عنيزة</option>
+                                    <option value="عرعر">عرعر</option>
+                                    <option value="عسير">عسير</option>
+                                    <option value="عفيف">عفيف</option>
+                                    <option value="فرسان">فرسان</option>
+                                    <option value="فيفا">فيفا</option>
+                                    <option value="قائم السوق">قائم السوق</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="col-12 col-md-3 text-right mobile">
+                        <h5 class="card-title almarai-bold text-center" style="color: #fff; font-size: 30px;">:البحث بواسطة</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!--Job Cards -->
+    <div class="row m-5">
+
+
+
+        {% for index in range(0, jobs.items|length, 3) %}
+        <div class="row">
+            {% for offset in range(0, 3) %}
+                {% set job = jobs.items[index + offset] %}
+                {% if job %}
+                    <div class="col-lg-4 col-md-6 col-12">
+                        <div class="card mb-4 mr-2">
+                            <div class="row no-gutters" style="background-color: #EFEFEF; border-radius: 8px; border: none; padding: 4px;">
+                                <div class="col text-right almarai-bold" style="padding-top: 15px;">
+                                    <div style="height: 175px; overflow-y: auto;">
+                                        <p class="card-text">الوظيفة : {{ job.title }}</p>
+                                        <p class="card-text">الشركة :{{ job.company.company_english_name }}</p>
+                                        <p class="card-text">التاريخ :{{ job.date_posted.strftime("%Y-%m-%d") }}</p>
+                                        <p class="card-text">المكان : {{ job.town }}</p>
+                                    </div>
+                                </div>
+                                <div class="col ml-3">
+                                    <img class="card-img-top" style="border-radius: 10px; padding: 10px 20px;"
+                                         src="{{ url_for('static', filename='/new_design/images/Card-img2.png') }}" alt="Card image">
+                                         <a href="/read_job/{{job.id}}"
+                                         style="background-color: #232E4C; color: #ffffff; margin: 20px; border-radius: 10px; text-decoration: none;"
+                                         class="d-flex justify-content-center align-content-center text-center custom-button">تقديم الطلب</a>
+                                      
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <div class="pagination-container" style="justify-content: center;flex-direction: row-reverse;">
+        <nav>
+            <ul class="pagination">
+                {% if jobs.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('job.job_list_get', page=jobs.prev_num) }}">&lsaquo; Previous</a>
+                    </li>
+                {% endif %}
+                {% for page_num in jobs.iter_pages() %}
+                    <li class="page-item {{ 'active' if page_num == jobs.page else '' }}">
+                        <a class="page-link" href="{{ url_for('job.job_list_get', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                {% endfor %}
+                {% if jobs.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('job.job_list_get', page=jobs.next_num) }}">Next &rsaquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+        <!-- <div class="col-lg-4 col-md-6  col-12">
+            <div class="card mb-4 mr-3">
+                <div class="row no-gutters"
+                    style="background-color: #EFEFEF; border-radius: 8px; border: none; padding: 4px;">
+                    <div class="col text-right almarai-bold" style="padding-top: 15px;">
+                        <div style="max-height:  175px;overflow-y: auto;">
+                            <p class="card-text">الوظيفة : مهندس مدني</p>
+                            <p class="card-text">الشركة : بلدية الخبر</p>
+                            <p class="card-text">التاريخ : 1-5-2024</p>
+                            <p class="card-text">المكان : الخبر</p>
+                        </div>
+                    </div>
+                    <div class="col ml-3">
+                        <img class="card-img-top"
+                            style="border-radius: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;"
+                            src="{{ url_for('static', filename='/new_design/images/Card-img1.png') }}" alt="Card image cap">
+                        <a href=""
+                            style="background-color: #232E4C; color: #ffffff; margin: 20px; border-radius: 10px; text-decoration: none;"
+                            class="d-flex justify-content-center align-content-center text-center custom-button">تقديم
+                            الطلب</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-12">
+            <div class="card mb-4 mr-3">
+                <div class="row no-gutters"
+                    style="background-color: #EFEFEF; border-radius: 8px; border: none; padding: 4px;">
+                    <div class="col text-right almarai-bold" style="padding-top: 15px;">
+                        <div style="max-height: 175px; overflow-y: auto;">
+                            <p class="card-text">الوظيفة : امن الشبكات </p>
+                            <p class="card-text"> B2B : الشركة</p>
+                            <p class="card-text">التاريخ : 7/1/2024</p>
+                            <p class="card-text">المكان : الاحساء</p>
+                        </div>
+                    </div>
+                    <div class="col ml-3">
+                        <img class="card-img-top"
+                            style="border-radius: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;"
+                            src="{{ url_for('static', filename='/new_design/images/Card-img3.png') }}" alt="Card image cap">
+                        <a href=""
+                            style="background-color: #232E4C; color: #ffffff; margin: 20px; border-radius: 10px; text-decoration: none;"
+                            class="d-flex justify-content-center align-content-center text-center custom-button">تقديم
+                            الطلب</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-12">
+            <div class="card mb-4 mr-3">
+                <div class="row no-gutters"
+                    style="background-color: #EFEFEF; border-radius: 8px; border: none; padding: 4px;">
+                    <div class="col text-right almarai-bold" style="padding-top: 15px;">
+                        <div style="max-height:  175px; overflow-y: auto;">
+                            <p class="card-text">الوظيفة : مساعد اداري</p>
+                            <p class="card-text">الشركة : الشؤون الصحية بوزارة الحرس الوطني</p>
+                            <p class="card-text">التاريخ : 7/1/2024</p>
+                            <p class="card-text">المكان : الخبر</p>
+                        </div>
+                    </div>
+                    <div class="col ml-3">
+                        <img class="card-img-top"
+                            style="border-radius: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;"
+                            src="{{ url_for('static', filename='/new_design/images/Card-img5.png') }}" alt="Card image cap">
+                        <a href=""
+                            style="background-color: #232E4C; color: #ffffff; margin: 20px; border-radius: 10px; text-decoration: none;"
+                            class="d-flex justify-content-center align-content-center text-center custom-button">تقديم
+                            الطلب</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-12">
+            <div class="card mb-4 mr-3">
+                <div class="row no-gutters"
+                    style="background-color: #EFEFEF; border-radius: 8px; border: none; padding: 4px;">
+                    <div class="col text-right almarai-bold" style="padding-top: 15px;">
+                        <div style="max-height: 175px; overflow-y: auto;">
+                            <p class="card-text">الوظيفة : مدير مبيعات</p>
+                            <p class="card-text"> Alsfa store : الشركة</p>
+                            <p class="card-text">التاريخ : 2/7/2024</p>
+                            <p class="card-text">المكان : الرياض</p>
+                        </div>
+                    </div>
+                    <div class="col ml-3">
+                        <img class="card-img-top"
+                            style="border-radius: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;"
+                            src="{{ url_for('static', filename='/new_design/images/Card-img4.png') }}" alt="Card image cap">
+                        <a href=""
+                            style="background-color: #232E4C; color: #ffffff; margin: 20px; border-radius: 10px; text-decoration: none;"
+                            class="d-flex justify-content-center align-content-center text-center custom-button">تقديم
+                            الطلب</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-12">
+            <div class="card mb-4 mr-3">
+                <div class="row no-gutters"
+                    style="background-color: #EFEFEF; border-radius: 8px; border: none; padding: 4px;">
+                    <div class="col text-right almarai-bold" style="padding-top: 15px;">
+                        <div style="max-height: 175px; overflow-y: auto;">
+                            <p class="card-text">الوظيفة : المكاتب الامامية</p>
+                            <p class="card-text">الشركة : المعهد العالي للسياحة والضيافة</p>
+                            <p class="card-text">التاريخ : 7/1/2024</p>
+                            <p class="card-text">المكان : نجران</p>
+                        </div>
+                    </div>
+                    <div class="col ml-3">
+                        <img class="card-img-top"
+                            style="border-radius: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;"
+                            src="{{ url_for('static', filename='/new_design/images/Card-img5.png') }}" alt="Card image cap">
+                        <a href=""
+                            style="background-color: #232E4C; color: #ffffff; margin: 20px; border-radius: 10px; text-decoration: none;"
+                            class="d-flex justify-content-center align-content-center text-center custom-button">تقديم
+                            الطلب</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-12">
+            <div class="card mb-4 mr-3">
+                <div class="row no-gutters"
+                    style="background-color: #EFEFEF; border-radius: 8px; border: none; padding: 4px;">
+                    <div class="col text-right almarai-bold" style="padding-top: 15px;">
+                        <div style="max-height:  175px; overflow-y: auto;">
+                            <p class="card-text">الوظيفة : مدير مبيعات</p>
+                            <p class="card-text">Alsfa store : الشركة</p>
+                            <p class="card-text">التاريخ : 2/7/2024</p>
+                            <p class="card-text">المكان : الرياض</p>
+                        </div>
+                    </div>
+                    <div class="col ml-3">
+                        <img class="card-img-top"
+                            style="border-radius: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;"
+                            src="{{ url_for('static', filename='/new_design/images/Card-img4.png') }}" alt="Card image cap">
+                        <a href=""
+                            style="background-color: #232E4C; color: #ffffff; margin: 20px; border-radius: 10px; text-decoration: none;"
+                            class="d-flex justify-content-center align-content-center text-center custom-button">تقديم
+                            الطلب</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-12">
+            <div class="card mb-4 mr-3">
+                <div class="row no-gutters"
+                    style="background-color: #EFEFEF; border-radius: 8px; border: none; padding: 4px;">
+                    <div class="col text-right almarai-bold" style="padding-top: 15px;">
+                        <div style="max-height:  175px; overflow-y: auto;">
+                            <p class="card-text">الوظيفة : امن الشبكات</p>
+                            <p class="card-text">B2B : الشركة</p>
+                            <p class="card-text">التاريخ : 7/1/2024</p>
+                            <p class="card-text">المكان : الاحساء</p>
+                        </div>
+                    </div>
+                    <div class="col ml-3">
+                        <img class="card-img-top"
+                            style="border-radius: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;"
+                            src="{{ url_for('static', filename='/new_design/images/Card-img2.png') }}" alt="Card image cap">
+                        <a href=""
+                            style="background-color: #232E4C; color: #ffffff; margin: 20px; border-radius: 10px; text-decoration: none;"
+                            class="d-flex justify-content-center align-content-center text-center custom-button">تقديم
+                            الطلب</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-12">
+            <div class="card mb-4 mr-3">
+                <div class="row no-gutters"
+                    style="background-color: #EFEFEF; border-radius: 8px; border: none; padding: 4px;">
+                    <div class="col text-right almarai-bold" style="padding-top: 15px;">
+                        <div style="max-height: 175px; overflow-y: auto;">
+                            <p class="card-text">الوظيفة : مساعد اداري</p>
+                            <p class="card-text">الشركة : الشؤون الصحية بوزارة الحرس الوطني</p>
+                            <p class="card-text">التاريخ : 7/1/2024</p>
+                            <p class="card-text">المكان : الخبر</p>
+                        </div>
+                    </div>
+                    <div class="col ml-3">
+                        <img class="card-img-top"
+                            style="border-radius: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;"
+                            src="{{ url_for('static', filename='/new_design/images/Card-img5.png') }}" alt="Card image cap">
+                        <a href=""
+                            style="background-color: #232E4C; color: #ffffff; margin: 20px; border-radius: 10px; text-decoration: none;"
+                            class="d-flex justify-content-center align-content-center text-center custom-button">تقديم
+                            الطلب</a>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+
+        
+    
+
+
+
+
+
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </div>
+</body>
+
+</html>

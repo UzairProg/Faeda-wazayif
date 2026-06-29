@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Information</title>
+    <link rel="stylesheet" href="../static/new_design/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+   <style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Cairo', sans-serif;
+  background-color: rgb(229, 232, 231);
+}
+
+.full-screen-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+}
+
+.job-image, .job-info {
+  padding: 20px;
+  height: 100%;
+}
+
+.job-info {
+  border-left: 1px solid #ccc;
+  direction: rtl;
+  text-align: right;
+  background-color: rgba(220, 224, 223, 0.5);
+  height: 100%;
+}
+
+.job-title {
+  background-color: #0a3d62;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 35px;
+  width: 790px;
+  margin-top: -18px;
+  margin-right:-19px;
+}
+
+.info {
+  margin: 44px 25px;
+  position: relative;
+}
+
+.info-title {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  font-size: 30px;
+}
+
+.blue-circle, .blue-circlel {
+  width: 25px;
+  height: 25px;
+  background-color: #0a3d62;
+  border-radius: 50%;
+  position: absolute;
+  right: -28px;
+}
+
+.blue-circle { top: 2px; }
+.blue-circlel { top: 5px; }
+
+.yellow-line1, .yellow-line2, .yellow-line3 {
+  width: 5px;
+  position: absolute;
+  right: -20px;
+  background-color: #f39c12;
+}
+
+.yellow-line1 { height: 160px; top: 40px; }
+.yellow-line2 { height: 160px; top: 40px; }
+.yellow-line3 { height: 40px; top: 40px; }
+
+.job-image {
+  background-color: rgba(184, 195, 205, 0.5);
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.job-role {
+  margin-top: 15px;
+  font-size: 30px;
+  text-align: center;
+  background: rgba(38, 59, 126, 0.9);
+  color: rgba(146, 156, 181, 0.9);
+}
+
+.company-details, .email, .sector {
+  color: rgb(238, 243, 245);
+  font-size: 30px;
+  margin: 20px 10px 10px 10px;
+  font-weight: bold;
+  text-align: right;
+  margin-right: -35px;
+}
+
+.apply-now {
+  margin-top: 30px;
+  background-color: #f39c12;
+  border: 2px solid black;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-size: 30px;
+  width: 200px;
+  margin-right: 5rem;
+}
+
+.dashed {
+  width: 100%;
+  border-top: 2px dashed #302f2f;
+  margin-top: 40px;
+  margin-bottom: -10px;
+}
+.apply-now:hover{
+
+  background: #0a3d62 ;
+}
+
+
+@media (max-width: 767.98px) {
+  .job-title {
+      font-size: 25px;
+      margin-bottom: 10px;
+  }
+
+  .info-title {
+      font-size: 20px;
+  }
+
+  .job-role, .company-details, .email, .sector {
+      font-size: 18px;
+  }
+
+  .apply-now {
+      font-size: 18px;
+      width: 150px;
+  }
+
+  .yellow-line1, .yellow-line2, .yellow-line3 {
+      width: 4px;
+      right: 0;
+  }
+
+  .yellow-line1 { height: 100px; top: 30px; }
+  .yellow-line2 { height: 120px; top: 20px; }
+  .yellow-line3 { height: 80px; top: 20px; }
+
+  .blue-circle, .blue-circlel {
+      width: 20px;
+      height: 20px;
+      right: -8px;
+  }
+
+  .blue-circle { top: -2px; }
+  .blue-circlel { top: 5px; }
+
+  .full-screen-container {
+      height: auto;
+      padding: 20px;
+  }
+
+  .job-image {
+      order: 2;
+      margin-top: 20px;
+  }
+
+  .job-info {
+      order: 1;
+      margin-bottom: 20px;
+  }
+}
+
+
+   </style>
+</head>
+<body>
+    <div class="container-fluid full-screen-container">
+        <div class="row h-100 w-100">
+            <div class="col-md-6 job-image d-flex align-items-center justify-content-center">
+                <div class="text-right">
+                    
+                    {% if job.company.company_logo %}
+                    <img class="img-fluid" src="/static/uploads/companies/logo/{{job.company.company_logo}}" alt="company_logo" width="400" height="400"/>
+    
+                    {% else %}
+                    <img class="img-fluid" src="/static/photo/boys.png"alt="company_logo" width="400" height="400" />
+    
+    
+                    {% endif %}
+                    <p class="job-role">{{job.title}}</p>
+                    <p class="company-details">تفاصيل الشركة</p>
+                    <p class="email">ايميل الشركة: c4@gmail.com</p>
+                    <p class="sector">نوع الشركة: {{job.company.company_type}}</p>
+                    <div class="container my-4">
+                        <hr class="dashed">
+                    </div>
+                    <style>
+                      /* Style the dropdown button */
+             
+                  
+                      /* Dropdown button on hover & focus */
+                      .dropbtn:hover, .dropbtn:focus {
+                        background-color: #314064;
+                      }
+                  
+                      /* The container <div> - needed to position the dropdown content */
+                      .dropdown {
+                        position: relative;
+                        display: inline-block;
+                      }
+                  
+                      /* Dropdown Content (Hidden by Default) */
+                      .dropdown-content {
+                        position: absolute;
+                        background-color: #f9f9f9;
+                        min-width: 160px;
+                        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                        margin: -150px 0;
+                        z-index: 1;
+                        display: none;
+                      }
+                  
+                      /* Links inside the dropdown */
+                      .dropdown-content a {
+                        color: black;
+                        padding: 12px 16px;
+                        text-decoration: none;
+                        display: block;
+                      }
+                  
+                      /* Change color of dropdown links on hover */
+                      .dropdown-content a:hover {
+                        background-color: #f1f1f1;
+                      }
+                  
+                      /* Show the dropdown menu on hover */
+                      .dropdown:hover .dropdown-content {
+                        display: block;
+                      }
+                  
+                      /* Hide the hidden items initially */
+                      .hidden_items {
+                        display: none;
+                      }
+                  
+                      /* Show the hidden items when the visible item is clicked */
+                      .show-hidden .hidden_items {
+                        display: block;
+                      }
+                  
+                      /* Hide the visible items when the hidden items are shown */
+                      .hide-visible .visible_items {
+                        display: none;
+                      }
+                    </style>
+    
+    
+
+                    <div class="dropdown">
+                      <button class="dropbtn  btn btn-primary apply-now">قدم الآن</button>
+                      <div class="dropdown-content">
+                        <div class="visible_items">
+                          <a href="/applyjob/{{job.id}}">تقديم  فردي</a>
+                          <a href="#link2" class="ppp">تقديم جماعي</a>
+                        </div>
+                    
+                        <div class="hidden_items">
+                          <p></p>                     
+                          {% for cutomer_team in cutomer_teams %}
+                                      <form action="/applyjob/{{job.id}}" method="post">
+                                          <a href="#" onclick="this.closest('form').submit();">{{ cutomer_team.team_name }}</a>
+                                          <input type="text" hidden name="type_team" value="{{ cutomer_team.id }}">
+                                      </form>
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 job-info">
+                <h2 class="job-title">معلومات العمل {{job.title}}</h2>
+                <div class="info">
+                    <span class="blue-circle " style="margin-right: 20px;"></span>
+                    <span class="info-title" style="margin-right: 20px;">بيئة العمل :</span>
+                    <p  style="margin-right: 20px;">طبيعة العمل: {{job.workplace}}</p>
+                    <p style="margin-right: 20px;">أيام العمل:  {{job.workdays}}</p>
+                    <p style="margin-right: 20px;">ساعات العمل:   {{job.work_hours}}</p>
+                    <div class="yellow-line1"  style="margin-right: 20px;"></div>
+                </div>
+                <div class="info">
+                    <span class="blue-circle" style="margin-right: 20px;"></span>
+                    <span class="info-title" style="margin-right: 20px;">متطلبات الوظيفة :</span>
+                    <p style="margin-right: 20px;">المؤهل المطلوب:  {{job.educational_qualification}}</p>
+                    <p style="margin-right: 20px;">سنوات الخبرة المطلوبة:    {{job.skills_years}}  </p>
+                    <p style="margin-right: 20px;">اللغات المطلوبة:   {{job.languages}}</p>
+                    <div class="yellow-line2" style="margin-right: 20px;"></div>
+                </div>
+                <div class="info" >
+                    <span class="blue-circle" style="margin-right: 20px;"></span>
+                    <span class="info-title" style="margin-right: 20px;">نوع العمل:  {{job.job_type}}  </span>
+                    <div class="yellow-line3" style="margin-right: 20px;"></div>
+                </div>
+                <div class="info">
+                    <span class="blue-circlel" style="margin-right: 20px;"></span>
+                    <span class="info-title"style="margin-right: 20px;">مكان العمل:       {{job.town}} </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

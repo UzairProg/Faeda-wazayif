@@ -1,0 +1,22 @@
+[
+    {
+        "country_name": "أفغانستان",
+        "country_short_name": "AF",
+        "country_phone_code": 93
+    },
+    {
+        "country_name": "ألبانيا",
+        "country_short_name": "AL",
+        "country_phone_code": 355
+    },
+    {
+        "country_name": "الجزائر",
+        "country_short_name": "DZ",
+        "country_phone_code": 213
+    },
+    {
+        "country_name": "ساموا الأمريكية",
+        "country_short_name": "AS",
+        "country_phone_code": 1684
+    }
+]

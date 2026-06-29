@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for ('static' , filename='/new_design/css/bootstrap.min.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css"
+        rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='/new_design/images/Group.png') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        .background-1 {
+            background-image: url("{{ url_for('static', filename='/new_design/images/background.png') }}");
+            background-size: cover;
+            background-repeat: repeat;
+            background-position: center;
+        }
+
+        .background-2 {
+            background-color: #F0F1F0;
+        }
+
+        .background-3 {
+            background-image: url("{{ url_for('static', filename='/new_design/images/imgHe.jpeg') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+
+
+        }
+
+        .nav-link {
+            color: white !important;
+
+        }
+
+        .button-container {
+            margin-top: 3%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        .styled-link {
+            align-items: center;
+            padding: 0.5rem 2rem;
+            background-color: #FCF6DB;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .styled-link {
+            display: inline-block;
+            transition: transform 0.6s ease;
+        }
+
+        .styled-link:hover {
+            transform: scale(1.2);
+        }
+
+
+        .styled-link img {
+            width: 4em;
+            height: auto;
+            transition: transform 0.6s;
+            margin-bottom: 20%;
+        }
+
+        .text3 {
+
+            border-radius: 5px solid;
+            white-space: nowrap;
+            overflow: hidden;
+            direction: rtl;
+            animation: typing 5s, cursor .4s step-end infinite alternate;
+        }
+
+        @keyframes cursor {
+            50% {
+                border-color: transparent;
+            }
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+
+        .styled-link:hover svg {
+            fill: #FCF6DB;
+        }
+
+        .styled-link:hover img {
+            transform: scale(1.1);
+        }
+
+        .almarai-light {
+            font-family: "Almarai", sans-serif;
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        .almarai-regular {
+            font-family: "Almarai", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .almarai-bold {
+            font-family: "Almarai", sans-serif;
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        .almarai-extrabold {
+            font-family: "Almarai", sans-serif;
+            font-weight: 800;
+            font-style: normal;
+        }
+
+        .container {
+            margin-top: 0 !important;
+        }
+
+        .btn-group {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown:hover>.dropdown-menu,
+        .dropend:hover>.dropdown-menu,
+        .dropdown.show>.dropdown-menu,
+        .dropend.show>.dropdown-menu {
+            background-color: #232E4C;
+            display: block;
+            margin-top: 0.125em;
+
+        }
+
+        .dropend:hover>.dropdown-menu,
+        .dropend.show>.dropdown-menu {
+            position: absolute;
+            top: 0;
+            left: auto;
+            right: 100%;
+        }
+
+
+        .custom-link {
+            color: white;
+            background-color: #253048;
+            text-decoration: none;
+        }
+
+        .custom-link:hover {
+            color: #253048 !important;
+            background-color: white !important;
+            text-decoration: none;
+        }
+
+        .onhover:hover {
+            background-color: white !important;
+            color: #232E4C !important;
+        }
+
+        .btn-danger:hover {
+            background-color: #763330 !important;
+        }
+
+
+        .carousel-nav h2 {
+            cursor: pointer;
+            padding: 10px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .carousel-nav h2:hover {
+            background-color: #232E4C;
+            color: white;
+
+        }
+
+        .carousel-nav h2.selected {
+            background-color: #232E4C;
+            color: white;
+
+        }
+
+
+        .styled-list li {
+            margin-bottom: 20px;
+        }
+
+        .styled-list li a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .styled-list li a:hover {
+            text-decoration: underline;
+        }
+
+
+        .social-icon {
+            font-size: 50px;
+            color: white;
+            padding: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: white;
+            text-decoration: none;
+            transform: translateY(-5px);
+        }
+
+
+        .arrow-icon {
+            font-size: 40px;
+            color: white;
+            padding: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .arrow-icon:hover {
+            color: black;
+            text-decoration: none;
+            transform: translateY(-5px);
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .faeda-logo-pc {
+            height: auto;
+            width: 90px !important;
+            margin: 15px 20px;
+        }
+
+        .fade-in {
+            animation: fadeIn 2s forwards;
+        }
+
+        .fade-out {
+            animation: fadeOut 2s forwards;
+        }
+
+        #secondImage {
+            display: none;
+        }
+        .arrow-size{
+            font-size: 90px; 
+            padding-left: 50px;
+            padding-right: 50px;
+            
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    
+        .fade-in-out {
+            animation: fadeInOut 2s infinite;
+        }
+        
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+
+        }
+
+        .moving-text {
+            display: inline-block;
+            animation: moveRight 15s linear infinite;
+        }
+        .CVbtn{
+            margin-top: 40px;
+        }
+        @media (max-width: 575.98px) {
+
+            .container1 {
+                padding: 25px !important;
+            }
+
+            .title1 {
+                font-size: 22px !important;
+                padding-right: 15px !important;
+            }
+
+            .bar h2 {
+                margin-left: 4px !important;
+                font-size: 12px;
+                margin-top: 5px;
+            }
+
+            .carousel-item h2 {
+                padding: 10px !important;
+                font-size: 10px;
+            }
+
+            .carousel {
+                margin-top: -20px;
+            }
+
+            .carousel-nav h2 {
+                cursor: pointer;
+                padding: 5px 5px;
+                border-radius: 5px;
+                transition: background-color 0.3s, transform 0.3s;
+            }
+
+            .carousel-nav h2:hover {
+                background-color: #232E4C;
+                color: white;
+
+            }
+
+            .carousel-nav h2.selected {
+                background-color: #232E4C;
+                color: white;
+
+            }
+
+            img {
+                height: 100px;
+            }
+
+            .d-flex h1 {
+                font-size: 18px;
+                padding: 5px;
+            }
+
+            .d-flex button {
+                font-size: 11px !important;
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+                padding: 5px !important;
+            }
+
+            .container2 {
+                max-width: 60% !important;
+                padding: 1px !important;
+                border-radius: 15px !important;
+            }
+
+            .container2 h3 {
+                font-size: 14px;
+            }
+
+            .row1 {
+                margin-top: 10px !important;
+                padding: 15px !important;
+            }
+
+            .col1 h2 {
+                font-size: 12px;
+                padding: 7px !important;
+
+            }
+
+            .col1 p {
+                font-size: 10px;
+
+            }
+
+            .cont_btn button {
+                font-size: 7px !important;
+                padding: 6px !important;
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+                
+            }
+
+            .col-lg-4 h2 {
+                font-size: 20px;
+            }
+
+            .col-lg-4 img {
+                margin-top: 50px !important;
+                height: 50px;
+            }
+
+            .social-icon img {
+                margin-top: 5px !important;
+                font-size: 10px !important;
+            }
+
+            .link {
+                margin-bottom: 70px !important;
+            }
+
+            .arrow-icon {
+                display: none;
+            }
+
+            .col2 h2 {
+                font-size: 15px;
+            }
+
+            .image {
+                height: 20% !important;
+                margin-top: 16px !important;
+            }
+
+            .p1 {
+                font-size: 18px !important;
+                font-weight: bold;
+            }
+
+            .CVimg {
+                width: 50% !important;
+            }
+
+            .CVbtn {
+                height: 30px !important;
+                width: 30% !important;
+                font-size: 5px !important;
+                font-weight: bold;
+                margin-top: 15px !important;
+            }
+
+            .faeda-logo-mobile {
+                width: 40px !important;
+                margin: 15px 20px;
+            }
+
+            .faeda-logo-container-mobile {
+                padding-right: 120px;
+                margin-right: 20px;
+            }
+
+            .styled-link {
+                height: auto;
+                margin: 1px 10px;
+                align-items: center;
+                padding: 0.2px;
+                background-color: #FCF6DB;
+                transition: background-color 0.3s, transform 0.3s;
+            }
+
+            .styled-link img {
+                transition: transform 0.6s;
+                margin-bottom: 20%;
+            }
+
+            .faeda-logo-mobile {
+                height: auto;
+                width: 140px;
+                margin: 15px 20px;
+            }
+
+            .styled-link:hover {
+                background-color: #FCF6DB;
+                transform: translateY(-2px);
+            }
+
+            .styled-link:hover svg {
+                fill: #FCF6DB;
+            }
+
+            .styled-link:hover img {
+                transform: scale(1.1);
+            }
+
+            .img-mobile {
+                width: 170px;
+            }
+
+            .text-1 {
+                font-size: 15px !important;
+            }
+
+            .text-2 {
+                margin-top: 15px !important;
+                font-size: 12px !important;
+            }
+
+            .navbar-mobile {
+                padding: 1px !important;
+            }
+
+            .nav-img-mobile img {
+                height: 40px !important;
+            }
+
+            .moving-text {
+                font-size: 11px;
+
+            }
+
+            .MovText {
+                padding: 7px !important;
+            }
+
+            body {
+                overflow-x: hidden;
+            }
+            .arrow-size{
+                font-size: 40px; 
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+            .carousel-padding{
+                padding-top: 20px !important;
+            }
+        }
+
+        @media (min-width: 577px) and (max-width: 768px) {
+            .carousel-item h2 {
+                padding: 12px !important;
+                font-size: 20px;
+            }
+
+            .bar h2 {
+                margin-left: 4px !important;
+                font-size: 20px;
+                margin-top: 5px;
+            }
+
+            .p1 {
+                font-size: 40px !important;
+                font-weight: bold;
+            }
+
+            .CVbtn {
+                height: 50px !important;
+                width: 40% !important;
+                font-size: 20px !important;
+                font-weight: bold;
+            }
+            .arrow-size{
+                font-size: 80px; 
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            .list-unstyled {
+                margin-right: 16% !important;
+            }
+
+            .col-lg-4 img {
+                margin-top: 10% !important;
+                height: 50px;
+            }
+
+            .social-icon img {
+                margin-top: 5px !important;
+                font-size: 10px !important;
+            }
+
+            .list2 {
+                margin-left: 8% !important;
+            }
+
+            .text-2 {
+                font-size: 22px !important;
+            }
+
+            .title1 {
+                font-size: 35px !important;
+                padding-right: 15px !important;
+            }
+
+            .faeda-logo-mobile {
+                height: auto;
+                width: 60px !important;
+                margin: 15px 20px;
+            }
+            .carousel-padding{
+                padding-top: 20px !important;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 991.98px) {
+            .text-2 {
+                font-size: 22px !important;
+            }
+
+            .title1 {
+                font-size: 40px !important;
+                padding-right: 15px !important;
+            }
+
+            .bar h2 {
+                margin-left: 4px !important;
+                font-size: 25px;
+                margin-top: 5px;
+            }
+
+            .carousel-item h2 {
+                padding: 14px !important;
+                font-size: 22px;
+            }
+
+            .p1 {
+                font-size: 38px !important;
+                font-weight: bold;
+            }
+
+            .CVbtn {
+                height: 50px !important;
+                width: 40% !important;
+                font-size: 20px !important;
+                font-weight: bold;
+                margin-top: 35px !important;
+            }
+            .arrow-size{
+                font-size: 80px; 
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .list-unstyled {
+                margin-right: 16% !important;
+            }
+
+            .col-lg-4 img {
+                margin-top: 10% !important;
+                height: 50px;
+            }
+
+            .social-icon img {
+                margin-top: 5px !important;
+                font-size: 10px !important;
+            }
+
+        }
+
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            .carousel-item h2 {
+                padding: 25px !important;
+                font-size: 30px;
+            }
+
+            .CVbtn {
+                height: 50px !important;
+                width: 40% !important;
+                font-size: 20px !important;
+                font-weight: bold;
+                margin-top: 35px !important;
+            }
+            .arrow-size{
+                font-size: 80px; 
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .list2 h5 {
+                font-size: 18px !important;
+            }
+           
+        }
+
+        @media (min-width: 1200px) {}
+    </style>
+    
+</head>
+
+<body>
+    <!-- index page -->
+
+
+
+
+    <!-- First part -->
+    <section class="background-1">
+        <!-- Nav -->
+        <nav class="navbar navbar-expand-lg navbar-mobile" style="background-color: #232E4C;">
+            <div class="container-fluid">
+    
+    
+              {% if logged %}
+              <div class="dropdown">
+                <a href="#" class="navbar-brand dropdown-toggle pl-3" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color: white;">
+                 
+                    {% if picture == None %}
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 2.5em; height: 1.7em;" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                        <path fill="orange" d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                    </svg>
+    
+                    {% else %}
+                    {% if 'session_customer' in session %}
+                    <img src="{{ url_for('static', filename='uploads/customers/images/' + picture) }}" height="60px" alt="Customer Image">
+                {% endif %}
+                
+                {% if 'session_company' in session %}
+                    <img src="{{ url_for('static', filename='uploads/companies/logo/' + picture) }}" height="60px" alt="Company Logo">
+                {% endif %}
+                
+    
+                  
+                    {% endif %}
+                </a>
+                <div class="dropdown-menu text-right" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item onhover d-flex justify-content-end align-items-center custom-hover" href="/redirects" style="color: #fff;">
+                        <div class="text-start">
+                            <i class="fa-solid fa-sliders pr-4"></i>
+                            لوحة التحكم
+                        </div>
+                    </a>
+                    <a class="dropdown-item onhover d-flex justify-content-end align-items-center custom-hover" href="/logout" style="color: #fff;">
+                        <i class="fas fa-sign-out-alt mr-2 pr-1"></i> تسجيل الخروج
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+          
+                {% if not logged %}
+                 <a class="nav-link active almarai-extrabold pl-4" aria-current="page" href="/login" style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">تسجيل الدخول </a>
+                {% endif %}
+    
+                <button class="navbar-toggler d-lg-none  text-left m-3" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+                style="color: white; background-color: #232E4C;">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse d-none d-lg-flex" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-2 mx-auto ms-auto">
+                    <li class="nav-item pb-1 dropdown almarai-extrabold mr-3">
+                        <a class="nav-link dropdown-toggle mt-3" href="#" id="navbarDropdown1" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> منشات </a>
+                        <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown1">
+                            <li class="nav-item dropend almarai-extrabold">
+                                <a class="nav-link  custom-link" href="#" id="navbarDropdown2" role="button" data-toggle=""
+                                    aria-haspopup="true" aria-expanded="false">تسجيل منشات</a>
+                            </li>
+                            <li class="nav-item dropend almarai-extrabold">
+                                <a class="nav-link  custom-link" href="#" id="navbarDropdown3" role="button" data-toggle=""
+                                    aria-haspopup="true" aria-expanded="false">تسجيل الدخول</a>
+    
+                            </li>
+                            <li class="nav-item dropend almarai-extrabold">
+                                <a class="nav-link  custom-link" href="#" id="navbarDropdown4" role="button" data-toggle=""
+                                    aria-haspopup="true" aria-expanded="false">استقطاب فريق</a>
+    
+                            </li>
+                            <li class="nav-item dropend almarai-extrabold">
+                                <a class="nav-link  custom-link" href="#" id="navbarDropdown4" role="button" data-toggle=""
+                                    aria-haspopup="true" aria-expanded="false">مشاهدة الافرقة </a>
+    
+                            </li>
+                            <li class="nav-item dropend almarai-extrabold">
+                                <a class="nav-link  custom-link" href="#" id="navbarDropdown4" role="button" data-toggle=""
+                                    aria-haspopup="true" aria-expanded="false">استقطاب أفراد </a>
+    
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item pb-1 dropdown almarai-extrabold mr-3">
+                        <a class="nav-link dropdown-toggle mt-3 " href="#" id="navbarDropdown1" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> أفراد </a>
+                        <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown1">
+                            <li class="nav-item dropend almarai-extrabold">
+                                <a class="nav-link  custom-link " href="#" id="navbarDropdown2" role="button" data-toggle=""
+                                    aria-haspopup="true" aria-expanded="false">البحث عن وظيفة كفرد </a>
+                            </li>
+                            <li class="nav-item dropend almarai-extrabold">
+                                <a class="nav-link  custom-link" href="#" id="navbarDropdown3" role="button" data-toggle=""
+                                    aria-haspopup="true" aria-expanded="false">انشاء سيرة ذاتية</a>
+    
+                            </li>
+    
+                        </ul>
+                    </li>
+    
+                    <li class="nav-item pt-3 mr-3">
+                        <a class="nav-link active almarai-extrabold" aria-current="page" href="/job-list"
+                            style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'"
+                            onmouseout="this.style.textDecoration='none'">البحث عن عمل</a>
+                    </li>
+                    <li class="nav-item pb-1 dropdown almarai-extrabold mr-3">
+                        <a class="nav-link dropdown-toggle mt-3" href="#" id="navbarDropdown1" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">تيم فائدة</a>
+                        <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown1">
+                            <!-- <li class="nav-item dropend almarai-extrabold">
+                                <a class="nav-link dropdown-toggle custom-link" href="#" id="navbarDropdown2" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">تيم فائدة</a>
+                                <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown2">
+                                    <li>
+                                        <a class="dropdown-item custom-link custom-hover" href=""> تعرف اكثر على تيم
+                                            فائدة </a>
+                                    </li>
+                                </ul>
+                            </li> -->
+                            <li class="nav-item dropend almarai-extrabold mr-3">
+                                <a class="nav-link dropdown-toggle custom-link" href="#" id="navbarDropdown3" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">أفراد</a>
+                                <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown3">
+                                    <li><a class="dropdown-item custom-link custom-hover" href="#">انشاء فريق</a></li>
+                                    <li><a class="dropdown-item custom-link custom-hover" href="#">فريقي</a></li>
+                                    <li><a class="dropdown-item custom-link custom-hover" href="#">البحث عن فريق</a></li>
+                                    <li><a class="dropdown-item custom-link custom-hover" href="#">مشاهدة الافرقة</a></li>
+                                    <li><a class="dropdown-item custom-link custom-hover" href="#">التقديم كفريق</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropend almarai-extrabold mr-3">
+                                <a class="nav-link dropdown-toggle custom-link" href="#" id="navbarDropdown4" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">منشات</a>
+                                <ul class="dropdown-menu text-right " aria-labelledby="navbarDropdown4">
+                                    <li><a class="dropdown-item custom-link custom-hover" href="#">استقطاب فريق</a></li>
+                                    <li><a class="dropdown-item custom-link custom-hover" href="#">مشاهدة الافرقة</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item   pt-3">
+                        <a class="nav-link active almarai-extrabold" aria-current="page" href="#footer"
+                            style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'"
+                            onmouseout="this.style.textDecoration='none'">تواصل معنا</a>
+                    </li>
+    
+    
+                </ul>
+    
+                <img src="{{ url_for('static', filename='/new_design/images/logowhite.png') }}" height="35" class=" align-top mr-4 "
+                    alt="">
+            </div>
+    
+            <div class="offcanvas offcanvas-end d-lg-none text-right" style="background-color: #1A2237;" tabindex="-1"
+                id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header nav-img-mobile">
+                    <button type="button" class="btn-close d-flex " style="background-color: #fff; margin-right: 210px;" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                    <img src="{{ url_for('static', filename='/new_design/images/logowhite.png') }}" height="35" class=" align-top"
+                        alt="">
+                    
+                </div>
+                <div class="offcanvas-body almarai-extrabold">
+                    <div class="list-group">
+                        <a class="list-group-item border-0 almarai-extrabold" data-toggle="collapse" href="#z"
+                            style="background-color: #1A2237; color: white;"> تيم فائدة <i class="bi bi-caret-down-fill"
+                                style="margin-left: 10px;"></i></a>
+                        <div class="list-group">
+                            <div class="collapse" id="z">
+                                <!-- تيم فائدة -->
+                                <!-- <div class="list-group">
+                                    <a class="list-group-item border-0 almarai-extrabold" data-toggle="collapse" href="#xx"
+                                        style="background-color: #1A2237; color: white;">تيم فائدة</a>
+                                    <div class="list-group">
+                                        <div class="collapse" id="xx">
+                                            <li class="list-group-item border-0"
+                                                style="background-color: #1A2237; color: white;">
+                                                <a href="#" class="nav-link custom-link"
+                                                    style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                    تعرف اكثر على تيم فائدة</a>
+                                            </li>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <!-- أفراد -->
+                                <div class="list-group">
+                                    <a class="list-group-item border-0 almarai-extrabold" data-bs-toggle="collapse"
+                                        href="#yy" style="background-color: #1A2237; color: white;">
+                                        أفراد
+                                        <i class="bi bi-caret-down-fill" style="margin-left: 10px;"></i>
+                                    </a>
+                                    <div class="list-group">
+                                        <div class="collapse" id="yy">
+                                            <li class="list-group-item border-0"
+                                                style="background-color: #1A2237; color: white;">
+                                                <a href="#" class="nav-link custom-link"
+                                                    style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                    انشاء فريق </a>
+                                            </li>
+                                            <li class="list-group-item border-0"
+                                                style="background-color: #1A2237; color: white;">
+                                                <a href="#" class="nav-link custom-link"
+                                                    style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                    فريقي </a>
+                                            </li>
+                                            <li class="list-group-item border-0"
+                                                style="background-color: #1A2237; color: white;">
+                                                <a href="#" class="nav-link custom-link"
+                                                    style="text-decoration: none; background-color: #1A2237; color: white;">البحث
+                                                    عن فريق </a>
+                                            </li>
+    
+                                            <li class="list-group-item border-0"
+                                                style="background-color: #1A2237; color: white;">
+                                                <a href="#" class="nav-link custom-link"
+                                                    style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                    مشاهدة الافرقة </a>
+                                            </li>
+                                            <li class="list-group-item border-0"
+                                                style="background-color: #1A2237; color: white;">
+                                                <a href="#" class="nav-link custom-link"
+                                                    style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                    التقديم كفريق </a>
+                                            </li>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- منشات -->
+                                <div class="list-group">
+                                    <a class="list-group-item border-0 almarai-extrabold" data-toggle="collapse" href="#zz"
+                                        style="background-color: #1A2237; color: white;"> منشات <i
+                                            class="bi bi-caret-down-fill" style="margin-left: 10px;"></i></a>
+    
+                                    <div class="list-group">
+                                        <div class="collapse" id="zz">
+    
+                                            <li class="list-group-item border-0"
+                                                style="background-color: #1A2237; color: white;">
+                                                <a href="#" class="nav-link custom-link"
+                                                    style="text-decoration: none; background-color: #1A2237; color: white;">
+                                                    استقطاب فريق </a>
+                                            </li>
+                                            <li class="list-group-item border-0"
+                                                style="background-color: #1A2237; color: white;">
+                                                <a href="#" class="nav-link custom-link"
+                                                    style="text-decoration: none; background-color: #1A2237; color: white;">مشاهدة
+                                                    الافرقة </a>
+                                            </li>
+    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <a class="list-group-item border-0 almarai-extrabold" data-toggle="collapse" href="#x"
+                            style="background-color: #1A2237; color: white;"> منشات <i class="bi bi-caret-down-fill"
+                                style="margin-left: 10px;"></i></a>
+                        <div class="list-group">
+                            <div class="collapse" id="x">
+                                <li class="list-group-item border-0" style="background-color: #1A2237; color: white; ">
+                                    <a href="#" class="nav-link custom-link"
+                                        style="text-decoration: none; background-color: #1A2237; color: white;">تسجيل
+                                        منشات </a>
+                                </li>
+                                <li class="list-group-item border-0" style="background-color: #1A2237; color: white;">
+                                    <a href="#" class="nav-link custom-link"
+                                        style="text-decoration: none; background-color: #1A2237; color: white;">تسجيل
+                                        الدخول</a>
+                                </li>
+                                <li class="list-group-item border-0" style="background-color: #1A2237; color: white;">
+                                    <a href="#" class="nav-link custom-link"
+                                        style="text-decoration: none; background-color: #1A2237; color: white;">استقطاب
+                                        فريق</a>
+                                </li>
+                                <li class="list-group-item border-0" style="background-color: #1A2237; color: white;">
+                                    <a href="#" class="nav-link custom-link"
+                                        style="text-decoration: none; background-color: #1A2237; color: white;">مشاهدة
+                                        الافرقة</a>
+                                <li class="list-group-item border-0" style="background-color: #1A2237; color: white;">
+                                    <a href="#" class="nav-link custom-link"
+                                        style="text-decoration: none; background-color: #1A2237; color: white;">استقطاب
+                                        أفراد</a>
+                                </li>
+    
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <a class="list-group-item border-0 almarai-extrabold" data-toggle="collapse" href="#y"
+                            style="background-color: #1A2237; color: white;">أفراد <i class="bi bi-caret-down-fill"
+                                style="margin-left: 10px;"></i></a>
+                        <div class="list-group">
+                            <div class="collapse" id="y">
+                                <li class="list-group-item border-0" style="background-color: #1A2237; color: white; ">
+                                    <a href="#" class="nav-link custom-link"
+                                        style="text-decoration: none; background-color: #1A2237; color: white;">البحث عن
+                                        وظيفة كفرد </a>
+                                </li>
+                                <li class="list-group-item border-0" style="background-color: #1A2237; color: white;">
+                                    <a href="#" class="nav-link custom-link"
+                                        style="text-decoration: none; background-color: #1A2237; color: white;">انشاء
+                                        سيرة ذاتية</a>
+                                </li>
+    
+    
+    
+                            </div>
+                        </div>
+                    </div>
+    
+                    
+    
+                    <a class="nav-link almarai-extrabold pt-3 pl-3" aria-current="page" href="#footer"
+                        style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'"
+                        onmouseout="this.style.textDecoration='none'">البحث عن عمل</a>
+    
+    
+    
+                    <a class="nav-link almarai-extrabold pt-3  pl-3" aria-current="page" href="#footer"
+                        style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'"
+                        onmouseout="this.style.textDecoration='none'">تواصل معنا</a>
+    
+    
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    
+
+        <p class="almarai-bold text-1"
+            style="text-align: right; margin-top: 20px; margin-right: 20px; font-size: 30px;">نؤمن بأن الثروة
+            الحقيقية هي الإنسان</p>
+
+        <div class="button-container ml-5 d-flex justify-content-center align-items-center ">
+            <a href="#" class="fade-in-up styled-link d-block mx-auto faeda-logo-container-mobile"
+                style=" border-radius: 30px;">
+                <img class="fade-in-up faeda-logo-mobile faeda-logo-pc"
+                    src="{{ url_for('static', filename='/new_design/images/logoteamfaedahcopy.png') }}" alt="">
+            </a>
+            
+      
+<div id="bootstrap-carousel" class="carousel slide relative w-50 mr-3 carousel-padding" data-ride="carousel">
+   
+
+    <!-- Carousel items -->
+    <div class="carousel-inner relative h-56 overflow-hidden rounded-lg md:h-96">
+        <!-- Item 1 -->
+        <div class="carousel-item active">
+            <img src="{{ url_for('static', filename='/new_design/images/First Page Background.png') }}" class="d-block w-100" alt="...">
+        </div>
+        <!-- Item 2 -->
+        <div class="carousel-item">
+            <img src="{{ url_for('static', filename='/new_design/images/First Page Background2.png') }}" class="d-block w-100" alt="...">
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+          
+        </div>
+        <p class="almarai-extrabold text-2 "
+            style="margin-top: 1%; text-align: center; font-size: 200%; font-weight: bold;">نقطة وصل تربط بين الباحثين
+            عن عمل وأصحاب العمل في مكان واحد </p>
+
+    </section>
+ 
+
+
+
+    <!-- second part -->
+    <section class="background-1" id="page2">
+        <div class="container1 container-fluid p-5 m-1" style="background-color: #232E4C ;"></div>
+        <div class="text-right">
+            <h1 class="title1 almarai-extrabold p-4 " style="font-size: 50px; margin:20px;"> من نحن؟</h1>
+        </div>
+
+        <div class="bar d-flex flex-row-reverse justify-content-start carousel-nav p-2" style="margin-right: 60px;">
+            <h2 class="almarai-bold m-2 " data-target="#carouselExampleControls" data-slide-to="0">من نحن</h2>
+            <h2 class="almarai-bold m-2" data-target="#carouselExampleControls" data-slide-to="1">الرسالة</h2>
+            <h2 class="almarai-bold m-2" data-target="#carouselExampleControls" data-slide-to="2">الرؤية</h2>
+        </div>
+
+        <div id="carouselExampleControls" class="carousel slide almarai-regular text-right" data-ride="carousel"
+            style="padding:70px; color: #253048;">
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="background-color: #D9D9D9;">
+
+                    <h2 style="text-align: right; padding: 70px;">
+                        <br>هدفنا في شركة فائدة هو تقديم حلول مبتكرة ومتكاملة في مجالات التوظيف التدريب
+                        <br>الاستشارات بهدف دعم الأفراد والشركات في تحقيق أقصى إمكاناتهم وتحقيق نجاح مستدام
+                        <br>نسعى جاهدين لتوفير خدمات عالية الجودة تلبي احتياجات عملائنا وتسهم في تطوير المجتمع
+                        ورفع مستوى الكفاءة الوظيفية والإدارية بشكل شامل
+                    </h2>
+
+                </div>
+                <div class="carousel-item" style="background-color: #D9D9D9;">
+
+                    <h2 style="text-align: right; padding: 70px;">
+                        <br>هدفنا في شركة فائدة هو تقديم حلول مبتكرة ومتكاملة في مجالات التوظيف التدريب
+                        <br>الاستشارات بهدف دعم الأفراد والشركات في تحقيق أقصى إمكاناتهم وتحقيق نجاح مستدام
+                        <br>نسعى جاهدين لتوفير خدمات عالية الجودة تلبي احتياجات عملائنا وتسهم في تطوير المجتمع
+                        ورفع مستوى الكفاءة الوظيفية والإدارية بشكل شامل
+                    </h2>
+                </div>
+                <div class="carousel-item" style="background-color: #D9D9D9;">
+
+                    <h2 style="text-align: right; padding: 70px;">
+                        نطمح في أن نكون رواد في مجال التطوير المهني والاستشارات العملية، حيث نسعى جاهدين لتمكين الأفراد
+                        والشركات من تحقيق أهدافهم وتطوير مهاراتهم. من خلال خبرتنا في مجال التوظيف وتقديم الدورات
+                        التدريبية في مختلف التخصصات، نسعى لبناء جسور قوية بين الكفاءات البشرية الموهوبة والفرص الوظيفية
+                        المناسبة. رؤيتنا تتجلى في خلق بيئة عمل محفزة تسهم في تحقيق النجاح المستدام والنمو المهني لكل فرد
+                        نخدمه
+                    </h2>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- third part -->
+    <div class="container1 container-fluid p-5" style="background-color: #232E4C ;"></div>
+    <section class="background-3 " id="page3">
+        <img src="{{ url_for('static', filename='/new_design/images/FaeTeam.png') }}" class="fade-in-up rounded mx-auto d-block"
+            alt="...">
+
+        <div class="d-flex justify-content-center fade-in-up">
+            <h1 class="text-light almarai-extrabold">ماهو تيم فائدة؟</h1>
+        </div>
+
+        <div class="d-flex justify-content-center fade-in-up">
+            <h1 class="text-center almarai-regular text-light">
+                تتميز شركة فائدة بتيم فائدة الذي يتيح للأفراد<br>
+                ،تكوين فرقهم الخاصة والعمل بها<br>
+                وللمنشآت اسقطاب فرقهم فرق متكاملة لتطوير<br>
+                .أعمالهم بكفاءة
+            </h1>
+        </div>
+
+        <div class="d-flex justify-content-center fade-in-up">
+            <h1 class="text3 text-center almarai-regular" id="animatedText" style="color: #F0BF56;">
+                لاتحلق وحيداً وكوّن فريقك
+            </h1>
+        </div>
+
+        <div class="d-flex justify-content-center fade-in-up " style="padding: 5%;">
+            <a href="/faeda-details"><button class="btn btn-danger almarai-regular styled-link pl-5 pr-5"
+                    style="border-radius: 5px; background-color: #BF2A4A; font-size: 25px;">تعرف أكثر على تيم
+                    فائدة</button></a>
+        </div>
+    </section>
+
+    <!-- fourth part -->
+    <section class="background-2 mt-1">
+        <div class="container2 container almarai-regular p-2 "
+            style="max-width: 50%; background-color: #253048; border-radius: 25px; margin-top: 20px;">
+            <h3 class="text-center text-light almarai-bold  p-2">ًفئات الوظائف الأكثر تقديما</h3>
+        </div>
+
+        <!-- first container with image 1 -->
+        <div class="container p-2">
+            <div class="row1 row" style="margin-top: 80px;">
+                <div class="col1 col-6">
+                    <h2 class="fade-in-up text-center almarai-bold p-3 mt-3"
+                        style="background-color:#FCF6DB; border-radius: 25px; color: #253048; "> المحاسبة </h2>
+                    <p class="fade-in-up text-center almarai-bold">أكثر من 45 وظيفة</p>
+                    <div class=" d-flex justify-content-center">
+                        <a class="cont_btn" href="/register"><button type="submit"
+                                class="fade-in-up btn btn-danger almarai-bold styled-link"
+                                style="border-radius: 10px; background-color: #BF2A4A;">سجل الآن</button></a>
+                    </div>
+                </div>
+                <div class="image col-6 d-flex justify-content-end fade-in-up mb-2">
+                    <img src="{{ url_for('static', filename='/new_design/images/Ac.jpeg')}}" alt="image cap" class="img-fluid">
+                </div>
+            </div>
+        </div>
+
+        <!-- second container with image 2 -->
+        <div class="container p-2">
+            <div class="row1 row" style="margin-top: 80px;">
+                <div class="image col-6 d-flex justify-content-start fade-in-up mb-2">
+                    <img src="{{ url_for('static', filename='/new_design/images/Tech.jpeg') }}" alt="image cap" class="img-fluid">
+                </div>
+                <div class="col1 col-6">
+                    <h2 class="fade-in-up text-center almarai-bold p-3 mt-3 "
+                        style="background-color: #FCF6DB; border-radius: 25px; color: #253048;"> التقنية </h2>
+                    <p class="fade-in-up text-center almarai-bold">أكثر من 61 وظيفة</p>
+                    <div class="d-flex justify-content-center">
+                        <a class="cont_btn" href="/register"><button type="submit"
+                                class="fade-in-up btn btn-danger almarai-bold styled-link"
+                                style="border-radius: 10px; background-color: #BF2A4A; ">سجل الآن</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- third container with image 3 -->
+        <div class="container p-2">
+            <div class="row1 row" style="margin-top: 80px;">
+                <div class="col1 col-6">
+                    <h2 class="fade-in-up text-center almarai-bold p-3 mt-3"
+                        style="background-color: #FCF6DB; border-radius: 25px; color: #253048;">إدارة الأعمال</h2>
+                    <p class="fade-in-up text-center almarai-bold">أكثر من 33 وظيفة</p>
+                    <div class="d-flex justify-content-center">
+                        <a class="cont_btn" href="/register"><button type="submit"
+                                class="fade-in-up btn btn-danger almarai-bold styled-link"
+                                style="border-radius: 10px; background-color: #BF2A4A;">سجل الآن</button></a>
+                    </div>
+                </div>
+                <div class="image col-6 d-flex justify-content-end fade-in-up mb-3">
+                    <img src="{{ url_for('static', filename='/new_design/images/comm.jpeg') }}" alt="image cap" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- fifth part -->
+    <section>
+        <div class="MovText container1  p-4  text-light " style=" font-size: 25px; background-color: #232E4C ;">
+            <div class="moving-text container-fluid almarai-bold">
+                في فائدة، نؤمن بأن كل فرد يحمل بداخله إمكانات لا حدود لها
+            </div>
+        </div>
+        <p class="p1 almarai-regular mt-1 " style=" text-align: center; font-size: 50px; ">أطلب سيرتك الذاتية
+            الآن
+
+        <div style="text-align: center; margin-top: 20px;">
+            <img class="CVimg fade-in-up" src="{{ url_for('static', filename='/new_design/images/CV.jpg') }}" alt="CV Image"
+                style="width: 400px; height: auto;">
+        </div>
+
+        <div class="button d-flex justify-content-center fade-in-up" style="margin-top: 20px;">
+            <div class="arrow-right">
+                <i class="bi bi-arrow-right fade-in-out arrow-size" ></i>
+            </div>
+            
+            <button type="button" class="CVbtn btn btn-danger almarai-regular styled-link "
+                style="border-radius: 10px; width: 400px; height: 60px; font-size: 30px; background-color: #BF2A4A; margin-bottom: 5px;">
+                أطلب سيرتك الآن
+            </button>
+
+            <div class="arrow-left">
+                <i class="bi bi-arrow-left fade-in-out arrow-size" ></i>
+            </div>
+        </div>
+        </div>
+
+    </section>
+
+    <!-- last part -->
+    <section>
+        <footer class="text-right pt-5 pd-5 text-light text-center fade-in-up " style="background-color: #232E4C;">
+            <div class="container">
+                <div class="row2 row">
+                    <div class=" col-lg-4">
+                        <h2 class="almarai-extrabold">بيانات التواصل</h2>
+                        <hr
+                            style="background-color: white; width: 40%; margin-top: 25px; margin-left: 30%; padding-top: 2px;">
+                        <ul class="list2 list-unstyled styled-list p-5">
+                            <li>
+                                <h4 class="almarai-regular"><a href=""><i class=" fas fa-phone mr-3 "
+                                            style="margin-bottom: 30px;"></i>+966 55777430</a></h4>
+                            </li>
+                            <li>
+                                <h5 class="almarai-regular"><a href=""><i class="fas fa-envelope mr-3"
+                                            style="margin-bottom: 40px;"></i> info@faeda.com.ca</a></h5>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="link col-lg-4">
+                        <h2 class=" almarai-extrabold">روابط مهمة</h2>
+                        <hr
+                            style="background-color: white; width: 40%;  margin-top: 25px; margin-left: 30%; padding-top: 2px;">
+                        <ul class="list-unstyled text-right styled-list" style="padding-right: 80px; margin-top: 60px;">
+                            <li>
+                                <h4 class="almarai-regular"><a href="/about_us"><i class="mr-5"></i>من نحن</a></h4>
+                            </li>
+                            <li>
+                                <h4 class="almarai-regular"><a href="#"><i class="mr-5"></i>تيم فائدة</a></h4>
+                            </li>
+                            <li>
+                                <h4 class="almarai-regular"><a href="#"><i class="mr-5"></i>السيرة الذاتية</a></h4>
+                            </li>
+                            <li>
+                                <h4 class="almarai-regular"><a href="/customer_serves"><i class="mr-5"></i>الدعم الفني</a></h4>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <img src="{{ url_for('static', filename='/new_design/images/logowhite.png') }}" height="50px" alt="">
+                        <h3 class=" almarai-bold m-5">تجدونا على</h3>
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-auto px-1">
+                                <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                            </div>
+                            <div class="col-auto px-1">
+                                <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                            </div>
+                            <div class="col-auto px-1">
+                                <a href="#" class="social-icon"><img
+                                        src="{{ url_for('static', filename='/new_design/images/Xlogo.png') }}" alt="" width="50px"
+                                        height="50px"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr style="background-color: white; width: 100%;  margin-top: 25px;">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col2 col">
+                            <h2 class="d-flex justify-content-center almarai-light pt-3 pb-3">منصة فائدة 2023 | جميع
+                                الحقوق المحفوظة</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col d-flex justify-content-end  fixed-bottom">
+                            <a href="#" class="arrow-icon"><i class="bi bi-chevron-up"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            </div>
+        </footer>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const elements = document.querySelectorAll('.fade-in-up');
+
+            function checkIfInView() {
+                const windowHeight = window.innerHeight;
+
+                elements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementBottom = element.getBoundingClientRect().bottom;
+
+                    if (elementTop < windowHeight && elementBottom > 0) {
+                        element.classList.add('in-view');
+                    } else {
+                        element.classList.remove('in-view');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', checkIfInView);
+            checkIfInView(); // Initial check
+        });
+
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const animatedText = document.getElementById('animatedText');
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animatedText.classList.remove('text3');
+                        void animatedText.offsetWidth; // Trigger reflow
+                        animatedText.classList.add('text3');
+                    }
+                });
+            }, { threshold: 0.1 }); // Adjust threshold as needed
+
+            observer.observe(animatedText);
+        });
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+{
+    "AF": [
+        {"city_name": "كابول"},
+        {"city_name": "كندهار"},
+        {"city_name": "هرات"},
+        {"city_name": "مزار شريف"},
+        {"city_name": "بلخ"}
+    ],
+    "DZ": [
+        {"city_name": "الجزائر"},
+        {"city_name": "قسنطينة"},
+        {"city_name": "وهران"},
+        {"city_name": "تلمسان"},
+        {"city_name": "عنابة"}
+    ],
+    "AL": [
+        {"city_name": "تيرانا"},
+        {"city_name": "دوريس"},
+        {"city_name": "فلوري"},
+        {"city_name": "شكودرا"},
+        {"city_name": "فلوري"}
+    ],
+    "AS": [
+        {"city_name": "باغو باغو"},
+        {"city_name": "إيومو"},
+        {"city_name": "فاغاتاغا"},
+        {"city_name": "نوميا"},
+        {"city_name": "فونافو"}
+    ]
+}

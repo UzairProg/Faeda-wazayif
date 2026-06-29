@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-compact " dir="ltr" data-theme="theme-default" data-assets-path="/static/panel/assets/" data-template="vertical-menu-template">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>فائدة - صفحة عرض الوظيفة</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/logo_only.png" />
+
+    <script>// scripts.js
+      document.addEventListener('DOMContentLoaded', (event) => {
+          const popup = document.getElementById('popup');
+          const closePopupBtn = document.getElementById('closePopupBtn');
+      
+          // دالة لإظهار النافذة المنبثقة
+          function showPopup() {
+              popup.style.display = 'flex';
+              window.scrollTo(0, 0);  // إعادة التمرير إلى أعلى الصفحة
+              setTimeout(() => {
+                  popup.classList.add('hide');
+                  setTimeout(() => {
+                      popup.style.display = 'none';
+                      popup.classList.remove('hide');
+                  }, 500); // مدة تأثير الاختفاء
+              }, 10000);
+          }
+      
+          // أظهر النافذة المنبثقة عند تحميل الصفحة لأول مرة
+          showPopup();
+      
+          // أظهر النافذة المنبثقة كل دقيقة
+          setInterval(showPopup, 300000);
+      
+          // أغلق النافذة المنبثقة عند النقر على زر الإغلاق
+          closePopupBtn.addEventListener('click', () => {
+              popup.classList.add('hide');
+              setTimeout(() => {
+                  popup.style.display = 'none';
+                  popup.classList.remove('hide');
+              }, 500); // مدة تأثير الاختفاء
+          });
+      });
+      
+      
+      </script>
+
+
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="/static/panel/assets/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="/static/panel/assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="/static/panel/assets/vendor/fonts/flag-icons.css" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="/static/panel/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="/static/panel/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="/static/panel/assets/vendor/libs/typeahead-js/typeahead.css" />
+    <link rel="stylesheet" href="/static/panel/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css">
+<link rel="stylesheet" href="/static/panel/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
+<link rel="stylesheet" href="/static/panel/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css">
+<link rel="stylesheet" href="/static/panel/assets/vendor/libs/animate-css/animate.css" />
+<link rel="stylesheet" href="/static/panel/assets/vendor/libs/sweetalert2/sweetalert2.css" />
+<link rel="stylesheet" href="/static/panel/assets/vendor/libs/select2/select2.css" />
+<link rel="stylesheet" href="/static/panel/assets/vendor/libs/@form-validation/form-validation.css" />
+
+    <!-- Page CSS -->
+
+<link rel="stylesheet" href="/static/panel/assets/vendor/css/pages/page-user-view.css" />
+
+    <!-- Helpers -->
+    <script src="/static/panel/assets/vendor/js/helpers.js"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+    <script src="/static/panel/assets/vendor/js/template-customizer.js"></script>
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="/static/panel/assets/js/config.js"></script>
+
+
+
+
+    <style>
+
+      i {
+        margin-right: 0px;
+      }
+  
+      /*----------bootstrap-navbar-css------------*/
+      .navbar-logo {
+        padding: 0px;
+        color: #fff;
+      }
+  
+      .navbar-mainbg {
+        background-color: #252f48;
+        padding: 0px;
+      }
+  
+      #navbarSupportedContent {
+        overflow: hidden;
+        position: relative;
+      }
+  
+      #navbarSupportedContent ul {
+        padding: 0px;
+        margin: 0px;
+      }
+  
+      #navbarSupportedContent ul li a i {
+        margin-right: 10px;
+      }
+  
+      #navbarSupportedContent li {
+        list-style-type: none;
+        float: left;
+      }
+  
+      #navbarSupportedContent ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+        display: block;
+        padding: 20px 20px;
+        transition-duration: 0.6s;
+        transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        position: relative;
+  
+      }
+  
+      #navbarSupportedContent > ul > li.active > a {
+        color: #252f48;
+        background-color: transparent;
+        transition: all 0.7s;
+      }
+  
+      #navbarSupportedContent a:not(:only-child):after {
+        content: "\f105";
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        font-size: 14px;
+        display: inline-block;
+        padding-right: 3px;
+        vertical-align: middle;
+        font-weight: 900;
+        transition: 0.5s;
+      }
+  
+      #navbarSupportedContent .active > a:not(:only-child):after {
+        transform: rotate(90deg);
+      }
+  
+      .hori-selector {
+        display: inline-block;
+        position: absolute;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        transition-duration: 0.6s;
+        transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        background-color: #fff;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        margin-top: 10px;
+      }
+  
+      .hori-selector .right,
+      .hori-selector .left {
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        background-color: #fff;
+        bottom: 10px;
+      }
+  
+      .hori-selector .right {
+        right: -25px;
+      }
+  
+      .hori-selector .left {
+        left: -25px;
+      }
+  
+      .hori-selector .right:before,
+      .hori-selector .left:before {
+        content: '';
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #252f48;
+      }
+  
+      .hori-selector .right:before {
+        bottom: 0;
+        right: -25px;
+      }
+  
+      .hori-selector .left:before {
+        bottom: 0;
+        left: -25px;
+      }
+  
+      @media(min-width: 992px) {
+        .navbar-expand-custom {
+          -ms-flex-flow: row nowrap;
+          flex-flow: row nowrap;
+          -ms-flex-pack: start;
+          justify-content: flex-start;
+        }
+  
+        .navbar-expand-custom .navbar-nav {
+          -ms-flex-direction: row;
+          flex-direction: row;
+        }
+  
+        .navbar-expand-custom .navbar-toggler {
+          display: none;
+        }
+  
+        .navbar-expand-custom .navbar-collapse {
+          display: -ms-flexbox !important;
+          display: flex !important;
+          -ms-flex-preferred-size: auto;
+          flex-basis: auto;
+        }
+      }
+  
+      @media (max-width: 991px) {
+        .navbar-mainbg {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+  
+        .navbar-logo {
+          order: 2;
+          margin-left: auto;
+          height: max-content;
+        }
+        .navbar-logo img{
+          height: 60px;
+          margin-right: -50px;
+        }
+  
+        .navbar-toggler {
+          order: 1;
+        }
+  
+        #navbarSupportedContent {
+          justify-content: flex-end;
+        }
+  
+        #navbarSupportedContent ul li a {
+          padding: 12px 30px;
+        }
+  
+        .hori-selector {
+          margin-top: 0px;
+          margin-left: 10px;
+          border-radius: 0;
+          border-top-left-radius: 25px;
+          border-bottom-left-radius: 25px;
+        }
+  
+        .hori-selector .left,
+        .hori-selector .right {
+          right: 10px;
+        }
+  
+        .hori-selector .left {
+          top: -25px;
+          left: auto;
+        }
+  
+        .hori-selector .right {
+          bottom: -25px;
+        }
+  
+        .hori-selector .left:before {
+          left: -25px;
+          top: -25px;
+        }
+  
+        .hori-selector .right:before {
+          bottom: -25px;
+          left: -25px;
+        }
+      }
+    </style>
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css">
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-custom navbar-mainbg">
+    <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars text-white"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <div class="hori-selector">
+          <div class="left"></div>
+          <div class="right"></div>
+        </div>
+        {% if session["session_customer"] != True and session["session_company"] != True %}
+        <li class="nav-item">
+          <a class="nav-link" href="/login"><i class="far fa-address-book"></i>تسجيل الدخول</a>
+        </li>
+        {% endif %}
+        {% if session["session_customer"] == True or session["session_company"] == True %}
+        <li class="nav-item">
+          <a class="nav-link" href="/logout"><i class="fas fa-door-open"></i>تسجيل الخروج</a>
+        </li>
+        {% endif %}
+        {% if session["session_customer"] == True or session["session_company"] == True %}
+        <li class="nav-item">
+          <a class="nav-link" href="/redirects"><i class="fa fa-sun"></i>لوحة التحكم</a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link" href="/#carousel_aa23"><i class="fa fa-envelope"></i>تواصل معنا</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="/job-list"><i class="fa fa-search"></i>البحث عن عمل</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="/see_teams"><i class="fa fa-search"></i> استقطاب موظفين كوادر </a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="/"><i class="fa fa-home"></i>الرئيسية</a>
+        </li>
+      </ul>
+    </div>
+    <a href="/" class="navbar-brand navbar-logo" data-image-width="200" data-image-height="100">
+      <img src="/static/landing/images/home-banner-bg.jpg" class="u-logo-image u-logo-image-1">
+    </a>
+  </nav>
+
+
+    <script>
+      // ---------Responsive-navbar-active-animation-----------
+    function test(){
+        var tabsNewAnim = $('#navbarSupportedContent');
+        var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
+        var activeItemNewAnim = tabsNewAnim.find('.active');
+        var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
+        var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
+        var itemPosNewAnimTop = activeItemNewAnim.position();
+        var itemPosNewAnimLeft = activeItemNewAnim.position();
+        $(".hori-selector").css({
+            "top":itemPosNewAnimTop.top + "px",
+            "left":itemPosNewAnimLeft.left + "px",
+            "height": activeWidthNewAnimHeight + "px",
+            "width": activeWidthNewAnimWidth + "px"
+        });
+        $("#navbarSupportedContent").on("click","li",function(e){
+            $('#navbarSupportedContent ul li').removeClass("active");
+            $(this).addClass('active');
+            var activeWidthNewAnimHeight = $(this).innerHeight();
+            var activeWidthNewAnimWidth = $(this).innerWidth();
+            var itemPosNewAnimTop = $(this).position();
+            var itemPosNewAnimLeft = $(this).position();
+            $(".hori-selector").css({
+                "top":itemPosNewAnimTop.top + "px",
+                "left":itemPosNewAnimLeft.left + "px",
+                "height": activeWidthNewAnimHeight + "px",
+                "width": activeWidthNewAnimWidth + "px"
+            });
+        });
+    }
+    $(document).ready(function(){
+        setTimeout(function(){ test(); });
+    });
+    $(window).on('resize', function(){
+        setTimeout(function(){ test(); }, 500);
+    });
+    $(".navbar-toggler").click(function(){
+        $(".navbar-collapse").slideToggle(300);
+        setTimeout(function(){ test(); });
+    });
+
+
+
+    // --------------add active class-on another-page move----------
+    jQuery(document).ready(function($){
+        // Get current path and find target link
+        var path = window.location.pathname.split("/").pop();
+
+        // Account for home page with empty path
+        if ( path == '' ) {
+            path = 'index.html';
+        }
+
+        var target = $('#navbarSupportedContent ul li a[href="'+path+'"]');
+        // Add active class to target link
+        target.parent().addClass('active');
+    });
+
+
+
+
+    // Add active class on another page linked
+    // ==========================================
+    // $(window).on('load',function () {
+    //     var current = location.pathname;
+    //     console.log(current);
+    //     $('#navbarSupportedContent ul li a').each(function(){
+    //         var $this = $(this);
+    //         // if the current path is like this link, make it active
+    //         if($this.attr('href').indexOf(current) !== -1){
+    //             $this.parent().addClass('active');
+    //             $this.parents('.menu-submenu').addClass('show-dropdown');
+    //             $this.parents('.menu-submenu').parent().addClass('active');
+    //         }else{
+    //             $this.parent().removeClass('active');
+    //         }
+    //     })
+    // });
+    </script>
+  <!-- ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
+  <!-- End Google Tag Manager (noscript) -->
+
+  <!-- Layout wrapper -->
+  <style>
+    /* styles.css */
+    body {
+        font-family: Arial, sans-serif;
+    }
+    
+    .popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* تأكد من أن النافذة فوق كل شيء آخر */
+    }
+    
+    .popup-content {
+        background-color: #252f48;
+        padding: 20px 30px;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 90%;
+        color: #fff;
+    }
+    
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+        cursor: pointer;
+        color: #bc2a44;
+    }
+    
+    .popup h2 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #fccd59;
+    }
+    
+    .popup p {
+        font-size: 18px;
+        color: #fff;
+        margin-bottom: 20px;
+    }
+    
+    .popup-links {
+        display: flex;
+        justify-content: space-around;
+    }
+    
+    .popup-link {
+        background-color: #bc2a44;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+    
+    .popup-link:hover {
+        background-color: #fccd59;
+        color: #252f48;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+    
+    .popup {
+        animation: fadeIn 0.5s; /* تأثير الظهور */
+    }
+    
+    .popup.hide {
+        animation: fadeOut 0.5s; /* تأثير الاختفاء */
+    }
+    
+    </style>
+    
+    <div id="popup" class="popup">
+      <div class="popup-content">
+          <span id="closePopupBtn" class="close-btn">&times;</span>
+          <h2>ميزات موقعنا</h2>
+<p> يمكنك التقديم بالطريقة الفردية أو بإختيار احدى مجموعاتك للتقديم ك فريق </p>
+        <hr>
+        <p>يمكنك تكوين فريق تخصصي أو غير تخصصي والتقديم بإسم الفريق كاملا ! ماذا تنتظر؟ قدم الان       </p>
+         
+      </div>
+    </div>
+<div class="layout-wrapper   ">
+  <div class="layout-container">
+
+
+
+
+
+
+
+
+
+    <!-- Layout container -->
+    <div class="layout-page">
+
+
+
+
+
+
+
+
+
+      <!-- Content wrapper -->
+      <div class="content-wrapper">
+
+        <!-- Content -->
+
+          <div class="container-xl flex-grow-1 container-p-y">
+
+
+
+<div class=" justify-content-center align-items-center max-vh-100">
+    <div class="row">
+      <!-- User Sidebar -->
+      <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
+        <!-- User Card -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="user-avatar-section">
+              <div class="d-flex align-items-center flex-column">
+                {% if job.company.company_logo %}
+                <img class="img-fluid rounded my-4" src="/static/uploads/companies/logo/{{job.company.company_logo}}" height="110" width="110" alt="User avatar" />
+
+                {% else %}
+                <img class="img-fluid rounded my-4" src="/static/photo/boys.png" height="110" width="110" alt="User avatar" />
+
+
+                {% endif %}
+                <div class="user-info text-center">
+                  <h4 class="mb-2">{{job.title}}</h4>
+                  <span class="badge bg-label-secondary">تخصص الشركة : {{job.company.company_field}}</span>
+                </div>
+              </div>
+            </div>
+
+            <h5 class="pb-2 border-bottom mb-4">تفاصيل الشركة</h5>
+            <div class="info-container">
+              <ul class="list-unstyled">
+                <li class="mb-3">
+                  <span class="fw-medium me-2">{{job.company.company_english_name}}</span>
+                  <span>اسم الشركة</span>
+                </li>
+                <li class="mb-3">
+                  <span class="fw-medium me-2">ايميل الشركة</span>
+                  <span>{{job.company.company_email}}</span>
+                </li>
+                
+                
+
+                <li class="mb-3">
+                  <span class="fw-medium me-2">نوع الشركة :</span>
+                  <span>{{job.company.company_type}}</span>
+                </li>
+                <li class="mb-3">
+                  <span class="fw-medium me-2">الدولة</span>
+                  <span>{{job.company.country}}</span>
+                </li>
+                <li class="mb-3">
+                  <span class="fw-medium me-2">المدينة </span>
+                  <span>{{job.company.state}}</span>
+                </li>
+
+
+              </ul>
+              <div class="d-flex justify-content-center pt-3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <style>
+                  /* Style the dropdown button */
+                  .dropbtn {
+                    background-color: #252f48;
+                    color: white;
+                    padding: 16px;
+                    font-size: 16px;
+                    border: none;
+                    cursor: pointer;
+                    border-radius: 50px;
+                  }
+              
+                  /* Dropdown button on hover & focus */
+                  .dropbtn:hover, .dropbtn:focus {
+                    background-color: #314064;
+                  }
+              
+                  /* The container <div> - needed to position the dropdown content */
+                  .dropdown {
+                    position: relative;
+                    display: inline-block;
+                  }
+              
+                  /* Dropdown Content (Hidden by Default) */
+                  .dropdown-content {
+                    position: absolute;
+                    background-color: #f9f9f9;
+                    min-width: 160px;
+                    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                    margin: -150px 0;
+                    z-index: 1;
+                    display: none;
+                  }
+              
+                  /* Links inside the dropdown */
+                  .dropdown-content a {
+                    color: black;
+                    padding: 12px 16px;
+                    text-decoration: none;
+                    display: block;
+                  }
+              
+                  /* Change color of dropdown links on hover */
+                  .dropdown-content a:hover {
+                    background-color: #f1f1f1;
+                  }
+              
+                  /* Show the dropdown menu on hover */
+                  .dropdown:hover .dropdown-content {
+                    display: block;
+                  }
+              
+                  /* Hide the hidden items initially */
+                  .hidden_items {
+                    display: none;
+                  }
+              
+                  /* Show the hidden items when the visible item is clicked */
+                  .show-hidden .hidden_items {
+                    display: block;
+                  }
+              
+                  /* Hide the visible items when the hidden items are shown */
+                  .hide-visible .visible_items {
+                    display: none;
+                  }
+                </style>
+
+
+
+
+
+                <div class="dropdown">
+                  <button class="dropbtn">تقدم الان</button>
+                  <div class="dropdown-content">
+                    <div class="visible_items">
+                      <a href="/applyjob/{{job.id}}">تقديم  فردي</a>
+                      <a href="#link2" class="ppp">تقديم جماعي</a>
+                    </div>
+                
+                    <div class="hidden_items">
+                      <p></p>                     
+                      {% for cutomer_team in cutomer_teams %}
+                                  <form action="/applyjob/{{job.id}}" method="post">
+                                      <a href="#" onclick="this.closest('form').submit();">{{ cutomer_team.team_name }}</a>
+                                      <input type="text" hidden name="type_team" value="{{ cutomer_team.id }}">
+                                  </form>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+                
+              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               
+            </div>
+
+
+            </div>
+          </div>
+        </div>
+        <!-- /User Card -->
+        <!-- Plan Card -->
+
+        <!-- /Plan Card -->
+      </div>
+      <!--/ User Sidebar -->
+
+      <!-- User Content -->
+      <div class="col-xl-7 col-lg-7 col-md-7 order-0 order-md-1">
+        <!-- User Pills -->
+
+        <!--/ User Pills -->
+
+        <!-- Project table -->
+        <div class="card mb-4">
+          <h5 class="card-header">وصف الوظيفة</h5>
+          <div class="table-responsive mb-3">
+            <p style="float: center;">
+            {{job.job_description}}
+        </p>
+          </div>
+        </div>
+        <!-- /Project table -->
+
+        <!-- Activity Timeline -->
+        <div class="card mb-4">
+          <h5 class="card-header">معلومات العمل</h5>
+          <div class="card-body">
+            <ul class="timeline">
+              <li class="timeline-item timeline-item-transparent">
+                <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-primary"></span></span>
+                <div class="timeline-event">
+                  <div class="timeline-header mb-1">
+                    <h6 class="mb-0">بيئة العمل</h6>
+                  </div>
+                  <p class="mb-2"> طبيعة العمل : {{job.workplace}}</p>
+                  <p class="mb-2">ايام العمل : {{job.workdays}}</p>
+                  <p class="mb-2">ساعات العمل : {{job.work_hours}}</p>
+
+                </div>
+              </li>
+              <li class="timeline-item timeline-item-transparent">
+                <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-warning"></span></span>
+                <div class="timeline-event">
+                  <div class="timeline-header mb-1">
+                    <h6 class="mb-0">متطلبات الوظيفة</h6>
+                  </div>
+                  <p class="mb-2">المؤهل المطلوب : {{job.educational_qualification}}</p>
+                  <p class="mb-2"> سنوات الخبرة المطلوبة :             {{job.skills_years}}                 </p>
+                  <p class="mb-2">اللغات المطلوبة  : {{job.languages}}</p>
+
+                </div>
+              </li>
+              <li class="timeline-item timeline-item-transparent">
+                <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-info"></span></span>
+                <div class="timeline-event">
+
+                    <p class="mb-2"> نوع العمل :                                          {{job.job_type}}                </p>
+                    <p class="mb-2">  مكان العمل  :                                          {{job.town}}                </p>
+
+                </div>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+        <!-- /Activity Timeline -->
+
+
+        <!-- /Invoice table -->
+      </div>
+      <!--/ User Content -->
+    </div>
+  </div>
+
+
+<!-- Modal -->
+
+<!--/ Edit User Modal -->
+
+<!-- Add New Credit Card Modal -->
+
+<!--/ Add New Credit Card Modal -->
+
+<!-- /Modal -->
+          </div>
+          <!-- / Content -->
+
+
+
+
+
+<!-- / Footer -->
+
+
+        </div>
+        <!-- Content wrapper -->
+      </div>
+      <!-- / Layout page -->
+    </div>
+
+
+
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+
+
+    <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+    <div class="drag-target"></div>
+
+  </div>
+  <!-- / Layout wrapper -->
+
+
+
+
+
+
+  <!-- Core JS -->
+  <!-- build:js assets/vendor/js/core.js -->
+
+  <script src="/static/panel/assets/vendor/libs/jquery/jquery.js"></script>
+  <script src="/static/panel/assets/vendor/libs/popper/popper.js"></script>
+  <script src="/static/panel/assets/vendor/js/bootstrap.js"></script>
+  <script src="/static/panel/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="/static/panel/assets/vendor/libs/hammer/hammer.js"></script>
+  <script src="/static/panel/assets/vendor/libs/i18n/i18n.js"></script>
+  <script src="/static/panel/assets/vendor/libs/typeahead-js/typeahead.js"></script>
+  <script src="/static/panel/assets/vendor/js/menu.js"></script>
+
+  <!-- endbuild -->
+
+  <!-- Vendors JS -->
+  <script src="/static/panel/assets/vendor/libs/moment/moment.js"></script>
+<script src="/static/panel/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+<script src="/static/panel/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+<script src="/static/panel/assets/vendor/libs/cleavejs/cleave.js"></script>
+<script src="/static/panel/assets/vendor/libs/cleavejs/cleave-phone.js"></script>
+<script src="/static/panel/assets/vendor/libs/select2/select2.js"></script>
+<script src="/static/panel/assets/vendor/libs/@form-validation/popular.js"></script>
+<script src="/static/panel/assets/vendor/libs/@form-validation/bootstrap5.js"></script>
+<script src="/static/panel/assets/vendor/libs/@form-validation/auto-focus.js"></script>
+
+  <!-- Main JS -->
+  <script src="/static/panel/assets/js/main.js"></script>
+
+
+  <!-- Page JS -->
+  <script src="/static/panel/assets/js/modal-edit-user.js"></script>
+<script src="/static/panel/assets/js/app-user-view.js"></script>
+<script src="/static/panel/assets/js/app-user-view-account.js"></script>
+
+<script>
+  const link2 = document.querySelector('.ppp');
+  const dropdownContent = document.querySelector('.dropdown-content');
+
+  link2.addEventListener('click', function() {
+    dropdownContent.classList.toggle('show-hidden');
+    dropdownContent.classList.toggle('hide-visible');
+  });
+
+  dropdownContent.addEventListener('mouseleave', function() {
+    dropdownContent.classList.remove('show-hidden');
+    dropdownContent.classList.remove('hide-visible');
+  });
+</script>
+</body>
+
+</html>
+
+<!-- beautify ignore:end -->
+

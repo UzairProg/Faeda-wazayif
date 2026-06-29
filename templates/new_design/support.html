@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='/new_design/css/bootstrap.min.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <style>
+     body, html {
+      height: 100%;
+      margin: 0;
+      background-image: url("{{ url_for('static', filename='/new_design/images/sup.jpeg') }}");
+      background-size: cover;
+      background-repeat: r;
+      background-position: center;
+    }
+
+    .fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+    .almarai-light {
+      font-family: "Almarai", sans-serif;
+      font-weight: 300;
+      font-style: normal;
+    }
+
+    .almarai-regular {
+      font-family: "Almarai", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .almarai-bold {
+      font-family: "Almarai", sans-serif;
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    .almarai-extrabold {
+      font-family: "Almarai", sans-serif;
+      font-weight: 800;
+      font-style: normal;
+    }
+
+    .navbar-brand {
+      padding: 0;
+    }
+    .navbar-brand i {
+      font-size: 25px;
+      padding-right: 20px;
+      transition: color 0.3s, transform 0.3s;
+    }
+    .navbar-brand:hover i {
+      color: black !important;
+      transform: scale(1.2); 
+    }
+   
+    .card-hover:hover {
+    background-color: #E5E5E5;
+    transform: scale(1.05);
+    transition: transform 0.4s ease, background-color 0.4s ease;
+}
+
+
+.card-hover:hover .btn-hover {
+    color: white !important;
+    background-color: #BF2A4A !important;
+    transition: color 0.4s ease;
+   
+}
+
+@media (max-width: 1199.98px) {
+  .navbar{
+        padding: 5px;
+      }
+    
+      .almarai-extrabold {
+        font-size: 15px;
+      }
+      .almarai-bold {
+        font-size: 13px;
+      }
+      .card-hover i {
+        font-size: 50px;
+      }
+    
+    }
+
+    @media (max-width: 991.98px) {
+      .navbar{
+        padding: 5px;
+      }
+      .almarai-extrabold {
+        font-size: 11px;
+      }
+      .almarai-bold {
+        font-size: 12px;
+      }
+      .card-hover i {
+        font-size: 45px;
+      }
+      
+   
+     
+    }
+
+    @media (max-width: 767.98px) {
+      .navbar{
+        padding: 5px;
+      }
+      .almarai-extrabold {
+        font-size: 11px;
+      }
+      .almarai-bold {
+        font-size: 12px;
+      }
+      .card-hover i {
+        font-size: 40px;
+      }
+      .container {
+        padding-right: 20px;
+        padding-left: 20px;
+      }
+      .row.pt-5 {
+      padding-top: 20px;  
+      margin-top: -20px;  
+    }
+
+    .row.p-1 {
+      margin-top: -10px;  
+     }
+      .col-md-3 {
+        margin-bottom: 30px;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .navbar{
+        padding: 5px;
+      }
+      .almarai-extrabold {
+        font-size: 20px;
+      }
+      .almarai-bold {
+        font-size: 13px;
+      }
+      .card-hover i {
+        font-size: 30px;
+      }
+      .container {
+        padding-right: 10px;
+        padding-left: 10px;
+      }
+      .col-md-3 {
+        margin-left: 50px;
+      }
+      .row.pt-5 {
+    padding-top: 20px; 
+    margin-top: -20px; 
+    }
+
+     .row.p-1 {
+    margin-top: -10px; 
+     }
+
+      
+    }
+    .container {
+  overflow-x: hidden;
+}
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-light" style="background-color: #253048;">
+    <div class="container-fluid">
+      <div class="row w-100">
+        <div class="col-6 d-flex justify-content-start">
+          <a class="navbar-brand" href="/" style="padding: 0;">
+            <i class="bi bi-house-door-fill" style="color: white;"></i>
+          </a>
+          <a class="navbar-brand" href="#">
+            <i class="bi bi-envelope-fill" style="color: white;"></i>
+          </a>
+          <a class="navbar-brand" href="#">
+            <i class="bi bi-bell-fill" style="color: white;"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+<!-- text -->
+  <div class="container">
+    <div class="row pt-5">
+      <div class="col-lg-12 d-flex justify-content-end text-right text-light">
+        <p class=" almarai-extrabold" style="font-size: 35px;">اهلا بك في مركز الدعم الفني في فائدة</p>
+      </div>
+      
+    </div>
+
+    <div class="row p-1">
+      <div class="col d-flex justify-content-end text-right text-light">
+        <p class="almarai-bold" style="font-size: 25px;">منطقة الدعم / مركز الدعم الفني</p>
+      </div>
+    </div>
+  </div>
+
+<!-- cards -->
+<div class=" container fade-in-up" style="margin-top:70px ; padding-right: 50px;">
+  <div class="row align-items-center">
+    <div class="col-md-3 col-sm-6 mb-3" >
+      <div class="card text-center card-hover" style="background-color: #e5e5e5c8;">
+        <div class="card-body">
+          <i class="bi bi-discord" style="font-size: 60px; color: #BF2A4A ;"></i>
+          <h5 class="almarai-extrabold card-title mt-3">Discord server</h5>
+          <a href="#" class="almarai-bold btn btn-light text-dark btn-hover mt-3" style="border-radius: 15px; background-color: #E5E5E5; border: 2px solid;">اضغط هنا</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+      <div class="card text-center card-hover" style="background-color: #e5e5e5c8;">
+        <div class="card-body">
+          <i class="bi bi-envelope" style="font-size: 60px; color: #BF2A4A ;"></i>
+          <h5 class="almarai-extrabold card-title mt-3">البريد الالكتروني</h5>
+          <a href="#" class="almarai-bold btn btn-light text-dark btn-hover mt-3" style="border-radius: 15px; background-color: #E5E5E5; border: 2px solid;">تواصل معنا</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+      <div class="card text-center card-hover" style="background-color: #e5e5e5c8;">
+        <div class="card-body">
+          <i class="bi bi-chat-square-text" style="font-size: 60px; color: #BF2A4A ;"></i>
+          <h5 class="almarai-extrabold card-title mt-3">الدعم الفني المباشر</h5>
+          <a href="#" class="almarai-bold btn btn-light text-dark btn-hover mt-3" style="border-radius: 15px; background-color: #E5E5E5; border: 2px solid;">اضغط هنا</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+      <div class="card text-center card-hover" style="background-color: #e5e5e5c8;">
+        <div class="card-body">
+          <i class="bi bi-ticket-perforated-fill" style="font-size: 60px; color: #BF2A4A ;"></i>
+          <h5 class="almarai-extrabold card-title mt-3">تذاكر الدعم الفني</h5>
+          <a href="#" class="almarai-bold btn btn-light text-dark btn-hover mt-3" style="border-radius: 15px; background-color: #E5E5E5; border: 2px solid;">الذهاب للقسم</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const elements = document.querySelectorAll('.fade-in-up');
+
+    function checkIfInView() {
+        const windowHeight = window.innerHeight;
+
+        elements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            const elementBottom = element.getBoundingClientRect().bottom;
+
+            if (elementTop < windowHeight && elementBottom > 0) {
+                element.classList.add('in-view');
+            } else {
+                element.classList.remove('in-view');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', checkIfInView);
+    checkIfInView(); // Initial check
+});
+  </script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

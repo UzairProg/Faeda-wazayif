@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAEDA</title>
+    <link rel="stylesheet" href="/static/assets/css/profile_page.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div dir="ltr">
+    {% include "main_navbar.html" %}
+    {% block contentt %}
+    {% endblock %}
+</div>
+    <div class="containerrrr">
+        <div class="profile-main">
+
+            <div class="profile-container">
+                <img src="/static/assets/images/l1.jpg" width="100%">
+                <div class="profile-container-inner">
+                    {% if company.company_logo %}
+                    <img src="/static/uploads/companies/logo/{{company.company_logo}}" class="profile-pic">
+                    {% endif %}
+    
+                    <h1> {{company.company_english_name}}</h1>
+                    <b>{{company.company_type}}</b>
+                    <p>{{company.company_field}}</p>
+                    <div class="profile-btn">
+                        <a href="#" class="primary-btn"><img src="/static/assets/images/add-user (1).png" alt="">تابع</a>
+
+                    </div>
+                </div>
+            </div>
+   
+
+            <div class="profile-description">
+                <h2> {{company.about_company_arabic}} </h2>
+                <p> {{company.about_company_english}} </p>
+            </div>
+  
+            <div class="profile-description">
+                <h2>معلومات التواصل</h2>
+                <div class="profile-desc-row">
+                    <img src="" alt="">
+                    <div>
+                        <h3>{{company.company_email}}</h3>
+                        <b>{{company.company_mobile}}</b>
+                        <b> {{company.english_adress}}</b>
+                        <hr>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="profile-description">
+                <h2>عن الشركة</h2>
+                <h3>{{company.company_type}}</h3>
+                <h3>بها {{company.company_size}} موظف </h3>
+                <h3> قطاع الشركة :{{company.company_field}}</h3>
+                <h3>حول الشركة :{{company.about_company_arabic}}</h3>
+
+
+            </div>
+ 
+            <div class="profile-description1">
+                <h2> المنشورات</h2>
+                <div class="xcontainer">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="items">
+                        {% for post in get_company_posts %}
+                        <div class="item-content">
+                            <div class="main-item">
+                                {% if post.company_id %}
+                                    <img src="/static/uploads/companies/logo/{{ company.query.get(post.company_id).company_logo}}" alt="">
+                                {% endif %}
+                                <h1>{{ company.query.get(post.company_id).company_english_name}}</h1>
+                                <p class="time">{{ post.get_time_difference(post.timestamp) }}</p>
+                            </div>
+                            <div class="content" style="padding: 10px; font-size: 24px;">
+                                <p class="post">{{ post.content }}</p>
+                            </div>
+                            <div class="reacts">
+                                <a href="#">
+                                    <img src="/static/assets/images/lov.png" alt="">
+                                    <span class="num">0</span> إعجاب
+                                </a>
+                                <a onclick="toggleCommentInput('{{ post.id }}')">تعليق<img src="/static/assets/images/quotes.png" alt=""></a>
+                            </div>
+                    
+                            <!-- Comment input area -->
+                         <!-- Comment input area -->
+<form action="/post_comment" method="POST">
+    <input type="hidden" name="post_id" value="{{ post.id }}">
+    <div class="comment-input" id="commentInput_{{ post.id }}" style="display: none;">
+        <textarea id="commentTextarea_{{ post.id }}" name="comment_content" placeholder="إضافة تعليق"></textarea>
+        <button type="submit">إرسال</button>
+    </div>
+</form>
+
+                            <!-- Comments section -->
+                            <div class="comments-section" id="commentsSection_{{ post.id }}" style="display: none;">
+                                <h3>التعليقات</h3>
+                                <!-- First comment -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                {% set comments = commentts.query.filter_by(post_id=post.id).all() %}
+                                {% for comment in comments %}
+                                    {% if comment.customer_id %}
+                                        <div class="comment">
+                                            <div class="comment-header">
+                                                <!-- Modify this to display the commenter's image, name, and time -->
+                                                <img src="/static/uploads/customers/images/{{ Customers.query.get(comment.customer_id).img }}" height="50px" width="50px" alt="">
+                                                <span>{{ Customers.query.get(comment.customer_id).fullname }}</span>
+                                                <p class="comment-time">{{ post.get_time_difference(comment.timestamp) }}</p>
+                                            </div>
+                                            <br>
+                                            <p>{{ comment.content }}</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if comment.company_id %}
+                                        <div class="comment">
+                                            <div class="comment-header">
+                                                <!-- Modify this to display the commenter's image, name, and time -->
+                                                <img src="/static/uploads/companies/logo/{{ all_company.query.get(comment.company_id).company_logo }}" height="50px" width="50px" alt="">
+                                                <span>{{ all_company.query.get(comment.company_id).company_english_name }}</span>
+                                                <p class="comment-time">{{ post.get_time_difference(comment.timestamp) }}</p>
+                                            </div>
+                                            <br>
+                                            <p>{{ comment.content }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            
+                                
+                              
+                            </div>
+                        </div>
+                        <script>
+                            function toggleCommentInput(postId) {
+                                var commentInput = document.getElementById('commentInput_' + postId);
+                                commentInput.style.display = (commentInput.style.display === 'none') ? 'block' : 'none';
+                    
+                                // Toggle comments section visibility
+                                var commentsSection = document.getElementById('commentsSection_' + postId);
+                                commentsSection.style.display = (commentsSection.style.display === 'none') ? 'block' : 'none';
+                            }
+                    
+                            function submitComment(postId) {
+                                // Add logic to submit the comment, you can use AJAX to send the comment to the server
+                                var commentText = document.getElementById('commentTextarea_' + postId).value;
+                                console.log('Comment submitted:', commentText);
+                                var commentInput = document.getElementById('commentInput_' + postId);
+                                commentInput.style.display = 'none';
+                            }
+                        </script>
+                    {% endfor %}
+                    
+                  
+                   <!--
+
+
+                    
+                   --> 
+                    
+                    
+                    
+
+                      
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+            </div>
+        </div>
+
+    
+</div>
+</body>
+<script src="/static/assets/js/public-posts.js"></script>
+<script src="./static/assets3/js/script.js"></script>
+
