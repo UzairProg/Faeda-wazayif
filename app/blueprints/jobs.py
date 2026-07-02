@@ -330,4 +330,4 @@ def update_list(page):
     paginated_jobs = query.paginate(page=page, per_page=per_page, error_out=False)
 
     # Render the template with the paginated jobs
-    return render_template('new_design/job_filter.html', jobs=paginated_jobs)
+    return render_template('new_design/jobs.html', jobs=paginated_jobs)

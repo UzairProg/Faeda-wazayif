@@ -12,6 +12,8 @@ def create_app():
     
     app = Flask(__name__,template_folder=os.path.join(base_dir, 'templates'),static_folder=os.path.join(base_dir, 'static'))
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+    # 🔴  هذا السطر لتفعيل الجلسات 🔴
+    app.secret_key = 'faeda_super_secret_key_2024'
     db.init_app(app)
 
     with app.app_context():

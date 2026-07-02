@@ -1,972 +1,455 @@
 <!DOCTYPE html>
+<html lang="ar" dir="rtl">
 
-<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-compact " dir="ltr" data-theme="theme-default" data-assets-path="/static/panel/assets/" data-template="vertical-menu-template">
-
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-
-    <title>فائدة - صفحة عرض الوظيفة</title>
-    <link rel="icon" type="image/x-icon" href="/static/assets/logo_only.png" />
-
-    <script>// scripts.js
-      document.addEventListener('DOMContentLoaded', (event) => {
-          const popup = document.getElementById('popup');
-          const closePopupBtn = document.getElementById('closePopupBtn');
-      
-          // دالة لإظهار النافذة المنبثقة
-          function showPopup() {
-              popup.style.display = 'flex';
-              window.scrollTo(0, 0);  // إعادة التمرير إلى أعلى الصفحة
-              setTimeout(() => {
-                  popup.classList.add('hide');
-                  setTimeout(() => {
-                      popup.style.display = 'none';
-                      popup.classList.remove('hide');
-                  }, 500); // مدة تأثير الاختفاء
-              }, 10000);
-          }
-      
-          // أظهر النافذة المنبثقة عند تحميل الصفحة لأول مرة
-          showPopup();
-      
-          // أظهر النافذة المنبثقة كل دقيقة
-          setInterval(showPopup, 300000);
-      
-          // أغلق النافذة المنبثقة عند النقر على زر الإغلاق
-          closePopupBtn.addEventListener('click', () => {
-              popup.classList.add('hide');
-              setTimeout(() => {
-                  popup.style.display = 'none';
-                  popup.classList.remove('hide');
-              }, 500); // مدة تأثير الاختفاء
-          });
-      });
-      
-      
-      </script>
-
-
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="/static/panel/assets/vendor/fonts/boxicons.css" />
-    <link rel="stylesheet" href="/static/panel/assets/vendor/fonts/fontawesome.css" />
-    <link rel="stylesheet" href="/static/panel/assets/vendor/fonts/flag-icons.css" />
-
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="/static/panel/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
-
-
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="/static/panel/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-    <link rel="stylesheet" href="/static/panel/assets/vendor/libs/typeahead-js/typeahead.css" />
-    <link rel="stylesheet" href="/static/panel/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css">
-<link rel="stylesheet" href="/static/panel/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
-<link rel="stylesheet" href="/static/panel/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css">
-<link rel="stylesheet" href="/static/panel/assets/vendor/libs/animate-css/animate.css" />
-<link rel="stylesheet" href="/static/panel/assets/vendor/libs/sweetalert2/sweetalert2.css" />
-<link rel="stylesheet" href="/static/panel/assets/vendor/libs/select2/select2.css" />
-<link rel="stylesheet" href="/static/panel/assets/vendor/libs/@form-validation/form-validation.css" />
-
-    <!-- Page CSS -->
-
-<link rel="stylesheet" href="/static/panel/assets/vendor/css/pages/page-user-view.css" />
-
-    <!-- Helpers -->
-    <script src="/static/panel/assets/vendor/js/helpers.js"></script>
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
-    <script src="/static/panel/assets/vendor/js/template-customizer.js"></script>
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="/static/panel/assets/js/config.js"></script>
-
-
-
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة فائدة | تفاصيل الوظيفة</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='new_design/images/Group.png') }}" type="image/x-icon">
+    
     <style>
+        :root {
+            --primary-dark: #232E4C;
+            --primary-light: #253048;
+            --accent-red: #BF2A4A;
+            --accent-yellow: #F0BF56;
+            --bg-light: #F0F1F0;
+            --cream: #FCF6DB;
+        }
 
-      i {
-        margin-right: 0px;
-      }
-  
-      /*----------bootstrap-navbar-css------------*/
-      .navbar-logo {
-        padding: 0px;
-        color: #fff;
-      }
-  
-      .navbar-mainbg {
-        background-color: #252f48;
-        padding: 0px;
-      }
-  
-      #navbarSupportedContent {
-        overflow: hidden;
-        position: relative;
-      }
-  
-      #navbarSupportedContent ul {
-        padding: 0px;
-        margin: 0px;
-      }
-  
-      #navbarSupportedContent ul li a i {
-        margin-right: 10px;
-      }
-  
-      #navbarSupportedContent li {
-        list-style-type: none;
-        float: left;
-      }
-  
-      #navbarSupportedContent ul li a {
-        color: #fff;
-        text-decoration: none;
-        font-size: 18px;
-        display: block;
-        padding: 20px 20px;
-        transition-duration: 0.6s;
-        transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        position: relative;
-  
-      }
-  
-      #navbarSupportedContent > ul > li.active > a {
-        color: #252f48;
-        background-color: transparent;
-        transition: all 0.7s;
-      }
-  
-      #navbarSupportedContent a:not(:only-child):after {
-        content: "\f105";
-        position: absolute;
-        right: 20px;
-        top: 10px;
-        font-size: 14px;
-        display: inline-block;
-        padding-right: 3px;
-        vertical-align: middle;
-        font-weight: 900;
-        transition: 0.5s;
-      }
-  
-      #navbarSupportedContent .active > a:not(:only-child):after {
-        transform: rotate(90deg);
-      }
-  
-      .hori-selector {
-        display: inline-block;
-        position: absolute;
-        height: 100%;
-        top: 0px;
-        left: 0px;
-        transition-duration: 0.6s;
-        transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        background-color: #fff;
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-        margin-top: 10px;
-      }
-  
-      .hori-selector .right,
-      .hori-selector .left {
-        position: absolute;
-        width: 25px;
-        height: 25px;
-        background-color: #fff;
-        bottom: 10px;
-      }
-  
-      .hori-selector .right {
-        right: -25px;
-      }
-  
-      .hori-selector .left {
-        left: -25px;
-      }
-  
-      .hori-selector .right:before,
-      .hori-selector .left:before {
-        content: '';
-        position: absolute;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: #252f48;
-      }
-  
-      .hori-selector .right:before {
-        bottom: 0;
-        right: -25px;
-      }
-  
-      .hori-selector .left:before {
-        bottom: 0;
-        left: -25px;
-      }
-  
-      @media(min-width: 992px) {
-        .navbar-expand-custom {
-          -ms-flex-flow: row nowrap;
-          flex-flow: row nowrap;
-          -ms-flex-pack: start;
-          justify-content: flex-start;
+        body {
+            font-family: 'Almarai', sans-serif;
+            background-color: var(--bg-light);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
-  
-        .navbar-expand-custom .navbar-nav {
-          -ms-flex-direction: row;
-          flex-direction: row;
+
+        /* Typography */
+        .almarai-light { font-weight: 300; }
+        .almarai-regular { font-weight: 400; }
+        .almarai-bold { font-weight: 700; }
+        .almarai-extrabold { font-weight: 800; }
+
+        /* Navbar & Footer */
+        .navbar { background-color: var(--primary-dark); padding: 15px 0; }
+        .nav-link { color: #ffffff !important; transition: color 0.3s ease; }
+        .nav-link:hover { color: var(--accent-yellow) !important; }
+        footer { background-color: #1A2237; color: white; padding: 60px 0 20px 0; margin-top: auto; }
+        .footer-links a { color: #d1d5db; text-decoration: none; display: block; margin-bottom: 10px; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--accent-yellow); }
+        .social-icon { color: white; font-size: 1.5rem; margin: 0 10px; transition: transform 0.3s; }
+        .social-icon:hover { transform: translateY(-3px); color: var(--accent-yellow); }
+
+        /* Job Header Section */
+        .job-header {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 50px 0;
+            margin-bottom: 40px;
+            border-bottom: 5px solid var(--accent-red);
         }
-  
-        .navbar-expand-custom .navbar-toggler {
-          display: none;
+
+        /* Cards Styling */
+        .content-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: none;
         }
-  
-        .navbar-expand-custom .navbar-collapse {
-          display: -ms-flexbox !important;
-          display: flex !important;
-          -ms-flex-preferred-size: auto;
-          flex-basis: auto;
+        .sidebar-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 30px;
+            border: 2px solid var(--cream);
         }
-      }
-  
-      @media (max-width: 991px) {
-        .navbar-mainbg {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
+        
+        .company-logo-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            overflow: hidden;
+            border: 2px solid var(--bg-light);
         }
-  
-        .navbar-logo {
-          order: 2;
-          margin-left: auto;
-          height: max-content;
+        .company-logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
-        .navbar-logo img{
-          height: 60px;
-          margin-right: -50px;
+
+        .info-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-  
-        .navbar-toggler {
-          order: 1;
+        .info-list li:last-child {
+            border-bottom: none;
         }
-  
-        #navbarSupportedContent {
-          justify-content: flex-end;
+        .info-label {
+            color: var(--primary-light);
+            font-weight: 700;
         }
-  
-        #navbarSupportedContent ul li a {
-          padding: 12px 30px;
+        .info-value {
+            color: #6c757d;
         }
-  
-        .hori-selector {
-          margin-top: 0px;
-          margin-left: 10px;
-          border-radius: 0;
-          border-top-left-radius: 25px;
-          border-bottom-left-radius: 25px;
+        .info-icon {
+            color: var(--accent-red);
+            width: 25px;
+            text-align: center;
+            margin-left: 10px;
         }
-  
-        .hori-selector .left,
-        .hori-selector .right {
-          right: 10px;
+
+        .btn-custom-red {
+            background-color: var(--accent-red);
+            color: white;
+            border-radius: 10px;
+            padding: 12px 25px;
+            border: none;
+            transition: transform 0.3s, background-color 0.3s;
         }
-  
-        .hori-selector .left {
-          top: -25px;
-          left: auto;
+        .btn-custom-red:hover {
+            background-color: #9e203b;
+            transform: translateY(-2px);
+            color: white;
         }
-  
-        .hori-selector .right {
-          bottom: -25px;
+
+        /* Popup Styling */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(35, 46, 76, 0.8); /* Dark blue overlay */
+            justify-content: center; align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.5s;
         }
-  
-        .hori-selector .left:before {
-          left: -25px;
-          top: -25px;
+        .popup-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 90%;
+            border-top: 6px solid var(--accent-yellow);
         }
-  
-        .hori-selector .right:before {
-          bottom: -25px;
-          left: -25px;
+        .close-btn {
+            position: absolute;
+            top: 15px; left: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: var(--primary-dark);
+            transition: color 0.3s;
         }
-      }
+        .close-btn:hover { color: var(--accent-red); }
+        .popup h2 { color: var(--primary-dark); margin-bottom: 20px; font-weight: 800; }
+        .popup p { color: #6c757d; font-size: 1.1rem; line-height: 1.6; }
+        .popup.hide { animation: fadeOut 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
     </style>
-
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css">
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"></script>
-
 </head>
 
 <body>
 
-  <nav class="navbar navbar-expand-custom navbar-mainbg">
-    <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <i class="fas fa-bars text-white"></i>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <div class="hori-selector">
-          <div class="left"></div>
-          <div class="right"></div>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('core.home') }}">
+                <img src="{{ url_for('static', filename='new_design/images/logowhite.png') }}" height="40" alt="Faeda Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" style="background-color: white;">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 pe-4">
+                    <li class="nav-item"><a class="nav-link almarai-bold" href="{{ url_for('core.home') }}">الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link almarai-bold" href="/job-list">البحث عن عمل</a></li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle almarai-bold" href="#" data-bs-toggle="dropdown">أفراد</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">البحث عن وظيفة كفرد</a></li>
+                            <li><a class="dropdown-item" href="#">انشاء سيرة ذاتية</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle almarai-bold" href="#" data-bs-toggle="dropdown">منشآت</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">تسجيل منشأة</a></li>
+                            <li><a class="dropdown-item" href="#">استقطاب فريق</a></li>
+                            <li><a class="dropdown-item" href="#">مشاهدة الأفرقة</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle almarai-bold" href="#" data-bs-toggle="dropdown">تيم فائدة</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('customer.get_create_team') }}">انشاء فريق</a></li>
+                            <li><a class="dropdown-item" href="#">مشاهدة الأفرقة</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link almarai-bold" href="#footer">تواصل معنا</a></li>
+                </ul>
+
+                <div class="d-flex align-items-center">
+                    {% if logged or session.get('session_customer') or session.get('session_company') %}
+                        <div class="dropdown">
+                            <a href="#" class="dropdown-toggle text-white text-decoration-none" data-bs-toggle="dropdown">
+                                {% if picture == None or not picture %}
+                                    <i class="bi bi-person-circle fs-3 text-warning"></i>
+                                {% else %}
+                                    {% if 'session_customer' in session %}
+                                        <img src="{{ url_for('static', filename='uploads/customers/images/' + picture) }}" height="40" class="rounded-circle">
+                                    {% elif 'session_company' in session %}
+                                        <img src="{{ url_for('static', filename='uploads/companies/logo/' + picture) }}" height="40" class="rounded-circle">
+                                    {% endif %}
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end text-right">
+                                <li><a class="dropdown-item" href="/redirects"><i class="fa-solid fa-sliders ms-2"></i>لوحة التحكم</a></li>
+                                <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt ms-2"></i>تسجيل الخروج</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a class="btn-custom-red text-decoration-none almarai-bold" href="{{ url_for('customer.get_login') }}">تسجيل الدخول</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        {% if session["session_customer"] != True and session["session_company"] != True %}
-        <li class="nav-item">
-          <a class="nav-link" href="/login"><i class="far fa-address-book"></i>تسجيل الدخول</a>
-        </li>
-        {% endif %}
-        {% if session["session_customer"] == True or session["session_company"] == True %}
-        <li class="nav-item">
-          <a class="nav-link" href="/logout"><i class="fas fa-door-open"></i>تسجيل الخروج</a>
-        </li>
-        {% endif %}
-        {% if session["session_customer"] == True or session["session_company"] == True %}
-        <li class="nav-item">
-          <a class="nav-link" href="/redirects"><i class="fa fa-sun"></i>لوحة التحكم</a>
-        </li>
-        {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" href="/#carousel_aa23"><i class="fa fa-envelope"></i>تواصل معنا</a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/job-list"><i class="fa fa-search"></i>البحث عن عمل</a>
-        </li>
-        <li class="nav-item ">
-          <a class="nav-link" href="/see_teams"><i class="fa fa-search"></i> استقطاب موظفين كوادر </a>
-        </li>
-        <li class="nav-item ">
-          <a class="nav-link" href="/"><i class="fa fa-home"></i>الرئيسية</a>
-        </li>
-      </ul>
+    </nav>
+
+    <div class="job-header">
+        <div class="container text-center">
+            <h1 class="almarai-extrabold mb-3">{{ job.title }}</h1>
+            <h5 class="almarai-regular text-warning"><i class="fas fa-building ms-2"></i> {{ job.company.company_english_name }}</h5>
+            <span class="badge bg-light text-dark mt-2 p-2 fs-6 almarai-bold rounded-pill">تخصص الشركة: {{ job.company.company_field }}</span>
+        </div>
     </div>
-    <a href="/" class="navbar-brand navbar-logo" data-image-width="200" data-image-height="100">
-      <img src="/static/landing/images/home-banner-bg.jpg" class="u-logo-image u-logo-image-1">
-    </a>
-  </nav>
 
+    <div class="container mb-5">
+        <div class="row g-4">
+            
+            <div class="col-lg-8">
+                
+                <div class="content-card">
+                    <h4 class="almarai-extrabold mb-4" style="color: var(--primary-dark);"><i class="fas fa-align-right info-icon"></i> وصف الوظيفة</h4>
+                    <p class="almarai-regular" style="line-height: 1.8; color: #4a5568; white-space: pre-wrap;">{{ job.job_description }}</p>
+                </div>
 
+                <div class="content-card">
+                    <h4 class="almarai-extrabold mb-4" style="color: var(--primary-dark);"><i class="fas fa-briefcase info-icon"></i> تفاصيل وموقع العمل</h4>
+                    <div class="row g-3 almarai-bold">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">طبيعة العمل:</span>
+                                <span style="color: var(--primary-dark);">{{ job.workplace }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">أيام العمل:</span>
+                                <span style="color: var(--primary-dark);">{{ job.workdays }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">ساعات العمل:</span>
+                                <span style="color: var(--primary-dark);">{{ job.work_hours }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">نوع العمل / المدينة:</span>
+                                <span style="color: var(--primary-dark);">{{ job.job_type }} - {{ job.town }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h4 class="almarai-extrabold mb-4" style="color: var(--primary-dark);"><i class="fas fa-list-check info-icon"></i> متطلبات الوظيفة</h4>
+                    <ul class="list-unstyled info-list almarai-regular m-0">
+                        <li>
+                            <span class="info-label">المؤهل المطلوب</span>
+                            <span class="info-value">{{ job.educational_qualification }}</span>
+                        </li>
+                        <li>
+                            <span class="info-label">سنوات الخبرة المطلوبة</span>
+                            <span class="info-value">{{ job.skills_years }}</span>
+                        </li>
+                        <li>
+                            <span class="info-label">اللغات المطلوبة</span>
+                            <span class="info-value">{{ job.languages }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sidebar-card text-center position-sticky" style="top: 100px;">
+                    
+                    <div class="company-logo-container">
+                        {% if job.company.company_logo %}
+                            <img src="/static/uploads/companies/logo/{{job.company.company_logo}}" alt="Company Logo">
+                        {% else %}
+                            <img src="/static/new_design/images/Card-img2.png" alt="Default Logo">
+                        {% endif %}
+                    </div>
+                    
+                    <h5 class="almarai-extrabold mb-4" style="color: var(--primary-dark);">{{ job.company.company_english_name }}</h5>
+                    
+                    <ul class="list-unstyled info-list text-start almarai-regular mb-4">
+                        <li>
+                            <span class="info-label">البريد:</span>
+                            <span class="info-value" style="font-size: 0.9rem;">{{ job.company.company_email }}</span>
+                        </li>
+                        <li>
+                            <span class="info-label">نوع المنشأة:</span>
+                            <span class="info-value">{{ job.company.company_type }}</span>
+                        </li>
+                        <li>
+                            <span class="info-label">الموقع:</span>
+                            <span class="info-value">{{ job.company.country }} - {{ job.company.state }}</span>
+                        </li>
+                    </ul>
+
+                    <div class="dropdown w-100">
+                        <button class="btn btn-custom-red w-100 dropdown-toggle fs-5 almarai-bold py-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            تقدم الآن للوظيفة
+                        </button>
+                        <ul class="dropdown-menu w-100 text-end border-0 shadow-lg mt-2 p-2" style="border-radius: 15px;">
+                            <li><a class="dropdown-item almarai-bold py-2 rounded" href="/applyjob/{{job.id}}"><i class="fas fa-user ms-2 text-primary"></i> تقديم فردي</a></li>
+                            
+                            {% if cutomer_teams %}
+                            <li><hr class="dropdown-divider my-2"></li>
+                            <li><h6 class="dropdown-header almarai-extrabold text-muted">تقديم كفريق (اختر فريقك):</h6></li>
+                            {% for cutomer_team in cutomer_teams %}
+                            <li>
+                                <form action="/applyjob/{{job.id}}" method="post" class="m-0 p-0">
+                                    <button type="submit" class="dropdown-item almarai-bold py-2 rounded">
+                                        <i class="fas fa-users ms-2 text-success"></i> {{ cutomer_team.team_name }}
+                                    </button>
+                                    <input type="hidden" name="type_team" value="{{ cutomer_team.id }}">
+                                </form>
+                            </li>
+                            {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span id="closePopupBtn" class="close-btn"><i class="fas fa-times-circle"></i></span>
+            <div class="mb-3">
+                <i class="fas fa-users" style="font-size: 50px; color: var(--accent-yellow);"></i>
+            </div>
+            <h2 class="almarai-extrabold">ميزات منصة فائدة</h2>
+            <p class="almarai-bold text-muted">يمكنك التقديم بالطريقة الفردية أو باختيار إحدى مجموعاتك للتقديم كفريق كامل!</p>
+            <hr style="border-color: #e9ecef;">
+            <p class="almarai-regular">يمكنك تكوين فريق تخصصي أو غير تخصصي والتقديم باسم الفريق كاملاً. ماذا تنتظر؟ قدم الآن.</p>
+        </div>
+    </div>
+
+    <footer id="footer">
+        <div class="container">
+            <div class="row text-end">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="almarai-extrabold mb-4" style="color: var(--accent-yellow);">بيانات التواصل</h4>
+                    <div class="footer-links almarai-regular">
+                        <a href="tel:+96655777430"><i class="fas fa-phone ms-2"></i> +966 55777430</a>
+                        <a href="mailto:info@faeda.com.ca"><i class="fas fa-envelope ms-2"></i> info@faeda.com.ca</a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <h4 class="almarai-extrabold mb-4" style="color: var(--accent-yellow);">روابط مهمة</h4>
+                    <div class="footer-links almarai-regular">
+                        <a href="{{ url_for('core.home') }}#about_us"><i class="fas fa-angle-left ms-2"></i> من نحن</a>
+                        <a href="/faeda-details"><i class="fas fa-angle-left ms-2"></i> تيم فائدة</a>
+                        <a href="#"><i class="fas fa-angle-left ms-2"></i> السيرة الذاتية</a>
+                        <a href="{{ url_for('core.support') }}"><i class="fas fa-angle-left ms-2"></i> الدعم الفني</a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-4 text-center text-lg-end">
+                    <a href="{{ url_for('core.home') }}">
+                        <img src="{{ url_for('static', filename='new_design/images/logowhite.png') }}" height="60" alt="Faeda Logo" class="mb-4">
+                    </a>
+                    <h5 class="almarai-bold mb-3">تجدونا على</h5>
+                    <div>
+                        <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><img src="{{ url_for('static', filename='new_design/images/Xlogo.png') }}" width="24" alt="X"></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4 mb-4" style="border-color: rgba(255,255,255,0.1);">
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0 almarai-light">منصة فائدة 2023 | جميع الحقوق المحفوظة &copy;</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
-      // ---------Responsive-navbar-active-animation-----------
-    function test(){
-        var tabsNewAnim = $('#navbarSupportedContent');
-        var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
-        var activeItemNewAnim = tabsNewAnim.find('.active');
-        var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
-        var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
-        var itemPosNewAnimTop = activeItemNewAnim.position();
-        var itemPosNewAnimLeft = activeItemNewAnim.position();
-        $(".hori-selector").css({
-            "top":itemPosNewAnimTop.top + "px",
-            "left":itemPosNewAnimLeft.left + "px",
-            "height": activeWidthNewAnimHeight + "px",
-            "width": activeWidthNewAnimWidth + "px"
-        });
-        $("#navbarSupportedContent").on("click","li",function(e){
-            $('#navbarSupportedContent ul li').removeClass("active");
-            $(this).addClass('active');
-            var activeWidthNewAnimHeight = $(this).innerHeight();
-            var activeWidthNewAnimWidth = $(this).innerWidth();
-            var itemPosNewAnimTop = $(this).position();
-            var itemPosNewAnimLeft = $(this).position();
-            $(".hori-selector").css({
-                "top":itemPosNewAnimTop.top + "px",
-                "left":itemPosNewAnimLeft.left + "px",
-                "height": activeWidthNewAnimHeight + "px",
-                "width": activeWidthNewAnimWidth + "px"
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const popup = document.getElementById('popup');
+            const closePopupBtn = document.getElementById('closePopupBtn');
+        
+            function showPopup() {
+                popup.style.display = 'flex';
+                setTimeout(() => {
+                    popup.classList.add('hide');
+                    setTimeout(() => {
+                        popup.style.display = 'none';
+                        popup.classList.remove('hide');
+                    }, 500); 
+                }, 10000); // 10 seconds display
+            }
+        
+            // أظهر النافذة المنبثقة عند التحميل
+            showPopup();
+        
+            // إظهار النافذة كل 5 دقائق
+            setInterval(showPopup, 300000);
+        
+            closePopupBtn.addEventListener('click', () => {
+                popup.classList.add('hide');
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                    popup.classList.remove('hide');
+                }, 500);
             });
         });
-    }
-    $(document).ready(function(){
-        setTimeout(function(){ test(); });
-    });
-    $(window).on('resize', function(){
-        setTimeout(function(){ test(); }, 500);
-    });
-    $(".navbar-toggler").click(function(){
-        $(".navbar-collapse").slideToggle(300);
-        setTimeout(function(){ test(); });
-    });
-
-
-
-    // --------------add active class-on another-page move----------
-    jQuery(document).ready(function($){
-        // Get current path and find target link
-        var path = window.location.pathname.split("/").pop();
-
-        // Account for home page with empty path
-        if ( path == '' ) {
-            path = 'index.html';
-        }
-
-        var target = $('#navbarSupportedContent ul li a[href="'+path+'"]');
-        // Add active class to target link
-        target.parent().addClass('active');
-    });
-
-
-
-
-    // Add active class on another page linked
-    // ==========================================
-    // $(window).on('load',function () {
-    //     var current = location.pathname;
-    //     console.log(current);
-    //     $('#navbarSupportedContent ul li a').each(function(){
-    //         var $this = $(this);
-    //         // if the current path is like this link, make it active
-    //         if($this.attr('href').indexOf(current) !== -1){
-    //             $this.parent().addClass('active');
-    //             $this.parents('.menu-submenu').addClass('show-dropdown');
-    //             $this.parents('.menu-submenu').parent().addClass('active');
-    //         }else{
-    //             $this.parent().removeClass('active');
-    //         }
-    //     })
-    // });
     </script>
-  <!-- ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
-  <!-- End Google Tag Manager (noscript) -->
-
-  <!-- Layout wrapper -->
-  <style>
-    /* styles.css */
-    body {
-        font-family: Arial, sans-serif;
-    }
-    
-    .popup {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000; /* تأكد من أن النافذة فوق كل شيء آخر */
-    }
-    
-    .popup-content {
-        background-color: #252f48;
-        padding: 20px 30px;
-        border-radius: 10px;
-        text-align: center;
-        position: relative;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        max-width: 500px;
-        width: 90%;
-        color: #fff;
-    }
-    
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 30px;
-        cursor: pointer;
-        color: #bc2a44;
-    }
-    
-    .popup h2 {
-        margin-bottom: 20px;
-        font-size: 24px;
-        color: #fccd59;
-    }
-    
-    .popup p {
-        font-size: 18px;
-        color: #fff;
-        margin-bottom: 20px;
-    }
-    
-    .popup-links {
-        display: flex;
-        justify-content: space-around;
-    }
-    
-    .popup-link {
-        background-color: #bc2a44;
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-size: 16px;
-        transition: background-color 0.3s;
-    }
-    
-    .popup-link:hover {
-        background-color: #fccd59;
-        color: #252f48;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    
-    @keyframes fadeOut {
-        from { opacity: 1; }
-        to { opacity: 0; }
-    }
-    
-    .popup {
-        animation: fadeIn 0.5s; /* تأثير الظهور */
-    }
-    
-    .popup.hide {
-        animation: fadeOut 0.5s; /* تأثير الاختفاء */
-    }
-    
-    </style>
-    
-    <div id="popup" class="popup">
-      <div class="popup-content">
-          <span id="closePopupBtn" class="close-btn">&times;</span>
-          <h2>ميزات موقعنا</h2>
-<p> يمكنك التقديم بالطريقة الفردية أو بإختيار احدى مجموعاتك للتقديم ك فريق </p>
-        <hr>
-        <p>يمكنك تكوين فريق تخصصي أو غير تخصصي والتقديم بإسم الفريق كاملا ! ماذا تنتظر؟ قدم الان       </p>
-         
-      </div>
-    </div>
-<div class="layout-wrapper   ">
-  <div class="layout-container">
-
-
-
-
-
-
-
-
-
-    <!-- Layout container -->
-    <div class="layout-page">
-
-
-
-
-
-
-
-
-
-      <!-- Content wrapper -->
-      <div class="content-wrapper">
-
-        <!-- Content -->
-
-          <div class="container-xl flex-grow-1 container-p-y">
-
-
-
-<div class=" justify-content-center align-items-center max-vh-100">
-    <div class="row">
-      <!-- User Sidebar -->
-      <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
-        <!-- User Card -->
-        <div class="card mb-4">
-          <div class="card-body">
-            <div class="user-avatar-section">
-              <div class="d-flex align-items-center flex-column">
-                {% if job.company.company_logo %}
-                <img class="img-fluid rounded my-4" src="/static/uploads/companies/logo/{{job.company.company_logo}}" height="110" width="110" alt="User avatar" />
-
-                {% else %}
-                <img class="img-fluid rounded my-4" src="/static/photo/boys.png" height="110" width="110" alt="User avatar" />
-
-
-                {% endif %}
-                <div class="user-info text-center">
-                  <h4 class="mb-2">{{job.title}}</h4>
-                  <span class="badge bg-label-secondary">تخصص الشركة : {{job.company.company_field}}</span>
-                </div>
-              </div>
-            </div>
-
-            <h5 class="pb-2 border-bottom mb-4">تفاصيل الشركة</h5>
-            <div class="info-container">
-              <ul class="list-unstyled">
-                <li class="mb-3">
-                  <span class="fw-medium me-2">{{job.company.company_english_name}}</span>
-                  <span>اسم الشركة</span>
-                </li>
-                <li class="mb-3">
-                  <span class="fw-medium me-2">ايميل الشركة</span>
-                  <span>{{job.company.company_email}}</span>
-                </li>
-                
-                
-
-                <li class="mb-3">
-                  <span class="fw-medium me-2">نوع الشركة :</span>
-                  <span>{{job.company.company_type}}</span>
-                </li>
-                <li class="mb-3">
-                  <span class="fw-medium me-2">الدولة</span>
-                  <span>{{job.company.country}}</span>
-                </li>
-                <li class="mb-3">
-                  <span class="fw-medium me-2">المدينة </span>
-                  <span>{{job.company.state}}</span>
-                </li>
-
-
-              </ul>
-              <div class="d-flex justify-content-center pt-3">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <style>
-                  /* Style the dropdown button */
-                  .dropbtn {
-                    background-color: #252f48;
-                    color: white;
-                    padding: 16px;
-                    font-size: 16px;
-                    border: none;
-                    cursor: pointer;
-                    border-radius: 50px;
-                  }
-              
-                  /* Dropdown button on hover & focus */
-                  .dropbtn:hover, .dropbtn:focus {
-                    background-color: #314064;
-                  }
-              
-                  /* The container <div> - needed to position the dropdown content */
-                  .dropdown {
-                    position: relative;
-                    display: inline-block;
-                  }
-              
-                  /* Dropdown Content (Hidden by Default) */
-                  .dropdown-content {
-                    position: absolute;
-                    background-color: #f9f9f9;
-                    min-width: 160px;
-                    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-                    margin: -150px 0;
-                    z-index: 1;
-                    display: none;
-                  }
-              
-                  /* Links inside the dropdown */
-                  .dropdown-content a {
-                    color: black;
-                    padding: 12px 16px;
-                    text-decoration: none;
-                    display: block;
-                  }
-              
-                  /* Change color of dropdown links on hover */
-                  .dropdown-content a:hover {
-                    background-color: #f1f1f1;
-                  }
-              
-                  /* Show the dropdown menu on hover */
-                  .dropdown:hover .dropdown-content {
-                    display: block;
-                  }
-              
-                  /* Hide the hidden items initially */
-                  .hidden_items {
-                    display: none;
-                  }
-              
-                  /* Show the hidden items when the visible item is clicked */
-                  .show-hidden .hidden_items {
-                    display: block;
-                  }
-              
-                  /* Hide the visible items when the hidden items are shown */
-                  .hide-visible .visible_items {
-                    display: none;
-                  }
-                </style>
-
-
-
-
-
-                <div class="dropdown">
-                  <button class="dropbtn">تقدم الان</button>
-                  <div class="dropdown-content">
-                    <div class="visible_items">
-                      <a href="/applyjob/{{job.id}}">تقديم  فردي</a>
-                      <a href="#link2" class="ppp">تقديم جماعي</a>
-                    </div>
-                
-                    <div class="hidden_items">
-                      <p></p>                     
-                      {% for cutomer_team in cutomer_teams %}
-                                  <form action="/applyjob/{{job.id}}" method="post">
-                                      <a href="#" onclick="this.closest('form').submit();">{{ cutomer_team.team_name }}</a>
-                                      <input type="text" hidden name="type_team" value="{{ cutomer_team.id }}">
-                                  </form>
-                      {% endfor %}
-                    </div>
-                  </div>
-                </div>
-                
-              
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-               
-            </div>
-
-
-            </div>
-          </div>
-        </div>
-        <!-- /User Card -->
-        <!-- Plan Card -->
-
-        <!-- /Plan Card -->
-      </div>
-      <!--/ User Sidebar -->
-
-      <!-- User Content -->
-      <div class="col-xl-7 col-lg-7 col-md-7 order-0 order-md-1">
-        <!-- User Pills -->
-
-        <!--/ User Pills -->
-
-        <!-- Project table -->
-        <div class="card mb-4">
-          <h5 class="card-header">وصف الوظيفة</h5>
-          <div class="table-responsive mb-3">
-            <p style="float: center;">
-            {{job.job_description}}
-        </p>
-          </div>
-        </div>
-        <!-- /Project table -->
-
-        <!-- Activity Timeline -->
-        <div class="card mb-4">
-          <h5 class="card-header">معلومات العمل</h5>
-          <div class="card-body">
-            <ul class="timeline">
-              <li class="timeline-item timeline-item-transparent">
-                <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-primary"></span></span>
-                <div class="timeline-event">
-                  <div class="timeline-header mb-1">
-                    <h6 class="mb-0">بيئة العمل</h6>
-                  </div>
-                  <p class="mb-2"> طبيعة العمل : {{job.workplace}}</p>
-                  <p class="mb-2">ايام العمل : {{job.workdays}}</p>
-                  <p class="mb-2">ساعات العمل : {{job.work_hours}}</p>
-
-                </div>
-              </li>
-              <li class="timeline-item timeline-item-transparent">
-                <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-warning"></span></span>
-                <div class="timeline-event">
-                  <div class="timeline-header mb-1">
-                    <h6 class="mb-0">متطلبات الوظيفة</h6>
-                  </div>
-                  <p class="mb-2">المؤهل المطلوب : {{job.educational_qualification}}</p>
-                  <p class="mb-2"> سنوات الخبرة المطلوبة :             {{job.skills_years}}                 </p>
-                  <p class="mb-2">اللغات المطلوبة  : {{job.languages}}</p>
-
-                </div>
-              </li>
-              <li class="timeline-item timeline-item-transparent">
-                <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-info"></span></span>
-                <div class="timeline-event">
-
-                    <p class="mb-2"> نوع العمل :                                          {{job.job_type}}                </p>
-                    <p class="mb-2">  مكان العمل  :                                          {{job.town}}                </p>
-
-                </div>
-              </li>
-
-            </ul>
-          </div>
-        </div>
-        <!-- /Activity Timeline -->
-
-
-        <!-- /Invoice table -->
-      </div>
-      <!--/ User Content -->
-    </div>
-  </div>
-
-
-<!-- Modal -->
-
-<!--/ Edit User Modal -->
-
-<!-- Add New Credit Card Modal -->
-
-<!--/ Add New Credit Card Modal -->
-
-<!-- /Modal -->
-          </div>
-          <!-- / Content -->
-
-
-
-
-
-<!-- / Footer -->
-
-
-        </div>
-        <!-- Content wrapper -->
-      </div>
-      <!-- / Layout page -->
-    </div>
-
-
-
-    <!-- Overlay -->
-    <div class="layout-overlay layout-menu-toggle"></div>
-
-
-    <!-- Drag Target Area To SlideIn Menu On Small Screens -->
-    <div class="drag-target"></div>
-
-  </div>
-  <!-- / Layout wrapper -->
-
-
-
-
-
-
-  <!-- Core JS -->
-  <!-- build:js assets/vendor/js/core.js -->
-
-  <script src="/static/panel/assets/vendor/libs/jquery/jquery.js"></script>
-  <script src="/static/panel/assets/vendor/libs/popper/popper.js"></script>
-  <script src="/static/panel/assets/vendor/js/bootstrap.js"></script>
-  <script src="/static/panel/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-  <script src="/static/panel/assets/vendor/libs/hammer/hammer.js"></script>
-  <script src="/static/panel/assets/vendor/libs/i18n/i18n.js"></script>
-  <script src="/static/panel/assets/vendor/libs/typeahead-js/typeahead.js"></script>
-  <script src="/static/panel/assets/vendor/js/menu.js"></script>
-
-  <!-- endbuild -->
-
-  <!-- Vendors JS -->
-  <script src="/static/panel/assets/vendor/libs/moment/moment.js"></script>
-<script src="/static/panel/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
-<script src="/static/panel/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
-<script src="/static/panel/assets/vendor/libs/cleavejs/cleave.js"></script>
-<script src="/static/panel/assets/vendor/libs/cleavejs/cleave-phone.js"></script>
-<script src="/static/panel/assets/vendor/libs/select2/select2.js"></script>
-<script src="/static/panel/assets/vendor/libs/@form-validation/popular.js"></script>
-<script src="/static/panel/assets/vendor/libs/@form-validation/bootstrap5.js"></script>
-<script src="/static/panel/assets/vendor/libs/@form-validation/auto-focus.js"></script>
-
-  <!-- Main JS -->
-  <script src="/static/panel/assets/js/main.js"></script>
-
-
-  <!-- Page JS -->
-  <script src="/static/panel/assets/js/modal-edit-user.js"></script>
-<script src="/static/panel/assets/js/app-user-view.js"></script>
-<script src="/static/panel/assets/js/app-user-view-account.js"></script>
-
-<script>
-  const link2 = document.querySelector('.ppp');
-  const dropdownContent = document.querySelector('.dropdown-content');
-
-  link2.addEventListener('click', function() {
-    dropdownContent.classList.toggle('show-hidden');
-    dropdownContent.classList.toggle('hide-visible');
-  });
-
-  dropdownContent.addEventListener('mouseleave', function() {
-    dropdownContent.classList.remove('show-hidden');
-    dropdownContent.classList.remove('hide-visible');
-  });
-</script>
 </body>
-
 </html>
-
-<!-- beautify ignore:end -->
-
