@@ -214,6 +214,13 @@
 </head>
 
 <body>
+  
+  <div class="text-right mb-4 mt-3 mr-3">
+    <a href="{{ url_for('core.home') }}" class="btn almarai-bold" style="background-color: #232E4C; color: white; border-radius: 10px; padding: 8px 20px; text-decoration: none;">
+        العودة للصفحة الرئيسية <i class="fas fa-arrow-left ml-2"></i> 
+    </a>
+</div>
+
   <div class="background-1 " id="background"></div>
   <div class="container-fluid almarai-regular p-2" style="background-color: #253048;">
     <h1 class="text-right text-light almarai-regular p-3" style="font-size: 40px;">انشاء حساب</h1>
@@ -278,7 +285,7 @@
       </div>
     </form>
     <div class=" d-flex justify-content-center mt-3" style="margin-right: 9%;">
-      <a href="/login" class="text-danger almarai-bold pr-2" style="color: #BF2A4A;">تسجيل دخول</a>
+      <a href="{{ url_for('customer.login') }}" class="text-danger almarai-bold pr-2" style="color: #BF2A4A;">تسجيل دخول</a>
       <p class=" mb-0 mr-2 almarai-regular">لديك حساب؟</p>
     </div>
   </div>

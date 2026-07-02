@@ -1,6 +1,6 @@
 #database fir company.py
 from datetime import datetime
-from services.database import db
+from app import db
 
 # User model
 class Company(db.Model):

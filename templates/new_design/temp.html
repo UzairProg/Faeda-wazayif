@@ -254,7 +254,7 @@ transform: scale(1.1);
           {% endif %}
         
               {% if not logged %}
-               <a class="nav-link active almarai-extrabold" aria-current="page" href="/login" style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">تسجيل الدخول </a>
+               <a class="nav-link active almarai-extrabold" aria-current="page" href="{{ url_for('customer.login') }}" style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">تسجيل الدخول </a>
               {% endif %}
   
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

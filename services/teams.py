@@ -2,7 +2,7 @@
 from sqlalchemy import and_
 
 from services.customer import customer_jobs
-from services.database import db
+from app import db
 from datetime import datetime
 from sqlalchemy.orm import relationship
 

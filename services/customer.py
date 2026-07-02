@@ -2,7 +2,7 @@
 from sqlalchemy import and_
 
 from datetime import datetime
-from services.database import db
+from app import db
 from services.language import Lang
 
 # services/customer.py

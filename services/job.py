@@ -1,7 +1,7 @@
 ####### data for jobs.py#####
 from datetime import datetime
 
-from services.database import db
+from app import db
 # Import what you need inside functions/methods
 from services.customer import customer_jobs, Customers
 
