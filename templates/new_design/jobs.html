@@ -13,15 +13,16 @@
 <style>
     /* Search & Filter Section */
     .search-section {
-        background-color: var(--primary-light);
+        background-color: #ffffff;
         border-radius: 15px;
         padding: 30px;
         margin-top: 40px;
-        margin-bottom: 40px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        margin-bottom: 80px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        border: 1px solid #eaeaea;
     }
-    .form-label { color: white; font-weight: 700; }
-    .form-control, .form-select { border-radius: 10px; padding: 12px; border: none; }
+    .form-label { color: var(--primary-dark); font-weight: 700; margin-bottom: 8px; }
+    .form-control, .form-select { border-radius: 10px; padding: 12px; border: 1px solid #ddd; }
 
     /* Job Cards */
     .job-card {
@@ -31,6 +32,7 @@
         transition: transform 0.3s, box-shadow 0.3s;
         border: 2px solid transparent;
         height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
     .job-card:hover {
         transform: translateY(-5px);
@@ -44,8 +46,8 @@
         border-bottom: 3px solid var(--cream);
     }
     .job-image-container img { max-height: 120px; object-fit: contain; border-radius: 10px; }
-    .job-details { padding: 20px; color: var(--primary-dark); }
-    .job-info-item { margin-bottom: 10px; font-size: 0.95rem; }
+    .job-details { padding: 25px; color: var(--primary-dark); }
+    .job-info-item { margin-bottom: 15px; font-size: 0.95rem; }
     .job-info-item i { color: var(--accent-red); margin-left: 8px; width: 20px; text-align: center; }
 
     /* Pagination */
@@ -55,10 +57,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container pb-5">
     <div class="search-section">
-        <h3 class="text-white almarai-extrabold mb-4"><i class="fa-solid fa-magnifying-glass ms-2"></i> البحث عن وظائف</h3>
-        <form method="GET" action="/update-list" class="row g-3 align-items-end">
+        <h3 class="almarai-extrabold mb-4" style="color: var(--primary-dark);"><i class="fa-solid fa-magnifying-glass ms-2"></i> البحث عن وظائف</h3>
+        <form method="GET" action="/update-list" class="row g-4 align-items-end">
             <div class="col-md-3">
                 <label for="requestType" class="form-label almarai-regular">نوع الطلب</label>
                 <select class="form-select almarai-bold" id="requestType" name="ttype">
@@ -101,15 +103,15 @@
                     {% endif %}
                 </div>
                 <div class="job-details flex-grow-1 d-flex flex-column">
-                    <h4 class="almarai-extrabold mb-3">{{ job.title }}</h4>
+                    <h4 class="almarai-extrabold mb-4">{{ job.title }}</h4>
                     <div class="job-info-item almarai-bold">
                         <i class="fas fa-building"></i> الشركة: <span class="almarai-regular">{{ job.company.company_english_name if job.company else 'غير محدد' }}</span>
                     </div>
                     <div class="job-info-item almarai-bold">
                         <i class="fas fa-map-marker-alt"></i> المكان: <span class="almarai-regular">{{ job.town }}</span>
                     </div>
-                    <div class="mt-auto text-center">
-                        <a href="/read_job/{{ job.id }}" class="btn-custom-red d-inline-block w-100">قراءة التفاصيل والتقديم</a>
+                    <div class="mt-auto pt-4 text-center">
+                        <a href="/read_job/{{ job.id }}" class="btn-custom-red d-inline-block w-100 py-2">قراءة التفاصيل والتقديم</a>
                     </div>
                 </div>
             </div>
