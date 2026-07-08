@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for ('static' , filename= 'css/bootstrap.min.css')}}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">  
-    <title>Document</title>
+{% extends 'new_design/base.html' %}
+{% block title %}Document{% endblock %}
 
-    <style>
-        .background-1 {
+{% block extra_css %}
+<style>
+    .background-1 {
 background-image: url("{{ url_for('static', filename='images/background.png') }}");
 background-size: cover;
 background-repeat: repeat;
@@ -206,114 +197,11 @@ transform: scale(1.1);
     opacity: 1;
     transform: translateY(0);
 }
+</style>
+{% endblock %}
 
-    </style>
-</head>
-<body>
-    {% if mobile %}
-    
-         <!-- index page -->
-
-     <!-- First part -->
-
-     
-     <section class="background-1">
-        <nav class="navbar navbar-expand" style="background-color: #232E4C;">
-          <div class="container-fluid">
-  
-  
-            {% if logged %}
-            <div class="dropdown">
-              <a href="#" class="navbar-brand dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color: white;"
-                  onmouseover="this.style.border='1px solid orange'; this.style.borderRadius='50px';"
-                  onmouseout="this.style.border='none';">
-                  {% if picture == None %}
-                  <svg xmlns="http://www.w3.org/2000/svg" style="width: 2.5em; height: 1.7em;" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
-                      <path fill="orange" d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
-                  </svg>
-  
-                  {% else %}
-                  
-                  <img src="{{picture}}" alt="">
-  
-                
-                  {% endif %}
-              </a>
-              <div class="dropdown-menu text-right" aria-labelledby="dropdownMenuLink">
-                  <a class="dropdown-item onhover d-flex justify-content-end align-items-center custom-hover" href="#" style="color: #fff;">
-                      <div class="text-start">
-                          <i class="fa-solid fa-sliders pr-4"></i>
-                          لوحة التحكم
-                      </div>
-                  </a>
-                  <a class="dropdown-item onhover d-flex justify-content-end align-items-center custom-hover" href="/logout" style="color: #fff;">
-                      <i class="fas fa-sign-out-alt mr-2 pr-1"></i> تسجيل الخروج
-                  </a>
-              </div>
-          </div>
-          {% endif %}
-        
-              {% if not logged %}
-               <a class="nav-link active almarai-extrabold" aria-current="page" href="{{ url_for('customer.login') }}" style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">تسجيل الدخول </a>
-              {% endif %}
-  
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-                <ul class="navbar-nav mb-2 mb-lg-0 ">
-                  <!-- من نحن  -->
-                  <li class="nav-item mx-5 pl-5 pt-3">
-                    <a class="nav-link almarai-extrabold" aria-current="page" href="#page2" style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">  من نحن  </a>
-                  </li>
-                  <!-- البحث عن عمل -->
-                  <li class="nav-item mx-5 pl-5 pt-3">
-                    <a class="nav-link active almarai-extrabold" aria-current="page" href="#" style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">البحث عن عمل</a>
-                  </li>
-                  <!-- تيم فائدة -->
-                  <li class="nav-item mx-5 pl-5 pb-3 dropdown almarai-extrabold">
-                    <a class="nav-link dropdown-toggle  mt-3" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">تيم فائدة</a>
-                    <ul class="dropdown-menu text-right  " aria-labelledby="navbarDropdown1">
-                        <li class="nav-item  dropend almarai-extrabold">
-                            <a class="nav-link dropdown-toggle custom-link " href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">تيم فائدة</a>
-                            <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown2">
-                                <li>
-                                    <a class="dropdown-item custom-link onhover" href="#page3"> تعرف اكثر على تيم فائدة </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropend almarai-extrabold">
-                            <a class="nav-link dropdown-toggle custom-link " href="#" id="navbarDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">أفراد</a>
-                            <ul class="dropdown-menu text-right" aria-labelledby="navbarDropdown3">
-                                <li><a class="dropdown-item custom-link onhover" href="#">انشاء فريق</a></li>
-                                <li><a class="dropdown-item custom-link onhover" href="#">فريقي</a></li>
-                                <li><a class="dropdown-item custom-link onhover"  href="#">البحث عن فريق</a></li>
-                                <li><a class="dropdown-item custom-link onhover" href="#">مشاهدة الافرقة</a></li>
-                                <li><a class="dropdown-item custom-link onhover" href="#">التقديم كفريق</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropend almarai-extrabold">
-                            <a class="nav-link dropdown-toggle custom-link " href="#" id="navbarDropdown4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">منشات</a>
-                            <ul class="dropdown-menu text-right mt-5" aria-labelledby="navbarDropdown4">
-                                <li><a class="dropdown-item custom-link onhover" href="#">استقطاب افراد</a></li>
-                                <li><a class="dropdown-item custom-link onhover" href="#">استقطاب فريق</a></li>
-                                <li><a class="dropdown-item custom-link onhover" href="#">مشاهدة الافرقة</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                
-                
-                  <!-- تواصل معنا  -->
-                  <li class="nav-item mx-5 pl-5 pt-3">
-                    <a class="nav-link active almarai-extrabold" aria-current="page" href="#footer" style="color: white; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">تواصل معنا</a>
-                  </li>
-                </ul>
-              </div>
-              <img src="{{ url_for('static', filename='images/logowhite.png') }}" height="35" class="d-inline-block align-top" alt="">
-          </div>
-      </nav>
-    <p class = "almarai-bold"style="text-align: right; margin-top: 40px; margin-right: 20px; font-size: x-large;">نؤمن بأن الثروة الحقيقية هي الإنسان</p>
+{% block content %}
+<p class = "almarai-bold"style="text-align: right; margin-top: 40px; margin-right: 20px; font-size: x-large;">نؤمن بأن الثروة الحقيقية هي الإنسان</p>
      <div class="button-container ml-5 d-flex justify-content-center align-items-center">
             <a href="#" class="fade-in-up styled-link d-block mx-auto" style="max-width: 100%; width: 230px; display: flex;  border-radius: 50px;">
                 <img class="fade-in-up" src="{{ url_for('static', filename='images/logoteamfaedahcopy.png') }}" alt="" style="max-width: 100%; height: auto; width: 120px; margin: 15px 20px">
@@ -476,72 +364,10 @@ transform: scale(1.1);
   
   <!-- last part -->
   <section id="footer" class="fade-in-up">
-    <footer class="text-right pt-5 pd-5 text-light text-center text-md-start" style="background-color: #232E4C;">
-      <div class="container">
-        <div class="row">
-          <div class=" col-lg-4">
-            <h2 class="almarai-extrabold">بيانات التواصل</h2>
-            <hr style="background-color: white; width: 40%; margin-top: 25px; padding-top: 2px;">
-            <ul class="list-unstyled styled-list p-5">
-              <li>
-                <h4 class="almarai-regular"><a href=""><i class=" fas fa-phone mr-3 " style="margin-bottom: 30px;"></i>+966 55777435</a></h4>
-            </li>
-              <li>
-                  <h5 class="almarai-regular"><a href=""><i class="fas fa-envelope mr-3" style="margin-bottom: 40px;"></i> info@faeda.com.ca</a></h5>
-              </li>
-          </ul>
-          </div>
-  
-          <div class=" col-lg-4">
-            <h2 class="almarai-extrabold">روابط مهمة</h2>
-            <hr style="background-color: white; width: 40%;  margin-top: 25px; padding-top: 2px;">
-            <ul class="list-unstyled text-right styled-list" style="padding-right: 70px; margin-top: 60px;">
-              <li>
-                  <h4 class="almarai-regular"><a href="#"><i class="mr-5"></i>من نحن</a></h4>
-              </li>
-              <li>
-                  <h4 class="almarai-regular"><a href="#"><i class="mr-5"></i>تيم فائدة</a></h4>
-              </li>
-              <li>
-                  <h4 class="almarai-regular"><a href="#"><i class="mr-5"></i>السيرة الذاتية</a></h4>
-              </li>
-              <li>
-                  <h4 class="almarai-regular"><a href="#"><i class="mr-5"></i>الدعم الفني</a></h4>
-              </li>
-          </ul>
-          </div>
-  
-          <div class="col-md-6 col-lg-4">
-            <img src="{{ url_for('static', filename='images/logowhite.png') }}" height="70px" alt="">
-            <h3 class=" almarai-bold m-5">تجدونا على</h3>
-            <div class="row d-flex justify-content-center">
-              <a href="" class="social-icon" ><i class="bi bi-linkedin"></i></a>
-              <a href="" class="social-icon" ><i class="bi bi-instagram" ></i></a>
-              <a href="" class="social-icon" ><img class="mb-3" src="{{ url_for('static', filename='images/Xlogo.png') }}" alt="" width="50px" height="50px"></a>
-            </div>
-          </div>
-        </div>
-        <hr style="background-color: white; width: 100%;  margin-top: 25px;">
-  
-        <div class="container">
-          <div class="row">
-              <div class="col">
-                  <h3 class="d-flex justify-content-center almarai-light pt-3 pb-3">منصة فائدة 2023 | جميع الحقوق المحفوظة</h3>
-              </div>
-              
-            <div class="row">
-              <div class="col">
-                <a href="#" class="arrow-icon" ><i class="bi bi-chevron-up"></i></a>
-              </div>
-              </div>
-          </div>
-      </div>
-      </div>
-      </div>
-    </footer>
-   </section>
+{% endblock %}
 
-    <script>
+{% block extra_js %}
+<script>
         document.addEventListener('DOMContentLoaded', function () {
         const elements = document.querySelectorAll('.fade-in-up');
     
@@ -565,17 +391,7 @@ transform: scale(1.1);
     });
     
       </script>
-    {% else %}
-
-    <h1>YOU ARE USING DESKTOP</h1>
-    
-    {% endif %}
-
-    
-
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-</body>
-</html>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

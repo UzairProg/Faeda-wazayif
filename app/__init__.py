@@ -1,3 +1,8 @@
+# ==============================================================================
+# الوظيفة الأساسية للملف: إعداد تطبيق فلاسك (App Factory) وتهيئة قاعدة البيانات (SQLAlchemy).
+# الروابط أو الميزات: دالة create_app() التي تقوم بتسجيل جميع الـ Blueprints لربط مسارات التطبيق.
+# المتطلبات الخاصة: يعتمد على Flask, Flask-SQLAlchemy, استيراد النماذج (Models) والـ Blueprints.
+# ==============================================================================
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS

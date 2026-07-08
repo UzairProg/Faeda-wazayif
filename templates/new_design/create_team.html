@@ -1,16 +1,16 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+{% block title %}Create Team{% endblock %}
 
-
-
-
-<!-- create_team.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Team</title>
-    <style>
-        body {
+{% block extra_css %}
+<style>
+    body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
@@ -53,10 +53,10 @@
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
-    </style>
-</head>
-<body>
+</style>
+{% endblock %}
 
+{% block content %}
 <div class="container">
     <h2>Create Team</h2>
     <form action="/create_team" method="post">
@@ -67,9 +67,4 @@
         <input type="submit" value="Create Team">
     </form>
 </div>
-
-
-
-</body>
-</html>
-
+{% endblock %}

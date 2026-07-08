@@ -12,7 +12,7 @@
 {% block content %}
 <div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
     <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">Tables /</span> Basic Tables</h4>
+              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">الوظائف /</span><a href="/edit-post2"> الوظائف المعلنة </a> </h4>
 
 
 
@@ -64,12 +64,8 @@
                                     </select>
                                 </td>
                                 <td> 
-                                  <textarea name="note_{{ applicant.id }}" onchange="selectCheckbox(this)">
-                                    {% set application_note = Customers.get_application_note_by_customer_id(applicant.id, job.id) %}
-                                      {{application_note}}
-                                </textarea>
-
-                              
+                                  <textarea name="note_{{ applicant.id }}" rows="3" onchange="selectCheckbox(this)" style="font-weight: bold;">{{Customers.get_application_note_by_customer_id(applicant.id, job.id)}}</textarea>
+                                
                                 
                                 <td>
                                     {% set application_time = Customers.get_job_application_time_by_customer_id(applicant.id, job.id) %}

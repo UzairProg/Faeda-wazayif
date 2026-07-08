@@ -1,93 +1,48 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+{% block title %}منصة فائدة | نجاح التقديم{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة فائدة | نجاح التقديم</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" href="{{ url_for('static', filename='new_design/images/Group.png') }}" type="image/x-icon">
-    
-    <style>
-        :root {
-            --primary-dark: #232E4C;
-            --primary-light: #253048;
-            --accent-red: #BF2A4A;
-            --accent-yellow: #F0BF56;
-            --bg-light: #F0F1F0;
-        }
+{% block extra_css %}
+<style>
+    /* Card Customization */
+    .auth-card {
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        padding: 50px 40px;
+        border-top: 6px solid #28a745; /* Green for success */
+        animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
 
-        body {
-            font-family: 'Almarai', sans-serif;
-            background-color: var(--bg-light);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+    @keyframes scaleIn {
+        0% { transform: scale(0.8); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
 
-        /* Typography */
-        .almarai-regular { font-weight: 400; }
-        .almarai-bold { font-weight: 700; }
-        .almarai-extrabold { font-weight: 800; }
+    .btn-custom-blue {
+        background-color: #3570D9;
+        color: white;
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 700;
+        border: none;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+    .btn-custom-blue:hover {
+        background-color: #2851a3;
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+{% endblock %}
 
-        /* Navbar & Footer */
-        .navbar { background-color: var(--primary-dark); padding: 15px 0; }
-        .nav-link { color: #ffffff !important; transition: color 0.3s ease; }
-        .nav-link:hover { color: var(--accent-yellow) !important; }
-        footer { background-color: #1A2237; color: white; padding: 60px 0 20px 0; margin-top: auto; }
-
-        /* Card Customization */
-        .auth-card {
-            background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
-            padding: 50px 40px;
-            border-top: 6px solid #28a745; /* Green for success */
-            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes scaleIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .btn-custom-blue {
-            background-color: #3570D9;
-            color: white;
-            border-radius: 10px;
-            padding: 12px 25px;
-            font-weight: 700;
-            border: none;
-            transition: transform 0.3s, background-color 0.3s;
-        }
-        .btn-custom-blue:hover {
-            background-color: #2851a3;
-            transform: translateY(-2px);
-            color: white;
-        }
-    </style>
-</head>
-
-<body>
-    <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('core.home') }}">
-                <img src="{{ url_for('static', filename='new_design/images/logowhite.png') }}" height="40" alt="Faeda Logo">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" style="background-color: white;">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 pe-4">
-                    <li class="nav-item"><a class="nav-link almarai-bold" href="{{ url_for('core.home') }}">الرئيسية</a></li>
-                    <li class="nav-item"><a class="nav-link almarai-bold" href="/job-list">البحث عن عمل</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+{% block content %}
 
     <div class="container d-flex justify-content-center align-items-center flex-grow-1 my-5">
         <div class="col-md-8 col-lg-5">
@@ -102,10 +57,4 @@
         </div>
     </div>
 
-    <footer id="footer">
-        <div class="container text-center">
-            <p class="mb-0 almarai-regular">منصة فائدة 2023 | جميع الحقوق المحفوظة &copy;</p>
-        </div>
-    </footer>
-</body>
-</html>
+{% endblock %}

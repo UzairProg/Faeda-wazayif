@@ -1,3 +1,26 @@
+{% extends 'new_design/base.html' %}
+{% block title %}Login / Sign Up Form{% endblock %}
+
+{% block extra_css %}
+<style>
+    .flash-message {
+                  background-color: #ff0000;
+                  color: #ffffff;
+                  padding: 15px;
+                  border-radius: 10px;
+                  border: 2px solid #4a3f8a; /* Amazing border color */
+                  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                  opacity: 1;
+                  transition: opacity 0.5s ease-in-out;
+                }
+          
+                .fadeOut {
+                  opacity: 0;
+                }
+</style>
+{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en" dir="rtl">
 
@@ -46,8 +69,10 @@
               <div class="flash-message" role="alert">
                 {{ error }}
               </div>
-          
-              <script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
                 document.addEventListener('DOMContentLoaded', function () {
                   var flashMessage = document.querySelector('.flash-message');
           
@@ -59,21 +84,5 @@
                   }, 5000); // 5000 milliseconds = 5 seconds
                 });
               </script>
-          
-          {% endif %}
-          
-            <h3>يرجى إدخال بريدك الإلكتروني لإعادة تعيين كلمة المرور الخاصة بك.</h3>
-            <div class="form__input-group">
-                <input type="email" class="form__input" name="email" autofocus placeholder="البريد الالكتروني">
-                <div class="form__input-error-message"></div>
-            </div>
-            <button class="form__button" type="submit">
-                إرسال
-            </button>
-        </form>
-
-        <script src="/static/assets3/js/script.js"></script>
-    </div>
-</body>
-
-</html>
+<script src="/static/assets3/js/script.js"></script>
+{% endblock %}

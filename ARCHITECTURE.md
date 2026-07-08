@@ -1,4 +1,4 @@
-content = """# ARCHITECTURE.md: Faeda Jobs Platform
+# ARCHITECTURE.md: Faeda Jobs Platform
 
 ## Project Overview
 The Faeda Jobs Platform is an integrated digital recruitment system owned by Faeda Commercial Services Company. It modernizes traditional hiring by combining individual recruitment with the innovative ability to hire complete, ready-to-work professional teams.
@@ -19,25 +19,43 @@ The Faeda Jobs Platform is an integrated digital recruitment system owned by Fae
 * **Internal Messaging:** Direct chat capabilities supporting text and file transfers between companies and candidates, or among team members internally.
 * **Notification System:** Real-time alerts covering system updates, job statuses, message alerts, and team invitations.
 
-## Proposed Directory Structure
-
-File generated
+## Actual Directory Structure
 
 ```text
 /mysite
 │
 ├── /app
-│   ├── /templates          # 27 HTML pages (app.html, apply_job.html, etc.)
-│   ├── /static             # CSS (SCSS), JS, Images
-│   ├── /blueprints         # Modularized route files
-│   │   ├── customers.py    # Job seeker routes
-│   │   ├── jobs.py         # Job posting/applying routes
-│   │   ├── companies.py    # Company dashboard routes
-│   │   └── admin.py        # System administrator routes
-│   ├── models.py           # Database schemas for Users, Teams, Jobs
-│   └── __init__.py         # App factory and extensions 
+│   ├── /blueprints         # Modularized route files (Flask Blueprints)
+│   │   ├── companies.py    # Company dashboard and hiring routes
+│   │   ├── core.py         # General platform routes (home, support)
+│   │   ├── customers.py    # Job seeker and profile routes
+│   │   ├── jobs.py         # Job posting, editing, and listing routes
+│   │   └── messages.py     # Platform messaging and email routes
+│   └── __init__.py         # App factory, database init, and extensions 
+│
+├── /services               # Database schema models (SQLAlchemy)
+│   ├── admin.py            # Admin models
+│   ├── company.py          # Company models
+│   ├── customer.py         # Customer/Seeker models
+│   ├── following.py        # Followers relations
+│   ├── job.py              # Jobs models
+│   ├── language.py         # Language models
+│   ├── message.py          # Messaging models
+│   ├── skills.py           # Skills models
+│   └── teams.py            # Teams models
+│
+├── /templates              # HTML templates (Jinja2)
+│   ├── /new_design         # Main active site templates (Base, Index, Jobs, etc.)
+│   └── /panel              # Dashboards for Customers and Companies
+│
+├── /static                 # CSS, JavaScript, and Images
+├── /archive                # Archived legacy templates, temporary scripts, and backups
+├── /instance               # SQLite database instance
 │
 ├── requirements.txt        # Python dependencies
-├── .env                    # Environment variables (Secrets)
 ├── app.py                  # Main server entry point
+├── main.py                 # Core configurations (Flask-Mail, secrets, sessions)
+├── googleAuth.py           # Google OAuth integration
+├── admin.py                # Admin database model
 └── ARCHITECTURE.md         # This conceptual document
+```

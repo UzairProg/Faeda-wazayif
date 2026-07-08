@@ -1,17 +1,15 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+{% block title %}FAEDA{% endblock %}
 
-<!DOCTYPE html>
-<html lang="en" dir="rtl">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAEDA</title>
-    <link rel="stylesheet" href="/static/assets/css/profile_page.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
-
-<body>
-    <div dir="ltr">
+{% block content %}
+<div dir="ltr">
     {% include "main_navbar.html" %}
     {% block contentt %}
     {% endblock %}
@@ -240,7 +238,10 @@
                               
                             </div>
                         </div>
-                        <script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
                             function toggleCommentInput(postId) {
                                 var commentInput = document.getElementById('commentInput_' + postId);
                                 commentInput.style.display = (commentInput.style.display === 'none') ? 'block' : 'none';
@@ -258,56 +259,6 @@
                                 commentInput.style.display = 'none';
                             }
                         </script>
-                    {% endfor %}
-                    
-                  
-                   <!--
-
-
-                    
-                   --> 
-                    
-                    
-                    
-
-                      
-
-
-                    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                </div>
-
-            </div>
-        </div>
-
-    
-</div>
-</body>
 <script src="/static/assets/js/public-posts.js"></script>
 <script src="./static/assets3/js/script.js"></script>
-
+{% endblock %}

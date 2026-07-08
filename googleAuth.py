@@ -1,3 +1,8 @@
+# ==============================================================================
+# الوظيفة الأساسية للملف: إدارة عمليات تسجيل الدخول والمصادقة باستخدام حسابات جوجل (Google OAuth).
+# الروابط أو الميزات: مسارات /Glogin و /callback لمعالجة المصادقة وإنشاء حسابات المستخدمين.
+# المتطلبات الخاصة: يعتمد على مكتبات google-auth, google-auth-oauthlib, و requests.
+# ==============================================================================
 from flask import Flask, Blueprint, abort, redirect, request, render_template
 import google.auth
 import google.auth.transport

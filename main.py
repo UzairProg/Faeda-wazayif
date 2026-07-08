@@ -1,3 +1,8 @@
+# ==============================================================================
+# الوظيفة الأساسية للملف: الإعدادات الأساسية للتطبيق وتهيئة خدمات فلاسك مثل البريد الإلكتروني (Flask-Mail) وإدارة الجلسات.
+# الروابط أو الميزات: يوفر دوال مساعدة مثل login_required و user_on_mobile.
+# المتطلبات الخاصة: يعتمد على Flask, Flask-Mail, URLSafeTimedSerializer.
+# ==============================================================================
 from flask import Flask, url_for, render_template, jsonify, request, session, abort
 from datetime import timedelta
 from flask_mail import Mail, Message

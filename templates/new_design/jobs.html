@@ -1,448 +1,120 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة فائدة | تصفح الوظائف</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" href="{{ url_for('static', filename='new_design/images/Group.png') }}" type="image/x-icon">
-    
-    <style>
-        :root {
-            --primary-dark: #232E4C;
-            --primary-light: #253048;
-            --accent-red: #BF2A4A;
-            --accent-yellow: #F0BF56;
-            --bg-light: #F0F1F0;
-            --cream: #FCF6DB;
-        }
+{% block title %}منصة فائدة | تصفح الوظائف{% endblock %}
 
-        body {
-            font-family: 'Almarai', sans-serif;
-            background-color: var(--bg-light);
-            overflow-x: hidden;
-        }
+{% block extra_css %}
+<style>
+    /* Search & Filter Section */
+    .search-section {
+        background-color: var(--primary-light);
+        border-radius: 15px;
+        padding: 30px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .form-label { color: white; font-weight: 700; }
+    .form-control, .form-select { border-radius: 10px; padding: 12px; border: none; }
 
-        /* Typography Utilities */
-        .almarai-light { font-weight: 300; }
-        .almarai-regular { font-weight: 400; }
-        .almarai-bold { font-weight: 700; }
-        .almarai-extrabold { font-weight: 800; }
+    /* Job Cards */
+    .job-card {
+        background-color: #fff;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border: 2px solid transparent;
+        height: 100%;
+    }
+    .job-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        border-color: var(--cream);
+    }
+    .job-image-container {
+        background-color: #EFEFEF;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 3px solid var(--cream);
+    }
+    .job-image-container img { max-height: 120px; object-fit: contain; border-radius: 10px; }
+    .job-details { padding: 20px; color: var(--primary-dark); }
+    .job-info-item { margin-bottom: 10px; font-size: 0.95rem; }
+    .job-info-item i { color: var(--accent-red); margin-left: 8px; width: 20px; text-align: center; }
 
-        /* Navbar Customization */
-        .navbar {
-            background-color: var(--primary-dark);
-            padding: 15px 0;
-        }
-        .nav-link {
-            color: #ffffff !important;
-            transition: color 0.3s ease;
-        }
-        .nav-link:hover {
-            color: var(--accent-yellow) !important;
-        }
-        .dropdown-menu {
-            background-color: var(--primary-dark);
-            border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .dropdown-item {
-            color: #fff;
-            text-align: right;
-        }
-        .dropdown-item:hover {
-            background-color: #fff;
-            color: var(--primary-dark);
-        }
-        .btn-custom-red {
-            background-color: var(--accent-red);
-            color: white;
-            border-radius: 30px;
-            padding: 10px 25px;
-            font-weight: 700;
-            border: none;
-            text-decoration: none;
-            transition: transform 0.3s, background-color 0.3s;
-        }
-        .btn-custom-red:hover {
-            background-color: #9e203b;
-            transform: translateY(-3px);
-            color: white;
-        }
+    /* Pagination */
+    .pagination .page-link { color: var(--primary-dark); border: none; margin: 0 5px; border-radius: 8px; font-weight: bold; }
+    .pagination .page-item.active .page-link { background-color: var(--primary-dark); color: white; }
+</style>
+{% endblock %}
 
-        /* Search & Filter Section */
-        .search-section {
-            background-color: var(--primary-light);
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 40px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .form-label {
-            color: white;
-            font-weight: 700;
-        }
-        .form-control, .form-select {
-            border-radius: 10px;
-            padding: 12px;
-            border: none;
-        }
-
-        /* Job Cards */
-        .job-card {
-            background-color: #fff;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 2px solid transparent;
-            height: 100%;
-        }
-        .job-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            border-color: var(--cream);
-        }
-        .job-image-container {
-            background-color: #EFEFEF;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 3px solid var(--cream);
-        }
-        .job-image-container img {
-            max-height: 120px;
-            object-fit: contain;
-            border-radius: 10px;
-        }
-        .job-details {
-            padding: 20px;
-            color: var(--primary-dark);
-        }
-        .job-info-item {
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-        }
-        .job-info-item i {
-            color: var(--accent-red);
-            margin-left: 8px;
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Pagination */
-        .pagination .page-link {
-            color: var(--primary-dark);
-            border: none;
-            margin: 0 5px;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-        .pagination .page-item.active .page-link {
-            background-color: var(--primary-dark);
-            color: white;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #1A2237;
-            color: white;
-            padding: 60px 0 20px 0;
-            margin-top: 60px;
-        }
-        .footer-links a {
-            color: #d1d5db;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 10px;
-            transition: color 0.3s;
-        }
-        .footer-links a:hover {
-            color: var(--accent-yellow);
-        }
-        .social-icon {
-            color: white;
-            font-size: 1.5rem;
-            margin: 0 10px;
-            transition: transform 0.3s;
-        }
-        .social-icon:hover {
-            transform: translateY(-3px);
-            color: var(--accent-yellow);
-        }
-    </style>
-</head>
-
-<body>
-
-    <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('core.home') }}">
-                <img src="{{ url_for('static', filename='new_design/images/logowhite.png') }}" height="40" alt="Faeda Logo">
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" style="background-color: white;">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 pe-4">
-                    <li class="nav-item"><a class="nav-link almarai-bold" href="{{ url_for('core.home') }}">الرئيسية</a></li>
-                    <li class="nav-item"><a class="nav-link almarai-bold" href="/job-list" style="color: var(--accent-yellow) !important;">البحث عن عمل</a></li>
-                    
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle almarai-bold" href="#" data-bs-toggle="dropdown">أفراد</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">البحث عن وظيفة كفرد</a></li>
-                            <li><a class="dropdown-item" href="#">انشاء سيرة ذاتية</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle almarai-bold" href="#" data-bs-toggle="dropdown">منشآت</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">تسجيل منشأة</a></li>
-                            <li><a class="dropdown-item" href="#">استقطاب فريق</a></li>
-                            <li><a class="dropdown-item" href="#">مشاهدة الأفرقة</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle almarai-bold" href="#" data-bs-toggle="dropdown">تيم فائدة</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('customer.get_create_team') }}">انشاء فريق</a></li>
-                            <li><a class="dropdown-item" href="#">مشاهدة الأفرقة</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item"><a class="nav-link almarai-bold" href="#footer">تواصل معنا</a></li>
-                </ul>
-
-                <div class="d-flex align-items-center">
-                    {% if logged or session.get('session_customer') or session.get('session_company') %}
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle text-white text-decoration-none" data-bs-toggle="dropdown">
-                                {% if picture == None or not picture %}
-                                    <i class="bi bi-person-circle fs-3 text-warning"></i>
-                                {% else %}
-                                    {% if 'session_customer' in session %}
-                                        <img src="{{ url_for('static', filename='uploads/customers/images/' + picture) }}" height="40" class="rounded-circle">
-                                    {% elif 'session_company' in session %}
-                                        <img src="{{ url_for('static', filename='uploads/companies/logo/' + picture) }}" height="40" class="rounded-circle">
-                                    {% endif %}
-                                {% endif %}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end text-right">
-                                <li><a class="dropdown-item" href="/redirects"><i class="fa-solid fa-sliders ms-2"></i>لوحة التحكم</a></li>
-                                <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt ms-2"></i>تسجيل الخروج</a></li>
-                            </ul>
-                        </div>
-                    {% else %}
-                        <a class="btn-custom-red text-decoration-none almarai-bold" href="{{ url_for('customer.get_login') }}">تسجيل الدخول</a>
-                    {% endif %}
-                </div>
+{% block content %}
+<div class="container">
+    <div class="search-section">
+        <h3 class="text-white almarai-extrabold mb-4"><i class="fa-solid fa-magnifying-glass ms-2"></i> البحث عن وظائف</h3>
+        <form method="GET" action="/update-list" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="requestType" class="form-label almarai-regular">نوع الطلب</label>
+                <select class="form-select almarai-bold" id="requestType" name="ttype">
+                    <option value="" selected>الكل</option>
+                    <option value="دوام كامل">دوام كامل</option>
+                    <option value="دوام جزئي">دوام جزئي</option>
+                </select>
             </div>
-        </div>
-    </nav>
-
-    <div class="container">
-        
-        <div class="search-section">
-            <h3 class="text-white almarai-extrabold mb-4"><i class="fa-solid fa-magnifying-glass ms-2"></i> البحث عن وظائف</h3>
-            <form method="GET" action="/update-list" class="row g-3 align-items-end">
-                
-                <div class="col-md-3">
-                    <label for="requestType" class="form-label almarai-regular">نوع الطلب</label>
-                    <select class="form-select almarai-bold" id="requestType" name="ttype">
-                        <option value="" selected>الكل</option>
-                        <option value="دوام كامل">دوام كامل</option>
-                        <option value="دوام جزئي">دوام جزئي</option>
-                        <option value="تمهير">تمهير</option>
-                        <option value="تدريب صيفي">تدريب صيفي</option>
-                        <option value="تدريب تعاوني">تدريب تعاوني</option>
-                        <option value="تطوع">تطوع</option>
-                    </select>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="specialty" class="form-label almarai-regular">التخصص</label>
-                    <select class="form-select almarai-bold" id="specialty" name="study">
-                        <option value="" selected>الكل</option>
-                        <option value="محاسبة">محاسبة</option>
-                        <option value="مالية">مالية</option>
-                        <option value="موارد بشرية">موارد بشرية</option>
-                        <option value="تأمين">تأمين</option>
-                        <option value="تسويق">تسويق</option>
-                        <option value="إقتصاد">إقتصاد</option>
-                        <option value="علوم سياسية">علوم سياسية</option>
-                        <option value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
-                        <option value="إدارة أعمال">إدارة أعمال</option>
-                        <option value="هندسة البرمجيات">هندسة البرمجيات</option>
-                        <option value="هندسة مدنية">هندسة مدنية</option>
-                        <option value="هندسة صناعية">هندسة صناعية</option>
-                        <option value="علوم الحاسب">علوم الحاسب</option>
-                        <option value="نظم معلومات">نظم معلومات</option>
-                        <option value="الطب">الطب</option>
-                        <option value="سياحة">سياحة</option>
-                        <option value="أخرى">أخرى</option>
-                    </select>
-                </div>
-
-                <div class="col-md-3">
-                    <label for="city" class="form-label almarai-regular">المدينة</label>
-                    <select class="form-select almarai-bold" id="city" name="city">
-                        <option value="" selected>الكل</option>
-                        <option value="الرياض">الرياض</option>
-                        <option value="جدة">جدة</option>
-                        <option value="الدمام">الدمام</option>
-                        <option value="الخبر">الخبر</option>
-                        <option value="مكة المكرمة">مكة المكرمة</option>
-                        <option value="المدينة المنورة">المدينة المنورة</option>
-                        <option value="أبها">أبها</option>
-                        <option value="تبوك">تبوك</option>
-                        <option value="الجبيل">الجبيل</option>
-                        <option value="الأحساء">الأحساء</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <button type="submit" class="btn-custom-red w-100 almarai-bold" style="padding: 12px;">
-                        ابحث الآن
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div class="row g-4">
-            {% for job in jobs.items %}
-            <div class="col-lg-4 col-md-6 col-12">
-                <div class="job-card d-flex flex-column">
-                    <div class="job-image-container">
-                        {% if job.company and job.company.company_logo %}
-                            <img src="{{ url_for('static', filename='uploads/companies/logo/' + job.company.company_logo) }}" alt="Company Logo" class="img-fluid">
-                        {% else %}
-                            <img src="{{ url_for('static', filename='new_design/images/Card-img2.png') }}" alt="Default Job Image" class="img-fluid">
-                        {% endif %}
-                    </div>
-                    
-                    <div class="job-details flex-grow-1 d-flex flex-column">
-                        <h4 class="almarai-extrabold mb-3">{{ job.title }}</h4>
-                        
-                        <div class="job-info-item almarai-bold">
-                            <i class="fas fa-building"></i> 
-                            الشركة: <span class="almarai-regular">{{ job.company.company_english_name if job.company else 'غير محدد' }}</span>
-                        </div>
-                        
-                        <div class="job-info-item almarai-bold">
-                            <i class="fas fa-map-marker-alt"></i> 
-                            المكان: <span class="almarai-regular">{{ job.town }}</span>
-                        </div>
-                        
-                        <div class="job-info-item almarai-bold mb-4">
-                            <i class="fas fa-calendar-alt"></i> 
-                            تاريخ النشر: <span class="almarai-regular">{{ job.date_posted.strftime("%Y-%m-%d") if job.date_posted else '' }}</span>
-                        </div>
-                        
-                        <div class="mt-auto text-center">
-                            <a href="/read_job/{{ job.id }}" class="btn-custom-red d-inline-block w-100">
-                                قراءة التفاصيل والتقديم
-                            </a>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-md-4">
+                <label for="specialty" class="form-label almarai-regular">التخصص</label>
+                <select class="form-select almarai-bold" id="specialty" name="study">
+                    <option value="" selected>الكل</option>
+                    <option value="محاسبة">محاسبة</option>
+                    <option value="هندسة">هندسة</option>
+                </select>
             </div>
-            {% endfor %}
-            
-            {% if not jobs.items %}
-            <div class="col-12 text-center py-5">
-                <i class="fas fa-search fa-4x mb-3 text-muted"></i>
-                <h3 class="almarai-bold text-muted">لم يتم العثور على وظائف مطابقة لبحثك.</h3>
+            <div class="col-md-3">
+                <label for="city" class="form-label almarai-regular">المدينة</label>
+                <select class="form-select almarai-bold" id="city" name="city">
+                    <option value="" selected>الكل</option>
+                    <option value="الرياض">الرياض</option>
+                    <option value="جدة">جدة</option>
+                </select>
             </div>
-            {% endif %}
-        </div>
-
-        {% if jobs.items %}
-        <div class="d-flex justify-content-center mt-5">
-            <nav>
-                <ul class="pagination pagination-lg" dir="ltr">
-                    {% if jobs.has_prev %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ url_for('job.job_list_get', page=jobs.prev_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">
-                                <i class="fas fa-chevron-left"></i> السابق
-                            </a>
-                        </li>
-                    {% endif %}
-                    
-                    {% for page_num in jobs.iter_pages() %}
-                        {% if page_num %}
-                            <li class="page-item {{ 'active' if page_num == jobs.page else '' }}">
-                                <a class="page-link" href="{{ url_for('job.job_list_get', page=page_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">{{ page_num }}</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                        {% endif %}
-                    {% endfor %}
-                    
-                    {% if jobs.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ url_for('job.job_list_get', page=jobs.next_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">
-                                التالي <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-        {% endif %}
-
+            <div class="col-md-2">
+                <button type="submit" class="btn-custom-red w-100 almarai-bold" style="padding: 12px;">ابحث الآن</button>
+            </div>
+        </form>
     </div>
 
-    <footer id="footer">
-        <div class="container">
-            <div class="row text-end">
-                <div class="col-lg-4 mb-4">
-                    <h4 class="almarai-extrabold mb-4" style="color: var(--accent-yellow);">بيانات التواصل</h4>
-                    <div class="footer-links almarai-regular">
-                        <a href="tel:+96655777430"><i class="fas fa-phone ms-2"></i> +966 55777430</a>
-                        <a href="mailto:info@faeda.com.ca"><i class="fas fa-envelope ms-2"></i> info@faeda.com.ca</a>
+    <div class="row g-4">
+        {% for job in jobs.items %}
+        <div class="col-lg-4 col-md-6 col-12">
+            <div class="job-card d-flex flex-column">
+                <div class="job-image-container">
+                    {% if job.company and job.company.company_logo %}
+                        <img src="{{ url_for('static', filename='uploads/companies/logo/' + job.company.company_logo) }}" alt="Company Logo" class="img-fluid">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='new_design/images/Card-img2.png') }}" alt="Default" class="img-fluid">
+                    {% endif %}
+                </div>
+                <div class="job-details flex-grow-1 d-flex flex-column">
+                    <h4 class="almarai-extrabold mb-3">{{ job.title }}</h4>
+                    <div class="job-info-item almarai-bold">
+                        <i class="fas fa-building"></i> الشركة: <span class="almarai-regular">{{ job.company.company_english_name if job.company else 'غير محدد' }}</span>
+                    </div>
+                    <div class="job-info-item almarai-bold">
+                        <i class="fas fa-map-marker-alt"></i> المكان: <span class="almarai-regular">{{ job.town }}</span>
+                    </div>
+                    <div class="mt-auto text-center">
+                        <a href="/read_job/{{ job.id }}" class="btn-custom-red d-inline-block w-100">قراءة التفاصيل والتقديم</a>
                     </div>
                 </div>
-
-                <div class="col-lg-4 mb-4">
-                    <h4 class="almarai-extrabold mb-4" style="color: var(--accent-yellow);">روابط مهمة</h4>
-                    <div class="footer-links almarai-regular">
-                        <a href="{{ url_for('core.home') }}#about_us"><i class="fas fa-angle-left ms-2"></i> من نحن</a>
-                        <a href="/faeda-details"><i class="fas fa-angle-left ms-2"></i> تيم فائدة</a>
-                        <a href="#"><i class="fas fa-angle-left ms-2"></i> السيرة الذاتية</a>
-                        <a href="{{ url_for('core.support') }}"><i class="fas fa-angle-left ms-2"></i> الدعم الفني</a>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 mb-4 text-center text-lg-end">
-                    <a href="{{ url_for('core.home') }}">
-                        <img src="{{ url_for('static', filename='new_design/images/logowhite.png') }}" height="60" alt="Faeda Logo" class="mb-4">
-                    </a>
-                    <h5 class="almarai-bold mb-3">تجدونا على</h5>
-                    <div>
-                        <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="social-icon"><img src="{{ url_for('static', filename='new_design/images/Xlogo.png') }}" width="24" alt="X"></a>
-                    </div>
-                </div>
-            </div>
-            
-            <hr class="mt-4 mb-4" style="border-color: rgba(255,255,255,0.1);">
-            
-            <div class="d-flex justify-content-between align-items-center">
-                <p class="mb-0 almarai-light">منصة فائدة 2023 | جميع الحقوق المحفوظة &copy;</p>
             </div>
         </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

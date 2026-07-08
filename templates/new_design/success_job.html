@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html lang="en" dir="rtl">
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+{% block title %}FAEDA{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAEDA</title>
-    <!-- MATERIAL DESIGN ICONIC FONT -->
-    <link rel="stylesheet" href="fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
-
-    <!-- STYLE CSS -->
-    <link rel="stylesheet" href="/static/assets/css1/style.css">
-</head>
-
-<body>
-
-    <div class="wrapper" style="background: linear-gradient(to right, rgb(145, 215, 180) ,rgb(220, 220, 220));">
+{% block content %}
+<div class="wrapper" style="background: linear-gradient(to right, rgb(145, 215, 180) ,rgb(220, 220, 220));">
         <div class="inner">
             <div class="image-holder">
                 <img src="/static/assets/images/msg6247125603-8832.jpg" alt="">
@@ -57,8 +52,4 @@
             </form>
         </div>
     </div>
-
-</body>
-
-
-</html>
+{% endblock %}

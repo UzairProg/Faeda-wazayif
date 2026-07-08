@@ -1,3 +1,8 @@
+# ==============================================================================
+# الوظيفة الأساسية للملف: وحدة (Blueprint) تحتوي على جميع مسارات (Routes) لوحة تحكم الشركات.
+# الروابط أو الميزات: مسارات إدارة ملف الشركة، متابعة المتقدمين للوظائف، والفرق (Teams).
+# المتطلبات الخاصة: يعتمد على نماذج الشركة والعملاء (services.company, services.customer) وجلسات فلاسك.
+# ==============================================================================
 #### companies.py############
 from flask import Blueprint, render_template, redirect, request, session, flash, current_app, url_for, send_from_directory, abort
 from services.company import *
