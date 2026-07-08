@@ -283,9 +283,18 @@ def apply_for_job(job_id):
         return redirect('/login')
     customer_id = session['user_id']
     user_id = Customers.get_user_id_by_id(customer_id) # noqa: F405
-    data_not_null = Customers.is_not_null(customer_id) # noqa: F405
-    if not data_not_null:
-        return redirect('/edit-profile')
+    personal_data = Customers.is_personal_not_null(id=customer_id) # noqa: F405
+    if not personal_data:
+        flash('عذرا يجب ملئ جميع البيانات')
+        return redirect('/edit-profile/personal_data')
+    job_data = Customers.is_job_data_not_null(id=customer_id) # noqa: F405
+    if not job_data:
+        flash('عذرا يجب ملئ جميع البيانات')
+        return redirect('/edit-profile/job_data')
+    educational_data = Customers.is_educational_datanot_null(id=customer_id) # noqa: F405
+    if not educational_data:
+        flash('عذرا يجب ملئ جميع البيانات')
+        return redirect('/edit-profile/educational_data')
     team = request.form.get('type_team')
     if team:  # Assuming team name is part of the form
         type = "team"
@@ -322,12 +331,12 @@ def apply_for_job(job_id):
     if result:
         ################## Check if the customer has rejected for this job
         if status == "rejected":
-            return render_template('unsuccessful_job.html')
+            return render_template('new_design/unsuccessful_job.html')
             ################## Check if the customer has accepted for this job
         if status == "approved":
-            return render_template('success_job.html')
+            return render_template('new_design/success_job.html')
             ################## Check if the customer has recommended or didnt review for this job
-        return render_template('apply_before.html')
+        return render_template('new_design/apply_before.html')
 
     else:
         # If the customer has not applied for the job, insert the application
@@ -341,7 +350,7 @@ def apply_for_job(job_id):
         flash('You have successfully applied for the job.')
 
     # Redirect to some confirmation page or back to the job listings
-    return render_template('apply_job.html')# replace 'customer.job_listings' with your actual job listings route
+    return render_template('new_design/apply_job.html')# replace 'customer.job_listings' with your actual job listings route
 
 ####################
 
@@ -682,6 +691,45 @@ def profile_team(team_id):
         ).all()
 
     return render_template('/panel/profile_team.html',user = user,team = team,team_id=team_id , team_members = team_members  )
+
+
+@customer.route('/edit-profile/personal_data', methods=['GET'])
+def get_edit_profile_personal_data():
+    if 'user_id' not in session:
+        flash('You must be logged in to edit your profile.', 'warning')
+        return redirect('/login')
+    user_id = session['user_id']
+    user = Customers.query.get(user_id)# noqa: F405
+    if not user:
+        flash('User not found.', 'error')
+        return redirect('/login')
+    return render_template('panel/customer_account_personal.html', user=user)
+
+
+@customer.route('/edit-profile/job_data', methods=['GET'])
+def get_edit_profile_job_data():
+    if 'user_id' not in session:
+        flash('You must be logged in to edit your profile.', 'warning')
+        return redirect('/login')
+    user_id = session['user_id']
+    user = Customers.query.get(user_id)# noqa: F405
+    if not user:
+        flash('User not found.', 'error')
+        return redirect('/login')
+    return render_template('panel/customer_account_job_data.html', user=user)
+
+
+@customer.route('/edit-profile/educational_data', methods=['GET'])
+def get_edit_profile_educational_data():
+    if 'user_id' not in session:
+        flash('You must be logged in to edit your profile.', 'warning')
+        return redirect('/login')
+    user_id = session['user_id']
+    user = Customers.query.get(user_id)# noqa: F405
+    if not user:
+        flash('User not found.', 'error')
+        return redirect('/login')
+    return render_template('panel/customer_account_educational_data.html', user=user)
 
 
 @customer.route('/edit-profile/personal_data', methods=['POST'])
