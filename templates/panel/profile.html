@@ -9,153 +9,362 @@
 {% block title %}فائدة - صفحتي الشخصية{% endblock %}
 {% block page_title %}فائدة - صفحتي الشخصية{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* ===== Profile Page Styles ===== */
+    .profile-cover {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 50%, #2c3a5c 100%);
+        height: 180px;
+        border-radius: 15px 15px 0 0 !important;
+        position: relative;
+        overflow: hidden;
+    }
+    .profile-cover::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+    }
+    .profile-cover::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 60px;
+        background: linear-gradient(to top, rgba(255,255,255,0.08), transparent);
+    }
+
+    .profile-avatar-wrapper {
+        margin-top: -60px;
+        position: relative;
+        z-index: 2;
+    }
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border: 4px solid #fff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .profile-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 25px rgba(0,0,0,0.18);
+    }
+
+    .profile-name {
+        color: var(--primary-dark);
+        font-size: 1.5rem;
+        margin-bottom: 2px;
+    }
+    .profile-id-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--bg-light);
+        color: #6c757d;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 0.82rem;
+    }
+
+    /* Info Cards */
+    .profile-info-card {
+        border: none !important;
+        border-radius: 15px !important;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        overflow: hidden;
+    }
+    .profile-info-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(35, 46, 76, 0.1) !important;
+    }
+    .profile-card-header {
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+        color: #fff;
+        padding: 16px 22px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .profile-card-header i {
+        font-size: 1.15rem;
+        color: var(--accent-yellow);
+    }
+    .profile-card-header h6 {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: flex-start;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f3f5;
+        gap: 12px;
+    }
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    .info-icon {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+    .info-icon.blue    { background: rgba(37, 99, 235, 0.1);  color: #2563eb; }
+    .info-icon.green   { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+    .info-icon.purple  { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+    .info-icon.orange  { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    .info-icon.red     { background: rgba(191, 42, 74, 0.1);  color: var(--accent-red); }
+    .info-icon.teal    { background: rgba(20, 184, 166, 0.1); color: #14b8a6; }
+    .info-icon.indigo  { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+
+    .info-label {
+        font-size: 0.78rem;
+        color: #9ca3af;
+        margin-bottom: 1px;
+    }
+    .info-value {
+        font-size: 0.92rem;
+        color: var(--primary-dark);
+        word-break: break-word;
+    }
+
+    /* CV Card Specific */
+    .cv-status-box {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 18px;
+        border-radius: 12px;
+        background: var(--bg-light);
+    }
+    .cv-status-icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
+    .cv-status-icon.uploaded  { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+    .cv-status-icon.empty     { background: rgba(191, 42, 74, 0.1);  color: var(--accent-red); }
+
+    .btn-download-cv {
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 8px 20px;
+        font-size: 0.85rem;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn-download-cv:hover {
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(35, 46, 76, 0.25);
+    }
+
+    /* About section */
+    .about-text-box {
+        background: var(--bg-light);
+        border-radius: 12px;
+        padding: 16px 20px;
+        color: var(--primary-dark);
+        font-size: 0.92rem;
+        line-height: 1.7;
+        border-right: 3px solid var(--accent-yellow);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
-    <div class="container-xxl flex-grow-1 container-p-y">
-            
-            
+<!-- ===== Profile Hero Card ===== -->
+<div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
 
+    <!-- Cover Banner -->
+    <div class="profile-cover"></div>
 
+    <!-- Identity Section -->
+    <div class="card-body pb-4 pt-0 px-4">
+        <div class="d-flex flex-column flex-sm-row align-items-center align-items-sm-end gap-3 profile-avatar-wrapper">
+            <!-- Profile Photo -->
+            {% if customer.img %}
+            <img src="/static/uploads/customers/images/{{ customer.img }}"
+                 alt="صورة {{ customer.fullname }}"
+                 class="rounded-circle profile-avatar">
+            {% else %}
+            <img src="/static/no_image.jpg"
+                 alt="صورة المستخدم"
+                 class="rounded-circle profile-avatar">
+            {% endif %}
 
-<!-- Header -->
-<div class="row">
-  <div class="col-12">
-    <div class="card mb-4" style="background-color: var(--primary-dark);">
-      <div class="user-profile-header-banner">
-        <img src="/static/panel/assets/img/pages/profile-banner.png" alt="Banner image" class="rounded-top">
-      </div>
-      <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
-        <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
-            {%if customer.img%}
-          <img src="/static/uploads/customers/images/{{customer.img}}" alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img">
-            {%else%}
-            
-            <img src="/static/no_image.jpg" alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img">
-            {%endif%}
-          </div>
-        <div class="flex-grow-1 mt-3 mt-sm-5">
-          <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
-            <div class="user-profile-info">
-              <h4>{{customer.fullname}}</h4>
-              <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
-                <li class="list-inline-item fw-medium">
-                  <i class='bx bx-user'></i> ID : {{user_id}}
-                </li>
-                
-              </ul>
+            <!-- Name & ID -->
+            <div class="text-center text-sm-start mt-2 mt-sm-0 pb-1">
+                <h4 class="profile-name almarai-extrabold mb-1">{{ customer.fullname }}</h4>
+                <span class="profile-id-badge almarai-regular">
+                    <i class="fas fa-fingerprint"></i> ID: {{ user_id }}
+                </span>
             </div>
-           
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
-<!--/ Header -->
 
-<!--/ Navbar pills -->
+<!-- ===== Information Cards Grid ===== -->
+<div class="row g-4 mt-1">
 
-<!-- User Profile Content -->
-<div class="row">
-  <div class="col-xl-4 col-lg-5 col-md-5">
-    <!-- About User -->
-    <div class="card mb-4">
-      <div class="card-body" dir="rtl">
-        <small style="color: var(--primary-dark);">About</small>
-        <ul class="list-unstyled mb-4 mt-3" style="color: var(--primary-dark);">
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-user"></i><span class="fw-medium mx-2">الاسم بالكامل:</span> <span>{{customer.fullname}}</span></li>
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-star"></i><span class="fw-medium mx-2">مجال العمل المفضل:</span> <span>{{customer.preferred_field_of_work}}</span></li>
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-flag"></i><span class="fw-medium mx-2">الدولة:</span> <span>{{customer.country}} , {{customer.government}}</span></li>
-        </ul>
-        <small style="color: var(--primary-dark);">التواصل</small>
-        <ul style="color: var(--primary-dark);" class="list-unstyled mb-4 mt-3">
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-envelope"></i><span class="fw-medium mx-2">:</span> <span>{{customer.email}}</span></li>
-        </ul>
-        <small style="color: var(--primary-dark);">التعليم</small>
-        <ul style="color: var(--primary-dark);" class="list-unstyled mt-3 mb-0">
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-education text-primary me-2"></i>
-            <div class="d-flex flex-wrap"><span class="fw-medium me-2">الحالة التعليمية</span><span>{{customer.education_statue}}</span></div>
-          </li>
-          <li class="d-flex align-items-center mb-3"><i class="bx bxl-rseact text-info me-2"></i>
-            <div class="d-flex flex-wrap"><span class="fw-medium me-2">المؤهل العلمي</span><span>{{customer.educational_qualification}}</span></div>
-          </li>
-
-
-
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-education text-primary me-2"></i>
-            <div class="d-flex flex-wrap"><span class="fw-medium me-2">تاريخ التخرج</span><span>{{customer.graduation_date}}</span></div>
-          </li>
-
-
-
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-education text-primary me-2"></i>
-            <div class="d-flex flex-wrap"><span class="fw-medium me-2"> الجامعة</span><span>{{customer.university}}</span></div>
-          </li>
-
-
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-education text-primary me-2"></i>
-            <div class="d-flex flex-wrap"><span class="fw-medium me-2">التخصص</span><span>{{customer.department_university}}</span></div>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <!--/ About User -->
-   
-  </div>
-  <div class="col-xl-8 col-lg-7 col-md-7">
-    <!-- Activity Timeline -->
-    <div class="card card-action mb-4">
-  
-      <div class="card-body">
-        <ul class="timeline ms-2">
-          <li class="timeline-item timeline-item-transparent">
-            <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-warning"></span></span>
-            <div class="timeline-event">
-              <div class="timeline-header mb-1">
-                <h6 class="mb-0"style="color: var(--primary-dark);">السيرة الذاتية</h6>
-              </div>
-              {%if customer.cv%}
-
-              <div class="d-flex flex-wrap">
-                <div class="avatar me-3">
-                  <img src="/static/panel/assets/img/avatars/3.jpeg" alt="Avatar" class="rounded-circle" />
-
-                </div>
-                <div>
-                  <a style="color: var(--primary-dark);" href="{{ url_for('company.download_cv', cv_filename=customer.cv) }}" download>تنزيل السيرةالذاتية</a>
-                </div>
-              </div>
-              {%else%}
-              <div class="d-flex flex-wrap"style="color: var(--primary-dark);">
-                لا يوجد سيرة ذاتية تم تحميلها
-</div>
-              {%endif%}
-
+    <!-- Card 1: النبذة والتواصل (About & Contact) -->
+    <div class="col-lg-6 col-xl-4">
+        <div class="card profile-info-card shadow-sm h-100">
+            <div class="profile-card-header almarai-bold">
+                <i class="fas fa-address-card"></i>
+                <h6 class="almarai-bold">النبذة والتواصل</h6>
             </div>
-          </li>
-          <li class="timeline-item timeline-item-transparent">
-            <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-info"></span></span>
-            <div class="timeline-event">
-              <div class="timeline-header mb-1">
-                <h6 class="mb-0" style="color: var(--primary-dark);">ماذا عن ؟</h6>
-              </div>
-              <p class="mb-0"style="color: var(--primary-dark);">{{customer.about}}</p>
+            <div class="card-body" dir="rtl">
+                <!-- Full Name -->
+                <div class="info-row">
+                    <div class="info-icon blue"><i class="fas fa-user"></i></div>
+                    <div>
+                        <div class="info-label almarai-bold">الاسم بالكامل</div>
+                        <div class="info-value almarai-regular">{{ customer.fullname }}</div>
+                    </div>
+                </div>
+                <!-- Email -->
+                <div class="info-row">
+                    <div class="info-icon green"><i class="fas fa-envelope"></i></div>
+                    <div>
+                        <div class="info-label almarai-bold">البريد الإلكتروني</div>
+                        <div class="info-value almarai-regular">{{ customer.email }}</div>
+                    </div>
+                </div>
+                <!-- Preferred Field -->
+                <div class="info-row">
+                    <div class="info-icon orange"><i class="fas fa-star"></i></div>
+                    <div>
+                        <div class="info-label almarai-bold">مجال العمل المفضل</div>
+                        <div class="info-value almarai-regular">{{ customer.preferred_field_of_work }}</div>
+                    </div>
+                </div>
+                <!-- Location -->
+                <div class="info-row">
+                    <div class="info-icon red"><i class="fas fa-map-marker-alt"></i></div>
+                    <div>
+                        <div class="info-label almarai-bold">الموقع</div>
+                        <div class="info-value almarai-regular">{{ customer.country }}{% if customer.government %} ، {{ customer.government }}{% endif %}</div>
+                    </div>
+                </div>
+                <!-- About -->
+                {% if customer.about %}
+                <div class="mt-3">
+                    <div class="info-label almarai-bold mb-2"><i class="fas fa-quote-right ms-1 text-muted"></i> نبذة شخصية</div>
+                    <div class="about-text-box almarai-regular">{{ customer.about }}</div>
+                </div>
+                {% endif %}
             </div>
-          </li>
-        
-          <li class="timeline-end-indicator">
-            <i class="bx bx-check-circle"></i>
-          </li>
-        </ul>
-      </div>
+        </div>
     </div>
-    <!--/ Activity Timeline -->
-    
-  </div>
-</div>
-<!--/ User Profile Content -->
 
-          </div>
-          <!-- / Content -->
+    <!-- Card 2: البيانات التعليمية (Educational Info) -->
+    <div class="col-lg-6 col-xl-4">
+        <div class="card profile-info-card shadow-sm h-100">
+            <div class="profile-card-header almarai-bold">
+                <i class="fas fa-graduation-cap"></i>
+                <h6 class="almarai-bold">البيانات التعليمية</h6>
+            </div>
+            <div class="card-body" dir="rtl">
+                <!-- Education Status -->
+                <div class="info-row">
+                    <div class="info-icon purple"><i class="fas fa-user-graduate"></i></div>
+                    <div>
+                        <div class="info-label almarai-bold">الحالة التعليمية</div>
+                        <div class="info-value almarai-regular">{{ customer.education_statue }}</div>
+                    </div>
+                </div>
+                <!-- Qualification -->
+                <div class="info-row">
+                    <div class="info-icon blue"><i class="fas fa-certificate"></i></div>
+                    <div>
+                        <div class="info-label almarai-bold">المؤهل العلمي</div>
+                        <div class="info-value almarai-regular">{{ customer.educational_qualification }}</div>
+                    </div>
+                </div>
+                <!-- Graduation Date -->
+                <div class="info-row">
+                    <div class="info-icon teal"><i class="fas fa-calendar-alt"></i></div>
+                    <div>
+                        <div class="info-label almarai-bold">تاريخ التخرج</div>
+                        <div class="info-value almarai-regular">{{ customer.graduation_date }}</div>
+                    </div>
+                </div>
+                <!-- University -->
+                <div class="info-row">
+                    <div class="info-icon indigo"><i class="fas fa-university"></i></div>
+                    <div>
+                        <div class="info-label almarai-bold">الجامعة</div>
+                        <div class="info-value almarai-regular">{{ customer.university }}</div>
+                    </div>
+                </div>
+                <!-- Department / Major -->
+                <div class="info-row">
+                    <div class="info-icon orange"><i class="fas fa-book-reader"></i></div>
+                    <div>
+                        <div class="info-label almarai-bold">التخصص</div>
+                        <div class="info-value almarai-regular">{{ customer.department_university }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3: السيرة الذاتية (CV & Resume) -->
+    <div class="col-lg-12 col-xl-4">
+        <div class="card profile-info-card shadow-sm h-100">
+            <div class="profile-card-header almarai-bold">
+                <i class="fas fa-file-alt"></i>
+                <h6 class="almarai-bold">السيرة الذاتية</h6>
+            </div>
+            <div class="card-body d-flex flex-column justify-content-center" dir="rtl">
+                {% if customer.cv %}
+                <!-- CV Available -->
+                <div class="cv-status-box">
+                    <div class="cv-status-icon uploaded">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="almarai-bold" style="color: var(--primary-dark); font-size: 0.95rem;">تم رفع السيرة الذاتية</div>
+                        <div class="text-muted almarai-regular" style="font-size: 0.8rem;">يمكنك تنزيل نسختك أدناه</div>
+                    </div>
+                </div>
+                <a href="{{ url_for('company.download_cv', cv_filename=customer.cv) }}" download
+                   class="btn-download-cv mt-3 almarai-bold w-100 justify-content-center">
+                    <i class="fas fa-download"></i> تنزيل السيرة الذاتية
+                </a>
+                {% else %}
+                <!-- No CV -->
+                <div class="cv-status-box">
+                    <div class="cv-status-icon empty">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="almarai-bold" style="color: var(--primary-dark); font-size: 0.95rem;">لا يوجد سيرة ذاتية</div>
+                        <div class="text-muted almarai-regular" style="font-size: 0.8rem;">لم يتم تحميل سيرة ذاتية بعد</div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
