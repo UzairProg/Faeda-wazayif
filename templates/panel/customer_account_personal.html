@@ -103,26 +103,18 @@
                           </div>
                           <div class="mb-3 col-md-6" >
                             <label class="form-label" for="phoneNumber" style="color: var(--primary-dark);">رقم الهاتف * </label>
-                            <div class="input-group input-group-merge">
-                              <input
-                              required
-                                type="text"
-                                id="phoneNumber"
-                                name="new_mobile"
-                                class="form-control"
-                                placeholder="202 555 0111"
-                                value="{{user.mobile}}"
-                              />
-                            </div>
+                            <div id="react-phone-input-root" data-initial-value="{{user.mobile}}"></div>
                           </div>
                      
                           <div class="mb-3 col-md-6">
                             <label class="form-label" for="country" style="color: var(--primary-dark);">الدولة * </label>
                             <select id="country" onchange="populateCities()" class="select2 form-select" name="country" required >
 
-                              {% if user.country%}
-                              <option value="{{user.country}}">{{user.country}}</option>
-                              {%endif%}
+                              {% if user.country %}
+                              <option value="{{user.country}}" selected>{{user.country}}</option>
+                              {% else %}
+                              <option value="المملكة العربية السعودية" selected>المملكة العربية السعودية</option>
+                              {% endif %}
                             </select>
                           </div>
 
@@ -153,4 +145,10 @@
               </div>
             </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="{{ url_for('static', filename='react/assets/index.css') }}">
+<script type="module" src="{{ url_for('static', filename='react/assets/index.js') }}"></script>
+<script src="{{ url_for('static', filename='API/ar_country.js') }}"></script>
 {% endblock %}

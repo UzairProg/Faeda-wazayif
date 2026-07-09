@@ -28,7 +28,7 @@ mail = Mail(app)
 def login_required(function):
     def wrapper(*args, **kwargs):
         if 'email' not in session:
-            return render_template('login.html')
+            return render_template('new_design/login.html')
         else:
             return function()
     return wrapper

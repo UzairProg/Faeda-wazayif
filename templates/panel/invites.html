@@ -43,7 +43,7 @@
                     <p class="card-text">
                         {{team.about}}
                     </p>
-                      <form action="{{ url_for('invites', user_id=user_id) }}" method="post" style="display: inline;">
+                      <form action="{{ url_for('customer.teams_invites') }}" method="post" style="display: inline;">
                         <input type="hidden" name="team_id" value="{{ team.id }}">
                         <input type="hidden" name="action" value="decline">
                         <style>
@@ -63,7 +63,7 @@
                         
                    
                                             </form>
-                      <form action="{{ url_for('invites', user_id=user_id) }}" method="post" style="display: inline;">
+                      <form action="{{ url_for('customer.teams_invites') }}" method="post" style="display: inline;">
                         <input type="hidden" name="team_id" value="{{ team.id }}">
                         <input type="hidden" name="action" value="accept">
                         <button type="submit" class="btn btn-outline-primary card-link">موافقة</button>

@@ -171,7 +171,7 @@ def edit_post():
     get_company_jobs = Jobs.query.filter_by(company_id=company_id).all()
     id = session['company_id']
     company = Company.query.get(id)
-    return render_template('edit-post.html', get_company_jobs=get_company_jobs , company=company)
+    return render_template('panel/company_panel/company_jobs.html', get_company_jobs=get_company_jobs , company=company)
 
 
 

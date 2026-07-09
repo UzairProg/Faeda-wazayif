@@ -81,22 +81,22 @@
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 pe-4">
                     <li class="nav-item"><a class="nav-link almarai-bold" href="{{ url_for('core.home') }}">الرئيسية</a></li>
-                    <li class="nav-item"><a class="nav-link almarai-bold" href="/job-list">البحث عن عمل</a></li>
+                    <li class="nav-item"><a class="nav-link almarai-bold" href="{{ url_for('job.job_list_get') }}">البحث عن عمل</a></li>
                     
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle almarai-bold" href="#" data-bs-toggle="dropdown">أفراد</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">البحث عن وظيفة كفرد</a></li>
-                            <li><a class="dropdown-item" href="#">انشاء سيرة ذاتية</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('job.job_list_get') }}">البحث عن وظيفة كفرد</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('customer.get_edit_profile_personal_data') }}">انشاء سيرة ذاتية</a></li>
                         </ul>
                     </li>
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle almarai-bold" href="#" data-bs-toggle="dropdown">منشآت</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">تسجيل منشأة</a></li>
-                            <li><a class="dropdown-item" href="#">استقطاب فريق</a></li>
-                            <li><a class="dropdown-item" href="#">مشاهدة الأفرقة</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('customer.Get_reg_page') }}">تسجيل منشأة</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('company.see_teams') }}">استقطاب فريق</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('company.see_teams') }}">مشاهدة الأفرقة</a></li>
                         </ul>
                     </li>
 
@@ -104,7 +104,7 @@
                         <a class="nav-link dropdown-toggle almarai-bold" href="#" data-bs-toggle="dropdown">تيم فائدة</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('customer.get_create_team') }}">انشاء فريق</a></li>
-                            <li><a class="dropdown-item" href="#">مشاهدة الأفرقة</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('core.faeda_details') }}">مشاهدة الأفرقة</a></li>
                         </ul>
                     </li>
 
@@ -126,8 +126,8 @@
                                 {% endif %}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end text-right">
-                                <li><a class="dropdown-item" href="/redirects"><i class="fa-solid fa-sliders ms-2"></i>لوحة التحكم</a></li>
-                                <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt ms-2"></i>تسجيل الخروج</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('customer.redirects') }}"><i class="fa-solid fa-sliders ms-2"></i>لوحة التحكم</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('customer.logout') }}"><i class="fas fa-sign-out-alt ms-2"></i>تسجيل الخروج</a></li>
                             </ul>
                         </div>
                     {% else %}
@@ -162,8 +162,8 @@
                     <h4 class="almarai-extrabold mb-4" style="color: var(--accent-yellow);">روابط مهمة</h4>
                     <div class="footer-links almarai-regular">
                         <a href="{{ url_for('core.home') }}#about_us"><i class="fas fa-angle-left ms-2"></i> من نحن</a>
-                        <a href="/faeda-details"><i class="fas fa-angle-left ms-2"></i> تيم فائدة</a>
-                        <a href="#"><i class="fas fa-angle-left ms-2"></i> السيرة الذاتية</a>
+                        <a href="{{ url_for('core.faeda_details') }}"><i class="fas fa-angle-left ms-2"></i> تيم فائدة</a>
+                        <a href="{{ url_for('customer.get_edit_profile_personal_data') }}"><i class="fas fa-angle-left ms-2"></i> السيرة الذاتية</a>
                         <a href="{{ url_for('core.support') }}"><i class="fas fa-angle-left ms-2"></i> الدعم الفني</a>
                     </div>
                 </div>

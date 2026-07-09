@@ -20,6 +20,7 @@ from email.message import EmailMessage
 import ssl
 import smtplib
 from services.teams import Teams , team_members_association
+from sqlalchemy import and_
 
 import string
 
@@ -242,10 +243,10 @@ def reset_password():
 
 @customer.route('/searchjob')
 def searchjob():
-     return render_template('search_job.html')
+     return redirect('/job-list')
 @customer.route('/searchjobresult')
 def searchjobresult():
-     return render_template('search_results.html')
+     return redirect('/job-list')
 
 @customer.route('/searchjobb', methods=['GET'])
 def searchjobb():
@@ -354,28 +355,8 @@ def apply_for_job(job_id):
 
 ####################
 
-
-@customer.route('/my_job_applications')
-def show_job_applications():
-    try:
-        # Fetch the customer based on the customer_id
-        customer_id = session.get('user_id')  # Use get() to handle None case
-        customer = Customers.query.get(customer_id)# noqa: F405
-
-        # Fetch all job applications associated with the customer
-        job_applications = []
-
-        # Replace this with actual logic to fetch job applications for the customer
-        # For example, you can loop through customer's jobs relationship
-        for job in customer.jobs:
-            job_id = job.id
-            status = Customers.get_job_status_by_customer_id(customer_id, job_id)# noqa: F405
-            note = Customers.get_job_note_by_customer_id(customer_id, job_id)# noqa: F405
-            job_applications.append({"job": job, "status": status, "note": note})
-
-        return render_template('job_applications.html', customer=customer, job_applications=job_applications , status = status , note = note)
-    except Exception as e:
-        return str(e)
+# NOTE: Duplicate /my_job_applications route removed.
+# The working route is /my-jobapplications (below at jobapplications_get).
 #####################################################################################################################################
 
 
@@ -454,7 +435,7 @@ def jobapplications_get():
         customer = Customers.query.get(customer_id)# noqa: F405
 
         if not customer:
-            return render_template('error.html', error_message="Customer not found")
+            return render_template('new_design/error.html', error_message="Customer not found")
 
         user_id = customer.user_id
 
@@ -495,7 +476,7 @@ def jobapplications_get():
         return render_template('panel/customer_jobs.html', application_count=application_count, customer=customer, job_applications=job_applications)
     except Exception as e:
         # Handle exceptions in a user-friendly way
-        return render_template('error.html', error_message=str(e))
+        return render_template('new_design/error.html', error_message=str(e))
 
 
 @customer.route('/create_team', methods=['GET'])
@@ -668,7 +649,8 @@ def add_members_to_team(team_id):
 
 @customer.route('/accept_team_invetation')
 def accept_team_invetation():
-    return "ok"
+    flash('تمت العملية بنجاح')
+    return redirect('/teams_invites')
 
 @customer.route('/profile_team/<int:team_id>')
 def profile_team(team_id):
@@ -945,3 +927,134 @@ def edit_profile():
     flash('You must be logged in to edit your profile.', 'warning')
     return redirect('/login')
 
+
+######################################################################
+# ============== NEW ROUTES (Audit Fixes) ==============
+######################################################################
+
+@customer.route('/redirects')
+def redirects():
+    """Dashboard router: redirects customer or company to their panel."""
+    if 'session_customer' in session:
+        user_id = session.get('user_id')
+        customer_obj = Customers.query.get(user_id)  # noqa: F405
+        return render_template('panel/customer_panel.html', customer=customer_obj)
+    elif 'session_company' in session:
+        company_id = session.get('company_id')
+        company_obj = Company.query.get(company_id)  # noqa: F405
+        return render_template('panel/company_panel/company_panel.html', company=company_obj)
+    else:
+        flash('يجب تسجيل الدخول أولاً')
+        return redirect('/login')
+
+
+@customer.route('/logout')
+def logout():
+    """Clear all session data and redirect to home."""
+    session.clear()
+    flash('تم تسجيل الخروج بنجاح')
+    return redirect('/')
+
+
+@customer.route('/my_profile')
+def my_profile():
+    """Display the current user's own profile page."""
+    if 'session_customer' in session:
+        user_id = session.get('user_id')
+        customer_obj = Customers.query.get(user_id)  # noqa: F405
+        if not customer_obj:
+            flash('لم يتم العثور على المستخدم', 'error')
+            return redirect('/login')
+        return render_template('panel/profile.html', customer=customer_obj)
+    elif 'session_company' in session:
+        company_id = session.get('company_id')
+        company_obj = Company.query.get(company_id)  # noqa: F405
+        return render_template('panel/company_panel/profile.html', company=company_obj, user=company_obj)
+    else:
+        flash('يجب تسجيل الدخول أولاً')
+        return redirect('/login')
+
+
+@customer.route('/my_team')
+def my_team():
+    """List all teams that the current user is a member of."""
+    if 'session_customer' not in session:
+        flash('يجب تسجيل الدخول أولاً')
+        return redirect('/login')
+    user_id = session.get('user_id')
+    customer_obj = Customers.query.get(user_id)  # noqa: F405
+    user_id_str = customer_obj.user_id if customer_obj else None
+    # Get all teams where the user is a member
+    my_teams = Teams.query.join(
+        team_members_association,
+        team_members_association.c.team_id == Teams.id
+    ).filter(
+        team_members_association.c.member_id == user_id_str
+    ).all()
+    return render_template('panel/team.html', teams=my_teams, customer=customer_obj)
+
+
+@customer.route('/controlled_teams')
+def controlled_teams():
+    """List all teams that the current user is an admin of."""
+    if 'session_customer' not in session:
+        flash('يجب تسجيل الدخول أولاً')
+        return redirect('/login')
+    user_id = session.get('user_id')
+    customer_obj = Customers.query.get(user_id)  # noqa: F405
+    admin_teams = Teams.query.filter_by(admin_id=user_id).all()
+    return render_template('panel/controlled_teams.html', teams=admin_teams, customer=customer_obj)
+
+
+@customer.route('/teams_invites', methods=['GET', 'POST'])
+def teams_invites():
+    """Show pending team invitations and handle accept/decline."""
+    if 'session_customer' not in session:
+        flash('يجب تسجيل الدخول أولاً')
+        return redirect('/login')
+    user_id = session.get('user_id')
+    customer_obj = Customers.query.get(user_id)  # noqa: F405
+    user_id_str = customer_obj.user_id if customer_obj else None
+
+    if request.method == 'POST':
+        team_id = request.form.get('team_id')
+        action = request.form.get('action')
+        if action == 'accept':
+            db.session.query(team_members_association).filter(
+                and_(
+                    team_members_association.c.team_id == team_id,
+                    team_members_association.c.member_id == user_id_str
+                )
+            ).update({'status': 'منضم'})
+            db.session.commit()
+            flash('تم قبول الدعوة بنجاح')
+        elif action == 'decline':
+            db.session.query(team_members_association).filter(
+                and_(
+                    team_members_association.c.team_id == team_id,
+                    team_members_association.c.member_id == user_id_str
+                )
+            ).delete()
+            db.session.commit()
+            flash('تم رفض الدعوة')
+        return redirect('/teams_invites')
+
+    # GET: Show pending invitations
+    pending_teams = Teams.query.join(
+        team_members_association,
+        team_members_association.c.team_id == Teams.id
+    ).filter(
+        team_members_association.c.member_id == user_id_str,
+        team_members_association.c.status == 'مدعو'
+    ).all()
+    return render_template('panel/invites.html', teams=pending_teams, customer=customer_obj, user_id=user_id)
+
+
+@customer.route('/visit_customer_profile/<string:user_id>')
+def visit_customer_profile(user_id):
+    """View another user's public profile."""
+    customer_obj = Customers.query.filter_by(user_id=user_id).first()  # noqa: F405
+    if not customer_obj:
+        flash('لم يتم العثور على المستخدم', 'error')
+        return redirect('/')
+    return render_template('panel/visit_profile.html', customer=customer_obj)

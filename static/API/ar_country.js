@@ -6,17 +6,25 @@ fetch('/api/countries')
     .then(response => response.json())
     .then(countries => {
         countries.forEach(country => {
-            const option = document.createElement("option");
-            option.value = country.country_name;
-            option.textContent = country.country_name;
-            countrySelect.appendChild(option);
+            if (!countrySelect.querySelector(`option[value="${country.country_name}"]`)) {
+                const option = document.createElement("option");
+                option.value = country.country_name;
+                option.textContent = country.country_name;
+                countrySelect.appendChild(option);
+            }
         });
+        
+        // Trigger population of cities initially
+        if (countrySelect.value) {
+            populateCities();
+        }
     })
     .catch(error => console.error('Failed to fetch countries:', error));
 
 // دالة لتعبئة قائمة المدن بناءً على الدولة المحددة
 function populateCities() {
     const selectedCountry = countrySelect.value;
+    const currentCity = citySelect.value; // Store the currently selected city
 
     // تفريغ قائمة المدن الحالية
     citySelect.innerHTML = '<option value="">اختر المدينة</option>';
@@ -29,8 +37,20 @@ function populateCities() {
                 const option = document.createElement("option");
                 option.value = city.city_name;
                 option.textContent = city.city_name;
+                if (city.city_name === currentCity) {
+                    option.selected = true; // Restore selection
+                }
                 citySelect.appendChild(option);
             });
         })
         .catch(error => console.error(`Failed to fetch cities for ${selectedCountry}:`, error));
+}
+
+// Support for Select2 which might suppress native onchange events
+if (typeof jQuery !== 'undefined') {
+    $(document).ready(function() {
+        $('#country').on('change', function() {
+            populateCities();
+        });
+    });
 }

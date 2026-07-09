@@ -175,58 +175,58 @@
         
         <ul class="sidebar-nav almarai-bold">
             <li>
-                <a href="/redirects" class="{% block nav_dashboard %}{% endblock %}">
+                <a href="{{ url_for('customer.redirects') }}" class="{% block nav_dashboard %}{% endblock %}">
                     <i class="fas fa-home"></i> لوحة التحكم
                 </a>
             </li>
             
             <li class="mt-4 mb-2 px-3 text-muted" style="font-size: 0.85rem;">الوظائف</li>
             <li>
-                <a href="/my-jobapplications" class="{% block nav_my_jobs %}{% endblock %}">
+                <a href="{{ url_for('customer.jobapplications_get') }}" class="{% block nav_my_jobs %}{% endblock %}">
                     <i class="fas fa-briefcase"></i> وظائفي
                 </a>
             </li>
             <li>
-                <a href="/job-list" class="{% block nav_all_jobs %}{% endblock %}">
+                <a href="{{ url_for('job.job_list_get') }}" class="{% block nav_all_jobs %}{% endblock %}">
                     <i class="fas fa-search"></i> البحث عن عمل
                 </a>
             </li>
             
             <li class="mt-4 mb-2 px-3 text-muted" style="font-size: 0.85rem;">المجموعات</li>
             <li>
-                <a href="/create_team" class="{% block nav_create_team %}{% endblock %}">
+                <a href="{{ url_for('customer.get_create_team') }}" class="{% block nav_create_team %}{% endblock %}">
                     <i class="fas fa-plus-circle"></i> انشاء مجموعة
                 </a>
             </li>
             <li>
-                <a href="/my_team" class="{% block nav_my_teams %}{% endblock %}">
+                <a href="{{ url_for('customer.my_team') }}" class="{% block nav_my_teams %}{% endblock %}">
                     <i class="fas fa-users"></i> مجموعاتي
                 </a>
             </li>
             <li>
-                <a href="/controlled_teams" class="{% block nav_controlled_teams %}{% endblock %}">
+                <a href="{{ url_for('customer.controlled_teams') }}" class="{% block nav_controlled_teams %}{% endblock %}">
                     <i class="fas fa-tasks"></i> مجموعات أديرها
                 </a>
             </li>
             <li>
-                <a href="/teams_invites" class="{% block nav_invites %}{% endblock %}">
+                <a href="{{ url_for('customer.teams_invites') }}" class="{% block nav_invites %}{% endblock %}">
                     <i class="fas fa-envelope-open-text"></i> طلبات انضمام
                 </a>
             </li>
             
             <li class="mt-4 mb-2 px-3 text-muted" style="font-size: 0.85rem;">الحساب</li>
             <li>
-                <a href="/edit-profile/personal_data" class="{% block nav_personal %}{% endblock %}">
+                <a href="{{ url_for('customer.get_edit_profile_personal_data') }}" class="{% block nav_personal %}{% endblock %}">
                     <i class="fas fa-user-edit"></i> البيانات الشخصية
                 </a>
             </li>
             <li>
-                <a href="/edit-profile/educational_data" class="{% block nav_edu %}{% endblock %}">
+                <a href="{{ url_for('customer.get_edit_profile_educational_data') }}" class="{% block nav_edu %}{% endblock %}">
                     <i class="fas fa-graduation-cap"></i> البيانات التعليمية
                 </a>
             </li>
             <li>
-                <a href="/edit-profile/job_data" class="{% block nav_job_data %}{% endblock %}">
+                <a href="{{ url_for('customer.get_edit_profile_job_data') }}" class="{% block nav_job_data %}{% endblock %}">
                     <i class="fas fa-user-tie"></i> البيانات المهنية
                 </a>
             </li>
@@ -264,9 +264,9 @@
                     {% endif %}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end text-right mt-2 shadow-sm border-0" style="border-radius: 12px;">
-                    <li><a class="dropdown-item almarai-bold py-2" href="/my_profile"><i class="fas fa-user ms-2 text-primary"></i> صفحتي الشخصية</a></li>
+                    <li><a class="dropdown-item almarai-bold py-2" href="{{ url_for('customer.my_profile') }}"><i class="fas fa-user ms-2 text-primary"></i> صفحتي الشخصية</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item almarai-bold py-2 text-danger" href="/logout"><i class="fas fa-sign-out-alt ms-2"></i> تسجيل الخروج</a></li>
+                    <li><a class="dropdown-item almarai-bold py-2 text-danger" href="{{ url_for('customer.logout') }}"><i class="fas fa-sign-out-alt ms-2"></i> تسجيل الخروج</a></li>
                 </ul>
             </div>
         </header>
