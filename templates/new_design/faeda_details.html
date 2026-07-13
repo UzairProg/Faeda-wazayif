@@ -1,0 +1,291 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+{% block title %}تصميم{% endblock %}
+
+{% block extra_css %}
+<style>
+    * {
+            box-sizing: border-box;
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-size: 14px;
+            font-family: 'Cairo', sans-serif;
+        }
+        .full-background {
+            background: url('/static/new_design/faeda_details_images/v558_120.png') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        .overlay {
+            background: rgba(70, 96, 145, 0.8);
+            height: 100vh;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 3;
+            padding-top: 15%;
+        }
+        .v558_132 {
+            width: 100%;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            margin-top: -9rem;
+            color: rgba(239,239,239,1);
+            font-family: Cairo;
+        }
+        .header-line {
+            border: 2px solid rgba(229, 229, 229, 1);
+            width: 45%;
+            margin: 1rem auto 9rem auto;
+        }
+        .button-row {
+            position: relative;
+            margin-top: 2rem;
+            margin-bottom: 7rem;
+            margin-left: 25rem;
+        }
+        .v558_134, .v558_137 {
+            width: 180px;
+            height: 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+        .v558_134 {
+            background: rgba(217, 217, 217, 0.8);
+            color: white;
+            position: absolute;
+            top: 19.8rem;
+            left: calc(51% - 5px);
+            margin-left: 15rem;
+        }
+        .v558_134:hover {
+            background: #4A608F;
+        }
+        .v558_137 {
+            background: rgba(217, 217, 217, 0.8);
+            color: rgb(241, 236, 236);
+            position: absolute;
+            top: 19.8rem;
+            left: calc(50% + 1px);
+        }
+        .v558_137:hover {
+            background: #4A608F;
+        }
+        .text-icon-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(229, 229, 229, 1);
+            border-radius: 15px;
+        }
+        .text-container {
+            flex: 1;
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin-left: 1rem;
+        }
+        .v558_150, .v558_154, .v558_157 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #bf2a4a;
+        }
+        .v558_147, .v558_152, .v558_155 {
+            font-size: 1.5rem;
+            color: #000;
+        }
+        .v558_125 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 0.75rem 2rem;
+            border-radius: 30px;
+            margin-top: 1rem;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .v558_132 {
+                font-size: 1.5rem;
+            }
+            .header-line {
+                width: 60%;
+            }
+            .icon {
+                width: 60px;
+                height: 60px;
+            }
+            .v558_150, .v558_154, .v558_157 {
+                font-size: 1.25rem;
+            }
+            .v558_147, .v558_152, .v558_155 {
+                font-size: 1rem;
+            }
+            .v558_125 {
+                font-size: 1.25rem;
+                padding: 0.5rem 1.5rem;
+            }
+            .v558_134, .v558_137 {
+                width: 140px;
+                height: 35px;
+                font-size: 1.25rem;
+                top: 40px;
+            }
+            .v558_134 {
+                left: calc(50% - 95px);
+            }
+            .v558_137 {
+                left: calc(50% + 10px);
+            }
+        }
+        @media (max-width: 576px) {
+            .v558_132 {
+                font-size: 1.25rem;
+            }
+            .header-line {
+                width: 70%;
+            }
+            .icon {
+                width: 50px;
+                height: 50px;
+            }
+            .v558_150, .v558_154, .v558_157 {
+                font-size: 1rem;
+            }
+            .v558_147, .v558_152, .v558_155 {
+                font-size: 0.75rem;
+            }
+            .v558_125 {
+                font-size: 1rem;
+                padding: 0.5rem 1rem;
+            }
+            .v558_134, .v558_137 {
+                width: 120px;
+                height: 30px;
+                font-size: 1rem;
+                top: 30px;
+            }
+            .v558_134 {
+                left: calc(50% - 75px);
+            }
+            .v558_137 {
+                left: calc(50% + 5px);
+            }
+        }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="full-background">
+        <div class="overlay">
+            <div class="container text-center text-white content-wrapper">
+                <h1 class="v558_132">كيف تيم فائدة تساعد الأفراد والمنشآت؟</h1>
+                <hr class="header-line">
+                <div class="row justify-content-center mt-4">
+                    <button class="btn v558_134" style="color: white;" onclick="showMainContent()">منشآت</button>
+                    <button class="btn v558_137 ml-3" style="color: white;" onclick="showIndividualContent()">أفراد</button>
+                </div>
+                <div id="content-area" class="text-icon-container mt-5 text-right p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="text-container">
+                            <h5 class="v558_150">بناء فريق قوي</h5>
+                            <p class="v558_147">.استقطاب فرق عمل متكاملة تتضمن تخصصات متنوعة ومهارات ممتازة</p>
+                        </div>
+                        <img src="/static/new_design/faeda_details_images/v645_81.png" class="icon ml-3" alt="Icon">
+                    </div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="text-container">
+                            <h5 class="v558_154">تعزيز الإنتاجية</h5>
+                            <p class="v558_152">.تعاون فعال يقلل وقت إنجاز المهام</p>
+                        </div>
+                        <img src="/static/new_design/faeda_details_images/v644_80.png" class="icon ml-3" alt="Icon">
+                    </div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="text-container">
+                            <h5 class="v558_157">تحسين الجودة</h5>
+                            <p class="v558_155">.تنوع التخصصات يرفع مستوى الجودة</p>
+                        </div>
+                        <img src="/static/new_design/faeda_details_images/v643_79.png" class="icon ml-3" alt="Icon">
+                    </div>
+                </div>
+                <button class="btn btn-danger btn-lg v558_125">!استقطب فريقك</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+        function showMainContent() {
+            document.getElementById('content-area').innerHTML = `
+                <div class="d-flex align-items-center mb-4">
+                    <div class="text-container">
+                        <h5 class="v558_150">بناء فريق قوي</h5>
+                        <p class="v558_147">.استقطاب فرق عمل متكاملة تتضمن تخصصات متنوعة ومهارات ممتازة</p>
+                    </div>
+                    <img src="/static/new_design/faeda_details2_images/v645_81.png" class="icon ml-3" alt="Icon">
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="text-container">
+                        <h5 class="v558_154">تعزيز الإنتاجية</h5>
+                        <p class="v558_152">.تعاون فعال يقلل وقت إنجاز المهام</p>
+                    </div>
+                    <img src="/static/new_design/faeda_details2_images/v644_80.png" class="icon ml-3" alt="Icon">
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="text-container">
+                        <h5 class="v558_157">تحسين الجودة</h5>
+                        <p class="v558_155">.تنوع التخصصات يرفع مستوى الجودة</p>
+                    </div>
+                    <img src="/static/new_design/faeda_details2_images/v643_79.png" class="icon ml-3" alt="Icon">
+                </div>
+            `;
+        }
+
+        function showIndividualContent() {
+            document.getElementById('content-area').innerHTML = `
+                <div class="d-flex align-items-center mb-4">
+                    <div class="text-container">
+                        <h5 class="v558_150">تكوين الفرق بسهولة</h5>
+                        <p class="v558_147">.دعوة الأعضاء وإنشاء فرق متعددة</p>
+                    </div>
+                    <img src="/static/new_design/faeda_details_images/v645_81.png" class="icon ml-3" alt="Icon">
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="text-container">
+                        <h5 class="v558_154">تعزيز التواصل</h5>
+                        <p class="v558_152">.أدوات تواصل فورية، مشاركة الملفات، الاجتماعات الافتراضية</p>
+                    </div>
+                    <img src="/static/new_design/faeda_details_images/v644_80.png" class="icon ml-3" alt="Icon">
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="text-container">
+                        <h5 class="v558_157">تطوير مهارات الأعضاء</h5>
+                        <p class="v558_155">.العمل بانسجام لتحقيق الأهداف المشتركة</p>
+                    </div>
+                    <img src="/static/new_design/faeda_details_images/v643_79.png" class="icon ml-3" alt="Icon">
+                </div>
+            `;
+        }
+    </script>
+{% endblock %}

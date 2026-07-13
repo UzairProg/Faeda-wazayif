@@ -1,0 +1,333 @@
+{% extends 'new_design/base.html' %}
+{% block title %}تسجيل الدخول{% endblock %}
+
+{% block extra_css %}
+<style>
+    html {
+            height: 100%;
+        }
+        body {
+            background-image: url("{{ url_for('static', filename='images/Login_background.jpg') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 100%;
+            height: 100%;
+        }
+        .form-group {
+            color: #ffffff;
+            background-color: #242F47;
+            border-radius: 4px;
+        }
+        .container {
+            border-radius: 16px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding-bottom: 50px;
+            padding-top: 10px;
+            margin-top: 100px;
+            margin-right: 50px;
+            max-width: 600px; 
+        }
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 20px 0;
+        }
+        .title::before, .title::after {
+            content: "";
+            height: 2px;
+            background-color: #000;
+            flex-grow: 1;
+        }
+        .title::before {
+            margin-right: 10px;
+        }
+        .title::after {
+            margin-left: 10px;
+        }
+        .icons i {
+            color: #000000;
+        }
+        .almarai-light {
+            font-family: "Almarai", sans-serif;
+            font-weight: 300;
+            font-style: normal;
+        }
+        .almarai-regular {
+            font-family: "Almarai", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        .almarai-bold {
+            font-family: "Almarai", sans-serif;
+            font-weight: 700;
+            font-style: normal;
+        }
+        .almarai-extrabold {
+            font-family: "Almarai", sans-serif;
+            font-weight: 800;
+            font-style: normal;
+        }
+        .hover-effect:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s;
+        }
+       
+        @media  (max-width: 991.98px) {
+              body{
+                background-color: #242F47;
+                background-image: none;
+              }
+          .container {
+              margin-top: 20px;
+              margin-right: 10px;
+              max-width: 100%;
+              max-height: 85%;
+          }
+          
+          .title::before, .title::after {
+              margin: 0 5px;
+          }
+          .form-group {
+              margin-bottom: 15px;
+          }
+          
+          .icons a img {
+              max-height: 40px;
+              margin: 0 8px;
+              
+          }
+          h1 {
+              font-size: 130%;
+          }
+         .mobile-padding{
+            padding-top: 20px;
+         }
+         i {
+            color: #000000; 
+        }
+        .input-group-append button {
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+        }
+        }
+        @media (min-width: 912.00px) and (max-width: 1023.00px) {
+          .container {
+              margin-top: 100px;
+              margin-right: 150px;
+              max-width: 70%;     
+          }
+          .mobile{
+            display: none;
+          }
+          .title::before, .title::after {
+              margin: 0 8px;
+          }
+          .form-group {
+              margin-bottom: 20px;
+          }
+         
+          .icons a img {
+              max-height: 50px;
+              margin: 0 12px;
+              margin-bottom: 15px;
+          }
+          h1 {
+              font-size: 140%;
+          }
+          .mobile-padding{
+            padding-top: 20px;
+         }
+         i {
+            color: #000000; 
+        }
+        .input-group-append button {
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+        }
+        body{
+            background-color: #242F47;
+            background-image: none;
+          }
+        }
+        @media (min-width: 1024.00px) and (max-width: 1199.00px) {
+            body{
+                background-color: #242F47;
+                background-image: none;
+              }
+          .container {
+            margin-top: 30px;
+            margin-right: 240px;
+            max-width: 50%;   
+            padding-top: 5px;
+            max-height: 94vh;
+            
+        }
+        .mobile{
+            display: none;
+        }
+        
+          
+          .title::before, .title::after {
+              margin: 0 8px;
+          }
+          .form-group {
+              margin-bottom: 20px;
+          }
+          
+          .icons a img {
+              max-height: 50px;
+              margin: 0 12px;
+            
+          }
+          h1 {
+              font-size: 140%;
+          }
+          .mobile-padding{
+            padding-top: 40px;
+         }
+         i {
+            color: #000000; 
+        }
+        .input-group-append button {
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+        }
+    }  
+          @media (min-width: 1200.00px) and (max-width: 1399.98px) {
+            .container {
+                margin-top: 50px;
+                margin-right: 50px;
+                max-width: 80%;   
+                padding-top: 10px;
+             
+            }
+            
+            .title::before, .title::after {
+                margin: 0 8px;
+            }
+            .form-group {
+                margin-bottom: 20px;
+            }
+            
+            .icons a img {
+                max-height: 50px;
+                margin: 0 12px;
+              
+            }
+            h1 {
+                font-size: 140%;
+            }
+            .mobile-padding{
+                padding-top: 40px;
+             }
+             i {
+                color: #000000; 
+            }
+            .input-group-append button {
+                padding: 0.375rem 0.75rem;
+                font-size: 1rem;
+                line-height: 1.5;
+                border-radius: 0.25rem;
+            }
+      }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Login Form -->
+
+  <div class="container-fluid backgound">
+    <div class="row">
+        <div class="col-lg mobile"></div>
+        <div class="col-lg ">
+            <div class="container">
+
+
+                      {% if error %}
+                      <h1 style="color: red;">كلمة المرور او البريد الالكتروني غير صحيح</h1>
+                      {% endif %}
+                      <form class="login-form" action="/submit/login" method="post">
+                        <h2>للمنشأت</h2>
+                        <h1 class="pt-4 mb-4 text-center almarai-bold" style="font-size: 150%;">تسجيل الدخول</h1>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1" class="float-right pr-2 pt-2 almarai-bold">الايميل</label>
+                            <input type="email" class="form-control text-right almarai-bold" name="email" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="الايميل" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1" class="float-right pr-2 pt-2 almarai-bold">كلمة المرور</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control text-right almarai-bold" name="password" id="exampleInputPassword1" placeholder="كلمة المرور" required>
+                                <div class="input-group-append">
+                                    <button id="togglePassword">
+                                        <i id="eyeIcon" class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                       
+                         
+                        <div class="form-check " style="display: flex; align-items: center; justify-content: space-between;" >
+                          <div  style="display: inline-block; ">
+                              <label class="form-check-label mr-4 almarai-bold" for="exampleCheck1">تذكرني</label>
+                              <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                          </div>
+                          <!-- <a href="{{url_for('ForgetPassword', user_type='company')}}" class="link-danger almarai-bold mr-3 forget-password" style="color: red; text-align: right;">هل نسيت كلمة المرور؟</a> -->
+                      </div>
+                      <div class="d-flex justify-content-center align-items-center mobile-padding ">
+                          <a href="/register" class="text-danger pr-2 almarai-bold    ">انشاء حساب</a>
+                          <p class="mb-0 mr-2 almarai-bold   ">مستخدم جديد؟</p>
+                      </div>
+                      <div class="d-flex justify-content-center  mt-2">
+                          <button type="submit" class="btn btn-lg pl-5 pr-5 btn-hover almarai-bold" style="background-color:#4680EE; color: white;">دخول</button>
+                      </div>
+                      <div class="divider">
+                          <h4 class="title almarai-bold">أو باستخدام</h4>
+                      </div>
+                  </form>
+                  <div class="icons mb-5 d-flex align-items-center justify-content-center ">
+                      <a href="#"><img src="{{ url_for('static', filename='images/Apple_logo_black.png') }}" alt="Apple Logo" class="img-fluid hover-effect" style="max-height: 48px; margin-left: 16px; margin-bottom: 21px;"></a>
+                      <a href="/Glogin"><img src="{{ url_for('static', filename='images/googleLogo.webp') }}" alt="Google Logo" class="img-fluid hover-effect" style="max-height: 70px; margin-left: 16px; margin-bottom: 16px;"></a>
+                  </div>
+                    
+                      <!-- <a href="#"><i class="fa-brands fa-apple" style="font-size: 48px;  margin-left: 16px;"></i></a> -->
+
+                  </div>
+                </div>  
+              </div>
+
+
+              {% if window %}
+              {% include 'welcomeMess.html' %}
+              {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+                document.getElementById("togglePassword").addEventListener("click", function() {
+                    var passwordField = document.getElementById("exampleInputPassword1");
+                    var eyeIcon = document.getElementById("eyeIcon");
+            
+                    if (passwordField.type === "password") {
+                        passwordField.type = "text";
+                        eyeIcon.classList.remove("fa-solid", "fa-eye");
+                        eyeIcon.classList.add("fa-sharp", "fa-solid", "fa-eye-slash");
+                    } else {
+                        passwordField.type = "password";
+                        eyeIcon.classList.remove("fa-sharp", "fa-solid", "fa-eye-slash");
+                        eyeIcon.classList.add("fa-solid", "fa-eye");
+                    }
+                });
+            </script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

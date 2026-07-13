@@ -1,0 +1,95 @@
+.job-box2 {
+    background: #ffff !important;
+    /* box-shadow: 0px 0px 10px #004b89, 0px 0px; */
+    border: 2px solid #ebf2f8;
+}
+
+.job-box2 h3 {
+    color: #004b89 !important;
+}
+
+.job-block .job-box.job-box p {
+    color: #000 !important;
+    line-height: 1.6;
+}
+
+.job-block .job-box.job-box .btn-white {
+    color: #004b89 !important;
+    border: 1px solid #004b89;
+}
+
+.job-block .job-box.job-box2 .btn-white:hover {
+    background: #004b89 !important;
+    color: #ffff !important;
+}
+
+
+.job-application-table {
+    padding: 50px;
+    background: #ebf2f8;
+}
+
+.job-application-table form .form-group label {
+    color: #000;
+}
+
+.job-application-table .job-information .search-btn {
+    background-color: #fff;
+    color: #004b89;
+    transition: ease-in-out all .3s;
+}
+
+.job-application-table .job-information .search-btn:hover {
+    background: #004b89;
+    color: #fff;
+}
+
+.job-application .card,
+.job-info-container .card-body {
+    background: #ebf2f8;
+}
+
+.job-application .list-job-v2 .more {
+    background-color: #fff;
+    color: #004b89;
+    border-radius: 5px;
+    transition: ease-in-out all .4s;
+}
+
+.job-application .list-job-v2 .more:hover {
+    background-color: #004b89;
+    color: #Ffff;
+}
+
+.job-application-table form .form-group {
+    margin-bottom: 16px;
+}
+
+.courses .search-form {
+    margin: 3%;
+}
+
+.courses.job-application-table {
+    all: unset;
+}
+
+.courses .search-form .button {
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.courses .search-form .button input {
+    min-width: 140px;
+    text-align: center;
+    padding: 11px 0;
+}
+
+.courses .form-group select.form-control {
+    min-width: auto !important;
+}
+
+
+.job-block.company-ways .job-box .btn-white:hover {
+    color: #ffff !important;
+}

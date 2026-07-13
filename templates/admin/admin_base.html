@@ -1,0 +1,227 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: القالب الأساسي (Master Layout) للوحة تحكم المدير.
+الروابط أو الميزات: الشريط الجانبي مع التنقل، شريط علوي، ومنطقة المحتوى الديناميكية.
+المتطلبات الخاصة: يتحكم نظام الصلاحيات RBAC في إظهار/إخفاء عناصر القائمة.
+==============================================================================
+-->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}لوحة تحكم المدير | فائدة{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='new_design/images/Group.png') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/admin.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+            <a href="{{ url_for('admin.admin_dashboard') }}">
+                <img src="{{ url_for('static', filename='new_design/images/logowhite.png') }}" alt="فائدة" class="sidebar-logo-img">
+            </a>
+            <span class="sidebar-brand-badge">Admin</span>
+        </div>
+
+        <nav class="sidebar-menu">
+            <!-- Dashboard -->
+            <a href="{{ url_for('admin.admin_dashboard') }}" class="sidebar-link {% block nav_dashboard %}{% endblock %}">
+                <i class="fas fa-chart-pie"></i>
+                <span>الرئيسية</span>
+            </a>
+
+            {% if current_admin and current_admin.has_permission('users') %}
+            <div class="sidebar-section-label">إدارة المستخدمين</div>
+            <a href="{{ url_for('admin.list_users') }}" class="sidebar-link {% block nav_users %}{% endblock %}">
+                <i class="fas fa-users"></i>
+                <span>المستخدمين</span>
+            </a>
+            <a href="{{ url_for('admin.list_companies') }}" class="sidebar-link {% block nav_companies %}{% endblock %}">
+                <i class="fas fa-building"></i>
+                <span>الشركات</span>
+            </a>
+            {% endif %}
+
+            {% if current_admin and current_admin.has_permission('teams') %}
+            <div class="sidebar-section-label">المحتوى</div>
+            <a href="{{ url_for('admin.list_teams') }}" class="sidebar-link {% block nav_teams %}{% endblock %}">
+                <i class="fas fa-users-cog"></i>
+                <span>المجموعات</span>
+            </a>
+            {% endif %}
+
+            {% if current_admin and current_admin.has_permission('jobs') %}
+            <a href="{{ url_for('admin.list_jobs') }}" class="sidebar-link {% block nav_jobs %}{% endblock %}">
+                <i class="fas fa-briefcase"></i>
+                <span>الوظائف</span>
+            </a>
+            <a href="{{ url_for('admin.pending_jobs') }}" class="sidebar-link {% block nav_pending_jobs %}{% endblock %}">
+                <i class="fas fa-clock"></i>
+                <span>وظائف قيد المراجعة</span>
+            </a>
+            <a href="{{ url_for('admin.manage_categories') }}" class="sidebar-link {% block nav_categories %}{% endblock %}">
+                <i class="fas fa-tags"></i>
+                <span>التصنيفات</span>
+            </a>
+            {% endif %}
+
+            {% if current_admin and current_admin.has_permission('reports') %}
+            <div class="sidebar-section-label">الدعم والمراجعة</div>
+            <a href="{{ url_for('admin.list_reports') }}" class="sidebar-link {% block nav_reports %}{% endblock %}">
+                <i class="fas fa-flag"></i>
+                <span>البلاغات</span>
+                {% set pending_count = pending_reports_count|default(0) %}
+            </a>
+            <a href="{{ url_for('admin.tickets') }}" class="sidebar-link {% block nav_tickets %}{% endblock %}">
+                <i class="fas fa-headset"></i>
+                <span>تذاكر الدعم</span>
+            </a>
+            {% endif %}
+
+            {% if current_admin and current_admin.has_permission('audit_logs') %}
+            <a href="{{ url_for('admin.audit_logs') }}" class="sidebar-link {% block nav_audit %}{% endblock %}">
+                <i class="fas fa-clipboard-list"></i>
+                <span>سجل العمليات</span>
+            </a>
+            {% endif %}
+
+            {% if current_admin and current_admin.has_permission('billing') %}
+            <div class="sidebar-section-label">المالية</div>
+            <a href="{{ url_for('admin.billing_dashboard') }}" class="sidebar-link {% block nav_billing %}{% endblock %}">
+                <i class="fas fa-credit-card"></i>
+                <span>الاشتراكات</span>
+            </a>
+            {% endif %}
+
+            {% if current_admin and current_admin.has_permission('settings') %}
+            <div class="sidebar-section-label">النظام</div>
+            <a href="{{ url_for('admin.system_settings') }}" class="sidebar-link {% block nav_settings %}{% endblock %}">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </a>
+            <a href="{{ url_for('admin.manage_admins') }}" class="sidebar-link {% block nav_admins %}{% endblock %}">
+                <i class="fas fa-user-shield"></i>
+                <span>المديرين</span>
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{{ url_for('admin.admin_logout') }}" class="sidebar-link sidebar-logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>تسجيل الخروج</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="admin-main" id="adminMain">
+        
+        <!-- Top Navbar -->
+        <header class="admin-topbar">
+            <div class="topbar-right">
+                <button class="btn btn-link topbar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <nav class="admin-breadcrumb" aria-label="breadcrumb">
+                    <ol>
+                        <li><a href="{{ url_for('admin.admin_dashboard') }}">الرئيسية</a></li>
+                        {% block breadcrumb %}{% endblock %}
+                    </ol>
+                </nav>
+            </div>
+            <div class="topbar-left">
+                <div class="topbar-admin-info">
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle topbar-admin-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if current_admin and current_admin.photo %}
+                                <img src="{{ url_for('static', filename='uploads/admin/' + current_admin.photo) }}" class="topbar-avatar" alt="">
+                            {% else %}
+                                <div class="topbar-avatar-placeholder">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                            {% endif %}
+                            <div class="topbar-admin-text">
+                                <span class="topbar-admin-name">{{ current_admin.username if current_admin else 'مدير' }}</span>
+                                <span class="topbar-admin-role">{{ current_admin.role_label if current_admin else '' }}</span>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end admin-dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('admin.admin_dashboard') }}"><i class="fas fa-tachometer-alt ms-2"></i>لوحة التحكم</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('admin.admin_logout') }}"><i class="fas fa-sign-out-alt ms-2"></i>تسجيل الخروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Flash Messages -->
+        <div class="admin-content-wrapper">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="admin-flash-container">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show admin-alert" role="alert">
+                                {% if category == 'success' %}<i class="fas fa-check-circle ms-2"></i>
+                                {% elif category == 'danger' %}<i class="fas fa-exclamation-circle ms-2"></i>
+                                {% elif category == 'warning' %}<i class="fas fa-exclamation-triangle ms-2"></i>
+                                {% elif category == 'info' %}<i class="fas fa-info-circle ms-2"></i>
+                                {% endif %}
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Page Header -->
+            <div class="admin-page-header">
+                <h1 class="admin-page-title">{% block page_title %}لوحة التحكم{% endblock %}</h1>
+                <div class="admin-page-actions">
+                    {% block page_actions %}{% endblock %}
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <main class="admin-content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content admin-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalTitle">تأكيد العملية</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body" id="confirmModalBody">
+                    هل أنت متأكد من هذا الإجراء؟
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">إلغاء</button>
+                    <form id="confirmModalForm" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" id="confirmModalBtn">تأكيد</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='admin/js/admin.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

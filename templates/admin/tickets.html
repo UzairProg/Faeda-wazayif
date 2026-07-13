@@ -1,0 +1,95 @@
+{% extends 'admin/admin_base.html' %}
+{% block title %}تذاكر الدعم | لوحة تحكم الإدارة{% endblock %}
+{% block page_title %}تذاكر الدعم الفني{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="admin-card-header d-flex justify-content-between align-items-center">
+                <h2>إدارة التذاكر</h2>
+                <span class="badge bg-primary rounded-pill">{{ tickets|length }} تذكرة</span>
+            </div>
+            <div class="admin-card-body p-0">
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>رقم التذكرة</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>العنوان</th>
+                                <th>تاريخ الإنشاء</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticket in tickets %}
+                            <tr>
+                                <td>#{{ ticket.id }}</td>
+                                <td>{{ ticket.email }}</td>
+                                <td>{{ ticket.subject }}</td>
+                                <td>{{ ticket.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    {% if ticket.status == 'open' %}
+                                        <span class="admin-badge warned">مفتوحة</span>
+                                    {% else %}
+                                        <span class="admin-badge active">مغلقة</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn-icon" data-bs-toggle="modal" data-bs-target="#ticketModal{{ ticket.id }}" title="عرض التذكرة">
+                                        <i class="fas fa-eye text-primary"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Modal for viewing/replying to ticket -->
+                            <div class="modal fade" id="ticketModal{{ ticket.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">تذكرة #{{ ticket.id }} - {{ ticket.subject }}</h5>
+                                            <button type="button" class="btn-close m-0 ms-auto" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-4 p-3 bg-light rounded border">
+                                                <strong>المرسل:</strong> {{ ticket.email }} <br>
+                                                <strong>التفاصيل:</strong>
+                                                <p class="mt-2 text-break">{{ ticket.description }}</p>
+                                            </div>
+                                            
+                                            <form method="POST" action="{{ url_for('admin.reply_ticket', ticket_id=ticket.id) }}">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">رد الإدارة (ملاحظة داخلية)</label>
+                                                    <textarea class="form-control" name="admin_reply" rows="4" placeholder="اكتب ردك أو ملاحظتك هنا...">{{ ticket.admin_reply or '' }}</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">حالة التذكرة</label>
+                                                    <select class="form-select" name="status">
+                                                        <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>مفتوحة</option>
+                                                        <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>مغلقة</option>
+                                                    </select>
+                                                </div>
+                                                <div class="text-end mt-4">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                                                    <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4">لا توجد تذاكر دعم فني حالياً.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

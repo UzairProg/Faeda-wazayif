@@ -1,0 +1,350 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+{% block title %}منصة فائدة | تفاصيل الوظيفة{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Job Header Section */
+    .job-header {
+        background-color: var(--primary-dark);
+        color: white;
+        padding: 50px 0;
+        margin-bottom: 40px;
+        border-bottom: 5px solid var(--accent-red);
+    }
+
+    /* Cards Styling */
+    .content-card {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+        border: none;
+    }
+    .sidebar-card {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        padding: 30px;
+        border: 2px solid var(--cream);
+    }
+    
+    .company-logo-container {
+        width: 120px;
+        height: 120px;
+        border-radius: 15px;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+        overflow: hidden;
+        border: 2px solid var(--bg-light);
+    }
+    .company-logo-container img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .info-list li {
+        padding: 12px 0;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .info-list li:last-child {
+        border-bottom: none;
+    }
+    .info-label {
+        color: var(--primary-light);
+        font-weight: 700;
+    }
+    .info-value {
+        color: #6c757d;
+    }
+    .info-icon {
+        color: var(--accent-red);
+        width: 25px;
+        text-align: center;
+        margin-left: 10px;
+    }
+
+    .btn-custom-red {
+        background-color: var(--accent-red);
+        color: white;
+        border-radius: 10px;
+        padding: 12px 25px;
+        border: none;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+    .btn-custom-red:hover {
+        background-color: #9e203b;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    /* Popup Styling */
+    .popup {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(35, 46, 76, 0.8); /* Dark blue overlay */
+        justify-content: center; align-items: center;
+        z-index: 9999;
+        animation: fadeIn 0.5s;
+    }
+    .popup-content {
+        background-color: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+        max-width: 500px;
+        width: 90%;
+        border-top: 6px solid var(--accent-yellow);
+    }
+    .close-btn {
+        position: absolute;
+        top: 15px; left: 20px;
+        font-size: 30px;
+        cursor: pointer;
+        color: var(--primary-dark);
+        transition: color 0.3s;
+    }
+    .close-btn:hover { color: var(--accent-red); }
+    .popup h2 { color: var(--primary-dark); margin-bottom: 20px; font-weight: 800; }
+    .popup p { color: #6c757d; font-size: 1.1rem; line-height: 1.6; }
+    .popup.hide { animation: fadeOut 0.5s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="job-header">
+        <div class="container text-center">
+            <h1 class="almarai-extrabold mb-3">{{ job.title }}</h1>
+            <h5 class="almarai-regular text-warning"><i class="fas fa-building ms-2"></i> {{ job.company.company_english_name }}</h5>
+            <span class="badge bg-light text-dark mt-2 p-2 fs-6 almarai-bold rounded-pill">تخصص الشركة: {{ job.company.company_field }}</span>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <div class="row g-4">
+            
+            <div class="col-lg-8">
+                
+                <div class="content-card">
+                    <h4 class="almarai-extrabold mb-4" style="color: var(--primary-dark);"><i class="fas fa-align-right info-icon"></i> وصف الوظيفة</h4>
+                    <p class="almarai-regular" style="line-height: 1.8; color: #4a5568; white-space: pre-wrap;">{{ job.job_description }}</p>
+                </div>
+
+                <div class="content-card">
+                    <h4 class="almarai-extrabold mb-4" style="color: var(--primary-dark);"><i class="fas fa-briefcase info-icon"></i> تفاصيل وموقع العمل</h4>
+                    <div class="row g-3 almarai-bold">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">طبيعة العمل:</span>
+                                <span style="color: var(--primary-dark);">{{ job.workplace }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">أيام العمل:</span>
+                                <span style="color: var(--primary-dark);">{{ job.workdays }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">ساعات العمل:</span>
+                                <span style="color: var(--primary-dark);">{{ job.work_hours }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">نوع العمل / المدينة:</span>
+                                <span style="color: var(--primary-dark);">{{ job.job_type }} - {{ job.town }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h4 class="almarai-extrabold mb-4" style="color: var(--primary-dark);"><i class="fas fa-list-check info-icon"></i> متطلبات الوظيفة</h4>
+                    <ul class="list-unstyled info-list almarai-regular m-0">
+                        <li>
+                            <span class="info-label">المؤهل المطلوب</span>
+                            <span class="info-value">{{ job.educational_qualification }}</span>
+                        </li>
+                        <li>
+                            <span class="info-label">سنوات الخبرة المطلوبة</span>
+                            <span class="info-value">{{ job.skills_years }}</span>
+                        </li>
+                        <li>
+                            <span class="info-label">اللغات المطلوبة</span>
+                            <span class="info-value">{{ job.languages }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sidebar-card text-center position-sticky" style="top: 100px;">
+                    
+                    <div class="company-logo-container">
+                        {% if job.company.company_logo %}
+                            <img src="/static/uploads/companies/logo/{{job.company.company_logo}}" alt="Company Logo">
+                        {% else %}
+                            <img src="/static/new_design/images/Card-img2.png" alt="Default Logo">
+                        {% endif %}
+                    </div>
+                    
+                    <h5 class="almarai-extrabold mb-4" style="color: var(--primary-dark);">{{ job.company.company_english_name }}</h5>
+                    
+                    <ul class="list-unstyled info-list text-start almarai-regular mb-4">
+                        <li>
+                            <span class="info-label">البريد:</span>
+                            <span class="info-value" style="font-size: 0.9rem;">{{ job.company.company_email }}</span>
+                        </li>
+                        <li>
+                            <span class="info-label">نوع المنشأة:</span>
+                            <span class="info-value">{{ job.company.company_type }}</span>
+                        </li>
+                        <li>
+                            <span class="info-label">الموقع:</span>
+                            <span class="info-value">{{ job.company.country }} - {{ job.company.state }}</span>
+                        </li>
+                    </ul>
+
+                    <div class="dropdown w-100">
+                        <button class="btn btn-custom-red w-100 dropdown-toggle fs-5 almarai-bold py-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            تقدم الآن للوظيفة
+                        </button>
+                        <ul class="dropdown-menu w-100 text-end border-0 shadow-lg mt-2 p-2" style="border-radius: 15px;">
+                            <li><a class="dropdown-item almarai-bold py-2 rounded" href="/applyjob/{{job.id}}"><i class="fas fa-user ms-2 text-primary"></i> تقديم فردي</a></li>
+                            
+                            {% if cutomer_teams %}
+                            <li><hr class="dropdown-divider my-2"></li>
+                            <li><h6 class="dropdown-header almarai-extrabold text-muted">تقديم كفريق (اختر فريقك):</h6></li>
+                            {% for cutomer_team in cutomer_teams %}
+                            <li>
+                                <form action="/applyjob/{{job.id}}" method="post" class="m-0 p-0">
+                                    <button type="submit" class="dropdown-item almarai-bold py-2 rounded">
+                                        <i class="fas fa-users ms-2 text-success"></i> {{ cutomer_team.team_name }}
+                                    </button>
+                                    <input type="hidden" name="type_team" value="{{ cutomer_team.id }}">
+                                </form>
+                            </li>
+                            {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <!-- Report Button -->
+                    <button class="btn btn-outline-danger w-100 mt-3 fs-6 almarai-bold py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        <i class="fas fa-flag ms-2"></i> الإبلاغ عن هذه الوظيفة
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 15px; border-top: 5px solid var(--accent-red);">
+                <div class="modal-header">
+                    <h5 class="modal-title almarai-bold text-danger" id="reportModalLabel"><i class="fas fa-flag ms-2"></i> تقديم بلاغ</h5>
+                    <button type="button" class="btn-close m-0 me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('core.submit_report') }}" method="POST">
+                    <div class="modal-body almarai-regular text-end">
+                        <input type="hidden" name="target_type" value="job">
+                        <input type="hidden" name="target_id" value="{{ job.id }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">سبب البلاغ</label>
+                            <select name="reason" class="form-select" required>
+                                <option value="spam">محتوى مزعج (Spam)</option>
+                                <option value="fake">وظيفة وهمية أو احتيال</option>
+                                <option value="inappropriate">محتوى غير لائق</option>
+                                <option value="other">سبب آخر</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">تفاصيل إضافية (اختياري)</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="يرجى تزويدنا بأي تفاصيل إضافية تساعدنا في مراجعة البلاغ..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-danger"><i class="fas fa-paper-plane ms-2"></i> إرسال البلاغ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span id="closePopupBtn" class="close-btn"><i class="fas fa-times-circle"></i></span>
+            <div class="mb-3">
+                <i class="fas fa-users" style="font-size: 50px; color: var(--accent-yellow);"></i>
+            </div>
+            <h2 class="almarai-extrabold">ميزات منصة فائدة</h2>
+            <p class="almarai-bold text-muted">يمكنك التقديم بالطريقة الفردية أو باختيار إحدى مجموعاتك للتقديم كفريق كامل!</p>
+            <hr style="border-color: #e9ecef;">
+            <p class="almarai-regular">يمكنك تكوين فريق تخصصي أو غير تخصصي والتقديم باسم الفريق كاملاً. ماذا تنتظر؟ قدم الآن.</p>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const popup = document.getElementById('popup');
+        const closePopupBtn = document.getElementById('closePopupBtn');
+    
+        function showPopup() {
+            popup.style.display = 'flex';
+            setTimeout(() => {
+                popup.classList.add('hide');
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                    popup.classList.remove('hide');
+                }, 500); 
+            }, 10000); // 10 seconds display
+        }
+    
+        // أظهر النافذة المنبثقة عند التحميل
+        showPopup();
+    
+        // إظهار النافذة كل 5 دقائق
+        setInterval(showPopup, 300000);
+    
+        closePopupBtn.addEventListener('click', () => {
+            popup.classList.add('hide');
+            setTimeout(() => {
+                popup.style.display = 'none';
+                popup.classList.remove('hide');
+            }, 500);
+        });
+    });
+</script>
+{% endblock %}

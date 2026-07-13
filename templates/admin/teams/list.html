@@ -1,0 +1,53 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}إدارة المجموعات | فائدة{% endblock %}
+{% block nav_teams %}active{% endblock %}
+{% block breadcrumb %}<li>إدارة المجموعات</li>{% endblock %}
+{% block page_title %}إدارة المجموعات{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+    <div class="admin-card-body">
+        <form method="GET" action="{{ url_for('admin.list_teams') }}">
+            <div class="admin-filters">
+                <input type="text" name="search" class="admin-search-input" placeholder="بحث باسم المجموعة..." value="{{ search }}">
+                <button type="submit" class="btn-admin btn-admin-outline"><i class="fas fa-search"></i>بحث</button>
+            </div>
+        </form>
+        {% if teams %}
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead><tr><th>#</th><th>اسم المجموعة</th><th>الأعضاء</th><th>تاريخ الإنشاء</th><th>إجراءات</th></tr></thead>
+                <tbody>
+                    {% for team in teams %}
+                    <tr>
+                        <td>{{ team.id }}</td>
+                        <td><strong>{{ team.team_name }}</strong></td>
+                        <td><span class="admin-badge verified">{{ team_stats[team.id].member_count }} عضو</span></td>
+                        <td>{{ team.creation_date.strftime('%Y/%m/%d') if team.creation_date else '—' }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ url_for('admin.view_team', id=team.id) }}" class="btn-icon"><i class="fas fa-eye"></i></a>
+                                {% if current_admin and current_admin.has_permission('teams.crud') %}
+                                <a href="#" class="btn-icon danger" data-confirm="هل أنت متأكد من حذف هذه المجموعة؟" data-confirm-action="{{ url_for('admin.delete_team', id=team.id) }}" data-confirm-title="حذف مجموعة"><i class="fas fa-trash"></i></a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pagination.pages > 1 %}
+        <div class="admin-pagination">
+            {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if p %}<a href="{{ url_for('admin.list_teams', page=p, search=search) }}" class="{% if p == pagination.page %}active{% endif %}">{{ p }}</a>
+                {% else %}<span class="disabled">...</span>{% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="admin-empty-state"><i class="fas fa-users-cog"></i><h4>لا توجد مجموعات</h4></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/panel_base.html' %}
+{% block title %}فائدة - مجموعاتي{% endblock %}
+{% block page_title %}فائدة - مجموعاتي{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
+    <div class="container-xxl flex-grow-1 container-p-y">
+              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">مجموعاتي</span> </h4>
+
+              <!-- Examples -->
+              <div class="row mb-5">
+                {% for team in my_teams %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                  <div class="card h-100">
+                    {% if team.img %}
+                    <img class="card-img-top fixed-img" src="/static/uploads/customers/teams/images/{{team.img}}" alt="Card image cap" />
+                    {% else %}
+                    <img class="card-img-top fixed-img" src="/static/assets/images/WhatsApp Image 2024-05-17 at 16.25.59_c590364f.jpg" alt="Card image cap" />
+                    {% endif %}
+                    <div class="card-body"style="color: var(--primary-dark);">
+                      <h5 class="card-title"style="color: var(--primary-dark);">{{team.team_name}}</h5>
+                      <p class="card-text">
+                          {{team.general_program}} - {{team.semi_special_program}} - {{team.special_program}}
+                      </p>
+                      <hr>
+
+                      <p class="card-text"style="color: var(--primary-dark);">
+                          {{team.about}}
+                      </p>
+                      <a style="color: var(--primary-dark); background-color: #e68387;" href="/profile_team/{{team.id}}" class="btn btn-outline-primary">رؤية المجموعة</a>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              
+              <style>
+                .fixed-img {
+                  width: 100%;
+                  height: 200px;
+                  object-fit: cover;
+                }
+              </style>
+              
+              <!-- Examples -->
+
+         
+           
+              <!--/ Card layout -->
+            </div>
+</div>
+{% endblock %}

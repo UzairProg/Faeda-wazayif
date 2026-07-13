@@ -1,0 +1,163 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+
+{% block title %}منصة فائدة | مركز الدعم الفني{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* تنسيق ترويسة الصفحة (Header) */
+  .support-header {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+    color: white;
+    padding: 60px 0;
+    border-bottom: 5px solid var(--accent-yellow);
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  /* تنسيق كروت خدمات الدعم */
+  .support-card {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    padding: 40px 20px;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-bottom: 5px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .support-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border-bottom-color: var(--accent-red);
+  }
+
+  .support-icon {
+    font-size: 60px;
+    color: var(--primary-light);
+    margin-bottom: 20px;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+
+  .support-card:hover .support-icon {
+    color: var(--accent-red);
+    transform: scale(1.1);
+  }
+
+  .btn-support {
+    border: 2px solid var(--primary-light);
+    color: var(--primary-dark);
+    border-radius: 15px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+  }
+
+  .support-card:hover .btn-support {
+    background-color: var(--primary-light);
+    color: white;
+    border-color: var(--primary-light);
+  }
+
+  /* تأثيرات الظهور التدريجي (Animations) */
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .delay-1 {
+    animation-delay: 0.1s;
+  }
+
+  .delay-2 {
+    animation-delay: 0.2s;
+  }
+
+  .delay-3 {
+    animation-delay: 0.3s;
+  }
+
+  .delay-4 {
+    animation-delay: 0.4s;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="support-header fade-in-up">
+  <div class="container">
+    <i class="bi bi-headset display-1 mb-3" style="color: var(--accent-yellow);"></i>
+    <h1 class="almarai-extrabold mb-3 text-whit">مرحباً بك في مركز الدعم الفني</h1>
+    <p class="almarai-regular fs-5 text-white">نحن هنا لمساعدتك والإجابة على جميع استفساراتك وحل المشاكل التي قد تواجهك
+      في منصة فائدة</p>
+  </div>
+</div>
+
+<div class="container mb-5 pb-5">
+  <div class="row g-4 text-center">
+
+    <div class="col-md-6 col-lg-3 fade-in-up delay-1">
+      <div class="support-card">
+        <div>
+          <i class="bi bi-discord support-icon"></i>
+          <h4 class="almarai-extrabold mb-3" style="color: var(--primary-dark);">سيرفر Discord</h4>
+          <p class="text-muted almarai-regular mb-4">انضم إلى مجتمعنا على ديسكورد للتواصل السريع والمباشر مع الأعضاء
+            والإدارة</p>
+        </div>
+        <a href="https://discord.com" target="_blank" class="btn btn-support almarai-bold w-100">انضم الآن</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 fade-in-up delay-2">
+      <div class="support-card">
+        <div>
+          <i class="bi bi-envelope support-icon"></i>
+          <h4 class="almarai-extrabold mb-3" style="color: var(--primary-dark);">البريد الإلكتروني</h4>
+          <p class="text-muted almarai-regular mb-4">أرسل استفسارك مفصلاً عبر البريد وسيقوم فريقنا بالرد عليك في أقرب
+            فرصة</p>
+        </div>
+        <a href="mailto:info@faeda.com.ca" class="btn btn-support almarai-bold w-100">راسلنا عبر البريد</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 fade-in-up delay-3">
+      <div class="support-card">
+        <div>
+          <i class="bi bi-chat-square-text support-icon"></i>
+          <h4 class="almarai-extrabold mb-3" style="color: var(--primary-dark);">الدعم المباشر</h4>
+          <p class="text-muted almarai-regular mb-4">تحدث مع أحد ممثلي خدمة العملاء مباشرة لحل مشكلتك بشكل فوري</p>
+        </div>
+        <a href="#" onclick="toggleChatWidget(); return false;" class="btn btn-support almarai-bold w-100">ابدأ المحادثة</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 fade-in-up delay-4">
+      <div class="support-card">
+        <div>
+          <i class="bi bi-ticket-perforated support-icon"></i>
+          <h4 class="almarai-extrabold mb-3" style="color: var(--primary-dark);">تذاكر الدعم</h4>
+          <p class="text-muted almarai-regular mb-4">قم بفتح تذكرة دعم فني مخصصة لمتابعة مشكلتك التقنية بدقة وفعالية</p>
+        </div>
+        <a href="{{ url_for('core.support_ticket') }}" class="btn btn-support almarai-bold w-100">الذهاب للقسم</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+{% block title %}منصة فائدة | نجاح التقديم{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Card Customization */
+    .auth-card {
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        padding: 50px 40px;
+        border-top: 6px solid #28a745; /* Green for success */
+        animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes scaleIn {
+        0% { transform: scale(0.8); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .btn-custom-blue {
+        background-color: #3570D9;
+        color: white;
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 700;
+        border: none;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+    .btn-custom-blue:hover {
+        background-color: #2851a3;
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container d-flex justify-content-center align-items-center flex-grow-1 my-5">
+        <div class="col-md-8 col-lg-5">
+            <div class="auth-card text-center">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle" style="font-size: 80px; color: #28a745;"></i>
+                </div>
+                <h2 class="almarai-extrabold mb-3" style="color: var(--primary-dark);">تم التقديم بنجاح!</h2>
+                <p class="almarai-regular text-muted mb-5 fs-5">تم إرسال طلبك للشركة بنجاح، سيتم التواصل معك في أقرب وقت. نتمنى لك كل التوفيق في مسيرتك المهنية.</p>
+                <button onclick="location.href='/my-jobapplications'" class="btn btn-custom-blue w-100 almarai-bold fs-5">متابعة طلبات التوظيف</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

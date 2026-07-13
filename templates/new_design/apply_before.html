@@ -1,0 +1,67 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+
+{% block title %}منصة فائدة | تنبيه التقديم{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* التنسيقات الخاصة بالصندوق فقط (لا حاجة لنسخ ألوان الموقع لأنها موجودة في base) */
+    .auth-card {
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        padding: 50px 40px;
+        border-top: 6px solid var(--accent-yellow);
+        animation: slideInFromBottom 0.6s ease-out;
+    }
+
+    @keyframes slideInFromBottom {
+        0% { transform: translateY(30px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .btn-custom-blue {
+        background-color: #3570D9;
+        color: white;
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 700;
+        border: none;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+    .btn-custom-blue:hover {
+        background-color: #2851a3;
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center flex-grow-1 my-5">
+    <div class="col-md-8 col-lg-5">
+        <div class="auth-card text-center">
+            <div class="mb-4">
+                <i class="fas fa-exclamation-circle" style="font-size: 80px; color: var(--accent-yellow);"></i>
+            </div>
+            <h2 class="almarai-extrabold mb-3" style="color: var(--primary-dark);">تم التقديم مسبقاً!</h2>
+            <p class="almarai-regular text-muted mb-5 fs-5">لقد قمت بالتقديم على هذه الوظيفة بالفعل. يرجى الانتظار حتى يتم تأكيد ومراجعة طلبك من قبل الشركة.</p>
+            <button onclick="location.href='/my-jobapplications'" class="btn btn-custom-blue w-100 almarai-bold fs-5">الاستمرار إلى طلباتي</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<footer id="footer">
+    <div class="container text-center pt-4 pb-4">
+        <p class="mb-0 almarai-regular" style="color: #6c757d;">منصة فائدة 2023 | جميع الحقوق المحفوظة &copy;</p>
+    </div>
+</footer>
+{% endblock %}

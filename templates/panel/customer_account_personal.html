@@ -1,0 +1,214 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/panel_base.html' %}
+{% block title %}فائدة - بيانات الحساب الشخصية{% endblock %}
+{% block page_title %}فائدة - بيانات الحساب الشخصية{% endblock %}
+
+{% block content %}
+<style>
+  /* Match the React phone input to the Sneat theme .form-control styling */
+  #react-phone-input-root input {
+      display: block !important;
+      width: 100% !important;
+      height: 39px !important;
+      font-size: 0.9375rem !important;
+      font-weight: 400 !important;
+      line-height: 1.53 !important;
+      color: #697a8d !important;
+      background-color: #fff !important;
+      background-clip: padding-box !important;
+      border: 1px solid #d9dee3 !important;
+      border-radius: 0.375rem !important;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+      padding-right: 15px !important; /* For Arabic/RTL text alignment */
+  }
+  
+  /* Target the country code box (select, button, or combobox) to match height */
+  #react-phone-input-root select,
+  #react-phone-input-root button,
+  #react-phone-input-root [role="combobox"],
+  #react-phone-input-root [role="button"],
+  #react-phone-input-root .flag-dropdown {
+      height: 39px !important;
+      min-height: 39px !important;
+      border: 1px solid #d9dee3 !important;
+      border-radius: 0.375rem !important;
+      background-color: #fff !important;
+  }
+
+  /* Ensure the text is LTR and properly aligned */
+  #react-phone-input-root input {
+      direction: ltr !important; 
+      text-align: left !important;
+      flex: 1 1 auto !important;
+  }
+
+  /* If it uses react-tel-input internally, preserve its padding */
+  #react-phone-input-root .react-tel-input input {
+      padding-left: 48px !important; 
+  }
+
+  #react-phone-input-root input:focus {
+      border-color: #696cff !important;
+      outline: 0 !important;
+      box-shadow: 0 0 0.25rem 0.05rem rgba(105, 108, 255, 0.1) !important;
+  }
+</style>
+<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
+    <div class="container-xxl flex-grow-1 container-p-y">
+              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">إعدادات الحساب/</span> البيانات الشخصية</h4>
+
+              <div class="row">
+                <div class="col-md-12">
+                 
+                  <div class="card mb-4">
+                    <h5 class="card-header"style="color: var(--primary-dark);">بيانات الحساب الشخصية</h5>
+                    <!-- Account -->
+                    <div class="card-body">
+                      <form  method="POST" action="/edit-profile/personal_data" enctype="multipart/form-data">
+
+                      <div class="d-flex align-items-start align-items-sm-center gap-4">
+                        {% if user.img %}
+
+                        <img
+
+                        src="/static/uploads/customers/images/{{user.img}}"
+                          alt="user-avatar"
+                          class="d-block rounded"
+                          height="100"
+                          width="100"
+                          id="uploadedAvatar"
+                        />
+                        {% else %}
+                        <img
+
+                        src="/static/no_image.jpg"
+
+                        alt="user-avatar"
+                        class="d-block rounded"
+                        height="100"
+                        width="100"
+                        id="uploadedAvatar"
+                      />
+                        {% endif %}
+
+                        <div class="button-wrapper">
+                          <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                            <span class="d-none d-sm-block" style="color: var(--primary-dark);">تحميل صورة شخصية</span>
+                            <i class="bx bx-upload d-block d-sm-none"></i>
+                            <input
+                              type="file"
+                              id="upload"
+                              class="account-file-input"
+                              hidden
+                              accept="image/png, image/jpeg, image/jpg"
+                              name="new_image"
+                            />
+                          </label>
+                  
+
+                          <p class="text-muted mb-0">Allowed JPG, JPEG or PNG</p>
+                        </div>
+                      </div>
+                    </div>
+                    <hr class="my-0" />
+                    <div class="card-body">
+                        <div class="row">
+                         
+                          <div class="mb-3 col-md-6">
+                            <label for="lastName" class="form-label" style="color: var(--primary-dark);">اسم بالكامل *</label>
+                            <input class="form-control" type="text" name="name" id="lastName" value="{{user.fullname}}"/>
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label for="email" class="form-label" style="color: var(--primary-dark);">* الإيميل</label>
+                            <input
+
+                              class="form-control"
+                              type="text"
+                              id="email"
+                              name="email"
+                              placeholder="example@example.com"
+                              value="{{user.email}}"
+                              required
+                              disabled
+                              />
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label for="language" class="form-label" style="color: var(--primary-dark);">النوع * </label>
+                            <select id="language" class="select2 form-select" name="new_sex" required>
+                              {% if user.sex%}
+                              <option value="{{user.sex}}">{{user.sex}}</option>
+                              {%endif%}
+                              <option value="">اختر النوع</option>
+                              <option value="ذكر">ذكر</option>
+                              <option value="انثى">انثى</option>
+
+                            </select>
+                          </div>
+                          <div class="mb-3 col-md-6" >
+                            <label class="form-label" for="phoneNumber" style="color: var(--primary-dark);">رقم الهاتف * </label>
+                            <div id="react-phone-input-root" data-initial-value="{{user.mobile}}"></div>
+                            <!-- Hidden input to store the phone number for form submission -->
+                            <input type="hidden" name="phoneNumber" id="hiddenPhoneNumber" value="{{user.mobile}}">
+                          </div>
+                     
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="country" style="color: var(--primary-dark);">الدولة * </label>
+                            <select id="country" onchange="populateCities()" class="select2 form-select" name="country" required >
+
+                              {% if user.country %}
+                              <option value="{{user.country}}" selected>{{user.country}}</option>
+                              {% else %}
+                              <option value="المملكة العربية السعودية" selected>المملكة العربية السعودية</option>
+                              {% endif %}
+                            </select>
+                          </div>
+
+                          <div class="mb-3 col-md-6">
+                            <label for="state" class="form-label" style="color: var(--primary-dark);">المدينة * </label>
+                            <select  class="select2 form-select" name="state" id="city" required  >
+                              {% if user.government%}
+                              <option value="{{user.government}}">{{user.government}}</option>
+                              {%endif%}
+                                     </select>                          </div>
+                          
+                          <div class="mb-3 col-md-12">
+                            <label for="address" class="form-label"style="color: var(--primary-dark);">وصف مختصر</label>
+                            <textarea class="form-control" name="about" id="" cols="10" rows="5">{{user.about}}</textarea>
+                          </div>
+                      
+                        </div>
+                        <div class="mt-2">
+                          <p style="color: red;"> يرجى ملئ جميع الحقول المميزة بنجمة </p>
+                          <button type="submit" class="btn btn-primary me-2">حفظ التغييرات</button>
+                        </div>
+                      </form>
+                    </div>
+                    <!-- /Account -->
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="{{ url_for('static', filename='react/assets/index.css') }}">
+<script type="module" src="{{ url_for('static', filename='react/assets/index.js') }}"></script>
+<script src="{{ url_for('static', filename='API/ar_country.js') }}"></script>
+<script>
+  // Capture the React phone input value right before form submission
+  document.querySelector('form').addEventListener('submit', function() {
+    var reactInput = document.querySelector('#react-phone-input-root input');
+    if (reactInput && reactInput.value) {
+      document.getElementById('hiddenPhoneNumber').value = reactInput.value;
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,261 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+{% block title %}منصة فائدة | تفاصيل الوظيفة{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Job Header Section */
+    .job-header {
+        background-color: var(--primary-dark);
+        color: white;
+        padding: 50px 0;
+        margin-bottom: 40px;
+        border-bottom: 5px solid var(--accent-red);
+    }
+
+    /* Cards Styling */
+    .content-card {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+        border: none;
+    }
+    .sidebar-card {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        padding: 30px;
+        border: 2px solid var(--cream);
+    }
+    
+    .company-logo-container {
+        width: 140px;
+        height: 140px;
+        border-radius: 15px;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+        overflow: hidden;
+        border: 2px solid var(--bg-light);
+    }
+    .company-logo-container img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .info-list li {
+        padding: 12px 0;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .info-list li:last-child {
+        border-bottom: none;
+    }
+    .info-label {
+        color: var(--primary-light);
+        font-weight: 700;
+    }
+    .info-value {
+        color: #6c757d;
+    }
+    .info-icon {
+        color: var(--accent-red);
+        width: 25px;
+        text-align: center;
+        margin-left: 10px;
+    }
+
+    .btn-custom-red {
+        background-color: var(--accent-red);
+        color: white;
+        border-radius: 10px;
+        padding: 12px 25px;
+        border: none;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+    .btn-custom-red:hover {
+        background-color: #9e203b;
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="job-header">
+        <div class="container text-center">
+            <h1 class="almarai-extrabold mb-3">{{ job.title }}</h1>
+            <h5 class="almarai-regular text-warning"><i class="fas fa-building ms-2"></i> {{ job.company.company_english_name if job.company else 'غير محدد' }}</h5>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        
+        <div class="text-right mb-4">
+            <a href="/job-list" class="btn btn-outline-secondary almarai-bold" style="border-radius: 10px;">
+                <i class="fas fa-arrow-right ml-2"></i> العودة لقائمة الوظائف
+            </a>
+        </div>
+
+        <div class="row g-4">
+            
+            <div class="col-lg-8">
+                
+                <div class="content-card">
+                    <h4 class="almarai-extrabold mb-4" style="color: var(--primary-dark);"><i class="fas fa-briefcase info-icon"></i> تفاصيل وبيئة العمل</h4>
+                    <div class="row g-3 almarai-bold">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">طبيعة العمل:</span>
+                                <span style="color: var(--primary-dark);">{{ job.workplace }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">أيام العمل:</span>
+                                <span style="color: var(--primary-dark);">{{ job.workdays }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">ساعات العمل:</span>
+                                <span style="color: var(--primary-dark);">{{ job.work_hours }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded" style="background-color: var(--bg-light);">
+                                <span class="text-muted d-block mb-1">نوع العمل / المدينة:</span>
+                                <span style="color: var(--primary-dark);">{{ job.job_type }} - {{ job.town }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h4 class="almarai-extrabold mb-4" style="color: var(--primary-dark);"><i class="fas fa-list-check info-icon"></i> متطلبات الوظيفة</h4>
+                    <ul class="list-unstyled info-list almarai-regular m-0">
+                        <li>
+                            <span class="info-label">المؤهل المطلوب</span>
+                            <span class="info-value">{{ job.educational_qualification }}</span>
+                        </li>
+                        <li>
+                            <span class="info-label">سنوات الخبرة المطلوبة</span>
+                            <span class="info-value">{{ job.skills_years }}</span>
+                        </li>
+                        <li>
+                            <span class="info-label">اللغات المطلوبة</span>
+                            <span class="info-value">{{ job.languages }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sidebar-card text-center position-sticky" style="top: 100px;">
+                    
+                    <div class="company-logo-container">
+                        {% if job.company and job.company.company_logo %}
+                            <img src="/static/uploads/companies/logo/{{job.company.company_logo}}" alt="Company Logo">
+                        {% else %}
+                            <img src="/static/photo/boys.png" alt="Default Logo">
+                        {% endif %}
+                    </div>
+                    
+                    <h5 class="almarai-extrabold mb-3" style="color: var(--primary-dark);">تفاصيل الشركة</h5>
+                    
+                    <ul class="list-unstyled info-list text-start almarai-regular mb-4">
+                        <li>
+                            <span class="info-label">نوع المنشأة:</span>
+                            <span class="info-value">{{ job.company.company_type if job.company else 'غير محدد' }}</span>
+                        </li>
+                    </ul>
+
+                    <hr class="my-4" style="border-top: 2px dashed #ccc;">
+
+                    <div class="dropdown w-100">
+                        <button class="btn btn-custom-red w-100 dropdown-toggle fs-5 almarai-bold py-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-paper-plane ms-2"></i> قدم الآن للوظيفة
+                        </button>
+                        
+                        <ul class="dropdown-menu w-100 text-end border-0 shadow-lg mt-2 p-2" style="border-radius: 15px;">
+                            <li><a class="dropdown-item almarai-bold py-2 rounded" href="{{ url_for('customer.apply_for_job', job_id=job.id) }}"><i class="fas fa-user ms-2 text-primary"></i> تقديم كفرد</a></li>                            
+                            {% if cutomer_teams %}
+                            <li><hr class="dropdown-divider my-2"></li>
+                            <li><h6 class="dropdown-header almarai-extrabold text-muted">تقديم كفريق (اختر فريقك):</h6></li>
+                            {% for cutomer_team in cutomer_teams %}
+                            <li>
+                                <form action="{{ url_for('customer.apply_for_job', job_id=job.id) }}" method="post" class="m-0 p-0">
+                                    <button type="submit" class="dropdown-item almarai-bold py-2 rounded">
+                                        <i class="fas fa-users ms-2 text-success"></i> {{ cutomer_team.team_name }}
+                                    </button>
+                                    <input type="hidden" name="type_team" value="{{ cutomer_team.id }}">
+                                </form>
+                            </li>
+                            {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <!-- Report Button -->
+                    <button class="btn btn-outline-danger w-100 mt-3 fs-6 almarai-bold py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        <i class="fas fa-flag ms-2"></i> الإبلاغ عن هذه الوظيفة
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 15px; border-top: 5px solid var(--accent-red);">
+                <div class="modal-header">
+                    <h5 class="modal-title almarai-bold text-danger" id="reportModalLabel"><i class="fas fa-flag ms-2"></i> تقديم بلاغ</h5>
+                    <button type="button" class="btn-close m-0 me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('core.submit_report') }}" method="POST">
+                    <div class="modal-body almarai-regular text-end">
+                        <input type="hidden" name="target_type" value="job">
+                        <input type="hidden" name="target_id" value="{{ job.id }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">سبب البلاغ</label>
+                            <select name="reason" class="form-select" required>
+                                <option value="spam">محتوى مزعج (Spam)</option>
+                                <option value="fake">وظيفة وهمية أو احتيال</option>
+                                <option value="inappropriate">محتوى غير لائق</option>
+                                <option value="other">سبب آخر</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">تفاصيل إضافية (اختياري)</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="يرجى تزويدنا بأي تفاصيل إضافية تساعدنا في مراجعة البلاغ..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-danger"><i class="fas fa-paper-plane ms-2"></i> إرسال البلاغ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

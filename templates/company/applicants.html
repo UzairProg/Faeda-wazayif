@@ -1,0 +1,88 @@
+{% extends "company/company_base.html" %}
+{% block title %}طلبات التوظيف | فائدة{% endblock %}
+{% block nav_applicants %}active{% endblock %}
+{% block breadcrumb %}<li>طلبات التوظيف</li>{% endblock %}
+{% block page_title %}طلبات التوظيف{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+    <div class="admin-card-body">
+        {% if applicants %}
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>المتقدم</th>
+                        <th>الوظيفة المتقدم لها</th>
+                        <th>تاريخ التقديم</th>
+                        <th>حالة الطلب</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app_id, app_status, applied_at, applicant, job in applicants %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                {% if applicant.img %}
+                                    <img src="{{ url_for('static', filename='uploads/customers/images/' + applicant.img) }}" alt="صورة المتقدم" style="width:40px; height:40px; border-radius:50%; margin-left:10px;">
+                                {% else %}
+                                    <div style="width:40px; height:40px; border-radius:50%; margin-left:10px; background:#f0f2f5; display:flex; align-items:center; justify-content:center;">
+                                        <i class="fas fa-user text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <strong>{{ applicant.fullname }}</strong>
+                                    <div class="text-muted small">{{ applicant.educational_qualification or '' }} - {{ applicant.university or '' }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ job.title }}</td>
+                        <td>{{ applied_at.strftime('%Y/%m/%d') if applied_at else '—' }}</td>
+                        <td>
+                            {% if app_status == 'تم القبول النهائي' %}
+                                <span class="admin-badge active">مقبول</span>
+                            {% elif app_status == 'تم الرفض' %}
+                                <span class="admin-badge suspended">مرفوض</span>
+                            {% else %}
+                                <span class="admin-badge warned">قيد المراجعة</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                {% if applicant.cv %}
+                                <button onclick="openCV('{{ url_for('company_panel.download_cv', cv_filename=applicant.cv) }}')" class="btn-icon" title="عرض السيرة الذاتية">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                                {% endif %}
+                                
+                                <form action="{{ url_for('company_panel.update_applicant_status_api', app_id=app_id) }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="action" value="accept">
+                                    <button type="submit" class="btn-icon" title="قبول نهائي" style="color:#28a745;">
+                                        <i class="fas fa-check-circle"></i>
+                                    </button>
+                                </form>
+                                
+                                <form action="{{ url_for('company_panel.update_applicant_status_api', app_id=app_id) }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="action" value="reject">
+                                    <button type="submit" class="btn-icon" title="رفض" style="color:#dc3545;">
+                                        <i class="fas fa-times-circle"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="admin-empty-state">
+            <i class="fas fa-users"></i>
+            <h4>لا يوجد طلبات توظيف</h4>
+            <p>لم يتقدم أحد لوظائفك حتى الآن.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

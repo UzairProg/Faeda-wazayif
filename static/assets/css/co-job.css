@@ -1,0 +1,8 @@
+@media(min-width: 1600px) {
+.main-col {
+    width: 17vw !important;
+}
+.main-col.v2 {
+    width: 83vw !important;
+}
+}

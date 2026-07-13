@@ -1,0 +1,35 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}تعديل وظيفة | إدارة الوظائف{% endblock %}
+{% block nav_jobs %}active{% endblock %}
+{% block breadcrumb %}<li><a href="{{ url_for('admin.list_jobs') }}">الوظائف</a></li><li><a href="{{ url_for('admin.view_job', id=job.id) }}">{{ job.title }}</a></li><li>تعديل</li>{% endblock %}
+{% block page_title %}تعديل الوظيفة{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+    <div class="admin-card-body">
+        <form method="POST" action="{{ url_for('admin.edit_job', id=job.id) }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+                <div class="admin-form-group"><label>المسمى الوظيفي</label><input type="text" name="title" class="admin-form-input" value="{{ job.title }}" required></div>
+                <div class="admin-form-group"><label>نوع الوظيفة</label><input type="text" name="job_type" class="admin-form-input" value="{{ job.job_type }}"></div>
+                <div class="admin-form-group"><label>المدينة</label><input type="text" name="town" class="admin-form-input" value="{{ job.town }}"></div>
+                <div class="admin-form-group"><label>التخصص</label><input type="text" name="specialization" class="admin-form-input" value="{{ job.specialization }}"></div>
+                <div class="admin-form-group"><label>سنوات الخبرة</label><input type="text" name="skills_years" class="admin-form-input" value="{{ job.skills_years }}"></div>
+                <div class="admin-form-group"><label>المؤهل</label><input type="text" name="educational_qualification" class="admin-form-input" value="{{ job.educational_qualification }}"></div>
+                <div class="admin-form-group"><label>مكان العمل</label><input type="text" name="workplace" class="admin-form-input" value="{{ job.workplace }}"></div>
+                <div class="admin-form-group"><label>التصنيف</label>
+                    <select name="category" class="admin-form-select">
+                        <option value="">— اختر تصنيف —</option>
+                        {% for cat in categories %}<option value="{{ cat.name_ar }}" {% if job.category == cat.name_ar %}selected{% endif %}>{{ cat.name_ar }}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="admin-form-group" style="margin-top:12px"><label>الوصف الوظيفي</label><textarea name="job_description" class="admin-form-textarea" style="min-height:150px">{{ job.job_description }}</textarea></div>
+            <div class="admin-form-group"><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" name="is_featured" {% if job.is_featured %}checked{% endif %}> وظيفة مميزة <i class="fas fa-star" style="color:var(--admin-warning)"></i></label></div>
+            <div style="display:flex;gap:12px;margin-top:24px">
+                <button type="submit" class="btn-admin btn-admin-primary"><i class="fas fa-save"></i>حفظ التعديلات</button>
+                <a href="{{ url_for('admin.view_job', id=job.id) }}" class="btn-admin btn-admin-outline">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

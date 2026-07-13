@@ -1,0 +1,51 @@
+{% extends 'new_design/base.html' %}
+{% block title %}فتح تذكرة دعم فني | فائدة{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm" style="border-radius: 15px; overflow: hidden;">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0">فتح تذكرة دعم فني</h3>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('core.support_ticket') }}">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">البريد الإلكتروني</label>
+                            <input type="email" class="form-control" name="email" value="{{ session.get('suspended_email') or session.get('email_session') or session.get('company_email_session') or '' }}" required placeholder="البريد الإلكتروني المسجل في المنصة">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">عنوان التذكرة / المشكلة</label>
+                            <input type="text" class="form-control" name="subject" required placeholder="مثال: استفسار عن تعليق الحساب">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">تفاصيل المشكلة</label>
+                            <textarea class="form-control" name="description" rows="6" required placeholder="يرجى كتابة تفاصيل المشكلة أو استفسارك هنا بكل وضوح..."></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg py-3" style="border-radius: 10px;">
+                                <i class="fas fa-paper-plane me-2"></i> إرسال التذكرة
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

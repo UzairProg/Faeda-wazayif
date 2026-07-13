@@ -1,0 +1,283 @@
+{% extends 'new_design/panel_base.html' %}
+{% block title %}فائدة - صفحتي الشخصية{% endblock %}
+{% block page_title %}فائدة - صفحتي الشخصية{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-dark: #232E4C;
+        --primary-light: #253048;
+        --accent-red: #BF2A4A;
+        --accent-yellow: #F0BF56;
+        --bg-light: #F0F1F0;
+        --text-muted: #6c757d;
+    }
+    body { font-family: 'Almarai', sans-serif; }
+    
+    .profile-header-card {
+        border-radius: 15px;
+        border: none;
+        overflow: hidden;
+        background: white;
+    }
+    .profile-banner-bg {
+        height: 200px;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+        position: relative;
+    }
+    .profile-content {
+        padding: 0 30px 30px;
+        position: relative;
+    }
+    .profile-avatar {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 5px solid white;
+        background: white;
+        object-fit: cover;
+        margin-top: -70px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        z-index: 2;
+        position: relative;
+    }
+    .profile-avatar-fallback {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 5px solid white;
+        background: #e2e5e9;
+        color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.5rem;
+        margin-top: -70px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        z-index: 2;
+        position: relative;
+    }
+    
+    .info-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.04);
+        background: white;
+        height: 100%;
+    }
+    .info-card-header {
+        border-bottom: 1px solid #f0f0f0;
+        padding: 20px;
+        color: var(--primary-dark);
+        font-weight: 800;
+        font-size: 1.1rem;
+    }
+    .info-card-body { padding: 20px; }
+    
+    .info-item {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+    }
+    .info-item:last-child { margin-bottom: 0; }
+    
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        border-radius: 10px;
+        background: rgba(35, 46, 76, 0.05);
+        color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 15px;
+        font-size: 1.1rem;
+    }
+    .info-label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        display: block;
+        margin-bottom: 3px;
+        font-weight: 600;
+    }
+    .info-value {
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 1rem;
+        word-break: break-word;
+    }
+    
+    .cv-download-btn {
+        background-color: var(--primary-dark);
+        color: white;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    .cv-download-btn:hover {
+        background-color: var(--primary-light);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(35, 46, 76, 0.2);
+    }
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="py-3 mb-3">
+        <h4 class="fw-bold mb-0" style="color: var(--primary-dark);">
+            <span class="fw-light text-muted">العملاء /</span> الملف الشخصي
+        </h4>
+    </div>
+
+    <!-- Hero Cover & Avatar -->
+    <div class="card profile-header-card shadow-sm mb-4">
+        <div class="profile-banner-bg"></div>
+        <div class="profile-content text-center text-md-start">
+            <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end">
+                {% if customer.img %}
+                    <img src="/static/uploads/customers/images/{{ customer.img }}" alt="{{ customer.fullname }}" class="profile-avatar">
+                {% else %}
+                    <div class="profile-avatar-fallback">
+                        <i class="fas fa-user"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="ms-md-4 me-md-4 mt-3 mt-md-0 mb-2">
+                    <h2 class="fw-bold mb-1" style="color: var(--primary-dark);">{{ customer.fullname }}</h2>
+                    <p class="mb-0 text-muted fw-bold d-flex align-items-center justify-content-center justify-content-md-start" style="font-size: 1.1rem;">
+                        <i class="fas fa-id-card ms-2" style="color: var(--accent-red);"></i> ID: {{ customer.user_id }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Information Grid -->
+    <div class="row g-4 mb-4">
+        
+        <!-- Card 1: النبذة والتواصل (About & Contact) -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card info-card">
+                <div class="info-card-header">
+                    <i class="fas fa-address-card ms-2" style="color: var(--accent-red);"></i> النبذة والتواصل
+                </div>
+                <div class="info-card-body">
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <span class="info-label">البريد الإلكتروني</span>
+                            <span class="info-value">{{ customer.email if customer.email else 'غير متوفر' }}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div>
+                            <span class="info-label">الموقع (الدولة، المدينة)</span>
+                            <span class="info-value">
+                                {% if customer.country or customer.government %}
+                                    {{ customer.country }} {% if customer.country and customer.government %}،{% endif %} {{ customer.government }}
+                                {% else %}
+                                    غير متوفر
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <hr class="my-4" style="border-color: rgba(0,0,0,0.05);">
+                    <div>
+                        <span class="info-label mb-2"><i class="fas fa-info-circle ms-1"></i> نبذة عني</span>
+                        <p class="info-value" style="font-size: 0.95rem; line-height: 1.8; font-weight: 500;">
+                            {{ customer.about if customer.about else 'لم يتم كتابة نبذة شخصية حتى الآن.' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: البيانات التعليمية (Education) -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card info-card">
+                <div class="info-card-header">
+                    <i class="fas fa-graduation-cap ms-2" style="color: var(--accent-yellow);"></i> البيانات التعليمية
+                </div>
+                <div class="info-card-body">
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-certificate"></i></div>
+                        <div>
+                            <span class="info-label">الحالة التعليمية</span>
+                            <span class="info-value">{{ customer.education_statue if customer.education_statue else 'غير متوفر' }}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-award"></i></div>
+                        <div>
+                            <span class="info-label">المؤهل العلمي</span>
+                            <span class="info-value">{{ customer.educational_qualification if customer.educational_qualification else 'غير متوفر' }}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-university"></i></div>
+                        <div>
+                            <span class="info-label">الجامعة</span>
+                            <span class="info-value">{{ customer.university if customer.university else 'غير متوفر' }}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-book-reader"></i></div>
+                        <div>
+                            <span class="info-label">التخصص</span>
+                            <span class="info-value">{{ customer.department_university if customer.department_university else 'غير متوفر' }}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-calendar-check"></i></div>
+                        <div>
+                            <span class="info-label">تاريخ التخرج</span>
+                            <span class="info-value">{{ customer.graduation_date if customer.graduation_date else 'غير متوفر' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: البيانات المهنية والسيرة الذاتية (Professional & CV) -->
+        <div class="col-lg-4 col-md-12">
+            <div class="card info-card">
+                <div class="info-card-header">
+                    <i class="fas fa-briefcase ms-2 text-primary"></i> المهنة والسيرة الذاتية
+                </div>
+                <div class="info-card-body d-flex flex-column">
+                    <div class="info-item mb-4">
+                        <div class="info-icon"><i class="fas fa-star"></i></div>
+                        <div>
+                            <span class="info-label">مجال العمل المفضل</span>
+                            <span class="info-value">{{ customer.preferred_field_of_work if customer.preferred_field_of_work else 'غير متوفر' }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto pt-4 border-top">
+                        <span class="info-label mb-3 text-center d-block" style="font-size: 1rem;"><i class="fas fa-file-pdf ms-1"></i> السيرة الذاتية</span>
+                        
+                        {% if customer.cv %}
+                            <a href="{{ url_for('company.download_cv', cv_filename=customer.cv) }}" download class="cv-download-btn text-decoration-none">
+                                <i class="fas fa-download ms-2"></i> تحميل السيرة الذاتية
+                            </a>
+                        {% else %}
+                            <div class="text-center p-4 bg-light rounded" style="border: 2px dashed rgba(0,0,0,0.1);">
+                                <i class="fas fa-file-excel text-muted mb-2" style="font-size: 2rem;"></i>
+                                <p class="mb-0 text-muted fw-bold">لا يوجد سيرة ذاتية تم تحميلها</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

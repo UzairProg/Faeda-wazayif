@@ -1,0 +1,2496 @@
+@media(min-width:1371px) and (max-width:1700px) {
+    /*    .container{max-width: 1360px;}*/
+
+    .navbar-brand img {
+        height: 40px;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        font-size: 16px;
+    }
+
+    .navbar-light .navbar-info li a.call-btn {
+        font-size: 14px;
+        padding: 8px 5px;
+    }
+
+    .navbar-light .navbar-info li a img {
+        max-width: 40px;
+    }
+
+    .navbar-light .navbar-info li {
+        margin-left: 30px;
+    }
+
+    .content {
+        padding: 20px 0;
+    }
+
+    .right-part {
+        padding: 20px;
+        height: calc(100vh - 135px)
+    }
+
+    .right-part ul li {
+        margin: 0 0 10px;
+    }
+
+    .right-part ul li a {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    .right-part .logout-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    .right-part ul li a .nav-icon img {
+        max-width: 19px;
+    }
+
+    .content-detail {
+        padding: 20px;
+        height: calc(100vh - 135px);
+    }
+
+    .urgent-application-content .content-detail {
+        height: calc(100vh - 307px);
+    }
+
+    /* **** Index **** */
+    .job-block .job-box {
+        padding: 20px;
+    }
+
+    .job-block .job-box h3 {
+        font-size: 22px;
+        margin: 0 0 15px;
+    }
+
+    /* **** Index **** */
+
+    /* **** Advertised Jobs **** */
+    .advertised-box {
+        padding: 15px;
+    }
+
+    .advertised-box h3 {
+        font-size: 20px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box p {
+        font-size: 16px;
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul {
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul li {
+        font-size: 16px;
+        margin: 0 0 10px;
+    }
+
+    .advertised-box .btn-detail {
+        padding: 12px 40px;
+    }
+
+    /* **** End Advertised Jobs **** */
+
+    /* **** Company Profile ***** */
+    .uploadbox label {
+        font-size: 14px;
+    }
+
+    form .form-group {
+        padding: 12px;
+        margin: 0 0 15px;
+    }
+
+    form .form-group .form-control {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .profile-form form .form-group i {
+        left: 12px;
+        bottom: 12px;
+        background: #fff
+    }
+
+    /* **** End Company Profile ***** */
+
+    /* **** Job Application ***** */
+    .job-information ul {
+        margin: 0 -2px;
+    }
+
+    .job-information ul li {
+        padding: 0 2px;
+    }
+
+    .job-application-table .job-information ul li {
+        min-width: 180px;
+    }
+
+    .job-information .btn-primary {
+        display: block;
+        padding: 10px;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+    }
+
+    .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    .table-block table tbody tr td h6 {
+        min-width: 120px;
+    }
+
+    .job-application-table.accepted-employees-table .table-block table tbody tr td {
+        font-size: 15px;
+    }
+
+    .job-application-table.accepted-employees-table .table-block table tbody tr td:first-child {
+        min-width: 100px;
+    }
+
+    .job-application-table.accepted-employees-table .table-block table tbody tr td:nth-child(4) {
+        min-width: 120px;
+    }
+
+    .job-application-table.accepted-employees-table .table-block table tbody tr td:nth-child(10) {
+        min-width: 120px;
+    }
+
+    .job-application-table.accepted-employees-table2 .table-block table tbody tr td:nth-child(6) {
+        min-width: 80px;
+    }
+
+    .job-application-table.accepted-employees-table2 .table-block table tbody tr td:nth-child(7) {
+        min-width: 40px;
+    }
+
+    .job-application-table.accepted-employees-table2 .table-block table tbody tr td:nth-child(8) {
+        min-width: 110px;
+    }
+
+    .job-application-table.accepted-employees-table2 .table-block table tbody tr td:nth-child(9) {
+        min-width: 110px;
+    }
+
+    .job-application-table.accepted-employees-table2 .table-block table tbody tr td:nth-child(12) {
+        min-width: 130px;
+    }
+
+    .candidates-application-table .table-block table tbody tr td {
+        font-size: 15px;
+        min-width: 140px;
+    }
+
+    .candidates-application-table .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    /* **** End Job Application ***** */
+
+    /* **** Urgent Application Form **** */
+    .content-detail .company-form h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 10px;
+    }
+
+    .application-information .information-box p {
+        font-size: 14px;
+        line-height: 17px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box .box-icon {
+        height: 80px;
+        width: 80px;
+        min-width: 80px;
+        padding: 20px;
+        border-radius: 15px
+    }
+
+    .application-information .information-box .box-icon img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+
+    /* **** End Urgent Application Form **** */
+
+    .job-application-table .table-block {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* **** Job Application ***** */
+    .table-block table thead tr th {
+        white-space: nowrap;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 140px;
+    }
+
+    .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    /* **** End Job Application ***** */
+}
+
+@media(min-width:1201px) and (max-width:1370px) {
+    /*    .container{max-width: 100%;}*/
+
+    .navbar-brand img {
+        height: 27px;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        font-size: 14px;
+    }
+
+    .navbar-light .navbar-info li a.call-btn {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+
+    .navbar-light .navbar-info li a img {
+        max-width: 27px;
+    }
+
+    .navbar-light .navbar-info li {
+        margin-left: 25px;
+    }
+
+
+
+    .content {
+        padding: 20px 0;
+    }
+
+    .right-part {
+        padding: 20px;
+        height: calc(100vh - 135px)
+    }
+
+    .right-part ul li {
+        margin: 0 0 10px;
+    }
+
+    .right-part ul li a {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    .right-part .logout-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    .right-part ul li a .nav-icon img {
+        max-width: 19px;
+    }
+
+    .content-detail {
+        padding: 20px;
+        height: calc(100vh - 135px);
+    }
+
+    .urgent-application-content .content-detail {
+        height: calc(100vh - 324px);
+    }
+
+    /* **** Index **** */
+    .job-block .job-box {
+        padding: 20px;
+    }
+
+    .job-block .job-box h3 {
+        font-size: 22px;
+        margin: 0 0 15px;
+    }
+
+    /* **** Index **** */
+
+    /* **** Advertised Jobs **** */
+    .advertised-box {
+        padding: 15px;
+    }
+
+    .advertised-box h3 {
+        font-size: 20px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box p {
+        font-size: 16px;
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul {
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul li {
+        font-size: 16px;
+        margin: 0 0 10px;
+    }
+
+    .advertised-box .btn-detail {
+        padding: 12px 40px;
+    }
+
+    /* **** End Advertised Jobs **** */
+
+    /* **** Company Profile ***** */
+    .uploadbox label {
+        font-size: 14px;
+    }
+
+    form .form-group {
+        padding: 12px;
+        margin: 0 0 15px;
+    }
+
+    form .form-group .form-control {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .profile-form form .form-group i {
+        left: 12px;
+        bottom: 12px;
+        background: #fff
+    }
+
+    /* **** End Company Profile ***** */
+
+    /* **** Job Application ***** */
+    .job-information ul {
+        margin: 0 -2px;
+    }
+
+    .job-information ul li {
+        padding: 0 2px;
+    }
+
+    .job-application-table .job-information ul li {
+        min-width: 90px;
+    }
+
+    .job-information .btn-primary {
+        display: block;
+        padding: 10px;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+    }
+
+    .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    .table-block table tbody tr td h6 {
+        min-width: 120px;
+    }
+
+    /* **** End Job Application ***** */
+
+    /* **** Job Application ***** */
+    .job-application-table.accepted-employees-table .table-block table tbody tr td {
+        font-size: 14px;
+        min-width: 130px;
+    }
+
+    .job-application-table.accepted-employees-table .table-block table tbody tr td {
+        font-size: 15px;
+    }
+
+    .job-application-table.accepted-employees-table .table-block table tbody tr td:first-child {
+        min-width: 100px;
+    }
+
+    .job-application-table.accepted-employees-table .table-block table tbody tr td:nth-child(4) {
+        min-width: 120px;
+    }
+
+    .job-application-table.accepted-employees-table .table-block table tbody tr td:nth-child(10) {
+        min-width: 120px;
+    }
+
+    .job-application-table.accepted-employees-table2 .table-block table tbody tr td:nth-child(6) {
+        min-width: 80px;
+    }
+
+    .job-application-table.accepted-employees-table2 .table-block table tbody tr td:nth-child(7) {
+        min-width: 40px;
+    }
+
+    .job-application-table.accepted-employees-table2 .table-block table tbody tr td:nth-child(8) {
+        min-width: 110px;
+    }
+
+    .job-application-table.accepted-employees-table2 .table-block table tbody tr td:nth-child(9) {
+        min-width: 110px;
+    }
+
+    .job-application-table.accepted-employees-table2 .table-block table tbody tr td:nth-child(12) {
+        min-width: 130px;
+    }
+
+    .candidates-application-table .table-block table tbody tr td {
+        font-size: 15px;
+        min-width: 140px;
+    }
+
+    .candidates-application-table .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    /* **** End Job Application ***** */
+
+    /* **** Urgent Application Form **** */
+    .content-detail .company-form h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 10px;
+    }
+
+    .application-information .information-box p {
+        font-size: 14px;
+        line-height: 17px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box .box-icon {
+        height: 80px;
+        width: 80px;
+        min-width: 80px;
+        padding: 20px;
+        border-radius: 15px
+    }
+
+    .application-information .information-box .box-icon img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+
+    /* **** End Urgent Application Form **** */
+
+    .job-application-table .table-block {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* **** Job Application ***** */
+    .job-application-table .job-information ul {
+        overflow: auto;
+    }
+
+    .job-application-table .job-information ul li {
+        min-width: 190px;
+    }
+
+    .job-information .btn-primary {
+        display: block;
+        padding: 10px;
+    }
+
+    .table-block table thead tr th {
+        white-space: nowrap;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 140px;
+    }
+
+    .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    /* **** End Job Application ***** */
+}
+
+@media(max-width: 1199px) {
+    .company-dash .table-fo {
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+@media(min-width:1025px) and (max-width:1200px) {
+    /*    .container{max-width: 960px;}*/
+
+    .navbar-brand img {
+        height: 20px;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        font-size: 10px;
+    }
+
+    .navbar-light .navbar-info li a.call-btn {
+        font-size: 10px;
+        padding: 10px 10px;
+    }
+
+    .navbar-light .navbar-info li a img {
+        max-width: 40px;
+    }
+
+    .navbar-light .navbar-info li {
+        margin-left: 15px;
+    }
+
+    .content {
+        padding: 15px 0;
+    }
+
+    .col-md-3.col-sm-12.main-col {
+        width: 30%;
+    }
+
+    .col-md-9.col-sm-12.main-col {
+        width: 70%;
+    }
+
+    .right-part {
+        padding: 15px;
+        height: calc(100vh - 125px)
+    }
+
+    .right-part ul li {
+        margin: 0 0 5px;
+    }
+
+    .right-part ul li a {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    .right-part .logout-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    .right-part ul li a .nav-icon img {
+        max-width: 19px;
+    }
+
+    .content-detail {
+        padding: 15px;
+        height: calc(100vh - 125px);
+    }
+
+    .main-title h2 {
+        font-size: 24px;
+        line-height: 30px;
+        margin: 0 0 20px;
+    }
+
+    .main-title h2 .btn-primary {
+        font-size: 16px;
+        padding: 12px 40px;
+        width: auto;
+        display: table;
+    }
+
+    /* **** Index **** */
+    .job-block .job-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .job-block .job-box h3 {
+        font-size: 20px;
+        margin: 0 0 10px;
+    }
+
+    .job-block .job-box p {
+        font-size: 15px;
+        line-height: 20px;
+        height: 100px;
+    }
+
+    .job-block .job-box .btn-white {
+        font-size: 15px;
+        padding: 12px 40px;
+    }
+
+    /* **** Index **** */
+
+    /* **** Advertised Jobs **** */
+    .advertised-block .col-md-4 {
+        width: 50%;
+    }
+
+    .advertised-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box h3 {
+        font-size: 20px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box p {
+        font-size: 16px;
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul {
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul li {
+        font-size: 16px;
+        margin: 0 0 10px;
+    }
+
+    .advertised-box .btn-detail {
+        padding: 12px 40px;
+    }
+
+    /* **** End Advertised Jobs **** */
+
+    /* **** Company Profile ***** */
+    form .form-group {
+        padding: 12px;
+        margin: 0 0 15px;
+    }
+
+    form .form-group .form-control {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .profile-form form .form-group i {
+        left: 12px;
+        bottom: 12px;
+        background: #fff
+    }
+
+    .uploadbox {
+        margin: 0 0 20px;
+    }
+
+    .upload-imgbx {
+        margin: 0;
+    }
+
+    .job-application.profile-form .col-md-10.col-sm-12 {
+        width: 100%;
+    }
+
+    .job-application.profile-form .col-md-2.col-sm-12 {
+        width: 100%;
+    }
+
+    /* **** End Company Profile ***** */
+
+    /* **** Deleted Names **** */
+    .table-block table thead tr th {
+        font-size: 16px;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    /* **** Deleted Names **** */
+
+    /* **** Job Application Form **** */
+    .tooltip-inner {
+        font-size: 14px;
+        line-height: 22px;
+        max-width: 500px !important;
+    }
+
+    /* **** Job Application Form **** */
+
+    /* **** Job Application ***** */
+    .job-application-table .job-information ul {
+        overflow: auto;
+    }
+
+    .job-application-table .job-information ul li {
+        min-width: 170px;
+    }
+
+    .job-information .btn-primary {
+        display: block;
+        padding: 10px;
+    }
+
+    .table-block table thead tr th {
+        white-space: nowrap;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 140px;
+    }
+
+    .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    /* **** End Job Application ***** */
+
+    /* **** Urgent Application Form **** */
+    .application-information {
+        padding: 20px;
+    }
+
+    .application-information .col-md-3 {
+        width: 100%;
+    }
+
+    .application-information .col-md-4 {
+        width: 100%;
+    }
+
+    .application-information .col-md-5 {
+        width: 100%;
+    }
+
+    .urgent-application-content .content-detail {
+        height: auto;
+    }
+
+    .content-detail .company-form h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 10px;
+    }
+
+    .application-information .information-box p {
+        font-size: 14px;
+        line-height: 17px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box .box-icon {
+        height: 80px;
+        width: 80px;
+        min-width: 80px;
+        padding: 20px;
+        border-radius: 15px
+    }
+
+    .application-information .information-box .box-icon img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+
+    .application-information .information-box {
+        margin: 0 0 20px;
+    }
+
+    .application-information .col-md-5 .information-box {
+        margin: 0;
+    }
+
+    /* **** End Urgent Application Form **** */
+
+    .job-application-table .table-block {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media(min-width:992px) and (max-width:1024px) {
+    /*    .container{max-width: 960px;}*/
+
+    .navbar-brand img {
+        height: 20px;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        font-size: 10px;
+    }
+
+    .navbar-light .navbar-info li a.call-btn {
+        font-size: 10px;
+        padding: 10px 10px;
+    }
+
+    .navbar-light .navbar-info li a img {
+        max-width: 40px;
+    }
+
+    .navbar-light .navbar-info li {
+        margin-left: 15px;
+    }
+
+    .content {
+        padding: 15px 0;
+    }
+
+    .col-md-3.col-sm-12.main-col {
+        width: 30%;
+    }
+
+    .col-md-9.col-sm-12.main-col {
+        width: 70%;
+    }
+
+    .right-part {
+        padding: 15px;
+        height: calc(100vh - 125px)
+    }
+
+    .right-part ul li {
+        margin: 0 0 5px;
+    }
+
+    .right-part ul li a {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    .right-part .logout-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    .right-part ul li a .nav-icon img {
+        max-width: 19px;
+    }
+
+    .content-detail {
+        padding: 15px;
+        height: calc(100vh - 125px);
+    }
+
+    .main-title h2 {
+        font-size: 24px;
+        line-height: 30px;
+        margin: 0 0 20px;
+    }
+
+    .main-title h2 .btn-primary {
+        font-size: 16px;
+        padding: 12px 40px;
+        width: auto;
+        display: table;
+    }
+
+    /* **** Index **** */
+    .job-block .job-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .job-block .job-box h3 {
+        font-size: 20px;
+        margin: 0 0 10px;
+    }
+
+    .job-block .job-box p {
+        font-size: 15px;
+        line-height: 20px;
+        height: 100px;
+    }
+
+    .job-block .job-box .btn-white {
+        font-size: 15px;
+        padding: 12px 40px;
+    }
+
+    /* **** Index **** */
+
+    /* **** Advertised Jobs **** */
+    .advertised-block .col-md-4 {
+        width: 50%;
+    }
+
+    .advertised-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box h3 {
+        font-size: 20px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box p {
+        font-size: 16px;
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul {
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul li {
+        font-size: 16px;
+        margin: 0 0 10px;
+    }
+
+    .advertised-box .btn-detail {
+        padding: 12px 40px;
+    }
+
+    /* **** End Advertised Jobs **** */
+
+    /* **** Company Profile ***** */
+    form .form-group {
+        padding: 12px;
+        margin: 0 0 15px;
+    }
+
+    form .form-group .form-control {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .profile-form form .form-group i {
+        left: 12px;
+        bottom: 12px;
+        background: #fff
+    }
+
+    .uploadbox {
+        margin: 0 0 20px;
+    }
+
+    .upload-imgbx {
+        margin: 0;
+    }
+
+    .job-application.profile-form .col-md-10.col-sm-12 {
+        width: 100%;
+    }
+
+    .job-application.profile-form .col-md-2.col-sm-12 {
+        width: 100%;
+    }
+
+    /* **** End Company Profile ***** */
+
+    /* **** Deleted Names **** */
+    .job-application-table.deleted-application-table table thead tr th {
+        white-space: nowrap
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 100px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:last-child {
+        min-width: 40px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:nth-child(2) {
+        min-width: 180px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:nth-child(4) {
+        min-width: 140px;
+    }
+
+    /* **** Deleted Names **** */
+
+    /* **** Job Application Form **** */
+    .tooltip-inner {
+        font-size: 14px;
+        line-height: 22px;
+        max-width: 500px !important;
+    }
+
+    /* **** Job Application Form **** */
+
+    /* **** Job Application ***** */
+    .job-application-table .job-information ul {
+        overflow: auto;
+    }
+
+    .job-application-table .job-information ul li {
+        min-width: 170px;
+    }
+
+    .job-information .btn-primary {
+        display: block;
+        padding: 10px;
+    }
+
+    .table-block table thead tr th {
+        white-space: nowrap;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 140px;
+    }
+
+    .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    /* **** End Job Application ***** */
+
+    /* **** Urgent Application Form **** */
+    .application-information {
+        padding: 20px;
+    }
+
+    .application-information .col-md-3 {
+        width: 100%;
+    }
+
+    .application-information .col-md-4 {
+        width: 100%;
+    }
+
+    .application-information .col-md-5 {
+        width: 100%;
+    }
+
+    .urgent-application-content .content-detail {
+        height: auto;
+    }
+
+    .content-detail .company-form h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 10px;
+    }
+
+    .application-information .information-box p {
+        font-size: 14px;
+        line-height: 17px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box .box-icon {
+        height: 80px;
+        width: 80px;
+        min-width: 80px;
+        padding: 20px;
+        border-radius: 15px
+    }
+
+    .application-information .information-box .box-icon img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+
+    .application-information .information-box {
+        margin: 0 0 20px;
+    }
+
+    .application-information .col-md-5 .information-box {
+        margin: 0;
+    }
+
+    /* **** End Urgent Application Form **** */
+
+    .job-application-table .table-block {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media(min-width:768px) and (max-width:991px) {
+    /*    .container{max-width: 740px;}*/
+
+    .final-header-style .navbar-light .navbar-nav .nav-link::before {
+        width: 100%;
+    }
+    
+
+    .navbar-light .navbar-info {
+        margin-top: 20px;
+    }
+
+    .navbar-brand img {
+        height: 16px;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        font-size: 16px;
+    }
+
+    .navbar-light .navbar-info li a.call-btn {
+        font-size: 16px;
+        padding: 10px 12px;
+    }
+
+    .navbar-light .navbar-info li a img {
+        max-width: 40px;
+    }
+
+    .navbar-light .navbar-info li {
+        margin-left: 10px;
+    }
+
+    .content {
+        padding: 15px 0;
+    }
+
+    .col-md-3.col-sm-12.main-col {
+        width: 39%;
+    }
+
+    .col-md-9.col-sm-12.main-col {
+        width: 61%;
+    }
+
+    .right-part {
+        padding: 15px;
+        height: calc(100vh - 122px);
+        margin-bottom: 10px;
+    }
+
+    .right-part ul li {
+        margin: 0 0 5px;
+    }
+
+    .right-part ul li a {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    .right-part .logout-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    .right-part ul li a .nav-icon img {
+        max-width: 19px;
+    }
+
+    .content-detail {
+        padding: 15px;
+        height: calc(100vh - 122px);
+    }
+
+    .main-title h2 {
+        font-size: 24px;
+        line-height: 30px;
+        margin: 0 0 20px;
+    }
+
+    .main-title h2 .btn-primary {
+        font-size: 16px;
+        padding: 12px 40px;
+        width: auto;
+        display: table;
+    }
+
+    /* **** Index **** */
+    .job-block .col-md-6 {
+        width: 100%;
+    }
+
+    .job-block .job-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .job-block .job-box h3 {
+        font-size: 20px;
+        margin: 0 0 10px;
+    }
+
+    .job-block .job-box p {
+        font-size: 15px;
+        line-height: 20px;
+        height: 100px;
+    }
+
+    .job-block .job-box .btn-white {
+        font-size: 15px;
+        padding: 12px 40px;
+    }
+
+    /* **** Index **** */
+
+    /* **** Advertised Jobs **** */
+    .advertised-block .col-md-4 {
+        width: 100%;
+    }
+
+    .advertised-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box h3 {
+        font-size: 20px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box p {
+        font-size: 16px;
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul {
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul li {
+        font-size: 16px;
+        margin: 0 0 10px;
+    }
+
+    .advertised-box .btn-detail {
+        padding: 12px 40px;
+    }
+
+    /* **** End Advertised Jobs **** */
+
+    /* **** Company Profile ***** */
+    form .form-group {
+        padding: 12px;
+        margin: 0 0 15px;
+    }
+
+    form .form-group .form-control {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .profile-form form .form-group i {
+        left: 12px;
+        bottom: 12px;
+        background: #fff
+    }
+
+    .uploadbox {
+        margin: 0 0 20px;
+    }
+
+    .upload-imgbx {
+        margin: 0;
+    }
+
+    .job-application.profile-form .col-md-10.col-sm-12 {
+        width: 100%;
+    }
+
+    .job-application.profile-form .col-md-6.col-sm-12 {
+        width: 100%;
+    }
+
+    .job-application.profile-form .col-md-2.col-sm-12 {
+        width: 100%;
+    }
+
+    /* **** End Company Profile ***** */
+
+    /* **** Deleted Names **** */
+    .job-application-table.deleted-application-table table thead tr th {
+        white-space: nowrap
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 100px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:last-child {
+        min-width: 40px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:nth-child(2) {
+        min-width: 180px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:nth-child(4) {
+        min-width: 140px;
+    }
+
+    /* **** Deleted Names **** */
+
+    /* **** Job Application Form **** */
+    form .form-checkblock label {
+        font-size: 16px;
+    }
+
+    .tooltip-inner {
+        font-size: 14px;
+        line-height: 22px;
+        max-width: 500px !important;
+    }
+
+    /* **** Job Application Form **** */
+
+    /* **** Job Application ***** */
+    .job-application-table .job-information ul {
+        overflow: auto;
+    }
+
+    .job-application-table .job-information ul li {
+        min-width: 170px;
+    }
+
+    .job-information .btn-primary {
+        display: block;
+        padding: 10px;
+    }
+
+    .table-block table thead tr th {
+        white-space: nowrap;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 140px;
+    }
+
+    .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    /* **** End Job Application ***** */
+
+    /* **** terms-conditions **** */
+    .terms-condition-block p {
+        font-size: 14px;
+        line-height: 24px;
+    }
+
+    .btn-primary {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    /* **** End terms-conditions **** */
+
+    /* **** Urgent Application Form **** */
+    .application-information {
+        padding: 20px;
+    }
+
+    .application-information .col-md-3 {
+        width: 100%;
+    }
+
+    .application-information .col-md-4 {
+        width: 100%;
+    }
+
+    .application-information .col-md-5 {
+        width: 100%;
+    }
+
+    .urgent-application-content .content-detail {
+        height: auto;
+    }
+
+    .content-detail .company-form h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 15px;
+    }
+
+    .marketer-box {
+        display: block;
+        height: auto;
+        margin: 0 0 20px;
+        padding: 20px;
+    }
+
+    .application-information .information-box h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 10px;
+    }
+
+    .application-information .information-box p {
+        font-size: 14px;
+        line-height: 17px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box .box-icon {
+        height: 80px;
+        width: 80px;
+        min-width: 80px;
+        padding: 20px;
+        border-radius: 15px
+    }
+
+    .application-information .information-box .box-icon img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+
+    .application-information .information-box {
+        margin: 0 0 20px;
+    }
+
+    .application-information .col-md-5 .information-box {
+        margin: 0;
+    }
+
+    .content-detail .company-form .col-md-6 {
+        width: 100%;
+    }
+
+    /* **** End Urgent Application Form **** */
+
+    .job-application-table .table-block {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/*---------- Small Mobile , IPhone Start ----------*/
+@media (max-width: 767px) {
+    .navbar-brand {
+        position: relative;
+        z-index: 9;
+    }
+
+    .navbar-brand img {
+        height: 16px;
+    }
+
+    .navbar-light .navbar-collapse {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        bottom: 0;
+        background: #f7f7f7;
+        width: 100%;
+        height: 100%;
+        width: 100%;
+        display: block;
+        padding: 85px 0 0;
+        -webkit-transition: all 0.3s linear;
+        transition: all 0.3s linear;
+    }
+
+    .navbar-light .navbar-collapse.collapse.show {
+        left: 0;
+    }
+
+    .navbar-light .navbar-collapse .navbar-nav {
+        display: block;
+        padding: 20px 15px;
+        border-top: 1px solid rgba(0, 0, 0, 0.2);
+        margin-top: 50px;
+    }
+
+    .navbar-light .navbar-nav li {
+        margin: 0;
+    }
+
+    .navbar-light .navbar-nav .nav-link {
+        font-size: 20px;
+    }
+
+    .navbar-light .navbar-info {
+        padding: 0 15px;
+    }
+
+
+    .navbar {
+        justify-content: flex-end
+    }
+
+    .navbar-brand {
+        margin-left: auto;
+        margin-right: 15px;
+        position: relative;
+    }
+
+    .toggle-menu {
+        display: block;
+        z-index: 121
+    }
+
+    .right-part {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        bottom: 0;
+        background: #f7f7f7;
+        width: 100%;
+        height: 100%;
+        width: 100%;
+        display: block;
+        padding: 85px 0 15px;
+        -webkit-transition: all 0.3s linear;
+        transition: all 0.3s linear;
+        z-index: 99
+    }
+
+    .right-part.show-sidebar {
+        right: 0;
+    }
+
+    .right-part ul {
+        display: block;
+        padding: 20px 15px;
+        border-top: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar-light .navbar-nav {
+        max-width: 540px;
+        margin: 0 auto;
+    }
+
+    .right-part ul {
+        max-width: 540px;
+        margin: 0 auto;
+        margin-top: 40px;
+    }
+
+    .right-part .logout-btn {
+        margin: 0 auto;
+        max-width: 540px;
+    }
+
+    .navbar-light .navbar-info {
+        margin: 0 auto;
+        max-width: 540px;
+    }
+}
+
+/*---------- End Small Mobile , IPhone Start ----------*/
+
+@media(min-width:576px) and (max-width:767px) {
+    /*    .container{max-width: 540px;}*/
+
+    .content {
+        padding: 15px 0;
+    }
+
+    .col-md-3.col-sm-12.main-col {
+        width: 100%;
+    }
+
+    .col-md-9.col-sm-12.main-col {
+        width: 100%;
+    }
+
+    .right-part ul li {
+        margin: 0 0 5px;
+    }
+
+    .right-part ul li a {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    .right-part .logout-btn {
+        position: relative;
+        bottom: 0;
+        right: 0;
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    .right-part ul li a .nav-icon img {
+        max-width: 19px;
+    }
+
+    .content-detail {
+        padding: 15px;
+        height: auto;
+    }
+
+    .main-title h2 {
+        font-size: 24px;
+        line-height: 30px;
+        margin: 0 0 20px;
+    }
+
+    .main-title h2 .btn-primary {
+        font-size: 16px;
+        padding: 12px 40px;
+        width: auto;
+        display: table;
+    }
+
+    /* **** Index **** */
+    .job-block .job-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .job-block .job-box h3 {
+        font-size: 20px;
+        margin: 0 0 10px;
+    }
+
+    .job-block .job-box p {
+        font-size: 15px;
+        line-height: 20px;
+        height: 100px;
+    }
+
+    .job-block .job-box .btn-white {
+        font-size: 15px;
+        padding: 12px 40px;
+    }
+
+    /* **** Index **** */
+
+    /* **** Advertised Jobs **** */
+    .advertised-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box h3 {
+        font-size: 20px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box p {
+        font-size: 16px;
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul {
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul li {
+        font-size: 16px;
+        margin: 0 0 10px;
+    }
+
+    .advertised-box .btn-detail {
+        padding: 12px 40px;
+    }
+
+    /* **** End Advertised Jobs **** */
+
+    /* **** Company Profile ***** */
+    form .form-group {
+        padding: 12px;
+        margin: 0 0 15px;
+    }
+
+    form .form-group .form-control {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .profile-form form .form-group i {
+        left: 12px;
+        bottom: 12px;
+        background: #fff
+    }
+
+    .uploadbox {
+        margin: 0 0 20px;
+    }
+
+    .upload-imgbx {
+        margin: 0;
+    }
+
+    /* **** End Company Profile ***** */
+
+    /* **** Deleted Names **** */
+    .job-application-table.deleted-application-table table thead tr th {
+        white-space: nowrap
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 100px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:last-child {
+        min-width: 40px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:nth-child(2) {
+        min-width: 180px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:nth-child(4) {
+        min-width: 140px;
+    }
+
+    /* **** Deleted Names **** */
+
+    /* **** Job Application Form **** */
+    form .form-checkblock label {
+        font-size: 16px;
+    }
+
+    .tooltip-inner {
+        font-size: 14px;
+        line-height: 22px;
+    }
+
+    /* **** Job Application Form **** */
+
+    /* **** Job Application ***** */
+    .job-application-table .job-information ul {
+        overflow: auto;
+    }
+
+    .job-application-table .job-information ul li {
+        min-width: 170px;
+    }
+
+    .job-information .btn-primary {
+        display: block;
+        padding: 10px;
+    }
+
+    .table-block table thead tr th {
+        white-space: nowrap;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 140px;
+    }
+
+    .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    /* **** End Job Application ***** */
+
+    /* **** terms-conditions **** */
+    .terms-condition-block p {
+        font-size: 14px;
+        line-height: 24px;
+    }
+
+    .btn-primary {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    /* **** End terms-conditions **** */
+
+    /* **** Urgent Application Form **** */
+    .application-information {
+        padding: 20px;
+    }
+
+    .application-information .col-md-3 {
+        width: 100%;
+    }
+
+    .application-information .col-md-4 {
+        width: 100%;
+    }
+
+    .application-information .col-md-5 {
+        width: 100%;
+    }
+
+    .urgent-application-content .content-detail {
+        height: auto;
+    }
+
+    .content-detail .company-form h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 15px;
+    }
+
+    .marketer-box {
+        display: block;
+        height: auto;
+        margin: 0 0 20px;
+        padding: 20px;
+    }
+
+    .application-information .information-box h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 10px;
+    }
+
+    .application-information .information-box p {
+        font-size: 14px;
+        line-height: 17px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box .box-icon {
+        height: 80px;
+        width: 80px;
+        min-width: 80px;
+        padding: 20px;
+        border-radius: 15px
+    }
+
+    .application-information .information-box .box-icon img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+
+    .application-information .information-box {
+        margin: 0 0 20px;
+    }
+
+    .application-information .col-md-5 .information-box {
+        margin: 0;
+    }
+
+    /* **** End Urgent Application Form **** */
+
+    .job-application-table .table-block {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+}
+
+@media(min-width:448px) and (max-width:575px) {
+    .content {
+        padding: 15px 0;
+    }
+
+    .col-md-3.col-sm-12.main-col {
+        width: 100%;
+    }
+
+    .col-md-9.col-sm-12.main-col {
+        width: 100%;
+    }
+
+    .right-part ul li {
+        margin: 0 0 5px;
+    }
+
+    .right-part ul li a {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    .right-part .logout-btn {
+        position: relative;
+        bottom: 0;
+        right: 0;
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    .right-part ul li a .nav-icon img {
+        max-width: 19px;
+    }
+
+    .content-detail {
+        padding: 15px;
+        height: auto;
+    }
+
+    .main-title h2 {
+        font-size: 24px;
+        line-height: 30px;
+        margin: 0 0 20px;
+    }
+
+    .main-title h2 .btn-primary {
+        font-size: 16px;
+        padding: 12px 40px;
+        width: auto;
+        display: table;
+    }
+
+
+
+    /* **** Index **** */
+    .job-block .job-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .job-block .job-box h3 {
+        font-size: 20px;
+        margin: 0 0 10px;
+    }
+
+    .job-block .job-box p {
+        font-size: 15px;
+        line-height: 20px;
+        height: 100px;
+    }
+
+    .job-block .job-box .btn-white {
+        font-size: 15px;
+        padding: 12px 40px;
+    }
+
+    /* **** Index **** */
+
+    /* **** Advertised Jobs **** */
+    .advertised-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box h3 {
+        font-size: 20px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box p {
+        font-size: 16px;
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul {
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul li {
+        font-size: 16px;
+        margin: 0 0 10px;
+    }
+
+    .advertised-box .btn-detail {
+        padding: 12px 40px;
+    }
+
+    /* **** End Advertised Jobs **** */
+
+    /* **** Company Profile ***** */
+    form .form-group {
+        padding: 12px;
+        margin: 0 0 15px;
+    }
+
+    form .form-group .form-control {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .profile-form form .form-group i {
+        left: 12px;
+        bottom: 12px;
+        background: #fff
+    }
+
+    .uploadbox {
+        margin: 0 0 20px;
+    }
+
+    .upload-imgbx {
+        margin: 0;
+    }
+
+    /* **** End Company Profile ***** */
+
+    /* **** Deleted Names **** */
+    .job-application-table.deleted-application-table table thead tr th {
+        white-space: nowrap
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 100px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:last-child {
+        min-width: 40px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:nth-child(2) {
+        min-width: 180px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:nth-child(4) {
+        min-width: 140px;
+    }
+
+    /* **** Deleted Names **** */
+
+    /* **** Job Application Form **** */
+    form .form-checkblock label {
+        font-size: 16px;
+    }
+
+    .tooltip-inner {
+        font-size: 14px;
+        line-height: 22px;
+    }
+
+    /* **** Job Application Form **** */
+
+    /* **** Job Application ***** */
+    .job-application-table .job-information ul {
+        overflow: auto;
+    }
+
+    .job-application-table .job-information ul li {
+        min-width: 170px;
+    }
+
+    .job-information .btn-primary {
+        display: block;
+        padding: 10px;
+    }
+
+    .table-block table thead tr th {
+        white-space: nowrap;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 140px;
+    }
+
+    .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    /* **** End Job Application ***** */
+
+    /* **** terms-conditions **** */
+    .terms-condition-block p {
+        font-size: 14px;
+        line-height: 24px;
+    }
+
+    .btn-primary {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    /* **** End terms-conditions **** */
+
+    /* **** Urgent Application Form **** */
+    .application-information {
+        padding: 20px;
+    }
+
+    .application-information .col-md-3 {
+        width: 100%;
+    }
+
+    .application-information .col-md-4 {
+        width: 100%;
+    }
+
+    .application-information .col-md-5 {
+        width: 100%;
+    }
+
+    .urgent-application-content .content-detail {
+        height: auto;
+    }
+
+    .content-detail .company-form h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 15px;
+    }
+
+    .marketer-box {
+        display: block;
+        height: auto;
+        margin: 0 0 20px;
+        padding: 20px;
+    }
+
+    .application-information .information-box h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 10px;
+    }
+
+    .application-information .information-box p {
+        font-size: 14px;
+        line-height: 17px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box .box-icon {
+        height: 80px;
+        width: 80px;
+        min-width: 80px;
+        padding: 20px;
+        border-radius: 15px
+    }
+
+    .application-information .information-box .box-icon img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+
+    .application-information .information-box {
+        margin: 0 0 20px;
+    }
+
+    .application-information .col-md-5 .information-box {
+        margin: 0;
+    }
+
+    /* **** End Urgent Application Form **** */
+
+    .job-application-table .table-block {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+}
+
+@media(max-width:447px) {
+    .content {
+        padding: 15px 0;
+    }
+
+    .col-md-3.col-sm-12.main-col {
+        width: 100%;
+    }
+
+    .col-md-9.col-sm-12.main-col {
+        width: 100%;
+    }
+
+    .right-part ul li {
+        margin: 0 0 5px;
+    }
+
+    .right-part ul li a {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    .right-part .logout-btn {
+        position: relative;
+        bottom: 0;
+        right: 0;
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    .right-part ul li a .nav-icon img {
+        max-width: 19px;
+    }
+
+    .content-detail {
+        padding: 15px;
+        height: auto;
+    }
+
+    .main-title h2 {
+        font-size: 24px;
+        line-height: 30px;
+        margin: 0 0 20px;
+        display: block;
+    }
+
+    .main-title h2 .btn-primary {
+        font-size: 16px;
+        margin: 10px 0 0;
+        padding: 12px 40px;
+        width: auto;
+        display: table;
+    }
+
+    /* **** Index **** */
+    .job-block .job-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .job-block .job-box h3 {
+        font-size: 19px;
+        margin: 0 0 10px;
+    }
+
+    .job-block .job-box p {
+        font-size: 15px;
+        line-height: 20px;
+        height: 100px;
+    }
+
+    .job-block .job-box .btn-white {
+        font-size: 15px;
+        padding: 12px 40px;
+    }
+
+    /* **** End Index **** */
+
+    /* **** Advertised Jobs **** */
+    .advertised-box {
+        padding: 15px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box h3 {
+        font-size: 20px;
+        margin: 0 0 15px;
+    }
+
+    .advertised-box p {
+        font-size: 16px;
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul {
+        margin: 0 0 20px;
+    }
+
+    .advertised-box ul li {
+        font-size: 16px;
+        margin: 0 0 10px;
+    }
+
+    .advertised-box .btn-detail {
+        padding: 12px 40px;
+    }
+
+    /* **** End Advertised Jobs **** */
+
+    /* **** Company Profile ***** */
+    form .form-group {
+        padding: 12px;
+        margin: 0 0 15px;
+    }
+
+    form .form-group .form-control {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .profile-form form .form-group i {
+        left: 12px;
+        bottom: 12px;
+        background: #fff
+    }
+
+    .uploadbox {
+        margin: 0 0 20px;
+    }
+
+    .upload-imgbx {
+        margin: 0;
+    }
+
+    /* **** End Company Profile ***** */
+
+    /* **** Deleted Names **** */
+    .job-application-table.deleted-application-table table thead tr th {
+        white-space: nowrap
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 100px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:last-child {
+        min-width: 40px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:nth-child(2) {
+        min-width: 180px;
+    }
+
+    .job-application-table.deleted-application-table table tbody tr td:nth-child(4) {
+        min-width: 140px;
+    }
+
+    /* **** Deleted Names **** */
+
+
+    /* **** Job Application Form **** */
+    form .form-checkblock label {
+        font-size: 15px;
+    }
+
+    .tooltip-inner {
+        font-size: 14px;
+        line-height: 22px;
+    }
+
+    /* **** Job Application Form **** */
+
+    /* **** Job Application ***** */
+    .job-application-table .job-information ul {
+        overflow: auto;
+    }
+
+    .job-application-table .job-information ul li {
+        min-width: 170px;
+    }
+
+    .job-information .btn-primary {
+        display: block;
+        padding: 10px;
+    }
+
+    .table-block table thead tr th {
+        white-space: nowrap;
+    }
+
+    .table-block table tbody tr td {
+        padding: 8px;
+        border-bottom: 5px solid #fff;
+        min-width: 140px;
+    }
+
+    .table-block table tbody tr td:last-child {
+        min-width: unset;
+    }
+
+    /* **** End Job Application ***** */
+
+
+    /* **** terms-conditions **** */
+    .terms-condition-block p {
+        font-size: 14px;
+        line-height: 24px;
+    }
+
+    .btn-primary {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    /* **** End terms-conditions **** */
+
+
+    /* **** Urgent Application Form **** */
+    .application-information {
+        padding: 20px;
+    }
+
+    .application-information .col-md-3 {
+        width: 100%;
+    }
+
+    .application-information .col-md-4 {
+        width: 100%;
+    }
+
+    .application-information .col-md-5 {
+        width: 100%;
+    }
+
+    .urgent-application-content .content-detail {
+        height: auto;
+    }
+
+    .content-detail .company-form h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 15px;
+    }
+
+    .marketer-box {
+        display: block;
+        height: auto;
+        margin: 0 0 20px;
+        padding: 20px;
+    }
+
+    .application-information .information-box h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin: 0 0 10px;
+    }
+
+    .application-information .information-box p {
+        font-size: 14px;
+        line-height: 17px;
+        margin: 0 0 15px;
+    }
+
+    .application-information .information-box .box-icon {
+        height: 80px;
+        width: 80px;
+        min-width: 80px;
+        padding: 20px;
+        border-radius: 15px
+    }
+
+    .application-information .information-box .box-icon img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+
+    .application-information .information-box {
+        margin: 0 0 20px;
+    }
+
+    .application-information .col-md-5 .information-box {
+        margin: 0;
+    }
+
+    /* **** End Urgent Application Form **** */
+
+    .job-application-table .table-block {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+
+}

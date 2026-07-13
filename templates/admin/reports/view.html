@@ -1,0 +1,66 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}بلاغ #{{ report.id }} | فائدة{% endblock %}
+{% block nav_reports %}active{% endblock %}
+{% block breadcrumb %}<li><a href="{{ url_for('admin.list_reports') }}">البلاغات</a></li><li>بلاغ #{{ report.id }}</li>{% endblock %}
+{% block page_title %}تفاصيل البلاغ{% endblock %}
+
+{% block content %}
+<div class="admin-card" style="margin-bottom:24px">
+    <div class="admin-card-body">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+            <h2 style="margin:0;font-weight:800">بلاغ #{{ report.id }}</h2>
+            <span class="admin-badge {{ report.status }}">{{ report.status_label }}</span>
+            <span class="admin-badge {{ report.priority }}">{{ report.priority_label }}</span>
+        </div>
+        <div class="profile-data-grid">
+            <div class="profile-data-item"><label>نوع الهدف</label><span>{{ report.target_type_label }}</span></div>
+            <div class="profile-data-item"><label>الهدف</label><span>
+                {% if target %}
+                    {% if report.target_type == 'customer' %}<a href="{{ url_for('admin.view_user', id=target.id) }}">{{ target.fullname }}</a>
+                    {% elif report.target_type == 'company' %}<a href="{{ url_for('admin.view_company', id=target.id) }}">{{ target.company_english_name }}</a>
+                    {% elif report.target_type == 'team' %}<a href="{{ url_for('admin.view_team', id=target.id) }}">{{ target.team_name }}</a>
+                    {% elif report.target_type == 'job' %}<a href="{{ url_for('admin.view_job', id=target.id) }}">{{ target.title }}</a>
+                    {% endif %}
+                {% else %}محذوف{% endif %}
+            </span></div>
+            <div class="profile-data-item"><label>سبب البلاغ</label><span>{{ report.reason_label }}</span></div>
+            <div class="profile-data-item"><label>مقدم البلاغ</label><span>
+                {% if reporter %}
+                    {% if report.reporter_type == 'customer' %}{{ reporter.fullname }}{% else %}{{ reporter.company_english_name }}{% endif %}
+                {% else %}مجهول{% endif %}
+            </span></div>
+            <div class="profile-data-item"><label>تاريخ البلاغ</label><span>{{ report.created_at.strftime('%Y/%m/%d %H:%M') }}</span></div>
+            {% if report.resolved_at %}<div class="profile-data-item"><label>تاريخ الحل</label><span>{{ report.resolved_at.strftime('%Y/%m/%d %H:%M') }}</span></div>{% endif %}
+            {% if report.assigned_admin %}<div class="profile-data-item"><label>المشرف المعيّن</label><span>{{ report.assigned_admin.username }}</span></div>{% endif %}
+        </div>
+        {% if report.description %}
+        <div style="margin-top:20px"><label style="font-weight:800;display:block;margin-bottom:8px">تفاصيل البلاغ</label>
+            <div style="background:var(--admin-bg);padding:20px;border-radius:12px;line-height:1.8">{{ report.description }}</div>
+        </div>
+        {% endif %}
+        {% if report.resolution_note %}
+        <div style="margin-top:16px"><label style="font-weight:800;display:block;margin-bottom:8px">ملاحظات الحل</label>
+            <div style="background:rgba(0,184,148,0.05);padding:20px;border-radius:12px;line-height:1.8;border:1px solid rgba(0,184,148,0.15)">{{ report.resolution_note }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if report.status not in ['resolved', 'dismissed'] and current_admin and current_admin.has_permission('reports.resolve') %}
+<div class="admin-card">
+    <div class="admin-card-header"><h3><i class="fas fa-gavel ms-2" style="color:var(--admin-accent)"></i>اتخاذ إجراء</h3></div>
+    <div class="admin-card-body">
+        <form method="POST" action="{{ url_for('admin.resolve_report', id=report.id) }}">
+            <div class="admin-form-group"><label>ملاحظات</label><textarea name="resolution_note" class="admin-form-textarea" placeholder="أضف ملاحظاتك حول هذا البلاغ..."></textarea></div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+                {% if report.status == 'pending' %}
+                <button type="submit" name="action" value="reviewing" class="btn-admin btn-admin-outline"><i class="fas fa-search"></i>بدء المراجعة</button>
+                {% endif %}
+                <button type="submit" name="action" value="resolve" class="btn-admin btn-admin-success"><i class="fas fa-check-circle"></i>تم الحل</button>
+                <button type="submit" name="action" value="dismiss" class="btn-admin btn-admin-outline" style="color:var(--admin-text-muted)"><i class="fas fa-times-circle"></i>رفض البلاغ</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

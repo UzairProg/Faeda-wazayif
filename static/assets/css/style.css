@@ -1,0 +1,163 @@
+
+/* ***** Common Css **** */
+
+
+
+a:hover,
+a:focus,
+a:active {
+    text-decoration: none;
+}
+
+ol,
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Chrome, Safari, Edge, Opera */
+
+
+/* Firefox */
+
+
+a {
+    transition: 0.4s linear;
+    -webkit-transition: 0.4s linear;
+    text-decoration: none;
+}
+
+body {
+    background: #f5f8fa;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1c1d22;
+    text-decoration: none;
+
+}
+
+
+
+/* **** Right Part **** */
+.right-part {
+    background: #ffffff;
+    border-radius: 16px;
+    position: relative;
+    height: 121.5%;
+    padding: 40px;
+    overflow: auto;
+    margin-left: 25px;
+}
+
+.right-part ul {
+    height: 100%;
+    overflow: auto;
+}
+
+.right-part ul li {
+    margin: 0px;
+}
+
+.right-part ul li a {
+    font-size: 20px;
+    color: #45464e;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    padding: 13px 16px;
+    border-radius: 0px;
+    -webkit-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+}
+
+.seperator {
+    width: 94%;
+    height: 4px;
+    background-color: #e0e0e0;
+    margin: 15px auto;
+}
+
+.right-part ul li a .nav-icon {
+    display: flex;
+    align-items: center;
+    min-height: 24px;
+    margin-right: 12px;
+}
+
+
+
+
+.right-part ul li a:hover {
+    color: #b8c5d6;
+}
+
+.right-part ul li a.active {
+    background: #b8c5d6;
+    color: #fff;
+    border-radius: 12px;
+}
+
+
+.right-part .logout-btn {
+    font-size: 20px;
+    color: #cc5f5f;
+    font-weight: 400;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px 55px;
+    background: #fff;
+    z-index: 1;
+    display: flex;
+    align-items: right;
+}
+
+
+/* **** End Right Part **** */
+
+.company-right-side {
+    padding: 10px 10px;
+}
+
+.company-right-side ul li a {
+    font-size: 18px;
+    padding: 15px 10px;
+}
+
+.company-right-side ul li a .nav-icon {
+    display: none;
+}
+
+.company-right-side,
+.company-right-side .logout-btn {
+    background-color: #757ed1 !important;
+    border-radius: 6px;
+    color: #fff;
+}
+
+.company-right-side .logout-btn img {
+    display: none;
+}
+
+.company-right-side ul li a {
+    color: #fff;
+    justify-content: space-between;
+}
+
+.company-right-side ul li a:hover,
+.company-right-side ul li a.active {
+    color: #fff;
+    background-color: #150578;
+    border-radius: 8px;
+}
+
+.company-right-side ul li a .badge {
+    background-color: #0097b2;
+    color: #fff;
+}
+
+.company-right-side ul li a i {
+    color: #b0ad9f;
+}

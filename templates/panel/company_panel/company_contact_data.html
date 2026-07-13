@@ -1,0 +1,135 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/panel_base.html' %}
+{% block title %}فائدة - إعدادات بيانات التواصل{% endblock %}
+{% block page_title %}فائدة - إعدادات بيانات التواصل{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
+    <div class="container-xxl flex-grow-1 container-p-y">
+              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">إعدادات الحساب /</span> بيانات التواصل</h4>
+
+              {% for message in get_flashed_messages() %}
+
+              <style>
+                .flash-message {
+                  background-color: #372b70;
+                  color: var(--primary-dark)fff;
+                  padding: 15px;
+                  border-radius: 10px;
+                  border: 2px solid #4a3f8a; /* Amazing border color */
+                  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                  opacity: 1;
+                  transition: opacity 0.5s ease-in-out;
+                }
+              
+                .fadeOut {
+                  opacity: 0;
+                }
+              </style>
+              
+              <div class="flash-message" role="alert">
+                {{ message|safe }}
+              </div>
+              
+              <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                  var flashMessage = document.querySelector('.flash-message');
+              
+                  setTimeout(function () {
+                    flashMessage.classList.add('fadeOut');
+                    setTimeout(function () {
+                      flashMessage.parentNode.removeChild(flashMessage);
+                    }, 500); // 500 milliseconds for fade-out animation
+                  }, 5000); // 5000 milliseconds = 5 seconds
+                });
+              </script>
+              
+              {% endfor %}
+              <div class="row">
+                <div class="col-md-12">
+                 
+                  <div class="card mb-4">
+                    <h5 class="card-header"style="color: var(--primary-dark);">بيانات التواصل</h5>
+                    <!-- Account -->
+                    <div class="card-body">
+                      <form  method="POST" action="/company_editprofile/contact_data" enctype="multipart/form-data">
+
+                      <div class="d-flex align-items-start align-items-sm-center gap-4">
+                        {% if user.company_logo %}
+
+                        <img
+
+                        src="/static/uploads/companies/logo/{{user.company_logo}}"
+                          alt="user-avatar"
+                          class="d-block rounded"
+                          height="100"
+                          width="100"
+                          id="uploadedAvatar"
+                        />
+                        {% else %}
+                        <img
+
+                        src="/static/panel/assets/img/avatars/1.png"
+
+                        alt="user-avatar"
+                        class="d-block rounded"
+                        height="100"
+                        width="100"
+                        id="uploadedAvatar"
+                      />
+                        {% endif %}
+
+                   
+                      </div>
+                    </div>
+                    <hr class="my-0" />
+                    <div class="card-body">
+                        <div class="row">
+                         
+                          <div class="mb-3 col-md-6">
+                            <label for="lastName" class="form-label"style="color: var(--primary-dark);">ايميل الشركة</label>
+                            <input class="form-control" type="text" disabled id="lastName" value="{{company_email}}" name="company_email"/>
+                          </div>
+
+                          <div class="mb-3 col-md-6">
+                            <label for="lastName" class="form-label"style="color: var(--primary-dark);">الموقع الالكتروني للشركة</label>
+                            <input class="form-control" type="text" name="company_website" id="lastName" value="{{company_website}}"/>
+                          </div>
+                     
+                      
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="phoneNumber"style="color: var(--primary-dark);">حساب تويتر</label>
+                            <div class="input-group input-group-merge">
+                                <input class="form-control" type="text" name="tweeter_email" id="lastName" value="{{tweeter_email}}"/>
+
+                            </div>
+                          </div>
+
+                               
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="phoneNumber"style="color: var(--primary-dark);">حساب الإنستغرام</label>
+                            <div class="input-group input-group-merge">
+                                <input class="form-control" type="text" name="instagram_email" id="lastName" value="{{instagram_email}}"/>
+
+                            </div>
+                          </div>
+                     
+                        <div class="mt-2">
+                          <button type="submit" class="btn btn-primary me-2">حفظ التغييرات</button>
+                        </div>
+                      </form>
+                    </div>
+                    <!-- /Account -->
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+</div>
+{% endblock %}

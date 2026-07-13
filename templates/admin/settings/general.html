@@ -1,0 +1,37 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}إعدادات النظام | فائدة{% endblock %}
+{% block nav_settings %}active{% endblock %}
+{% block breadcrumb %}<li>إعدادات النظام</li>{% endblock %}
+{% block page_title %}إعدادات النظام{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+    <div class="admin-card-body">
+        <form method="POST" action="{{ url_for('admin.system_settings') }}">
+            {% for key, config in SETTING_KEYS.items() %}
+            <div class="admin-form-group" style="display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--admin-border)">
+                <div>
+                    <label style="margin-bottom:2px">{{ config.label }}</label>
+                    <p style="font-size:0.78rem;color:var(--admin-text-muted);margin:0">{{ key }}</p>
+                </div>
+                <div style="min-width:250px">
+                    {% if config.type == 'boolean' %}
+                    <label class="admin-toggle">
+                        <input type="checkbox" name="{{ key }}" {% if settings.get(key, config.default) == 'true' %}checked{% endif %}>
+                        <span class="admin-toggle-slider"></span>
+                    </label>
+                    {% elif config.type == 'text' %}
+                    <textarea name="{{ key }}" class="admin-form-textarea" style="min-height:60px">{{ settings.get(key, config.default) }}</textarea>
+                    {% elif config.type == 'number' %}
+                    <input type="number" name="{{ key }}" class="admin-form-input" value="{{ settings.get(key, config.default) }}">
+                    {% else %}
+                    <input type="text" name="{{ key }}" class="admin-form-input" value="{{ settings.get(key, config.default) }}">
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            <div style="margin-top:24px"><button type="submit" class="btn-admin btn-admin-primary"><i class="fas fa-save"></i>حفظ الإعدادات</button></div>
+        </form>
+    </div>
+</div>
+{% endblock %}

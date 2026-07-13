@@ -1,0 +1,221 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/panel_base.html' %}
+{% block title %}فائدة - إعدادات الحساب التجارية{% endblock %}
+{% block page_title %}فائدة - إعدادات الحساب التجارية{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
+    <div class="container-xxl flex-grow-1 container-p-y">
+              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">إعدادات الحساب /</span> بيانات تجارية</h4>
+              {% for message in get_flashed_messages() %}
+
+              <style>
+                .flash-message {
+                  background-color: #372b70;
+                  color: var(--primary-dark)fff;
+                  padding: 15px;
+                  border-radius: 10px;
+                  border: 2px solid #4a3f8a; /* Amazing border color */
+                  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                  opacity: 1;
+                  transition: opacity 0.5s ease-in-out;
+                }
+              
+                .fadeOut {
+                  opacity: 0;
+                }
+              </style>
+              
+              <div class="flash-message" role="alert">
+                {{ message|safe }}
+              </div>
+              
+              <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                  var flashMessage = document.querySelector('.flash-message');
+              
+                  setTimeout(function () {
+                    flashMessage.classList.add('fadeOut');
+                    setTimeout(function () {
+                      flashMessage.parentNode.removeChild(flashMessage);
+                    }, 500); // 500 milliseconds for fade-out animation
+                  }, 5000); // 5000 milliseconds = 5 seconds
+                });
+              </script>
+              
+              {% endfor %}
+              <div class="row">
+                <div class="col-md-12">
+                
+                  <div class="card mb-4">
+                    <h5 class="card-header"style="color: var(--primary-dark);">بيانات تجارية</h5>
+                    <!-- Account -->
+                    <div class="card-body">
+                      <form  method="POST" action="/company_editprofile/commercial_data" enctype="multipart/form-data">
+
+                      <div class="d-flex align-items-start align-items-sm-center gap-4">
+                        {% if user.commercial_register %}
+
+                        <img
+
+                        src="/static/pdf.jpeg"
+                          alt="user-avatar"
+                          class="d-block rounded"
+                          height="100"
+                          width="100"
+                          id="uploadedAvatar"
+                        />
+                    
+                        <div class="button-wrapper">
+                            <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                              <span class="d-none d-sm-block"style="color: var(--primary-dark);">تحديث الملف تجاري</span>
+                              <i class="bx bx-upload d-block d-sm-none"></i>
+                              <input
+                                type="file"
+                                id="upload"
+                                class="account-file-input"
+                                hidden
+                                accept="application/pdf"
+                                name="new_commercial_register"
+                              />
+                            </label>
+                    
+    
+                            <p class="text-muted mb-0">Allowed PDF</p>
+                          </div>
+                        <button class="btn btn-outline-secondary account-image-reset mb-4">
+                          <a href="{{ url_for('static', filename='uploads/companies/commercial_register/' + user.commercial_register) }}" style="text-decoration: none; color: var(--primary-dark);" download>تنزيل الملف التجاري</a>
+                      </button>
+                      {% endif %}
+
+            
+                      {% if not user.commercial_register %}
+                      <div class="button-wrapper">
+                        <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                          <span class="d-none d-sm-block"style="color: var(--primary-dark);">تحميل ملف تجاري * </span>
+                          <i class="bx bx-upload d-block d-sm-none"></i>
+                          <input
+                            required
+                            type="file"
+                            id="upload"
+                            class="account-file-input"
+                            hidden
+                            accept="application/pdf"
+                            name="new_commercial_register"
+                          />
+                        </label>
+                
+
+                        <p class="text-muted mb-0">Allowed PDF</p>
+                      </div>
+                    </div><b class="d-block text-center">لم يتم تحميل  سجل تجاري من قبل</b>
+
+                        {% endif %}
+
+                   
+                      </div>
+                    </div>
+                    <hr class="my-0" />
+                    <div class="card-body">
+                        <div class="row">
+                         
+                          <div class="mb-3 col-md-6">
+                            <label for="lastName" class="form-label"style="color: var(--primary-dark);">نوع الشركة * </label>
+                            <select class="select2 form-select " required  name="company_type">
+                                {% if company_type %}
+
+                                <option value="{{company_type}}">{{company_type}}</option>
+                                {% endif %}                             <option value="قطاع خاص" >قطاع خاص</option>
+                                                                        <option value="قطاع عام" >قطاع عام</option>
+                                                                        <option value="منظمة غير ربحية" >منظمة غير ربحية</option>
+                                                                        <option value="شركة توظيف" >شركة توظيف</option>
+                                                                    
+                    
+                              </select>                          </div>
+
+                          <div class="mb-3 col-md-6">
+                            <label for="lastName" class="form-label"style="color: var(--primary-dark);">حجم الشركة * </label>
+                            <select name="company_size" required class="select2 form-select ">
+                                {% if company_size %}
+
+                                <option value="{{company_size}}">{{company_size}}</option>
+                                {% endif %}                             <option value="1-9">1-9</option>
+                                                                        <option value="10-49">10-49</option>
+                                                                        <option value="50-99">50-99</option>
+                                                                        <option value="+100">+100</option>
+                                                                    </select>                          </div>
+                     
+                      
+
+
+                                                                    
+                          <div class="mb-3 col-md-6">
+                            <label for="lastName" class="form-label"style="color: var(--primary-dark);"> قطاع الشركة * </label>
+                            <select class="select2 form-select "  name="company_field" required>
+                                {% if company_field %}
+                                <option value="{{company_field}}">{{company_field}}</option>
+                                {% endif %}
+                            
+                                <option value="التصميم والإعلان والتسويق">التصميم والإعلان والتسويق</option>
+                                <option value="الصناعة والخدمات الهندسية">الصناعة والخدمات الهندسية</option>
+                                <option value="المرافق والبناء">المرافق والبناء</option>
+                                <option value="الخدمات اللوجستية والنقل">الخدمات اللوجستية والنقل</option>
+                                <option value="الخدمات المالية">الخدمات المالية</option>
+                                <option value="الاتصالات">الاتصالات</option>
+                                <option value="تقنية المعلومات والبرمجيات">تقنية المعلومات والبرمجيات</option>
+                                <option value="المطاعم">المطاعم</option>
+                                <option value="التجزئة">التجزئة</option>
+                                <option value="الضيافة">الضيافة</option>
+                                <option value="السياحة والثقافة والترفيه">السياحة والثقافة والترفيه</option>
+                                <option value="الصحة">الصحة</option>
+                                <option value="القطاع الحكومي">القطاع الحكومي</option>
+                                <option value="التعليم">التعليم</option>
+                                <option value="اخرى">اخرى</option>
+                            </select>
+                          </div>
+                     
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="phoneNumber"style="color: var(--primary-dark);">اسم مدير الموارد البشرية</label>
+                            <div class="input-group input-group-merge">
+                                <input class="form-control" type="text" name="hr_name" id="lastName" value="{{hr_name}}"/>
+
+                            </div>
+                          </div>
+
+                               
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="phoneNumber"style="color: var(--primary-dark);">رقم هاتف مدير الموارد البشرية</label>
+                            <div class="input-group input-group-merge">
+                                <input class="form-control" type="text" name="hr_mobile" id="lastName" value="{{hr_mobile}}"/>
+
+                            </div>
+                          </div>
+
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="phoneNumber"style="color: var(--primary-dark);"> ايميل مدير الموارد البشرية</label>
+                            <div class="input-group input-group-merge">
+                                <input class="form-control" type="text" name="hr_email" id="lastName" value="{{hr_email}}"/>
+
+                            </div>
+                          </div>
+                     
+                        <div class="mt-2">
+                          <p style="color: red;"> يرجى ملئ جميع الحقول المميزة بنجمة</p>
+                          <button type="submit" class="btn btn-primary me-2">حفظ التغييرات</button>
+                        </div>
+                      </form>
+                    </div>
+                    <!-- /Account -->
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+</div>
+{% endblock %}

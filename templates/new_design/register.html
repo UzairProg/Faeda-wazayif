@@ -1,0 +1,166 @@
+<!--
+==============================================================================
+الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
+الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
+المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
+==============================================================================
+-->
+{% extends 'new_design/base.html' %}
+{% block title %}منصة فائدة | إنشاء حساب{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Form Customization */
+    .auth-card {
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        padding: 40px;
+        margin-top: 60px;
+        margin-bottom: 60px;
+        border-top: 5px solid var(--primary-dark);
+    }
+    .form-label {
+        color: var(--primary-dark);
+        font-weight: 700;
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #ced4da;
+        background-color: #f8f9fa;
+    }
+    .form-control:focus {
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.25);
+    }
+    .btn-custom-red {
+        background-color: var(--accent-red);
+        color: white;
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 700;
+        border: none;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+    .btn-custom-red:hover {
+        background-color: #9e203b;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    /* Radio Buttons for Role Selection */
+    .radio-btns input[type="radio"] {
+        display: none;
+    }
+    .radio-btns label {
+        display: inline-block;
+        width: 130px;
+        padding: 15px;
+        margin: 10px;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s ease;
+        background-color: #fff;
+    }
+    .radio-btns label img {
+        display: block;
+        margin: 0 auto 10px auto;
+        border-radius: 10px;
+        background-color: var(--accent-yellow);
+        padding: 8px;
+    }
+    .radio-btns input[type="radio"]:checked + label {
+        border-color: var(--primary-dark);
+        background-color: #f8f9fa;
+        box-shadow: 0 5px 15px rgba(35, 46, 76, 0.1);
+    }
+    .radio-btns input[type="radio"]:checked + label h5 {
+        color: var(--primary-dark);
+        font-weight: 800;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container d-flex justify-content-center align-items-center flex-grow-1">
+        <div class="col-md-10 col-lg-8">
+            <div class="auth-card">
+                <div class="text-center mb-4">
+                    <h2 class="almarai-extrabold" style="color: var(--primary-dark);">إنشاء حساب جديد</h2>
+                    <p class="almarai-regular text-muted">انضم إلى منصة فائدة وابدأ رحلتك المهنية</p>
+                </div>
+
+                {% if msg != None %}
+                <div class="hidden" class="alert alert-danger almarai-bold text-center" role="alert">
+                    {{ msg }}
+                </div>
+                {% endif %}
+
+                <form class="login-form" action="/register" method="post">
+                    
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold">الاسم الأول</label>
+                            <input type="text" class="form-control almarai-regular" name="fName" placeholder="أدخل الاسم الأول" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold">الاسم الأخير</label>
+                            <input type="text" class="form-control almarai-regular" name="lName" placeholder="أدخل الاسم الأخير" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold">البريد الإلكتروني</label>
+                            <input type="email" class="form-control almarai-regular" name="email" placeholder="example@domain.com" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold">رقم الجوال</label>
+                            <input type="text" class="form-control almarai-regular" name="phoneNumber" placeholder="مثال: +9665..." required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold">كلمة المرور</label>
+                            <input type="password" class="form-control almarai-regular" name="password" placeholder="أدخل كلمة المرور" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold">تأكيد كلمة المرور</label>
+                            <input type="password" class="form-control almarai-regular" name="passwordProve" placeholder="أعد إدخال كلمة المرور" required>
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <label class="form-label almarai-extrabold fs-5 mb-3">تسجيل كـ :</label>
+                        <div class="radio-btns d-flex justify-content-center flex-wrap">
+                            <input type="radio" id="individual" name="userrole" value="customers" checked>
+                            <label for="individual">
+                                <img src="{{ url_for('static', filename='new_design/images/people.png') }}" height="50" alt="أفراد">
+                                <h5 class="almarai-regular m-0">أفراد</h5>
+                            </label>
+
+                            <input type="radio" id="enterprise" name="userrole" value="company">
+                            <label for="enterprise">
+                                <img src="{{ url_for('static', filename='new_design/images/enterprise.png') }}" height="50" alt="منشآت">
+                                <h5 class="almarai-regular m-0">منشآت</h5>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-custom-red w-100 almarai-bold mb-4 fs-5">إنشاء حساب</button>
+
+                    <div class="text-center mt-3 almarai-regular">
+                        <span class="text-muted">لديك حساب بالفعل؟</span>
+                        <a href="{{ url_for('customer.get_login') }}" class="almarai-bold" style="color: var(--primary-dark); text-decoration: underline;">تسجيل الدخول هنا</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

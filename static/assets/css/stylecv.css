@@ -1,0 +1,185 @@
+@font-face {
+    font-family: "averta";
+    src: url("AvertaDemoPE-Regular.otf");
+}
+
+@font-face {
+    font-family: "averta-bold";
+    src: url("AvertaDemoPE-ExtraboldItalic.otf");
+}
+
+
+#main-table {
+    font-family: averta;
+    font-size: 16px;
+}
+
+#main-table ul {
+    padding-left: 32px;
+    margin-bottom: 0;
+}
+
+#main-table li {
+    list-style: disc;
+}
+
+table[align="center"] {
+    margin: 0 auto;
+}
+
+table td {
+    line-height: 25px;
+}
+
+.left-panel-info {
+    padding-bottom: 5px;
+}
+
+.left-panel-info i {
+    padding-right: 10px;
+}
+
+.headings {
+    font-family: averta;
+    font-size: 23px;
+    line-height: 20px;
+    font-weight: bold;
+}
+
+.cv-name {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.sub-headings {
+    font-family: averta;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.sub-headings {
+    margin-bottom: 7px;
+    margin-top: 12px;
+}
+
+.row-def,
+.row-col-2 {
+    width: 1000px;
+    max-width: 98%;
+}
+
+.main-column-1 {
+    width: 35%;
+    padding: 10px 20px;
+    background-color: #E4EDF8;
+}
+
+.main-column-2 {
+    width: 65%;
+    padding: 10px 20px;
+    padding-left: 40px;
+}
+
+.row-1 .table-1 td {
+    padding-top: 40px;
+}
+
+.main-column-1 table hr,
+.main-column-2 table hr {
+    margin: .5rem 0;
+}
+
+.row-1 .table-2 td {
+    padding-top: 10px;
+    padding-bottom: 25px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.main-column-1 table td,
+.main-column-2 table td {
+    padding-top: 5px;
+}
+
+.main-column-1,
+.main-column-2 {
+    vertical-align: top;
+}
+
+.left-panel-option li {
+    margin-bottom: 5px;
+}
+
+.right-panel-option li {
+    margin-bottom: 5px;
+}
+
+.right-panel-option {
+    margin: 5px 0;
+}
+
+#main-table {
+    margin-bottom: 20px;
+}
+
+
+table.row-def {
+    background-color: #FFF;
+}
+
+.mr-16 {
+    margin: 0px 16px;
+}
+
+
+.columns-theme::-webkit-scrollbar {
+    display: unset;
+    background-color: #eee;
+}
+
+/* Customize the scrollbar track (background) */
+.columns-theme::-webkit-scrollbar,
+.columns-theme::-webkit-scrollbar-thumb-horizontal {
+    width: 10px !important;
+    height: 10px !important;
+    /* Adjust the width as needed */
+}
+
+/* Customize the scrollbar thumb (the draggable part) */
+.columns-theme::-webkit-scrollbar-thumb {
+    background-color: #999;
+    /* Change the background color */
+    border-radius: 5px;
+    /* Add rounded corners */
+}
+
+/* Customize the scrollbar track when hovering */
+.columns-theme::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+    /* Change the background color on hover */
+}
+
+/* Customize the scrollbar track (background) when dragging */
+.columns-theme::-webkit-scrollbar-thumb:active {
+    background-color: #2074a0;
+    /* Change the background color when dragging */
+}
+
+.columns-theme {
+    width: 100%;
+    overflow: auto;
+}
+
+ul.row-items {
+    flex-wrap: wrap;
+}
+
+ul.row-items li {
+    margin-right: 40px;
+}
+
+@media (max-width: 1000px) {
+    .columns-theme {
+        min-width: 1000px;
+    }
+}

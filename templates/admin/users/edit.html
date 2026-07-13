@@ -1,0 +1,40 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}تعديل {{ user.fullname }} | إدارة المستخدمين{% endblock %}
+{% block nav_users %}active{% endblock %}
+{% block breadcrumb %}<li><a href="{{ url_for('admin.list_users') }}">المستخدمين</a></li><li><a href="{{ url_for('admin.view_user', id=user.id) }}">{{ user.fullname }}</a></li><li>تعديل</li>{% endblock %}
+{% block page_title %}تعديل بيانات المستخدم{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+    <div class="admin-card-body">
+        <form method="POST" action="{{ url_for('admin.edit_user', id=user.id) }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+                <div class="admin-form-group"><label>الاسم الكامل</label><input type="text" name="fullname" class="admin-form-input" value="{{ user.fullname or '' }}" required></div>
+                <div class="admin-form-group"><label>البريد الإلكتروني</label><input type="email" name="email" class="admin-form-input" value="{{ user.email or '' }}" required></div>
+                <div class="admin-form-group"><label>رقم الجوال</label><input type="text" name="mobile" class="admin-form-input" value="{{ user.mobile or '' }}" required></div>
+                <div class="admin-form-group"><label>الجنس</label>
+                    <select name="sex" class="admin-form-select">
+                        <option value="">— اختر —</option>
+                        <option value="ذكر" {% if user.sex == 'ذكر' %}selected{% endif %}>ذكر</option>
+                        <option value="أنثى" {% if user.sex == 'أنثى' %}selected{% endif %}>أنثى</option>
+                    </select>
+                </div>
+                <div class="admin-form-group"><label>الدولة</label><input type="text" name="country" class="admin-form-input" value="{{ user.country or '' }}"></div>
+                <div class="admin-form-group"><label>المنطقة</label><input type="text" name="government" class="admin-form-input" value="{{ user.government or '' }}"></div>
+                <div class="admin-form-group"><label>الحالة التعليمية</label><input type="text" name="education_statue" class="admin-form-input" value="{{ user.education_statue or '' }}"></div>
+                <div class="admin-form-group"><label>المؤهل العلمي</label><input type="text" name="educational_qualification" class="admin-form-input" value="{{ user.educational_qualification or '' }}"></div>
+                <div class="admin-form-group"><label>الجامعة</label><input type="text" name="university" class="admin-form-input" value="{{ user.university or '' }}"></div>
+                <div class="admin-form-group"><label>القسم</label><input type="text" name="department_university" class="admin-form-input" value="{{ user.department_university or '' }}"></div>
+                <div class="admin-form-group"><label>سنوات الخبرة</label><input type="text" name="years_of_skills" class="admin-form-input" value="{{ user.years_of_skills or '' }}"></div>
+                <div class="admin-form-group"><label>مجال العمل المفضل</label><input type="text" name="preferred_field_of_work" class="admin-form-input" value="{{ user.preferred_field_of_work or '' }}"></div>
+                <div class="admin-form-group"><label>نوع العمل</label><input type="text" name="work_type" class="admin-form-input" value="{{ user.work_type or '' }}"></div>
+            </div>
+            <div class="admin-form-group" style="margin-top:12px"><label>نبذة</label><textarea name="about" class="admin-form-textarea">{{ user.about or '' }}</textarea></div>
+            <div style="display:flex;gap:12px;justify-content:flex-start;margin-top:24px">
+                <button type="submit" class="btn-admin btn-admin-primary"><i class="fas fa-save"></i>حفظ التعديلات</button>
+                <a href="{{ url_for('admin.view_user', id=user.id) }}" class="btn-admin btn-admin-outline">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
