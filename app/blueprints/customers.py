@@ -299,11 +299,10 @@ def apply_for_job(job_id):
     team = request.form.get('type_team')
     if team:  # Assuming team name is part of the form
         type = "team"
-        user_id = "admin_id"
         team_id = request.form.get('type_team')
     else:
         type = "individual"
-        team_id = "0"
+        team_id = None
 # لو كان التقديم الحالي ك فريق
 # نتأكد ان الوظيفة لم يتم التقديم عليها من نفس الفريق اكثر من مرة
     if team :
@@ -327,7 +326,7 @@ def apply_for_job(job_id):
     # Check if the customer has already applied for this job
 
     result = db.session.execute(query).fetchone()# noqa: F405
-    status = Customers.get_job_status_by_customer_id(customer_id, job_id)# noqa: F405
+    status = Customers.get_job_status_by_customer_id(user_id, job_id)# noqa: F405
 
     if result:
         ################## Check if the customer has rejected for this job
@@ -698,7 +697,10 @@ def get_edit_profile_job_data():
     if not user:
         flash('User not found.', 'error')
         return redirect('/login')
-    return render_template('panel/customer_account_job_data.html', user=user)
+    return render_template('panel/customer_account_job_data.html', user=user,
+                           years_of_skills=user.years_of_skills,
+                           preferred_field_of_work=user.preferred_field_of_work,
+                           work_type=user.work_type)
 
 
 @customer.route('/edit-profile/educational_data', methods=['GET'])
@@ -711,7 +713,12 @@ def get_edit_profile_educational_data():
     if not user:
         flash('User not found.', 'error')
         return redirect('/login')
-    return render_template('panel/customer_account_educational_data.html', user=user)
+    return render_template('panel/customer_account_educational_data.html', user=user,
+                           education_statue=user.education_statue,
+                           educational_qualification=user.educational_qualification,
+                           university=user.university,
+                           department_university=user.department_university,
+                           gpa=user.gpa)
 
 
 @customer.route('/edit-profile/personal_data', methods=['POST'])
@@ -729,9 +736,14 @@ def edit_profile_personal_data():
 
             user.fullname = request.form.get('name', '').strip()
 
-            user.mobile = request.form.get('new_mobile', '').strip()
+            new_mobile = request.form.get('new_mobile') or request.form.get('phoneNumber')
+            if new_mobile:
+                user.mobile = new_mobile.strip()
+
             user.about = request.form.get('about', '').strip()
-            user.sex = request.form.get('new_sex', '').strip()
+            new_sex = request.form.get('new_sex')
+            if new_sex:
+                user.sex = new_sex.strip()
             user.country = request.form.get('country', '').strip()
             user.government = request.form.get('state', '').strip()
 

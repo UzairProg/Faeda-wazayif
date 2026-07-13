@@ -10,6 +10,55 @@
 {% block page_title %}فائدة - بيانات الحساب الشخصية{% endblock %}
 
 {% block content %}
+<style>
+  /* Match the React phone input to the Sneat theme .form-control styling */
+  #react-phone-input-root input {
+      display: block !important;
+      width: 100% !important;
+      height: 39px !important;
+      font-size: 0.9375rem !important;
+      font-weight: 400 !important;
+      line-height: 1.53 !important;
+      color: #697a8d !important;
+      background-color: #fff !important;
+      background-clip: padding-box !important;
+      border: 1px solid #d9dee3 !important;
+      border-radius: 0.375rem !important;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+      padding-right: 15px !important; /* For Arabic/RTL text alignment */
+  }
+  
+  /* Target the country code box (select, button, or combobox) to match height */
+  #react-phone-input-root select,
+  #react-phone-input-root button,
+  #react-phone-input-root [role="combobox"],
+  #react-phone-input-root [role="button"],
+  #react-phone-input-root .flag-dropdown {
+      height: 39px !important;
+      min-height: 39px !important;
+      border: 1px solid #d9dee3 !important;
+      border-radius: 0.375rem !important;
+      background-color: #fff !important;
+  }
+
+  /* Ensure the text is LTR and properly aligned */
+  #react-phone-input-root input {
+      direction: ltr !important; 
+      text-align: left !important;
+      flex: 1 1 auto !important;
+  }
+
+  /* If it uses react-tel-input internally, preserve its padding */
+  #react-phone-input-root .react-tel-input input {
+      padding-left: 48px !important; 
+  }
+
+  #react-phone-input-root input:focus {
+      border-color: #696cff !important;
+      outline: 0 !important;
+      box-shadow: 0 0 0.25rem 0.05rem rgba(105, 108, 255, 0.1) !important;
+  }
+</style>
 <div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
     <div class="container-xxl flex-grow-1 container-p-y">
               <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">إعدادات الحساب/</span> البيانات الشخصية</h4>
@@ -104,6 +153,8 @@
                           <div class="mb-3 col-md-6" >
                             <label class="form-label" for="phoneNumber" style="color: var(--primary-dark);">رقم الهاتف * </label>
                             <div id="react-phone-input-root" data-initial-value="{{user.mobile}}"></div>
+                            <!-- Hidden input to store the phone number for form submission -->
+                            <input type="hidden" name="phoneNumber" id="hiddenPhoneNumber" value="{{user.mobile}}">
                           </div>
                      
                           <div class="mb-3 col-md-6">
@@ -151,4 +202,13 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='react/assets/index.css') }}">
 <script type="module" src="{{ url_for('static', filename='react/assets/index.js') }}"></script>
 <script src="{{ url_for('static', filename='API/ar_country.js') }}"></script>
+<script>
+  // Capture the React phone input value right before form submission
+  document.querySelector('form').addEventListener('submit', function() {
+    var reactInput = document.querySelector('#react-phone-input-root input');
+    if (reactInput && reactInput.value) {
+      document.getElementById('hiddenPhoneNumber').value = reactInput.value;
+    }
+  });
+</script>
 {% endblock %}

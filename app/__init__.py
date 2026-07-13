@@ -40,12 +40,14 @@ def create_app():
         from app.blueprints.companies import company
         from app.blueprints.jobs import job
         from app.blueprints.messages import messages_routes 
+        from app.blueprints.chat import chat_bp
         
         app.register_blueprint(core_bp)
         app.register_blueprint(customer)
         app.register_blueprint(company)
         app.register_blueprint(job)
         app.register_blueprint(messages_routes)
+        app.register_blueprint(chat_bp)
         
         # إنشاء الجداول في قاعدة البيانات (في حال لم تكن موجودة)
         db.create_all()
