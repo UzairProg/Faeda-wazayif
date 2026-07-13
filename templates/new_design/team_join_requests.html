@@ -1,0 +1,115 @@
+{% extends 'new_design/panel_base.html' %}
+{% block title %}فائدة - طلبات انضمام للمجموعة{% endblock %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="py-3 mb-3">
+        <h4 class="fw-bold mb-0" style="color: var(--primary-dark);">
+            <span class="fw-light text-muted">إدارة المجموعة /</span> طلبات الانضمام
+        </h4>
+    </div>
+
+    <!-- Team Info -->
+    <div class="card shadow-sm border-0 mb-4" style="border-radius: 15px; background-color: var(--primary-dark); color: white;">
+        <div class="card-body d-flex align-items-center">
+            {% if team.img %}
+            <img src="/static/uploads/customers/teams/images/{{ team.img }}" alt="{{ team.team_name }}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" class="me-3 ms-3 border border-2 border-white">
+            {% else %}
+            <div class="me-3 ms-3 border border-2 border-white" style="width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1);">
+                <i class="fas fa-users fs-4"></i>
+            </div>
+            {% endif %}
+            <div>
+                <h4 class="mb-1 text-white fw-bold">{{ team.team_name }}</h4>
+                <p class="mb-0 text-white-50"><i class="fas fa-layer-group ms-1"></i> {{ team.general_program }}</p>
+            </div>
+            <div class="me-auto ms-4 text-center">
+                <span class="badge bg-danger rounded-pill px-3 py-2 fs-6">
+                    {{ requests|length }} طلب جديد
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="card shadow-sm border-0" style="border-radius: 15px;">
+        <div class="card-body p-0">
+            {% if requests %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="border-collapse: separate; border-spacing: 0;">
+                    <thead style="background-color: var(--bg-light);">
+                        <tr>
+                            <th class="border-0 py-3 ps-4" style="color: var(--primary-dark); font-weight: 700; border-top-right-radius: 15px;">المستخدم</th>
+                            <th class="border-0 py-3" style="color: var(--primary-dark); font-weight: 700;">البريد الإلكتروني</th>
+                            <th class="border-0 py-3" style="color: var(--primary-dark); font-weight: 700;">تاريخ الطلب</th>
+                            <th class="border-0 py-3 text-center" style="color: var(--primary-dark); font-weight: 700; border-top-left-radius: 15px;">الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer, date_of_addition in requests %}
+                        <tr>
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar avatar-sm me-3 ms-2">
+                                        {% if customer.img %}
+                                        <img src="/static/uploads/customers/images/{{ customer.img }}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                        {% else %}
+                                        <span class="avatar-initial rounded-circle bg-label-primary d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; background-color: rgba(35,46,76,0.1); color: var(--primary-dark);">
+                                            {{ customer.fullname[0] }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold" style="color: var(--primary-dark);">{{ customer.fullname }}</h6>
+                                        <small class="text-muted">{{ customer.user_id }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3">{{ customer.email }}</td>
+                            <td class="py-3">
+                                <span class="badge bg-label-secondary" style="background-color: rgba(108,117,125,0.1); color: #6c757d;">
+                                    {{ date_of_addition.strftime('%Y-%m-%d') if date_of_addition else 'حديث' }}
+                                </span>
+                            </td>
+                            <td class="py-3 text-center">
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <a href="/visit_customer_profile/{{ customer.user_id }}" target="_blank" class="btn btn-sm btn-outline-secondary" title="عرض الملف">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <form action="{{ url_for('customer.handle_join_request', team_id=team.id) }}" method="POST" class="d-inline">
+                                        <input type="hidden" name="member_id" value="{{ customer.user_id }}">
+                                        <input type="hidden" name="action" value="accept">
+                                        <button type="submit" class="btn btn-sm btn-success shadow-sm" title="قبول الطلب">
+                                            <i class="fas fa-check"></i> قبول
+                                        </button>
+                                    </form>
+                                    <form action="{{ url_for('customer.handle_join_request', team_id=team.id) }}" method="POST" class="d-inline">
+                                        <input type="hidden" name="member_id" value="{{ customer.user_id }}">
+                                        <input type="hidden" name="action" value="reject">
+                                        <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="رفض الطلب">
+                                            <i class="fas fa-times"></i> رفض
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <div class="mb-3">
+                    <i class="fas fa-inbox fs-1 text-muted opacity-50"></i>
+                </div>
+                <h5 class="fw-bold" style="color: var(--primary-dark);">لا توجد طلبات انضمام حالياً</h5>
+                <p class="text-muted">لم يقم أي مستخدم بطلب الانضمام إلى مجموعتك حتى الآن.</p>
+                <a href="/profile_team/{{ team.id }}" class="btn btn-outline-primary mt-3" style="border-radius: 8px;">
+                    <i class="fas fa-arrow-right ms-1"></i> العودة للمجموعة
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

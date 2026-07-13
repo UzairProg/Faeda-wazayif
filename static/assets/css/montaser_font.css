@@ -1,8 +1,0 @@
-@font-face {
-    font-family: 'MyCustomFont';
-    src: url('/static/assets/fonts/Montserrat-Arabic-Regular.ttf') format('truetype');
-}
-
-.montaser_font {
-    font-family: 'MyCustomFont', sans-serif;
-}
