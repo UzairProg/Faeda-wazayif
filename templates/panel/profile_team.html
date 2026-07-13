@@ -1,158 +1,334 @@
-<!--
-==============================================================================
-الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
-الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
-المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
-==============================================================================
--->
 {% extends 'new_design/panel_base.html' %}
 {% block page_title %}ملف المجموعة{% endblock %}
 {% block nav_my_teams %}active{% endblock %}
 
 {% block content %}
-<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
-    <div class="container-xxl flex-grow-1 container-p-y">
-            
-            
+<style>
+    :root {
+        --primary-dark: #232E4C;
+        --primary-light: #253048;
+        --accent-red: #BF2A4A;
+        --accent-yellow: #F0BF56;
+        --bg-light: #F0F1F0;
+        --text-muted: #6c757d;
+    }
+    body { font-family: 'Almarai', sans-serif; }
+    
+    /* Banner & Header */
+    .team-banner-card {
+        border-radius: 15px;
+        border: none;
+        overflow: hidden;
+        background: white;
+    }
+    .team-banner-bg {
+        height: 180px;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+        position: relative;
+    }
+    .team-banner-content {
+        padding: 0 30px 30px;
+        position: relative;
+    }
+    .team-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 15px;
+        border: 4px solid white;
+        background: white;
+        object-fit: cover;
+        margin-top: -60px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        z-index: 2;
+        position: relative;
+    }
+    
+    /* Action Buttons */
+    .btn-modern {
+        border-radius: 8px;
+        font-weight: 700;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+    .btn-add-member { background-color: var(--accent-red); color: white; border: none; }
+    .btn-add-member:hover { background-color: #a0213d; color: white; }
+    .btn-edit-team { background-color: var(--accent-yellow); color: var(--primary-dark); border: none; }
+    .btn-edit-team:hover { background-color: #d6a847; color: var(--primary-dark); }
+    
+    /* Info Cards */
+    .info-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.04);
+        background: white;
+        height: 100%;
+    }
+    .info-card-header {
+        border-bottom: 1px solid #f0f0f0;
+        padding: 20px;
+        color: var(--primary-dark);
+        font-weight: 800;
+        font-size: 1.1rem;
+    }
+    .info-card-body { padding: 20px; }
+    .info-item {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+    .info-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        background: rgba(35, 46, 76, 0.05);
+        color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 15px;
+    }
+    
+    /* Members Table */
+    .table-modern { border-collapse: separate; border-spacing: 0 10px; }
+    .table-modern thead th {
+        border-bottom: none;
+        color: var(--primary-dark);
+        font-weight: 800;
+        font-size: 0.9rem;
+        padding-bottom: 10px;
+    }
+    .table-modern tbody tr {
+        background-color: var(--bg-light);
+        border-radius: 10px;
+        transition: transform 0.2s;
+    }
+    .table-modern tbody tr:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); background-color: #ffffff; }
+    .table-modern tbody td {
+        border: none;
+        padding: 15px;
+        vertical-align: middle;
+        color: var(--primary-dark);
+    }
+    .table-modern tbody td:first-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+    .table-modern tbody td:last-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+    
+    /* Badge Status */
+    .badge-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+    .badge-status.active { background: rgba(35, 46, 76, 0.1); color: var(--primary-dark); }
+</style>
 
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="py-3 mb-3">
+        <h4 class="fw-bold mb-0" style="color: var(--primary-dark);">
+            <span class="fw-light text-muted">الفرق /</span> ملف المجموعة
+        </h4>
+    </div>
 
-<!-- Header -->
-<div class="row">
-  <div class="col-12">
-    <div class="card mb-4" style="background-color: var(--primary-dark);">
-      <div class="user-profile-header-banner">
-        <img src="/static/panel/assets/img/pages/profile-banner.png" alt="Banner image" class="rounded-top">
-      </div>
-      <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
-        <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
-            {%if team.img%}
-          <img src="/static/uploads/customers/teams/images/{{team.img}}" alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img">
-            {%else%}
-            
-            <img src="/static/no_image.jpg" alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img">
-            {%endif%}
-          </div>
-        <div class="flex-grow-1 mt-3 mt-sm-5">
-          <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
-            <div class="user-profile-info">
-              <h4>{{team.team_name}}</h4>
-              <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
-                <li class="list-inline-item fw-medium">
-                  <i class='bx bx'></i> التخصص العام : {{team.general_program}}
-                </li>
+    <!-- Team Header Card -->
+    <div class="card team-banner-card shadow-sm mb-4">
+        <div class="team-banner-bg"></div>
+        <div class="team-banner-content">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end">
+                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end">
+                    {% if team.img %}
+                        <img src="/static/uploads/customers/teams/images/{{ team.img }}" alt="{{ team.team_name }}" class="team-avatar">
+                    {% else %}
+                        <img src="/static/no_image.jpg" alt="No image" class="team-avatar">
+                    {% endif %}
+                    
+                    <div class="ms-md-4 me-md-4 mt-3 mt-md-0 text-center text-md-start">
+                        <h3 class="fw-bold mb-1" style="color: var(--primary-dark);">{{ team.team_name }}</h3>
+                        <p class="mb-0 text-muted d-flex align-items-center justify-content-center justify-content-md-start">
+                            <i class="fas fa-layer-group ms-2"></i> {{ team.general_program }}
+                        </p>
+                    </div>
+                </div>
                 
-              </ul>
-            </div>
-           <div style="height: 45px; background-color: #e68387; text-align: center; padding-top: 10px; width: 200px;">
-            <a style="color: var(--primary-dark); font-weight: bolder;" href="/add_member_to_team/{{team.id}}">اضافة اعضاء الى الفريق</a>
-           </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!--/ Header -->
+                {% set ns = namespace(is_member=false, member_status='') %}
+                {% for member in team_members %}
+                    {% if member.user_id | string == user.user_id | string or member.id | string == user.id | string %}
+                        {% set ns.is_member = true %}
+                        {% set ns.member_status = member.status %}
+                    {% endif %}
+                {% endfor %}
 
-
-<!-- User Profile Content -->
-<div class="row">
-  <div class="col-xl-4 col-lg-5 col-md-5">
-    <!-- About User -->
-    <div class="card mb-4" style="color: var(--primary-dark);">
-      <div class="card-body" dir="rtl">
-        <small>عن الفريق</small>
-        <ul class="list-unstyled mb-4 mt-3">
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-user"></i><span class="fw-medium mx-2">التخصص العام : </span> <span>{{team.general_program}}</span></li>
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-star"></i><span class="fw-medium mx-2">  التخصص الفرعي :</span> <span>{{team.semi_special_program}}</span></li>
-          <li class="d-flex align-items-center mb-3"><i class="bx bx-flag"></i><span class="fw-medium mx-2">التخصص الدقيق:</span> <span>{{team.special_program}}</span></li>
-        </ul>
-      </div>
-    </div>
-    <!--/ About User -->
-  </div>
-  <div class="col-xl-8 col-lg-7 col-md-7" >
-    <!-- Activity Timeline -->
-    <div class="card card-action mb-4" style="color: var(--primary-dark);">
-     
-      <div class="card-body">
-        <ul class="timeline ms-2">
-          <li class="timeline-item timeline-item-transparent">
-            <span class="timeline-point-wrapper"><span class="timeline-point timeline-point-info"></span></span>
-            <div class="timeline-event">
-              <div class="timeline-header mb-1">
-                <h6 class="mb-0" style="color: var(--primary-dark);">ماذا عن ؟</h6>
-              </div>
-              <p class="mb-0">{{team.achievements}}</p>
-            </div>
-            <hr>
-            <hr>
-            <div class="card mb-4">
-              <div class="card-body" dir="rtl">
-                <small ] style="color: var(--primary-dark);">عن الفريق</small>
-                <ul class="list-unstyled mb-4 mt-3" style="color: var(--primary-dark);">
-                    {{team.about}}
-                </ul>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <!--/ Activity Timeline -->
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-12">
-    <!-- Activity Timeline -->
-    <div class="card">
-      <h5 class="card-header">اعضاء الفريق </h5>
-      <div class="table-responsive text-nowrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th style="color: var(--primary-dark);">اسم العضو</th>
-              <th style="color: var(--primary-dark);"> الايميل</th>
-              <th style="color: var(--primary-dark);">السيرة الذاتية</th>
-              <th style="color: var(--primary-dark);">حالة العضو</th>
-              <th style="color: var(--primary-dark);">عرض الملف الشخصي</th>
-              
-            </tr>
-          </thead>
-          <tbody class="table-border-bottom-0">
-            {% for member in team_members %}
-            <tr>
-                <td style="display: none; color: #000;">
-                    <input type="checkbox" name="selected_applicants[]" value="{{ member.id }}">
-                </td>
-                <td>
-                     <strong style="color: var(--primary-dark);">{{ member.fullname }}</strong>
-                </td>
-                <td style="color: var(--primary-dark);">{{ member.email }}</td>
-                {%if member.cv%}
-                <td>
-                    <a style="color: var(--primary-dark);" href="{{ url_for('company.download_cv', cv_filename=member.cv) }}" download>تنزيل السيرةالذاتية</a>
-                </td>
+                {% if session['user_id'] | string == team.admin_id | string %}
+                <div class="d-flex gap-2 mt-4 mt-md-0 justify-content-center">
+                    <a href="/team_join_requests/{{ team.id }}" class="btn btn-modern shadow-sm position-relative" style="background-color: var(--primary-dark); color: white;">
+                        <i class="fas fa-envelope-open-text ms-1"></i> طلبات الانضمام
+                        {% if pending_requests_count > 0 %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ pending_requests_count }}
+                        </span>
+                        {% endif %}
+                    </a>
+                    <a href="/add_member_to_team/{{ team.id }}" class="btn btn-modern btn-add-member shadow-sm">
+                        <i class="fas fa-user-plus ms-1"></i> إضافة أعضاء
+                    </a>
+                    <a href="/edit_team/{{ team.id }}" class="btn btn-modern btn-edit-team shadow-sm">
+                        <i class="fas fa-edit ms-1"></i> تعديل البيانات
+                    </a>
+                </div>
+                {% elif ns.is_member %}
+                    {% if ns.member_status == 'طلب انضمام' %}
+                    <div class="d-flex gap-2 mt-4 mt-md-0 justify-content-center">
+                        <button class="btn btn-modern btn-secondary shadow-sm" disabled>
+                            <i class="fas fa-clock ms-1"></i> طلب الانضمام قيد المراجعة
+                        </button>
+                    </div>
+                    {% else %}
+                    <div class="d-flex gap-2 mt-4 mt-md-0 justify-content-center align-items-center">
+                        <span class="badge bg-success me-2" style="font-size: 1rem; padding: 10px 20px; border-radius: 8px;">
+                            <i class="fas fa-check-circle ms-1"></i> {{ ns.member_status }}
+                        </span>
+                        <form action="{{ url_for('customer.leave_team', team_id=team.id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من رغبتك في مغادرة هذا الفريق؟');">
+                            <button type="submit" class="btn btn-modern shadow-sm" style="background-color: #6c757d; color: white;">
+                                <i class="fas fa-sign-out-alt ms-1"></i> مغادرة الفريق
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
                 {% else %}
-                <td>
-                  <strong style="color: var(--primary-dark);">---</strong>
-                </td>
-                {%endif%}
-                <td style="color: var(--primary-dark);"> {{member.status}}</td>
-                <td><span ><a style="color: var(--primary-dark);" href="/visit_customer_profile/{{member.user_id}}">عرض الملف الشخصي</a></span></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+                <div class="d-flex gap-2 mt-4 mt-md-0 justify-content-center">
+                    <form action="{{ url_for('customer.request_join_team', team_id=team.id) }}" method="POST">
+                        <button type="submit" class="btn btn-modern shadow-sm" style="background-color: var(--accent-red); color: white;">
+                            <i class="fas fa-user-plus ms-1"></i> طلب انضمام
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <!--/ Activity Timeline -->
-  </div>
-</div>
 
-<!--/ User Profile Content -->
+    <div class="row">
+        <!-- Team Details -->
+        <div class="col-xl-4 col-lg-5 mb-4">
+            <div class="card info-card">
+                <div class="info-card-header">
+                    <i class="fas fa-info-circle ms-2 text-primary"></i> عن الفريق
+                </div>
+                <div class="info-card-body">
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-book-open"></i></div>
+                        <div>
+                            <small class="text-muted d-block">التخصص العام</small>
+                            <span class="fw-bold">{{ team.general_program }}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-bookmark"></i></div>
+                        <div>
+                            <small class="text-muted d-block">التخصص الفرعي</small>
+                            <span class="fw-bold">{{ team.semi_special_program }}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-tag"></i></div>
+                        <div>
+                            <small class="text-muted d-block">التخصص الدقيق</small>
+                            <span class="fw-bold">{{ team.special_program }}</span>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4" style="border-color: rgba(0,0,0,0.05);">
+                    
+                    <h6 class="fw-bold text-muted mb-3">تفاصيل إضافية:</h6>
+                    <p style="line-height: 1.8; font-size: 0.95rem; color: var(--primary-dark);">
+                        {{ team.about if team.about else 'لا يوجد وصف إضافي للفريق.' }}
+                    </p>
+                </div>
+            </div>
+        </div>
 
-          </div>
+        <!-- Team Achievements & Members -->
+        <div class="col-xl-8 col-lg-7">
+            <!-- Achievements -->
+            <div class="card info-card mb-4" style="height: auto;">
+                <div class="info-card-header">
+                    <i class="fas fa-trophy ms-2 text-warning"></i> ماذا عنا (الإنجازات)
+                </div>
+                <div class="info-card-body">
+                    <p class="mb-0" style="line-height: 1.8; font-size: 0.95rem; color: var(--primary-dark);">
+                        {{ team.achievements if team.achievements else 'لم يتم إضافة إنجازات بعد.' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Members -->
+            <h5 class="fw-bold mb-3 mt-4" style="color: var(--primary-dark);">أعضاء الفريق</h5>
+            <div class="table-responsive text-nowrap" style="overflow-x: auto;">
+                <table class="table table-modern">
+                    <thead>
+                        <tr>
+                            <th style="display: none;"></th>
+                            <th>الاسم</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>السيرة الذاتية</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in team_members %}
+                        <tr>
+                            <td style="display: none;">
+                                <input type="checkbox" name="selected_applicants[]" value="{{ member.id }}">
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="info-icon ms-0 me-3" style="width: 40px; height: 40px; border-radius: 50%; margin-left: 10px;">
+                                        <i class="fas fa-user text-secondary"></i>
+                                    </div>
+                                    <strong class="fw-bold" style="font-size: 1.05rem;">{{ member.fullname }}</strong>
+                                </div>
+                            </td>
+                            <td>{{ member.email }}</td>
+                            <td>
+                                {% if member.cv %}
+                                    <a href="{{ url_for('company.download_cv', cv_filename=member.cv) }}" download class="btn btn-sm" style="background-color: white; border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; color: var(--primary-dark); font-weight: 600;">
+                                        <i class="fas fa-download ms-1"></i> تحميل
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted fw-bold">---</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge-status active">{{ member.status }}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="/visit_customer_profile/{{ member.user_id }}" class="btn btn-sm" style="background-color: white; color: var(--primary-dark); font-weight: 600; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1);">
+                                        <i class="fas fa-external-link-alt ms-1"></i> الملف الشخصي
+                                    </a>
+                                    {% if session['user_id'] | string == team.admin_id | string and member.id != user.id %}
+                                    <form action="{{ url_for('customer.remove_team_member', team_id=team.id) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من إزالة هذا العضو من الفريق؟');">
+                                        <input type="hidden" name="member_id" value="{{ member.user_id }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 6px; font-weight: 600;">
+                                            <i class="fas fa-user-minus ms-1"></i> إزالة
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <i class="fas fa-users text-muted mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
+                                <h6 class="text-muted mb-0 fw-bold">لا يوجد أعضاء في هذا الفريق.</h6>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

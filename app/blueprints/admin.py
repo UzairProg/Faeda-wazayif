@@ -645,7 +645,7 @@ def list_teams():
     team_stats = {}
     for team in pagination.items:
         member_count = db.session.query(team_members_association).filter_by(
-            team_id=team.id, status='منضم'
+            team_id=team.id, status='عضو'
         ).count()
         team_stats[team.id] = {'member_count': member_count}
 

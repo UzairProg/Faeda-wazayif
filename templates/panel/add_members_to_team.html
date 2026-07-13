@@ -1,192 +1,365 @@
-<!--
-==============================================================================
-الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
-الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
-المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
-==============================================================================
--->
 {% extends 'new_design/panel_base.html' %}
 {% block page_title %}إضافة أعضاء{% endblock %}
 {% block nav_my_teams %}active{% endblock %}
 
 {% block content %}
-<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
-    <div class="container-xxl flex-grow-1 container-p-y">
-            
-            
-<h4 class="py-3 mb-4">
-  <span class="text-muted fw-light" style="color: #000;">اضافة اعضاء الى فريق  </span> 
-</h4>
-<div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">الوظائف /</span>  نشر وظيفة</h4>
+<style>
+    :root {
+        --primary-dark: #232E4C;
+        --primary-light: #253048;
+        --accent-red: #BF2A4A;
+        --accent-yellow: #F0BF56;
+        --bg-light: #F0F1F0;
+        --text-muted: #6c757d;
+    }
+    body { font-family: 'Almarai', sans-serif; background-color: var(--bg-light); }
+    
+    .modern-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.04);
+        background: white;
+        margin-bottom: 1.5rem;
+    }
+    .modern-card-header {
+        border-bottom: 1px solid #f0f0f0;
+        padding: 20px;
+        color: var(--primary-dark);
+        font-weight: 800;
+        font-size: 1.1rem;
+        background-color: transparent;
+    }
+    
+    .btn-modern {
+        border-radius: 8px;
+        font-weight: 700;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+    .btn-primary-modern { background-color: var(--primary-dark); color: white; border: none; }
+    .btn-primary-modern:hover { background-color: var(--primary-light); color: white; }
+    .btn-add-modern { background-color: var(--accent-red); color: white; border: none; }
+    .btn-add-modern:hover { background-color: #a0213d; color: white; }
+    
+    .search-input-group {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .search-input-group .form-control {
+        border: none !important;
+        padding: 15px 20px;
+        box-shadow: none !important;
+    }
+    .search-input-group .btn {
+        border-radius: 0 !important;
+        padding: 12px 30px;
+        border: none;
+    }
+    
+    .user-mini-profile {
+        background: rgba(35, 46, 76, 0.03);
+        border: 1px solid rgba(35, 46, 76, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .user-mini-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--primary-dark);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-left: 15px;
+    }
+    
+    .form-label { font-weight: 600; color: var(--primary-dark); margin-bottom: 8px; }
+    .form-select, .form-control.input-border { border-radius: 8px; padding: 10px 15px; border: 1px solid #e0e0e0; }
+    .form-select:focus, .form-control.input-border:focus { border-color: var(--primary-dark); box-shadow: 0 0 0 0.25rem rgba(35, 46, 76, 0.1); }
+    
+    /* Table styles */
+    .table-modern { border-collapse: separate; border-spacing: 0 10px; }
+    .table-modern thead th {
+        border-bottom: none;
+        color: var(--primary-dark);
+        font-weight: 800;
+        font-size: 0.9rem;
+        padding-bottom: 10px;
+    }
+    .table-modern tbody tr {
+        background-color: var(--bg-light);
+        border-radius: 10px;
+        transition: transform 0.2s;
+    }
+    .table-modern tbody tr:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); background-color: #ffffff; }
+    .table-modern tbody td { border: none; padding: 15px; vertical-align: middle; color: var(--primary-dark); }
+    .table-modern tbody td:first-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+    .table-modern tbody td:last-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+</style>
 
-    <div class="row">
-      <form class="mt-4" method="POST" action="/add_members_to_team/{{ team_id }}">
-        <!-- Form controls -->
-        <div class="container">
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="py-3 mb-3">
+        <h4 class="fw-bold mb-0" style="color: var(--primary-dark);">
+            <span class="fw-light text-muted">الفرق /</span> إضافة أعضاء إلى فريق
+        </h4>
+    </div>
+
+    <!-- Card 1: Search Box -->
+    <div class="card modern-card">
+        <div class="modern-card-header">
+            <i class="fas fa-search ms-2 text-primary"></i> ابحث عن مستخدم
+        </div>
+        <div class="card-body p-4">
+            <p class="text-muted mb-4" style="font-size: 1.05rem;">يرجى إدخال البريد الإلكتروني أو الرقم التعريفي (ID) للبحث عن المستخدم المراد إضافته للفريق.</p>
             <div class="row">
-                <!-- Smaller cards on the right -->
-                <div class="col-md-9">
-                    <!-- First smaller card -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card mb-3">
-                                <h5 class="card-header"style="color: var(--primary-dark);">اكتب الرقم التعريفي لزميلك بالفريق</h5>
-                                <div class="card-body">
-                                    <div class="row g-2 mb-3" id="member_inputs">
-                                        <div class="col-md-3">
-                                            <input type="text" class="form-control" id="floatingInput1" placeholder="الرقم التعريفي" aria-describedby="floatingInputHelp1" name="member_id"/>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <select data-mdb-select-init class="form-select" name="general_prog" id="specialization">
-                                         
-                    <option name="general_prog" value="">اختر</option>
-                    <option name="general_prog" value="Undefined">غير محدد</option>
-                    <option name="general_prog" value="محاسبة">محاسبة</option>
-                    <option name="general_prog" value="مالية">مالية</option>
-                    <option name="general_prog" value="موارد بشرية">موارد بشرية</option>
-                    <option name="general_prog" value="تأمين">تأمين</option>
-                    <option name="general_prog" value="تسويق">تسويق</option>
-                    <option name="general_prog" value="إقتصاد">إقتصاد</option>
-                    <option name="general_prog" value="علوم سياسية">علوم سياسية</option>
-                    <option name="general_prog" value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
-                    <option name="general_prog" value="إدارة أعمال">إدارة أعمال</option>
-                    <option name="general_prog" value="إدارة البيع و التجزئة">إدارة البيع و التجزئة</option>
-                    <option name="general_prog" value="إدارة سلسلة الإمداد">إدارة سلسلة الإمداد</option>
-                    <option name="general_prog" value="هندسة البرمجيات">هندسة البرمجيات</option>
-                    <option name="general_prog" value="هندسة تطبيقية">هندسة تطبيقية</option>
-                    <option name="general_prog" value="هندسة مدنية">هندسة مدنية</option>
-                    <option name="general_prog" value="هندسة معمارية">هندسة معمارية</option>
-                    <option name="general_prog" value="هندسة صناعية">هندسة صناعية</option>
-                    <option name="general_prog" value="هندسة كهربائية">هندسة كهربائية</option>
-                    <option name="general_prog" value="هندسة ميكانيكية">هندسة ميكانيكية</option>
-                    <option name="general_prog" value="هندسة الطيران والفضاء">هندسة الطيران والفضاء</option>
-                    <option name="general_prog" value="هندسة التعدين">هندسة التعدين</option>
-                    <option name="general_prog" value="هندسة نووية">هندسة نووية</option>
-                    <option name="general_prog" value="هندسة بيئية">هندسة بيئية</option>
-                    <option name="general_prog" value="هندسة كميائية">هندسة كميائية</option>
-                    <option name="general_prog" value="هندسة حرارية">هندسة حرارية</option>
-                    <option name="general_prog" value="هندسة الإنتاج">هندسة الإنتاج</option>
-                    <option name="general_prog" value="هندسة البرتول">هندسة البرتول</option>
-                    <option name="general_prog" value="علوم الحاسب">علوم الحاسب</option>
-                    <option name="general_prog" value="نظم معلومات">نظم معلومات</option>
-                    <option name="general_prog" value="الإعلان و الإتصال التسويقي">الإعلان و الإتصال التسويقي</option>
-                    <option name="general_prog" value="إدارة الإعلانات">إدارة الإعلانات</option>
-                    <option name="general_prog" value="تصميم إبتكاري">تصميم إبتكاري</option>
-                    <option name="general_prog" value="النقل المائي - البحرية">النقل المائي - البحرية</option>
-                    <option name="general_prog" value="الدراسات الإسلامية">الدراسات الإسلامية</option>
-                    <option name="general_prog" value="تربية فنية">تربية فنية</option>
-                    <option name="general_prog" value="خدمة مجتمعية">خدمة مجتمعية</option>
-                    <option name="general_prog" value="التاريخ">التاريخ</option>
-                    <option name="general_prog" value="الجغرافيا">الجغرافيا</option>
-                    <option name="general_prog" value="علم المعلومات">علم المعلومات</option>
-                    <option name="general_prog" value="إعلام">إعلام</option>
-                    <option name="general_prog" value="مصمم جرافيك">مصمم جرافيك</option>
-                    <option name="general_prog" value="علم نفس">علم نفس</option>
-                    <option name="general_prog" value="العلاج الوظيفي">العلاج الوظيفي</option>
-                    <option name="general_prog" value="إضطرابات السمع و النطق">إضطرابات السمع و النطق</option>
-                    <option name="general_prog" value="التربية الخاصة">التربية الخاصة</option>
-                    <option name="general_prog" value="الفيزياء">الفيزياء</option>
-                    <option name="general_prog" value="الكيمياء">الكيمياء</option>
-                    <option name="general_prog" value="الرياضيات">الرياضيات</option>
-                    <option name="general_prog" value="الأحياء">الأحياء</option>
-                    <option name="general_prog" value="علم الفلك">علم الفلك</option>
-                    <option name="general_prog" value="الإحصاء">الإحصاء</option>
-                    <option name="general_prog" value="الطب">الطب</option>
-                    <option name="general_prog" value="الصيدلة">الصيدلة</option>
-                    <option name="general_prog" value="طب الأسنان">طب الأسنان</option>
-                    <option name="general_prog" value="التمريض">التمريض</option>
-                    <option name="general_prog" value="العلاج الطبيعي">العلاج الطبيعي</option>
-                    <option name="general_prog" value="سياحة">سياحة</option>
-                    <option name="general_prog" value="اللغة العربية">اللغة العربية</option>
-                    <option name="general_prog" value="قانون عام">قانون عام</option>
-                    <option name="general_prog" value="قانون خاص">قانون خاص</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="text" class="form-control" id="floatingInput2" placeholder="التخصص الفرعي" aria-describedby="floatingInputHelp2" name="semi_special_prog"/>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="text" class="form-control" id="floatingInput3" placeholder="التخصص الدقيق" aria-describedby="floatingInputHelp3" name="special_prog"/>
-                                        </div>
-                                    </div>
-                                    <button type="button" onclick="addMemberInput()" class="btn btn-secondary mb-3">Add Member</button>
-                                    <button type="submit" class="btn btn-primary me-2">انشاء</button>
-                                </div>
-                            </div>
-                        </div>
+                <div class="col-md-8 col-lg-6">
+                    <div class="input-group search-input-group shadow-sm">
+                        <input type="text" id="searchInput" class="form-control" placeholder="أدخل الإيميل أو الرقم التعريفي...">
+                        <button class="btn btn-primary-modern" type="button" id="searchBtn">
+                            <i class="fas fa-search ms-1"></i> بحث
+                        </button>
                     </div>
                 </div>
             </div>
+            <div id="searchAlert" class="alert alert-danger mt-3 d-none" role="alert" style="border-radius: 8px;">
+                المستخدم غير موجود. تأكد من صحة البريد الإلكتروني أو الرقم التعريفي.
+            </div>
         </div>
-    </form>
-    
-    
-
-  
     </div>
-  </div>
 
-  <div class="card">
-    <h5 class="card-header"style="color: var(--primary-dark);">اعضاء الفريق</h5>
-    <div class="card-body">
-      <div class="table-responsive text-nowrap"><form action="#" method="post">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th style="display: none;">تحديد</th>
-                    <th style="color: var(--primary-dark);">اسم المتقدم</th>
-                    <th style="color: var(--primary-dark);"> الايميل</th>
-                    <th style="color: var(--primary-dark);">السيرة الذاتية</th>
-                    <th style="color: var(--primary-dark);"> الحالة </th>
-                    <th style="color: var(--primary-dark);"> ألملف الشخصي</th>
-                   
-                </tr>
-            </thead>
-            <tbody>
-                {% for member in team_members %}
-                <tr>
-                    <td style="display: none;">
-                        <input type="checkbox" name="selected_applicants[]" value="{{ member.id }}">
-                    </td>
-                    <td>
-                        <strong style="color: var(--primary-dark);">{{ member.fullname }}</strong>
-                    </td>
-                    <td style="color: var(--primary-dark);">{{ member.email }}</td>
-                    {%if member.cv%}
-                    <td>
-                        <a style="color: var(--primary-dark);" href="{{ url_for('company.download_cv', cv_filename=member.cv) }}" download>تنزيل السيرةالذاتية</a>
-                    </td>
-                    {% else %}
-                    <td>
-                      <strong style="color: var(--primary-dark);">---</strong>
+    <!-- Card 2: Search Result & Add Form (Hidden by default) -->
+    <div class="card modern-card d-none" id="resultCard">
+        <div class="modern-card-header">
+            <i class="fas fa-user-plus ms-2" style="color: var(--accent-red);"></i> تفاصيل المستخدم والإضافة
+        </div>
+        <div class="card-body p-4">
+            
+            <div class="user-mini-profile shadow-sm">
+                <div class="user-mini-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-1" id="foundUserName" style="color: var(--primary-dark);">--</h5>
+                    <p class="mb-0 text-muted fw-bold" id="foundUserEmail">--</p>
+                </div>
+            </div>
 
-                    </td>
-                    {%endif%}
-                    <td style="color: var(--primary-dark);"> {{member.status}}</td>
-                    <td><span ><a style="color: var(--primary-dark);" href="/visit_customer_profile/{{member.user_id}}">عرض الملف الشخصي</a></span></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit" class="btn btn-primary me-2">حفظ التغييرات</button>
-    </form>
-    
-    <script>
-        function selectCheckbox(input) {
-            var checkbox = input.parentNode.parentNode.querySelector('input[type="checkbox"]');
-            checkbox.checked = true;
-        }
-    </script>
-    
-      </div>
+            <form method="POST" action="/add_members_to_team/{{ team_id }}" id="addMemberForm">
+                <!-- Hidden input for member ID -->
+                <input type="hidden" name="member_id" id="hiddenMemberId" value="">
+                
+                <h6 class="fw-bold mb-3 mt-4" style="color: var(--primary-dark);">تحديد التخصص للفريق</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label">التخصص العام</label>
+                        <select class="form-select" name="general_prog" required>
+                            <option value="">اختر</option>
+                            <option value="Undefined">غير محدد</option>
+                            <option value="محاسبة">محاسبة</option>
+                            <option value="مالية">مالية</option>
+                            <option value="موارد بشرية">موارد بشرية</option>
+                            <option value="تأمين">تأمين</option>
+                            <option value="تسويق">تسويق</option>
+                            <option value="إقتصاد">إقتصاد</option>
+                            <option value="علوم سياسية">علوم سياسية</option>
+                            <option value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
+                            <option value="إدارة أعمال">إدارة أعمال</option>
+                            <option value="إدارة البيع و التجزئة">إدارة البيع و التجزئة</option>
+                            <option value="إدارة سلسلة الإمداد">إدارة سلسلة الإمداد</option>
+                            <option value="هندسة البرمجيات">هندسة البرمجيات</option>
+                            <option value="هندسة تطبيقية">هندسة تطبيقية</option>
+                            <option value="هندسة مدنية">هندسة مدنية</option>
+                            <option value="هندسة معمارية">هندسة معمارية</option>
+                            <option value="هندسة صناعية">هندسة صناعية</option>
+                            <option value="هندسة كهربائية">هندسة كهربائية</option>
+                            <option value="هندسة ميكانيكية">هندسة ميكانيكية</option>
+                            <option value="هندسة الطيران والفضاء">هندسة الطيران والفضاء</option>
+                            <option value="هندسة التعدين">هندسة التعدين</option>
+                            <option value="هندسة نووية">هندسة نووية</option>
+                            <option value="هندسة بيئية">هندسة بيئية</option>
+                            <option value="هندسة كميائية">هندسة كميائية</option>
+                            <option value="هندسة حرارية">هندسة حرارية</option>
+                            <option value="هندسة الإنتاج">هندسة الإنتاج</option>
+                            <option value="هندسة البرتول">هندسة البرتول</option>
+                            <option value="علوم الحاسب">علوم الحاسب</option>
+                            <option value="نظم معلومات">نظم معلومات</option>
+                            <option value="الإعلان و الإتصال التسويقي">الإعلان و الإتصال التسويقي</option>
+                            <option value="إدارة الإعلانات">إدارة الإعلانات</option>
+                            <option value="تصميم إبتكاري">تصميم إبتكاري</option>
+                            <option value="النقل المائي - البحرية">النقل المائي - البحرية</option>
+                            <option value="الدراسات الإسلامية">الدراسات الإسلامية</option>
+                            <option value="تربية فنية">تربية فنية</option>
+                            <option value="خدمة مجتمعية">خدمة مجتمعية</option>
+                            <option value="التاريخ">التاريخ</option>
+                            <option value="الجغرافيا">الجغرافيا</option>
+                            <option value="علم المعلومات">علم المعلومات</option>
+                            <option value="إعلام">إعلام</option>
+                            <option value="مصمم جرافيك">مصمم جرافيك</option>
+                            <option value="علم نفس">علم نفس</option>
+                            <option value="العلاج الوظيفي">العلاج الوظيفي</option>
+                            <option value="إضطرابات السمع و النطق">إضطرابات السمع و النطق</option>
+                            <option value="التربية الخاصة">التربية الخاصة</option>
+                            <option value="الفيزياء">الفيزياء</option>
+                            <option value="الكيمياء">الكيمياء</option>
+                            <option value="الرياضيات">الرياضيات</option>
+                            <option value="الأحياء">الأحياء</option>
+                            <option value="علم الفلك">علم الفلك</option>
+                            <option value="الإحصاء">الإحصاء</option>
+                            <option value="الطب">الطب</option>
+                            <option value="الصيدلة">الصيدلة</option>
+                            <option value="طب الأسنان">طب الأسنان</option>
+                            <option value="التمريض">التمريض</option>
+                            <option value="العلاج الطبيعي">العلاج الطبيعي</option>
+                            <option value="سياحة">سياحة</option>
+                            <option value="اللغة العربية">اللغة العربية</option>
+                            <option value="قانون عام">قانون عام</option>
+                            <option value="قانون خاص">قانون خاص</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">التخصص الفرعي</label>
+                        <input type="text" class="form-control input-border" placeholder="التخصص الفرعي" name="semi_special_prog">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">التخصص الدقيق</label>
+                        <input type="text" class="form-control input-border" placeholder="التخصص الدقيق" name="special_prog">
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-end border-top pt-4">
+                    <button type="submit" class="btn btn-modern btn-add-modern shadow-sm">
+                        <i class="fas fa-plus ms-1"></i> إضافة للفريق
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 
-<!-- Header -->
-
-<!--/ User Profile Content -->
-
-          </div>
+    <!-- Card 3: Current Team Members -->
+    <div class="card modern-card">
+        <div class="modern-card-header">
+            <i class="fas fa-users ms-2 text-success"></i> أعضاء الفريق الحاليين
+        </div>
+        <div class="card-body p-4">
+            <div class="table-responsive text-nowrap" style="overflow-x: auto;">
+                <table class="table table-modern">
+                    <thead>
+                        <tr>
+                            <th>الاسم</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>السيرة الذاتية</th>
+                            <th>الحالة</th>
+                            <th>الملف الشخصي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in team_members %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="ms-0 me-3" style="width: 40px; height: 40px; border-radius: 50%; margin-left: 10px; background: rgba(35, 46, 76, 0.05); display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-user text-secondary"></i>
+                                    </div>
+                                    <strong class="fw-bold" style="font-size: 1.05rem;">{{ member.fullname }}</strong>
+                                </div>
+                            </td>
+                            <td>{{ member.email }}</td>
+                            <td>
+                                {% if member.cv %}
+                                    <a href="{{ url_for('company.download_cv', cv_filename=member.cv) }}" download class="btn btn-sm" style="background-color: white; border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; color: var(--primary-dark); font-weight: 600;">
+                                        <i class="fas fa-download ms-1"></i> تحميل
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted fw-bold">---</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge" style="background: rgba(35, 46, 76, 0.1); color: var(--primary-dark); padding: 8px 12px; border-radius: 8px; font-weight: 700;">{{ member.status }}</span>
+                            </td>
+                            <td>
+                                <a href="/visit_customer_profile/{{ member.user_id }}" class="btn btn-sm" style="background-color: white; color: var(--primary-dark); font-weight: 600; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1);">
+                                    <i class="fas fa-external-link-alt ms-1"></i> عرض
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <i class="fas fa-users text-muted mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
+                                <h6 class="text-muted mb-0 fw-bold">لا يوجد أعضاء في هذا الفريق.</h6>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        const searchAlert = document.getElementById('searchAlert');
+        const resultCard = document.getElementById('resultCard');
+        
+        const foundUserName = document.getElementById('foundUserName');
+        const foundUserEmail = document.getElementById('foundUserEmail');
+        const hiddenMemberId = document.getElementById('hiddenMemberId');
+
+        searchBtn.addEventListener('click', function() {
+            const query = searchInput.value.trim();
+            if (!query) return;
+
+            // Reset UI
+            searchAlert.classList.add('d-none');
+            resultCard.classList.add('d-none');
+            
+            // Add loading state
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin ms-1"></i> جاري البحث...';
+            searchBtn.disabled = true;
+
+            fetch(`/api/search_user?q=${encodeURIComponent(query)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('User not found');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Populate data
+                    foundUserName.textContent = data.fullname;
+                    foundUserEmail.textContent = data.email;
+                    hiddenMemberId.value = data.user_id;
+                    
+                    // Unhide result form
+                    resultCard.classList.remove('d-none');
+                })
+                .catch(error => {
+                    // Show error alert
+                    searchAlert.classList.remove('d-none');
+                })
+                .finally(() => {
+                    // Reset button state
+                    searchBtn.innerHTML = '<i class="fas fa-search ms-1"></i> بحث';
+                    searchBtn.disabled = false;
+                });
+        });
+
+        // Allow Enter key to trigger search
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchBtn.click();
+            }
+        });
+    });
+</script>
 {% endblock %}

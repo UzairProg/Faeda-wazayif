@@ -1,79 +1,275 @@
-<!--
-==============================================================================
-الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
-الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
-المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
-==============================================================================
--->
 {% extends 'new_design/panel_base.html' %}
 {% block page_title %}وظائفي{% endblock %}
 {% block nav_my_jobs %}active{% endblock %}
 
 {% block content %}
-<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
-    <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">الوظائف /</span>عرض وظائفي</h4>
+<style>
+    /* Custom Styles for Modern Brand Aesthetics */
+    :root {
+        --primary-dark: #232E4C;
+        --primary-light: #253048;
+        --accent-red: #BF2A4A;
+        --accent-yellow: #F0BF56;
+        --bg-light: #F0F1F0;
+        --text-muted: #6c757d;
+    }
+    body {
+        font-family: 'Almarai', sans-serif;
+    }
+    .stats-card {
+        border-radius: 15px;
+        border: none;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+        color: white;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(35, 46, 76, 0.2);
+    }
+    .stats-card-yellow {
+        background: linear-gradient(135deg, var(--accent-yellow) 0%, #f3c975 100%);
+        color: var(--primary-dark);
+    }
+    .stats-icon {
+        font-size: 2.5rem;
+        opacity: 0.8;
+    }
+    .main-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+        background-color: #ffffff;
+    }
+    .table-modern {
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+    .table-modern thead th {
+        border-bottom: none;
+        color: var(--primary-dark);
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        padding-bottom: 15px;
+        white-space: nowrap;
+    }
+    .table-modern tbody tr {
+        background-color: var(--bg-light);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    .table-modern tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        background-color: #ffffff;
+    }
+    .table-modern tbody td {
+        border: none;
+        vertical-align: middle;
+        padding: 15px;
+        color: var(--primary-dark);
+        font-weight: 500;
+    }
+    .table-modern tbody td:first-child {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    .table-modern tbody td:last-child {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+    .company-logo-fallback {
+        width: 45px;
+        height: 45px;
+        min-width: 45px;
+        border-radius: 50%;
+        background-color: #e2e5e9;
+        color: var(--primary-dark);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.2rem;
+        margin-left: 15px;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    /* Status Badges */
+    .badge-status {
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+        text-align: center;
+        white-space: nowrap;
+    }
+    .badge-status.approved { background-color: rgba(35, 46, 76, 0.1); color: var(--primary-dark); }
+    .badge-status.rejected { background-color: rgba(191, 42, 74, 0.1); color: var(--accent-red); }
+    .badge-status.pending { background-color: rgba(240, 191, 86, 0.2); color: #d69f30; }
+    .badge-status.unreviewed { background-color: rgba(108, 117, 125, 0.1); color: var(--text-muted); }
+    
+    .btn-modern {
+        border-radius: 8px;
+        font-weight: 700;
+        padding: 8px 20px;
+        transition: all 0.3s ease;
+    }
+    .btn-modern-secondary {
+        background-color: white;
+        color: var(--primary-dark);
+        border: 1px solid rgba(35, 46, 76, 0.2);
+    }
+    .btn-modern-secondary:hover {
+        background-color: var(--primary-dark);
+        color: white;
+        border-color: var(--primary-dark);
+    }
+</style>
 
-              <!-- Basic Bootstrap Table -->
-              <div class="card">
-                <h5 class="card-header"style="color: var(--primary-dark);">وظائف تم التقديم عليها</h5>
-                <div class="table-responsive text-nowrap">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th style="color: var(--primary-dark);">اسم الشركة</th>
-                        <th style="color: var(--primary-dark);">مسمى الوظيفة</th>
-                        <th style="color: var(--primary-dark);">نوع العمل</th>
-                        <th style="color: var(--primary-dark);"> نوع التقديم</th>
-                        <th style="color: var(--primary-dark);">حالة الطلب</th>
-                        <th style="color: var(--primary-dark);">ملاحظة الشركة</th>
-                        <th style="color: var(--primary-dark);">المدينة</th>
-                        <th style="color: var(--primary-dark);">مقدم بإسم</th>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center py-3 mb-4">
+        <h4 class="fw-bold mb-0" style="color: var(--primary-dark);">
+            <span class="fw-light text-muted">الوظائف /</span> عرض وظائفي
+        </h4>
+    </div>
 
-                      </tr>
-                    </thead>
-                    <tbody class="table-border-bottom-0">
-
-                      {% if customer.jobs %}
-                      {% for job_application in job_applications %}
-
-                      <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong style="color: var(--primary-dark);">{{ job_application.job.company.company_english_name }}</strong></td>
-                        <td style="color: var(--primary-dark);">{{ job_application.job.title }}</td>
-                        <td style="color: var(--primary-dark);">
-                          {{ job_application.job.job_type }}
-                        </td>
-
-                        <td style="color: var(--primary-dark);">
-                          {{ job_application.type }}
-                        </td>
-                        <td><span class="badge bg-label-primary me-1" style="color: var(--primary-dark);">{{ job_application.status }}</span></td>
-                        <td><span class="badge bg-label-primary me-1" style="color: var(--primary-dark);">{{ job_application.note }}</span></td>
-                        <Td style="color: var(--primary-dark);">{{ job_application.job.town }}</Td>
-                        {%if job_application.team_name != None%}
-                        <td style="color: var(--primary-dark);">{{ job_application.team_name }}</td>
-                        {%else%}
-                        <td style="color: var(--primary-dark);">{{ customer.fullname }}</td>
-
-                        {%endif%}
-                        
-                      </tr>
-                      {% endfor %}
-
-                      {% else %}
-                      <tr>
-                          <td colspan="6" style="color: var(--primary-dark);">لا يوجد طلبات توظيف حالياً.</td>
-                      </tr>
-                  {% endif %}
-                    </tbody>
-                  </table>
+    <!-- Stats Cards Section -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card stats-card shadow-sm h-100 p-3">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 fw-light" style="font-size: 1.1rem;">إجمالي التقديمات</p>
+                        <h2 class="mb-0 fw-bold">{{ application_count if application_count is defined else '--' }}</h2>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-file-signature"></i>
+                    </div>
                 </div>
-              </div>
-              <!--/ Basic Bootstrap Table -->
-
-              
-              <!--/ Responsive Table -->
             </div>
-            <!-- / Content -->
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card stats-card stats-card-yellow shadow-sm h-100 p-3">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 fw-bold" style="font-size: 1.1rem;">الوظائف المتاحة</p>
+                        <h2 class="mb-0 fw-bold">{{ open_jobs_count | default('--') }}</h2>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card stats-card shadow-sm h-100 p-3" style="background: white; color: var(--primary-dark);">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 fw-light" style="font-size: 1.1rem;">إجمالي الطلبات</p>
+                        <h2 class="mb-0 fw-bold" style="color: var(--accent-red);">{{ total_requests | default('--') }}</h2>
+                    </div>
+                    <div class="stats-icon" style="color: var(--accent-red);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applied Jobs List -->
+    <div class="card main-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold mb-0" style="color: var(--primary-dark);">وظائف تم التقديم عليها</h5>
+        </div>
+        
+        <div class="table-responsive text-nowrap" style="overflow-x: auto;">
+            <table class="table table-modern">
+                <thead>
+                    <tr>
+                        <th>اسم الشركة</th>
+                        <th>مسمى الوظيفة</th>
+                        <th>نوع العمل</th>
+                        <th>نوع التقديم</th>
+                        <th>حالة الطلب</th>
+                        <th>ملاحظة الشركة</th>
+                        <th>المدينة</th>
+                        <th>مقدم بإسم</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if customer.jobs %}
+                        {% for job_application in job_applications %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="company-logo-fallback">
+                                        <i class="fas fa-building text-secondary"></i>
+                                    </div>
+                                    <strong class="mb-0 ms-2" style="font-size: 1.05rem;">{{ job_application.job.company.company_english_name }}</strong>
+                                </div>
+                            </td>
+                            <td class="fw-bold">{{ job_application.job.title }}</td>
+                            <td>
+                                <span class="badge bg-white text-dark border p-2" style="border-radius: 8px;"><i class="fas fa-briefcase ms-1 text-muted"></i> {{ job_application.job.job_type }}</span>
+                            </td>
+                            <td>
+                                {% if job_application.type == 'فردي' or job_application.type == 'Individual' %}
+                                    <span class="badge bg-white text-primary border p-2" style="border-radius: 8px;"><i class="fas fa-user ms-1"></i> {{ job_application.type }}</span>
+                                {% else %}
+                                    <span class="badge bg-white text-success border p-2" style="border-radius: 8px;"><i class="fas fa-users ms-1"></i> {{ job_application.type }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% set status_lower = job_application.status|string|lower %}
+                                {% if 'approved' in status_lower or 'مقبول' in status_lower %}
+                                    <span class="badge-status approved"><i class="fas fa-check-circle ms-1"></i> {{ job_application.status }}</span>
+                                {% elif 'rejected' in status_lower or 'مرفوض' in status_lower %}
+                                    <span class="badge-status rejected"><i class="fas fa-times-circle ms-1"></i> {{ job_application.status }}</span>
+                                {% elif 'pending' in status_lower or 'مراجعة' in status_lower or 'قيد' in status_lower %}
+                                    <span class="badge-status pending"><i class="fas fa-clock ms-1"></i> {{ job_application.status }}</span>
+                                {% else %}
+                                    <span class="badge-status unreviewed"><i class="fas fa-minus-circle ms-1"></i> {{ job_application.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if job_application.note and job_application.note != 'None' and job_application.note != '' %}
+                                    <span class="text-muted" style="font-size: 0.9rem;">{{ job_application.note }}</span>
+                                {% else %}
+                                    <span class="text-muted fst-italic">لا توجد ملاحظات</span>
+                                {% endif %}
+                            </td>
+                            <td><i class="fas fa-map-marker-alt ms-1" style="color: var(--accent-red);"></i> {{ job_application.job.town }}</td>
+                            <td>
+                                {% if job_application.team_name != None %}
+                                    <span class="badge bg-label-info p-2" style="font-size: 0.85rem;"><i class="fas fa-users ms-1"></i> {{ job_application.team_name }}</span>
+                                {% else %}
+                                    <span class="badge bg-label-secondary p-2" style="font-size: 0.85rem;"><i class="fas fa-user ms-1"></i> {{ customer.fullname }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-modern btn-modern-secondary btn-sm shadow-sm">
+                                    <i class="fas fa-eye ms-1"></i> عرض
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center py-5">
+                                <div class="d-flex flex-column align-items-center">
+                                    <i class="fas fa-folder-open text-muted mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
+                                    <h6 class="text-muted mb-0 fw-bold">لا يوجد طلبات توظيف حالياً.</h6>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}

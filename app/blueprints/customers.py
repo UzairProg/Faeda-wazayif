@@ -576,7 +576,7 @@ def create_team():
     try:
         member_id = Customers.get_user_id_by_id(admin_id)
         db.session.execute(team_members_association.insert().values(
-            team_id=team.id, member_id=member_id, status='منضم'
+            team_id=team.id, member_id=member_id, status='عضو'
         ))
         db.session.commit()
     except Exception as e:
@@ -584,6 +584,51 @@ def create_team():
         return f"Failed to add admin to team: {e}", 500
 
     return redirect('/my_team')
+
+@customer.route('/edit_team/<int:team_id>', methods=['GET'])
+def get_edit_team(team_id):
+    if "session_customer" not in session:
+        return redirect('/login')
+    id = session['user_id']
+    team = Teams.query.get(team_id)
+    if not team or str(team.admin_id) != str(id):
+        flash('ليس لديك صلاحية لتعديل هذا الفريق')
+        return redirect('/my_team')
+    return render_template('/panel/edit_team.html', team=team)
+
+@customer.route('/edit_team/<int:team_id>', methods=['POST'])
+def post_edit_team(team_id):
+    if "session_customer" not in session:
+        return redirect('/login')
+    id = session['user_id']
+    team = Teams.query.get(team_id)
+    if not team or str(team.admin_id) != str(id):
+        flash('ليس لديك صلاحية لتعديل هذا الفريق')
+        return redirect('/my_team')
+
+    team.team_name = request.form.get('team_name')
+    team.about = request.form.get('team_about')
+    team.achievements = request.form.get('achievement')
+    team.general_program = request.form.get('general_specialization')
+    team.semi_special_program = request.form.get('semi_special_program')
+    team.special_program = request.form.get('special_program')
+
+    new_image = request.files.get('new_image')
+    if new_image and new_image.filename:
+        upload_image_dir = current_app.config.get('UPLOAD_TEAM_IMAGES')
+        os.makedirs(upload_image_dir, exist_ok=True)
+        filename = secure_filename(new_image.filename)
+        file_path = os.path.join(upload_image_dir, filename)
+        new_image.save(file_path)
+        team.img = filename
+
+    try:
+        db.session.commit()
+        flash('تم تحديث بيانات الفريق بنجاح')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'حدث خطأ: {e}')
+    return redirect(f'/profile_team/{team.id}')
 @customer.route('/add_member_to_team/<int:team_id>', methods=['get'])
 def get_add_member(team_id):
     if "user_id" not in session:
@@ -612,6 +657,27 @@ def get_add_member(team_id):
             return render_template('/panel/add_members_to_team.html' ,customer = customer,team_id=team_id , team_members = team_members , team = team)
         else:
             return "sorry You cannot access that page"
+
+
+@customer.route('/api/search_user', methods=['GET'])
+def search_user():
+    q = request.args.get('q', '').strip()
+    if not q:
+        return jsonify({'error': 'Please provide an email or ID'}), 400
+    
+    # Try searching by user_id first, then by email
+    customer_obj = Customers.query.filter_by(user_id=q).first()
+    if not customer_obj:
+        customer_obj = Customers.query.filter_by(email=q).first()
+        
+    if customer_obj:
+        return jsonify({
+            'user_id': customer_obj.user_id,
+            'fullname': customer_obj.fullname,
+            'email': customer_obj.email
+        })
+    else:
+        return jsonify({'error': 'المستخدم غير موجود'}), 404
 
 
 @customer.route('/add_members_to_team/<int:team_id>', methods=['POST'])
@@ -686,8 +752,14 @@ def profile_team(team_id):
             team_members_association.c.team_id == team_id
         ).all()
 
-    return render_template('/panel/profile_team.html',user = user,team = team,team_id=team_id , team_members = team_members  )
+    pending_requests_count = 0
+    if str(user.id) == str(team.admin_id):
+        pending_requests_count = db.session.query(team_members_association).filter(
+            team_members_association.c.team_id == team_id,
+            team_members_association.c.status == 'طلب انضمام'
+        ).count()
 
+    return render_template('/panel/profile_team.html',user = user,team = team,team_id=team_id , team_members = team_members, pending_requests_count=pending_requests_count)
 
 @customer.route('/edit-profile/personal_data', methods=['GET'])
 def get_edit_profile_personal_data():
@@ -1011,14 +1083,25 @@ def my_team():
     user_id = session.get('user_id')
     customer_obj = Customers.query.get(user_id)  # noqa: F405
     user_id_str = customer_obj.user_id if customer_obj else None
+    
+    # Get all teams where the user is admin
+    admin_teams = Teams.query.filter_by(admin_id=user_id).all()
+    
     # Get all teams where the user is a member
-    my_teams = Teams.query.join(
+    member_teams = Teams.query.join(
         team_members_association,
         team_members_association.c.team_id == Teams.id
     ).filter(
         team_members_association.c.member_id == user_id_str
     ).all()
-    return render_template('panel/team.html', teams=my_teams, customer=customer_obj)
+    
+    # Combine uniquely
+    my_teams_dict = {team.id: team for team in admin_teams}
+    for team in member_teams:
+        my_teams_dict[team.id] = team
+    my_teams = list(my_teams_dict.values())
+    
+    return render_template('panel/team.html', my_teams=my_teams, customer=customer_obj)
 
 
 @customer.route('/controlled_teams')
@@ -1052,7 +1135,7 @@ def teams_invites():
                     team_members_association.c.team_id == team_id,
                     team_members_association.c.member_id == user_id_str
                 )
-            ).update({'status': 'منضم'})
+            ).update({'status': 'عضو'})
             db.session.commit()
             flash('تم قبول الدعوة بنجاح')
         elif action == 'decline':
@@ -1074,8 +1157,24 @@ def teams_invites():
         team_members_association.c.member_id == user_id_str,
         team_members_association.c.status == 'مدعو'
     ).all()
-    return render_template('panel/invites.html', teams=pending_teams, customer=customer_obj, user_id=user_id)
 
+    # Get incoming requests for teams where the current user is admin
+    admin_teams_ids = [t.id for t in Teams.query.filter_by(admin_id=user_id).all()]
+    incoming_requests = []
+    if admin_teams_ids:
+        incoming_requests = db.session.query(
+            Customers, team_members_association.c.date_of_addition, Teams
+        ).join(
+            team_members_association,
+            Customers.user_id == team_members_association.c.member_id
+        ).join(
+            Teams, Teams.id == team_members_association.c.team_id
+        ).filter(
+            team_members_association.c.team_id.in_(admin_teams_ids),
+            team_members_association.c.status == 'طلب انضمام'
+        ).all()
+
+    return render_template('panel/invites.html', teams=pending_teams, incoming_requests=incoming_requests, customer=customer_obj, user_id=user_id)
 
 @customer.route('/visit_customer_profile/<string:user_id>')
 def visit_customer_profile(user_id):
@@ -1085,3 +1184,147 @@ def visit_customer_profile(user_id):
         flash('لم يتم العثور على المستخدم', 'error')
         return redirect('/')
     return render_template('panel/visit_profile.html', customer=customer_obj)
+
+@customer.route('/request_join_team/<int:team_id>', methods=['POST'])
+def request_join_team(team_id):
+    if 'user_id' not in session:
+        flash('يجب تسجيل الدخول أولاً', 'warning')
+        return redirect('/login')
+    
+    user_id = session['user_id']
+    customer_obj = Customers.query.get(user_id)  # noqa: F405
+    
+    # Check if already requested or member
+    existing_membership = db.session.query(team_members_association).filter(
+        and_(
+            team_members_association.c.team_id == team_id,
+            team_members_association.c.member_id == customer_obj.user_id
+        )
+    ).first()
+    
+    if existing_membership:
+        flash('لقد قمت بإرسال طلب مسبقاً أو أنك عضو بالفعل في هذا الفريق', 'info')
+    else:
+        db.session.execute(team_members_association.insert().values(
+            team_id=team_id, member_id=customer_obj.user_id, status='طلب انضمام'
+        ))
+        db.session.commit()
+        flash('تم إرسال طلب الانضمام بنجاح، في انتظار موافقة قائد الفريق', 'success')
+        
+    return redirect(url_for('customer.profile_team', team_id=team_id))
+
+@customer.route('/team_join_requests/<int:team_id>', methods=['GET'])
+def team_join_requests(team_id):
+    if 'user_id' not in session:
+        return redirect('/login')
+        
+    user_id = session['user_id']
+    customer_obj = Customers.query.get(user_id)  # noqa: F405
+    team = Teams.query.get_or_404(team_id)
+    
+    if str(team.admin_id) != str(user_id):
+        flash('غير مصرح لك بمشاهدة هذه الصفحة', 'error')
+        return redirect('/')
+        
+    # Get users who requested to join
+    requests = db.session.query(
+        Customers, team_members_association.c.date_of_addition
+    ).join(
+        team_members_association,
+        Customers.user_id == team_members_association.c.member_id
+    ).filter(
+        team_members_association.c.team_id == team_id,
+        team_members_association.c.status == 'طلب انضمام'
+    ).all()
+    
+    return render_template('new_design/team_join_requests.html', team=team, requests=requests, customer=customer_obj)
+
+@customer.route('/handle_join_request/<int:team_id>', methods=['POST'])
+def handle_join_request(team_id):
+    if 'user_id' not in session:
+        return redirect('/login')
+        
+    user_id = session['user_id']
+    team = Teams.query.get_or_404(team_id)
+    
+    if str(team.admin_id) != str(user_id):
+        flash('غير مصرح لك بإدارة هذا الفريق', 'error')
+        return redirect('/')
+        
+    member_id = request.form.get('member_id')
+    action = request.form.get('action')
+    
+    if action == 'accept':
+        db.session.query(team_members_association).filter(
+            and_(
+                team_members_association.c.team_id == team_id,
+                team_members_association.c.member_id == member_id
+            )
+        ).update({'status': 'عضو'})
+        flash('تم قبول طلب الانضمام بنجاح', 'success')
+    elif action == 'reject':
+        db.session.query(team_members_association).filter(
+            and_(
+                team_members_association.c.team_id == team_id,
+                team_members_association.c.member_id == member_id
+            )
+        ).delete()
+        flash('تم رفض طلب الانضمام', 'info')
+        
+    db.session.commit()
+    return redirect(url_for('customer.team_join_requests', team_id=team_id))
+
+@customer.route('/remove_team_member/<int:team_id>', methods=['POST'])
+def remove_team_member(team_id):
+    if 'user_id' not in session:
+        return redirect('/login')
+        
+    user_id = session['user_id']
+    team = Teams.query.get_or_404(team_id)
+    
+    if str(team.admin_id) != str(user_id):
+        flash('غير مصرح لك بإدارة هذا الفريق', 'error')
+        return redirect('/')
+        
+    member_id = request.form.get('member_id')
+    
+    db.session.query(team_members_association).filter(
+        and_(
+            team_members_association.c.team_id == team_id,
+            team_members_association.c.member_id == member_id
+        )
+    ).delete()
+    
+    db.session.commit()
+    flash('تم إزالة العضو من الفريق بنجاح', 'success')
+    return redirect(url_for('customer.profile_team', team_id=team_id))
+
+@customer.route('/leave_team/<int:team_id>', methods=['POST'])
+def leave_team(team_id):
+    if 'user_id' not in session:
+        return redirect('/login')
+        
+    user_id = session['user_id']
+    customer_obj = Customers.query.get(user_id)  # noqa: F405
+    
+    db.session.query(team_members_association).filter(
+        and_(
+            team_members_association.c.team_id == team_id,
+            team_members_association.c.member_id == customer_obj.user_id
+        )
+    ).delete()
+    
+    db.session.commit()
+    flash('لقد قمت بمغادرة الفريق بنجاح', 'success')
+    return redirect(url_for('customer.profile_team', team_id=team_id))
+
+@customer.route('/browse_teams', methods=['GET'])
+def browse_teams():
+    """Browse all teams."""
+    customer_obj = None
+    if 'user_id' in session:
+        user_id = session.get('user_id')
+        customer_obj = Customers.query.get(user_id)  # noqa: F405
+    
+    teams = Teams.query.all()
+    return render_template('new_design/browse_teams.html', teams=teams, customer=customer_obj)
