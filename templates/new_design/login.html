@@ -105,7 +105,11 @@
                         <a href="/forgot_password" class="almarai-bold" style="color: var(--accent-red); text-decoration: none;">هل نسيت كلمة المرور؟</a>
                     </div>
 
-                    <button type="submit" class="btn btn-custom-red w-100 almarai-bold mb-4 fs-5">تسجيل الدخول</button>
+                    <button type="submit" class="btn btn-custom-red w-100 almarai-bold mb-3 fs-5">تسجيل الدخول</button>
+                    
+                    <a href="{{ url_for('company_panel.company_login') }}" class="btn btn-outline-danger w-100 almarai-bold mb-4 fs-5" style="border-radius: 10px; padding: 12px 25px; transition: transform 0.3s, background-color 0.3s;">
+                        <i class="fas fa-building me-2"></i> تسجيل الدخول كمنشأة
+                    </a>
 
                     <div class="text-center mb-3">
                         <span class="text-muted almarai-regular">أو باستخدام</span>

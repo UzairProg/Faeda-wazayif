@@ -1,6 +1,7 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyc
 *.pyo
 *.pyd
 .Python
@@ -21,3 +22,5 @@ env/
 
 # Database
 instance/*.db
+*.lnk
+*.link

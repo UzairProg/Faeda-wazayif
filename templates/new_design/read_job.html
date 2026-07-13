@@ -253,9 +253,50 @@
                         </ul>
                     </div>
 
+                    <!-- Report Button -->
+                    <button class="btn btn-outline-danger w-100 mt-3 fs-6 almarai-bold py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        <i class="fas fa-flag ms-2"></i> الإبلاغ عن هذه الوظيفة
+                    </button>
+
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 15px; border-top: 5px solid var(--accent-red);">
+                <div class="modal-header">
+                    <h5 class="modal-title almarai-bold text-danger" id="reportModalLabel"><i class="fas fa-flag ms-2"></i> تقديم بلاغ</h5>
+                    <button type="button" class="btn-close m-0 me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('core.submit_report') }}" method="POST">
+                    <div class="modal-body almarai-regular text-end">
+                        <input type="hidden" name="target_type" value="job">
+                        <input type="hidden" name="target_id" value="{{ job.id }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">سبب البلاغ</label>
+                            <select name="reason" class="form-select" required>
+                                <option value="spam">محتوى مزعج (Spam)</option>
+                                <option value="fake">وظيفة وهمية أو احتيال</option>
+                                <option value="inappropriate">محتوى غير لائق</option>
+                                <option value="other">سبب آخر</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">تفاصيل إضافية (اختياري)</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="يرجى تزويدنا بأي تفاصيل إضافية تساعدنا في مراجعة البلاغ..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-danger"><i class="fas fa-paper-plane ms-2"></i> إرسال البلاغ</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

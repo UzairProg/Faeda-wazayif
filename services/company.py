@@ -36,6 +36,7 @@ class Company(db.Model):
     is_verified = db.Column(db.Boolean, default=False)     # Employer verification
     verified_at = db.Column(db.DateTime, nullable=True)
     status = db.Column(db.String(20), default='active')    # 'active','suspended','banned'
+    suspension_reason = db.Column(db.Text, nullable=True)
     token = db.Column(db.String(120))
     
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)

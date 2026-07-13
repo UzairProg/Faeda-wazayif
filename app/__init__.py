@@ -51,6 +51,7 @@ def create_app():
         from app.blueprints.messages import messages_routes 
         from app.blueprints.admin import admin_bp
         from app.blueprints.chat import chat_bp
+        from app.blueprints.company_panel import company_panel_bp
         
         app.register_blueprint(core_bp)
         app.register_blueprint(customer)
@@ -59,6 +60,7 @@ def create_app():
         app.register_blueprint(messages_routes)
         app.register_blueprint(admin_bp)
         app.register_blueprint(chat_bp)
+        app.register_blueprint(company_panel_bp)
         
         # إنشاء الجداول في قاعدة البيانات (في حال لم تكن موجودة)
         db.create_all()

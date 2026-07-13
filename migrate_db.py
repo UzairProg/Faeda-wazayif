@@ -15,6 +15,7 @@ queries = [
     "ALTER TABLE company ADD COLUMN status VARCHAR(20) DEFAULT 'active';",
     "ALTER TABLE company ADD COLUMN is_verified BOOLEAN DEFAULT 0;",
     "ALTER TABLE company ADD COLUMN verified_at DATETIME;",
+    "ALTER TABLE company ADD COLUMN suspension_reason TEXT;",
     
     # Jobs table
     "ALTER TABLE jobs ADD COLUMN status VARCHAR(20) DEFAULT 'pending';",
@@ -34,4 +35,9 @@ with app.app_context():
             db.session.rollback()
     
     db.session.commit()
+    
+    # Create tickets table if it doesn't exist
+    from services.ticket import Ticket
+    db.create_all()
+    
     print("Migration finished successfully.")
