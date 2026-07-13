@@ -33,6 +33,9 @@ class Company(db.Model):
     company_name_on_faeda = db.Column(db.String(80), nullable=True)
     login_password = db.Column(db.String(120), nullable=True)
     activated = db.Column(db.Boolean, nullable=True)
+    is_verified = db.Column(db.Boolean, default=False)     # Employer verification
+    verified_at = db.Column(db.DateTime, nullable=True)
+    status = db.Column(db.String(20), default='active')    # 'active','suspended','banned'
     token = db.Column(db.String(120))
     
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)

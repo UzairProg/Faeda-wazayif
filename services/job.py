@@ -38,6 +38,9 @@ class Jobs(db.Model):
     # New Fields
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(20), default='pending')  # 'pending','approved','rejected','archived'
+    category = db.Column(db.String(100), nullable=True)
+    is_featured = db.Column(db.Boolean, default=False)
     customers = db.relationship('Customers', secondary="customer_jobs", back_populates="jobs")
     teams = db.relationship('Teams', secondary="customer_jobs", back_populates="jobs")
     skills = db.relationship('Skills', backref='customer_skills', lazy=True)

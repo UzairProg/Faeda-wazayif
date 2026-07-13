@@ -1,0 +1,54 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}إدارة الشركات | فائدة{% endblock %}
+{% block nav_companies %}active{% endblock %}
+{% block breadcrumb %}<li>إدارة الشركات</li>{% endblock %}
+{% block page_title %}إدارة الشركات{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+    <div class="admin-card-body">
+        <form method="GET" action="{{ url_for('admin.list_companies') }}">
+            <div class="admin-filters">
+                <input type="text" name="search" class="admin-search-input" placeholder="بحث باسم الشركة أو البريد..." value="{{ search }}">
+                <select name="verified" class="admin-filter-select">
+                    <option value="">التحقق</option>
+                    <option value="yes" {% if verified_filter == 'yes' %}selected{% endif %}>موثّقة</option>
+                    <option value="no" {% if verified_filter == 'no' %}selected{% endif %}>غير موثّقة</option>
+                </select>
+                <button type="submit" class="btn-admin btn-admin-outline"><i class="fas fa-search"></i>بحث</button>
+            </div>
+        </form>
+        {% if companies %}
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead><tr><th>#</th><th>الشركة</th><th>البريد</th><th>المجال</th><th>التحقق</th><th>الوظائف</th><th>تاريخ التسجيل</th><th>إجراءات</th></tr></thead>
+                <tbody>
+                    {% for c in companies %}
+                    <tr>
+                        <td>{{ c.id }}</td>
+                        <td><strong>{{ c.company_arabic_name or c.company_english_name }}</strong></td>
+                        <td>{{ c.company_email or '—' }}</td>
+                        <td>{{ c.company_field or '—' }}</td>
+                        <td>{% if c.is_verified %}<i class="fas fa-check-circle verified-check"></i>{% else %}<span style="color:var(--admin-text-muted)">—</span>{% endif %}</td>
+                        <td>{{ c.company_jobs|length }}</td>
+                        <td>{{ c.timestamp.strftime('%Y/%m/%d') if c.timestamp else '—' }}</td>
+                        <td><a href="{{ url_for('admin.view_company', id=c.id) }}" class="btn-icon" title="عرض"><i class="fas fa-eye"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pagination.pages > 1 %}
+        <div class="admin-pagination">
+            {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if p %}<a href="{{ url_for('admin.list_companies', page=p, search=search, verified=verified_filter) }}" class="{% if p == pagination.page %}active{% endif %}">{{ p }}</a>
+                {% else %}<span class="disabled">...</span>{% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="admin-empty-state"><i class="fas fa-building"></i><h4>لا توجد شركات</h4></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

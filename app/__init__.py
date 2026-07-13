@@ -33,6 +33,15 @@ def create_app():
         # استيراد النماذج (Models) ليتعرف عليها SQLAlchemy
         from services.customer import Customers
         from services.message import Message
+        from services.admin import Admin
+        from services.company import Company
+        from services.job import Jobs
+        from services.teams import Teams
+        from services.report import Report
+        from services.audit_log import AuditLog
+        from services.subscription import SubscriptionPlan, Subscription, Payment
+        from services.system_settings import SystemSetting
+        from services.job_category import JobCategory
         
         # استيراد وتسجيل المسارات (Blueprints)
         from app.blueprints.core import core_bp
@@ -40,12 +49,14 @@ def create_app():
         from app.blueprints.companies import company
         from app.blueprints.jobs import job
         from app.blueprints.messages import messages_routes 
+        from app.blueprints.admin import admin_bp
         
         app.register_blueprint(core_bp)
         app.register_blueprint(customer)
         app.register_blueprint(company)
         app.register_blueprint(job)
         app.register_blueprint(messages_routes)
+        app.register_blueprint(admin_bp)
         
         # إنشاء الجداول في قاعدة البيانات (في حال لم تكن موجودة)
         db.create_all()

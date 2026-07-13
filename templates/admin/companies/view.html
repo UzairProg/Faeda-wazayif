@@ -1,0 +1,78 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}{{ company.company_english_name }} | إدارة الشركات{% endblock %}
+{% block nav_companies %}active{% endblock %}
+{% block breadcrumb %}<li><a href="{{ url_for('admin.list_companies') }}">الشركات</a></li><li>{{ company.company_arabic_name or company.company_english_name }}</li>{% endblock %}
+{% block page_title %}بيانات الشركة{% endblock %}
+{% block page_actions %}
+{% if current_admin and current_admin.has_permission('companies.verify') %}
+<form method="POST" action="{{ url_for('admin.verify_company', id=company.id) }}" style="display:inline">
+    {% if not company.is_verified %}
+    <input type="hidden" name="action" value="verify">
+    <button class="btn-admin btn-admin-primary"><i class="fas fa-check-circle"></i>توثيق الشركة</button>
+    {% else %}
+    <input type="hidden" name="action" value="unverify">
+    <button class="btn-admin btn-admin-outline"><i class="fas fa-times-circle"></i>إلغاء التوثيق</button>
+    {% endif %}
+</form>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="admin-card" style="margin-bottom:24px">
+    <div class="profile-header">
+        {% if company.company_logo %}
+            <img src="{{ url_for('static', filename='uploads/company/logo/' + company.company_logo) }}" class="profile-avatar" alt="">
+        {% else %}
+            <div class="profile-avatar-placeholder"><i class="fas fa-building"></i></div>
+        {% endif %}
+        <div class="profile-info">
+            <h2>{{ company.company_arabic_name or '' }} {% if company.company_english_name %}({{ company.company_english_name }}){% endif %}
+                {% if company.is_verified %}<i class="fas fa-check-circle verified-check"></i>{% endif %}
+            </h2>
+            <p>{{ company.company_email or '' }} · {{ company.company_mobile or '' }}</p>
+            <span class="admin-badge {{ company.status or 'active' }}">{{ company.status or 'نشط' }}</span>
+        </div>
+    </div>
+    <div class="admin-card-body">
+        <div class="profile-data-grid">
+            <div class="profile-data-item"><label>المجال</label><span>{{ company.company_field or '—' }}</span></div>
+            <div class="profile-data-item"><label>النوع</label><span>{{ company.company_type or '—' }}</span></div>
+            <div class="profile-data-item"><label>الحجم</label><span>{{ company.company_size or '—' }}</span></div>
+            <div class="profile-data-item"><label>الدولة</label><span>{{ company.country or '—' }}</span></div>
+            <div class="profile-data-item"><label>المنطقة</label><span>{{ company.state or '—' }}</span></div>
+            <div class="profile-data-item"><label>العنوان</label><span>{{ company.english_adress or '—' }}</span></div>
+            <div class="profile-data-item"><label>مسؤول HR</label><span>{{ company.hr_name or '—' }} ({{ company.hr_email or '—' }})</span></div>
+            <div class="profile-data-item"><label>الموقع</label><span>{% if company.company_website %}<a href="{{ company.company_website }}" target="_blank">{{ company.company_website }}</a>{% else %}—{% endif %}</span></div>
+            <div class="profile-data-item"><label>نبذة (عربي)</label><span>{{ company.about_company_arabic or '—' }}</span></div>
+            <div class="profile-data-item"><label>السجل التجاري</label><span>{% if company.commercial_register %}<a href="{{ url_for('static', filename='uploads/company/commercial_register/' + company.commercial_register) }}" target="_blank" class="btn-admin btn-admin-outline btn-admin-sm"><i class="fas fa-file"></i>عرض</a>{% else %}—{% endif %}</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- Company Jobs -->
+<div class="admin-card">
+    <div class="admin-card-header"><h3><i class="fas fa-briefcase ms-2" style="color:var(--admin-accent)"></i>وظائف الشركة ({{ company_jobs|length }})</h3></div>
+    <div class="admin-card-body">
+        {% if company_jobs %}
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead><tr><th>المسمى</th><th>النوع</th><th>الحالة</th><th>تاريخ النشر</th><th>إجراءات</th></tr></thead>
+                <tbody>
+                    {% for job in company_jobs %}
+                    <tr>
+                        <td><strong>{{ job.title }}</strong></td>
+                        <td>{{ job.job_type }}</td>
+                        <td><span class="admin-badge {{ job.status or 'pending' }}">{{ job.status or 'معلق' }}</span></td>
+                        <td>{{ job.date_posted.strftime('%Y/%m/%d') if job.date_posted else '—' }}</td>
+                        <td><a href="{{ url_for('admin.view_job', id=job.id) }}" class="btn-icon"><i class="fas fa-eye"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="admin-empty-state"><i class="fas fa-briefcase"></i><h4>لا توجد وظائف</h4></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

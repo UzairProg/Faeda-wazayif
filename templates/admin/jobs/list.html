@@ -1,0 +1,68 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}إدارة الوظائف | فائدة{% endblock %}
+{% block nav_jobs %}active{% endblock %}
+{% block breadcrumb %}<li>إدارة الوظائف</li>{% endblock %}
+{% block page_title %}إدارة الوظائف{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+    <div class="admin-card-body">
+        <form method="GET" action="{{ url_for('admin.list_jobs') }}">
+            <div class="admin-filters">
+                <input type="text" name="search" class="admin-search-input" placeholder="بحث بالمسمى الوظيفي أو التخصص..." value="{{ search }}">
+                <select name="status" class="admin-filter-select">
+                    <option value="">كل الحالات</option>
+                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>معلق</option>
+                    <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>مقبول</option>
+                    <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>مرفوض</option>
+                    <option value="archived" {% if status_filter == 'archived' %}selected{% endif %}>مؤرشف</option>
+                </select>
+                <select name="category" class="admin-filter-select">
+                    <option value="">كل التصنيفات</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.name_ar }}" {% if category_filter == cat.name_ar %}selected{% endif %}>{{ cat.name_ar }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn-admin btn-admin-outline"><i class="fas fa-search"></i>بحث</button>
+            </div>
+        </form>
+        {% if jobs %}
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead><tr><th>#</th><th>المسمى</th><th>الشركة</th><th>النوع</th><th>الحالة</th><th>تاريخ النشر</th><th>إجراءات</th></tr></thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr>
+                        <td>{{ job.id }}</td>
+                        <td><strong>{{ job.title }}</strong>{% if job.is_featured %} <i class="fas fa-star" style="color:var(--admin-warning)" title="مميزة"></i>{% endif %}</td>
+                        <td>{{ job.company.company_arabic_name or job.company.company_english_name if job.company else '—' }}</td>
+                        <td>{{ job.job_type }}</td>
+                        <td><span class="admin-badge {{ job.status or 'pending' }}">{{ job.status or 'معلق' }}</span></td>
+                        <td>{{ job.date_posted.strftime('%Y/%m/%d') if job.date_posted else '—' }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ url_for('admin.view_job', id=job.id) }}" class="btn-icon"><i class="fas fa-eye"></i></a>
+                                {% if current_admin and current_admin.has_permission('jobs.crud') %}
+                                <a href="{{ url_for('admin.edit_job', id=job.id) }}" class="btn-icon"><i class="fas fa-pen"></i></a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pagination.pages > 1 %}
+        <div class="admin-pagination">
+            {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if p %}<a href="{{ url_for('admin.list_jobs', page=p, search=search, status=status_filter, category=category_filter) }}" class="{% if p == pagination.page %}active{% endif %}">{{ p }}</a>
+                {% else %}<span class="disabled">...</span>{% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="admin-empty-state"><i class="fas fa-briefcase"></i><h4>لا توجد وظائف</h4></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

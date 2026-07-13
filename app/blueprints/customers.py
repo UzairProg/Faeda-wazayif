@@ -23,6 +23,8 @@ from services.teams import Teams , team_members_association
 from sqlalchemy import and_
 
 import string
+from services.admin import Admin
+from datetime import datetime
 
 existing_user_ids = set()
 
@@ -67,6 +69,19 @@ def login():
     password = request.form.get('password')
     query = Customers.query.filter_by(email=email).first()  # noqa: F405
     query2 = Company.query.filter_by(company_email=email).first() # noqa: F405
+    query3 = Admin.get_by_email(email)
+
+    if query3 and query3.check_password(password):
+        if not query3.is_active:
+            flash('حسابك معطّل. تواصل مع المدير العام.', 'error')
+            return render_template('/new_design/login.html' , error = True)
+            
+        session['admin_id'] = query3.id
+        session['admin_role'] = query3.role
+        query3.last_login = datetime.utcnow()
+        db.session.commit()
+        flash(f'مرحباً {query3.username}!', 'success')
+        return redirect(url_for('admin.admin_dashboard'))
 
     if query is not None and query.password == password:
     # save session

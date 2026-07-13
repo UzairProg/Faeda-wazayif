@@ -39,6 +39,13 @@ class Customers(db.Model):
     work_type = db.Column(db.String(120), nullable=True)
     activated = db.Column(db.Boolean, nullable=True)
 
+    ############# Admin Moderation Fields ##########
+    status = db.Column(db.String(20), default='active')  # 'active','suspended','banned','warned'
+    is_verified = db.Column(db.Boolean, default=False)     # Professional verification checkmark
+    verified_at = db.Column(db.DateTime, nullable=True)
+    suspension_reason = db.Column(db.Text, nullable=True)
+    warnings_count = db.Column(db.Integer, default=0)
+
     ############# uploaded data names ##########
     cv = db.Column(db.String(120), nullable=True)
     token = db.Column(db.String(120))
