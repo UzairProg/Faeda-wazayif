@@ -1,0 +1,162 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}تعديل بيانات الشركة - {{ company.company_english_name }} | إدارة الشركات{% endblock %}
+{% block nav_companies %}active{% endblock %}
+{% block breadcrumb %}
+<li><a href="{{ url_for('admin.list_companies') }}">الشركات</a></li>
+<li><a href="{{ url_for('admin.view_company', id=company.id) }}">{{ company.company_english_name }}</a></li>
+<li>تعديل</li>
+{% endblock %}
+{% block page_title %}تعديل بيانات الشركة{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+    <div class="admin-card-body">
+        <form method="POST" action="{{ url_for('admin.edit_company', id=company.id) }}" enctype="multipart/form-data">
+            
+            <h4 style="margin-bottom: 20px; color: #2d3436; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;">المعلومات الأساسية</h4>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+                <div class="admin-form-group">
+                    <label>اسم الشركة (عربي)</label>
+                    <input type="text" name="company_arabic_name" class="admin-form-input" value="{{ company.company_arabic_name or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>اسم الشركة (إنجليزي)</label>
+                    <input type="text" name="company_english_name" class="admin-form-input" value="{{ company.company_english_name or '' }}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label>اسم الشركة على منصة فائدة</label>
+                    <input type="text" name="company_name_on_faeda" class="admin-form-input" value="{{ company.company_name_on_faeda or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>مجال الشركة</label>
+                    <input type="text" name="company_field" class="admin-form-input" value="{{ company.company_field or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>نوع الشركة</label>
+                    <input type="text" name="company_type" class="admin-form-input" value="{{ company.company_type or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>حجم الشركة</label>
+                    <input type="text" name="company_size" class="admin-form-input" value="{{ company.company_size or '' }}">
+                </div>
+            </div>
+            
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:16px">
+                <div class="admin-form-group">
+                    <label>نبذة عن الشركة (عربي)</label>
+                    <textarea name="about_company_arabic" class="admin-form-textarea" rows="4">{{ company.about_company_arabic or '' }}</textarea>
+                </div>
+                <div class="admin-form-group">
+                    <label>نبذة عن الشركة (إنجليزي)</label>
+                    <textarea name="about_company_english" class="admin-form-textarea" rows="4">{{ company.about_company_english or '' }}</textarea>
+                </div>
+            </div>
+
+            <h4 style="margin-top: 30px; margin-bottom: 20px; color: #2d3436; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;">تفاصيل الاتصال والموقع</h4>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+                <div class="admin-form-group">
+                    <label>البريد الإلكتروني للشركة</label>
+                    <input type="email" name="company_email" class="admin-form-input" value="{{ company.company_email or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>رقم الجوال</label>
+                    <input type="text" name="company_mobile" class="admin-form-input" value="{{ company.company_mobile or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>الموقع الإلكتروني</label>
+                    <input type="text" name="company_website" class="admin-form-input" value="{{ company.company_website or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>حساب تويتر</label>
+                    <input type="text" name="twitter_email" class="admin-form-input" value="{{ company.twitter_email or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>حساب انستغرام</label>
+                    <input type="text" name="instagram_email" class="admin-form-input" value="{{ company.instagram_email or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>الدولة</label>
+                    <input type="text" name="country" class="admin-form-input" value="{{ company.country or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>المدينة / المنطقة</label>
+                    <input type="text" name="state" class="admin-form-input" value="{{ company.state or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>العنوان باللغة الإنجليزية</label>
+                    <input type="text" name="english_adress" class="admin-form-input" value="{{ company.english_adress or '' }}">
+                </div>
+            </div>
+
+            <h4 style="margin-top: 30px; margin-bottom: 20px; color: #2d3436; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;">مسؤول الموارد البشرية (HR)</h4>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+                <div class="admin-form-group">
+                    <label>الاسم</label>
+                    <input type="text" name="hr_name" class="admin-form-input" value="{{ company.hr_name or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>الجوال</label>
+                    <input type="text" name="hr_mobile" class="admin-form-input" value="{{ company.hr_mobile or '' }}">
+                </div>
+                <div class="admin-form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" name="hr_email" class="admin-form-input" value="{{ company.hr_email or '' }}">
+                </div>
+            </div>
+
+            <h4 style="margin-top: 30px; margin-bottom: 20px; color: #2d3436; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;">إعدادات الحساب</h4>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+                <div class="admin-form-group">
+                    <label>كلمة المرور الجديدة</label>
+                    <input type="password" name="login_password" class="admin-form-input" placeholder="اترك الحقل فارغاً إذا لم ترغب بتغييرها">
+                </div>
+                <div class="admin-form-group">
+                    <label>حالة الحساب</label>
+                    <select name="status" class="admin-form-select">
+                        <option value="active" {% if company.status == 'active' %}selected{% endif %}>نشط</option>
+                        <option value="suspended" {% if company.status == 'suspended' %}selected{% endif %}>موقوف</option>
+                        <option value="banned" {% if company.status == 'banned' %}selected{% endif %}>محظور</option>
+                    </select>
+                </div>
+                <div class="admin-form-group" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" name="activated" id="activated" {% if company.activated %}checked{% endif %} style="width: 20px; height: 20px;">
+                    <label for="activated" style="margin: 0; cursor: pointer;">حساب مفعل بالبريد</label>
+                </div>
+                <div class="admin-form-group" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" name="is_verified" id="is_verified" {% if company.is_verified %}checked{% endif %} style="width: 20px; height: 20px;">
+                    <label for="is_verified" style="margin: 0; cursor: pointer;">الشركة موثقة (Verified)</label>
+                </div>
+            </div>
+
+            <h4 style="margin-top: 30px; margin-bottom: 20px; color: #2d3436; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;">المستندات والملفات</h4>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+                <div class="admin-form-group">
+                    <label>شعار الشركة (Logo)</label>
+                    <input type="file" name="company_logo" class="admin-form-input" accept="image/*">
+                    {% if company.company_logo %}
+                        <div style="margin-top:10px;">
+                            <span style="font-size: 0.9em; color: #636e72;">الشعار الحالي:</span><br>
+                            <img src="{{ url_for('static', filename='uploads/company/logo/' ~ company.company_logo) }}" alt="Logo" style="max-height: 80px; margin-top:5px; border-radius:4px; border:1px solid #dfe6e9;">
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="admin-form-group">
+                    <label>السجل التجاري</label>
+                    <input type="file" name="commercial_register" class="admin-form-input">
+                    {% if company.commercial_register %}
+                        <div style="margin-top:10px;">
+                            <span style="font-size: 0.9em; color: #636e72;">الملف الحالي:</span><br>
+                            <a href="{{ url_for('static', filename='uploads/company/commercial_register/' ~ company.commercial_register) }}" target="_blank" style="display:inline-block; margin-top:5px; color:#0984e3; text-decoration:none;"><i class="fas fa-file-alt"></i> عرض السجل التجاري</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;justify-content:flex-start;margin-top:32px">
+                <button type="submit" class="btn-admin btn-admin-primary"><i class="fas fa-save"></i> حفظ التعديلات</button>
+                <a href="{{ url_for('admin.view_company', id=company.id) }}" class="btn-admin btn-admin-outline">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

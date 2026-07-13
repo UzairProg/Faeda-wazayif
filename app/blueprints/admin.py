@@ -8,8 +8,10 @@ from datetime import datetime, timedelta
 
 from flask import (
     Blueprint, render_template, request, redirect, url_for,
-    session, flash, jsonify, abort
+    session, flash, jsonify, abort, current_app
 )
+import os
+from werkzeug.utils import secure_filename
 from app import db
 from services.admin import (
     Admin, ROLE_SUPER_ADMIN, ROLE_SUPPORT_MODERATOR,
@@ -538,6 +540,87 @@ def verify_company(id):
 
     db.session.commit()
     return redirect(url_for('admin.view_company', id=company.id))
+
+@admin_bp.route('/companies/<int:id>/edit', methods=['GET', 'POST'])
+@admin_login_required
+@require_permission('companies')
+def edit_company(id):
+    company = Company.query.get_or_404(id)
+
+    if request.method == 'POST':
+        company.company_arabic_name = request.form.get('company_arabic_name', company.company_arabic_name)
+        company.company_english_name = request.form.get('company_english_name', company.company_english_name)
+        company.company_field = request.form.get('company_field', company.company_field)
+        company.about_company_arabic = request.form.get('about_company_arabic', company.about_company_arabic)
+        company.about_company_english = request.form.get('about_company_english', company.about_company_english)
+        company.company_email = request.form.get('company_email', company.company_email)
+        company.company_mobile = request.form.get('company_mobile', company.company_mobile)
+        company.company_website = request.form.get('company_website', company.company_website)
+        company.country = request.form.get('country', company.country)
+        company.state = request.form.get('state', company.state)
+        
+        # New fields added
+        company.english_adress = request.form.get('english_adress', company.english_adress)
+        company.company_type = request.form.get('company_type', company.company_type)
+        company.company_size = request.form.get('company_size', company.company_size)
+        company.hr_name = request.form.get('hr_name', company.hr_name)
+        company.hr_mobile = request.form.get('hr_mobile', company.hr_mobile)
+        company.hr_email = request.form.get('hr_email', company.hr_email)
+        company.twitter_email = request.form.get('twitter_email', company.twitter_email)
+        company.instagram_email = request.form.get('instagram_email', company.instagram_email)
+        company.company_name_on_faeda = request.form.get('company_name_on_faeda', company.company_name_on_faeda)
+        
+        new_password = request.form.get('login_password', '').strip()
+        if new_password:
+            company.login_password = generate_password_hash(new_password)
+            
+        company.activated = request.form.get('activated') == 'on'
+        company.is_verified = request.form.get('is_verified') == 'on'
+        
+        status = request.form.get('status')
+        if status in ['active', 'suspended', 'banned']:
+            company.status = status
+
+        upload_logo_dir = current_app.config.get('UPLOAD_company_logo')
+        if upload_logo_dir:
+            os.makedirs(upload_logo_dir, exist_ok=True)
+            logo_file = request.files.get('company_logo')
+            if logo_file and logo_file.filename:
+                filename = secure_filename(logo_file.filename)
+                file_path = os.path.join(upload_logo_dir, filename)
+                try:
+                    logo_file.save(file_path)
+                    if company.company_logo:
+                        old_logo_path = os.path.join(upload_logo_dir, company.company_logo)
+                        if os.path.exists(old_logo_path):
+                            os.remove(old_logo_path)
+                    company.company_logo = filename
+                except Exception as e:
+                    flash(f'حدث خطأ أثناء رفع الشعار: {e}', 'danger')
+
+        upload_cr_dir = current_app.config.get('UPLOAD_COMPANY_COMMERCIAL_REGISTER')
+        if upload_cr_dir:
+            os.makedirs(upload_cr_dir, exist_ok=True)
+            cr_file = request.files.get('commercial_register')
+            if cr_file and cr_file.filename:
+                filename = secure_filename(cr_file.filename)
+                file_path = os.path.join(upload_cr_dir, filename)
+                try:
+                    cr_file.save(file_path)
+                    if company.commercial_register:
+                        old_cr_path = os.path.join(upload_cr_dir, company.commercial_register)
+                        if os.path.exists(old_cr_path):
+                            os.remove(old_cr_path)
+                    company.commercial_register = filename
+                except Exception as e:
+                    flash(f'حدث خطأ أثناء رفع السجل التجاري: {e}', 'danger')
+
+        db.session.commit()
+        log_admin_action('edit_company', 'company', company.id, {'name': company.company_english_name})
+        flash('تم تحديث بيانات الشركة بنجاح', 'success')
+        return redirect(url_for('admin.view_company', id=company.id))
+
+    return render_template('admin/companies/edit.html', company=company)
 
 
 # ─────────────────────────────────────────────────────────────
