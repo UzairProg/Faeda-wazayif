@@ -21,3 +21,5 @@ env/
 
 # Database
 instance/*.db
+*.lnk
+*.link
