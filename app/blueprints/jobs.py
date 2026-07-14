@@ -329,7 +329,7 @@ def update_list(page):
     city = request.args.get('city')
 
     # Construct the base query
-    query = Jobs.query
+    query = Jobs.query.filter_by(status='approved')
 
     # Apply filters if parameters are provided
     if job_type:

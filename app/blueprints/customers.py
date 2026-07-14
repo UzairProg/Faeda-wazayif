@@ -213,14 +213,15 @@ def post_reset_pass():
             db.session.commit() # noqa: F405
 
             # Create the reset link
-            reset_link = "https://www.faeda.site/reset_password?token=" + token
+            reset_link = url_for('customer.reset_password', token=token, _external=True)
 
             # Render the email HTML template
             email_html_content = render_template('/new_design/email.html', reset_link=reset_link)
 
             # Email details
-            email_sender = 'coursesforyo@gmail.com'
-            email_password = 'hvvw frjd qqqf edrx'
+            # NOTE: Credentials have been moved to the .env file for security.
+            email_sender = os.environ.get('MAIL_SENDER', 'coursesforyo@gmail.com')
+            email_password = os.environ.get('MAIL_PASSWORD')
             email_receiver = email
             subject = "Reset Your Password"
             em = EmailMessage()
@@ -235,7 +236,8 @@ def post_reset_pass():
                 smtp.login(email_sender, email_password)
                 smtp.sendmail(email_sender, email_receiver, em.as_string())
 
-            return "check your email"
+            flash('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. الرجاء تفقد صندوق الوارد.', 'success')
+            return redirect(url_for('customer.get_login'))
         else:
             return render_template('/new_design/forget_password.html', error='Email not found.')
     else:
