@@ -5,7 +5,7 @@
 # ==============================================================================
 #### jobs.py############
 
-from flask import Blueprint  , render_template , redirect , request , session , flash
+from flask import Blueprint  , render_template , redirect , request , session , flash, abort, url_for
 from services.job import *# noqa: F403
 from services.skills import *# noqa: F403
 from services.company import *# noqa: F403
@@ -127,7 +127,7 @@ def add_job_post():
 def job_list_get(page):
     per_page = 6  # Adjust as needed
     application_count = 0
-    paginated_jobs = Jobs.query.paginate(page=page, per_page=per_page, error_out=False)
+    paginated_jobs = Jobs.query.filter_by(status='approved').paginate(page=page, per_page=per_page, error_out=False)
     if"session_customer" in session:
         customer_id = session['session_customer']
         application_count = Customers.get_number_of_job_applications_by_customer_id(customer_id)
@@ -146,6 +146,16 @@ def read_job(job_id):
         application_count = ""
         cutomer_teams = ""
         job = Jobs.get_by_id(id=job_id)# noqa: F405
+
+    if not job:
+        abort(404)
+        
+    # Prevent unauthorized viewing of non-approved jobs
+    is_job_owner = 'company_id' in session and session['company_id'] == job.company_id
+    is_admin = 'admin_id' in session
+    if job.status != 'approved' and not (is_job_owner or is_admin):
+        flash('هذه الوظيفة غير متاحة حالياً', 'danger')
+        return redirect(url_for('job.job_list_get'))
 
 
     return render_template('new_design/apply_order.html' , job=job,application_count = application_count,cutomer_teams = cutomer_teams)

@@ -120,7 +120,7 @@
           <p class="text-muted almarai-regular mb-4">انضم إلى مجتمعنا على ديسكورد للتواصل السريع والمباشر مع الأعضاء
             والإدارة</p>
         </div>
-        <a href="#" class="btn btn-support almarai-bold w-100">انضم الآن</a>
+        <a href="https://discord.com" target="_blank" class="btn btn-support almarai-bold w-100">انضم الآن</a>
       </div>
     </div>
 
@@ -143,7 +143,7 @@
           <h4 class="almarai-extrabold mb-3" style="color: var(--primary-dark);">الدعم المباشر</h4>
           <p class="text-muted almarai-regular mb-4">تحدث مع أحد ممثلي خدمة العملاء مباشرة لحل مشكلتك بشكل فوري</p>
         </div>
-        <a href="#" class="btn btn-support almarai-bold w-100">ابدأ المحادثة</a>
+        <a href="#" onclick="toggleChatWidget(); return false;" class="btn btn-support almarai-bold w-100">ابدأ المحادثة</a>
       </div>
     </div>
 
@@ -154,7 +154,7 @@
           <h4 class="almarai-extrabold mb-3" style="color: var(--primary-dark);">تذاكر الدعم</h4>
           <p class="text-muted almarai-regular mb-4">قم بفتح تذكرة دعم فني مخصصة لمتابعة مشكلتك التقنية بدقة وفعالية</p>
         </div>
-        <a href="#" class="btn btn-support almarai-bold w-100">الذهاب للقسم</a>
+        <a href="{{ url_for('core.support_ticket') }}" class="btn btn-support almarai-bold w-100">الذهاب للقسم</a>
       </div>
     </div>
 

@@ -63,6 +63,10 @@
                 <i class="fas fa-briefcase"></i>
                 <span>الوظائف</span>
             </a>
+            <a href="{{ url_for('admin.pending_jobs') }}" class="sidebar-link {% block nav_pending_jobs %}{% endblock %}">
+                <i class="fas fa-clock"></i>
+                <span>وظائف قيد المراجعة</span>
+            </a>
             <a href="{{ url_for('admin.manage_categories') }}" class="sidebar-link {% block nav_categories %}{% endblock %}">
                 <i class="fas fa-tags"></i>
                 <span>التصنيفات</span>
@@ -75,6 +79,10 @@
                 <i class="fas fa-flag"></i>
                 <span>البلاغات</span>
                 {% set pending_count = pending_reports_count|default(0) %}
+            </a>
+            <a href="{{ url_for('admin.tickets') }}" class="sidebar-link {% block nav_tickets %}{% endblock %}">
+                <i class="fas fa-headset"></i>
+                <span>تذاكر الدعم</span>
             </a>
             {% endif %}
 

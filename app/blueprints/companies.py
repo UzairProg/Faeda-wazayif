@@ -32,11 +32,6 @@ def allowed_file(filename):
 
     #### register ######
 
-
-
-
-
-
 @company.route('/applicants/<int:job_id>')
 def job_applicants2(job_id):
     job = Jobs.query.get(job_id)

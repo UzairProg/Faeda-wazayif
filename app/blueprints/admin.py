@@ -158,6 +158,10 @@ def admin_dashboard():
     total_jobs = Jobs.query.count()
     total_teams = Teams.query.count()
     pending_reports = Report.query.filter_by(status='pending').count()
+    
+    from services.ticket import Ticket
+    pending_tickets = Ticket.query.filter_by(status='open').count()
+    
     active_jobs = Jobs.query.filter(Jobs.status.in_(['approved', 'pending'])).count()
 
     # New registrations (last 7 days)
@@ -177,6 +181,7 @@ def admin_dashboard():
                            total_jobs=total_jobs,
                            total_teams=total_teams,
                            pending_reports=pending_reports,
+                           pending_tickets=pending_tickets,
                            active_jobs=active_jobs,
                            new_users_week=new_users_week,
                            new_companies_week=new_companies_week,
@@ -206,6 +211,40 @@ def api_stats():
         'active_subscriptions': active_subs,
         'total_revenue': total_revenue,
     })
+
+@admin_bp.route('/jobs/pending')
+@admin_login_required
+@require_permission('dashboard')
+def pending_jobs():
+    jobs = Jobs.query.filter_by(status='pending').order_by(Jobs.date_posted.desc()).all()
+    return render_template('admin/pending_jobs.html', jobs=jobs)
+
+@admin_bp.route('/tickets')
+@admin_login_required
+@require_permission('dashboard')
+def tickets():
+    from services.ticket import Ticket
+    all_tickets = Ticket.query.order_by(Ticket.created_at.desc()).all()
+    return render_template('admin/tickets.html', tickets=all_tickets)
+
+@admin_bp.route('/tickets/<int:ticket_id>/reply', methods=['POST'])
+@admin_login_required
+@require_permission('dashboard')
+def reply_ticket(ticket_id):
+    from services.ticket import Ticket
+    ticket = Ticket.query.get_or_404(ticket_id)
+    reply = request.form.get('admin_reply')
+    status = request.form.get('status')
+    
+    if reply:
+        ticket.admin_reply = reply
+    if status:
+        ticket.status = status
+        
+    db.session.commit()
+    flash('تم تحديث التذكرة بنجاح', 'success')
+    return redirect(url_for('admin.tickets'))
+
 
 
 @admin_bp.route('/api/chart/users')

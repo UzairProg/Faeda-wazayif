@@ -1,0 +1,51 @@
+{% extends "company/company_base.html" %}
+{% block title %}الإعدادات | فائدة{% endblock %}
+{% block nav_settings %}active{% endblock %}
+{% block breadcrumb %}<li>الإعدادات</li>{% endblock %}
+{% block page_title %}الإعدادات والتفضيلات{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2><i class="fas fa-lock"></i> الأمان وكلمة المرور</h2>
+            </div>
+            <div class="admin-card-body">
+                <form action="{{ url_for('company_panel.company_settings') }}" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">كلمة المرور الجديدة</label>
+                        <input type="password" class="form-control" name="new_password" placeholder="أدخل كلمة المرور الجديدة" required>
+                    </div>
+                    <button type="submit" class="btn-admin btn-admin-primary">
+                        <i class="fas fa-key"></i> تغيير كلمة المرور
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2><i class="fas fa-bell"></i> تفضيلات الإشعارات</h2>
+            </div>
+            <div class="admin-card-body">
+                <form action="{{ url_for('company_panel.company_settings') }}" method="POST">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="notifyEmail" name="notify_email" checked>
+                        <label class="form-check-label" for="notifyEmail">إرسال بريد إلكتروني عند تقديم طلب توظيف جديد</label>
+                    </div>
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" id="notifyMarketing" name="notify_marketing">
+                        <label class="form-check-label" for="notifyMarketing">استلام العروض الترويجية والنشرات البريدية</label>
+                    </div>
+                    <button type="submit" class="btn-admin btn-admin-primary">
+                        <i class="fas fa-save"></i> حفظ التفضيلات
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

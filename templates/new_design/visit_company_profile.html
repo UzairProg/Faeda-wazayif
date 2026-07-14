@@ -29,7 +29,7 @@
                     <p>{{company.company_field}}</p>
                     <div class="profile-btn">
                         <a href="#" class="primary-btn"><img src="/static/assets/images/add-user (1).png" alt="">تابع</a>
-
+                        <a href="#" class="primary-btn" data-bs-toggle="modal" data-bs-target="#reportCompanyModal" style="background-color: #dc3545; border: none;"><i class="fas fa-flag ms-1"></i> إبلاغ</a>
                     </div>
                 </div>
             </div>
@@ -238,6 +238,45 @@
                               
                             </div>
                         </div>
+                            </div>
+                        </div>
+                        
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportCompanyModal" tabindex="-1" aria-labelledby="reportCompanyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 15px; border-top: 5px solid #dc3545;">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="reportCompanyModalLabel" style="font-family: 'Almarai', sans-serif; font-weight: bold;"><i class="fas fa-flag ms-2"></i> تقديم بلاغ</h5>
+                    <button type="button" class="btn-close m-0 me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('core.submit_report') }}" method="POST">
+                    <div class="modal-body text-end" style="font-family: 'Almarai', sans-serif;">
+                        <input type="hidden" name="target_type" value="company">
+                        <input type="hidden" name="target_id" value="{{ company.id }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">سبب البلاغ</label>
+                            <select name="reason" class="form-select" required>
+                                <option value="spam">محتوى مزعج (Spam)</option>
+                                <option value="fake">حساب وهمي أو احتيال</option>
+                                <option value="inappropriate">محتوى غير لائق</option>
+                                <option value="other">سبب آخر</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">تفاصيل إضافية (اختياري)</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="يرجى تزويدنا بأي تفاصيل إضافية تساعدنا في مراجعة البلاغ..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-danger"><i class="fas fa-paper-plane ms-2"></i> إرسال البلاغ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block extra_js %}

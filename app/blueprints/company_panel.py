@@ -1,0 +1,299 @@
+from flask import Blueprint, render_template, redirect, request, session, flash, url_for, abort, current_app, send_from_directory
+from functools import wraps
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+import os
+from sqlalchemy import and_, extract
+from app import db
+
+# Import existing models
+from services.company import Company
+from services.customer import Customers, customer_jobs
+from services.job import Jobs
+
+company_panel_bp = Blueprint('company_panel', __name__)
+
+# ─────────────────────────────────────────────────────────────
+# Company Authentication & Decorators
+# ─────────────────────────────────────────────────────────────
+
+def company_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'company_id' not in session or not session.get('session_company'):
+            flash('يرجى تسجيل الدخول بحساب شركة أولاً', 'warning')
+            return redirect(url_for('company_panel.company_login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def get_current_company():
+    if 'company_id' in session:
+        return Company.query.get(session['company_id'])
+    return None
+
+@company_panel_bp.context_processor
+def inject_company_context():
+    return dict(current_company=get_current_company())
+
+@company_panel_bp.route('/company/login', methods=['GET', 'POST'])
+def company_login():
+    if 'company_id' in session and session.get('session_company'):
+        return redirect(url_for('company_panel.company_dashboard'))
+        
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        comp = Company.query.filter_by(company_email=email).first()
+        
+        # Check against plain text (legacy) or hashed password
+        if comp and (comp.login_password == password or check_password_hash(comp.login_password or '', password)):
+            session['session_company'] = True
+            session['company_id'] = comp.id
+            session['company_email_session'] = email
+            if comp.activated:
+                session['company_activated'] = True
+            flash(f'مرحباً بك في بوابة المنشآت: {comp.company_english_name}', 'success')
+            return redirect(url_for('company_panel.company_dashboard'))
+        else:
+            flash('البريد الإلكتروني أو كلمة المرور غير صحيحة', 'danger')
+            
+    return render_template('company/auth/login.html')
+
+@company_panel_bp.route('/company/register', methods=['GET', 'POST'])
+def company_register():
+    if 'company_id' in session and session.get('session_company'):
+        return redirect(url_for('company_panel.company_dashboard'))
+        
+    if request.method == 'POST':
+        company_name = request.form.get('company_name', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        
+        if Company.query.filter_by(company_email=email).first():
+            flash('البريد الإلكتروني مسجل بالفعل', 'danger')
+        else:
+            new_comp = Company(
+                company_english_name=company_name,
+                company_email=email,
+                login_password=generate_password_hash(password),
+                activated=True
+            )
+            db.session.add(new_comp)
+            db.session.commit()
+            
+            # Auto login
+            session['session_company'] = True
+            session['company_id'] = new_comp.id
+            session['company_email_session'] = email
+            session['company_activated'] = True
+            
+            flash('تم إنشاء حساب المنشأة بنجاح', 'success')
+            return redirect(url_for('company_panel.company_dashboard'))
+            
+    return render_template('company/auth/register.html')
+
+# ─────────────────────────────────────────────────────────────
+# Company Portal Routes
+# ─────────────────────────────────────────────────────────────
+
+@company_panel_bp.route('/company/dashboard')
+@company_required
+def company_dashboard():
+    comp_id = session['company_id']
+    active_jobs = Jobs.query.filter_by(company_id=comp_id, status='approved').count()
+    total_jobs = Jobs.query.filter_by(company_id=comp_id).count()
+    
+    # Calculate total applicants by joining jobs
+    total_applicants = db.session.query(customer_jobs).join(Jobs, Jobs.id == customer_jobs.c.job_id).filter(Jobs.company_id == comp_id).count()
+    
+    return render_template('company/dashboard.html', 
+                           active_jobs=active_jobs, 
+                           total_jobs=total_jobs, 
+                           total_applicants=total_applicants)
+
+@company_panel_bp.route('/company/profile', methods=['GET', 'POST'])
+@company_required
+def company_profile():
+    comp_id = session['company_id']
+    company = Company.query.get(comp_id)
+    
+    if request.method == 'POST':
+        company.company_english_name = request.form.get('english_name')
+        company.company_arabic_name = request.form.get('arabic_name')
+        company.company_field = request.form.get('industry')
+        company.about_company_arabic = request.form.get('about_ar')
+        company.about_company_english = request.form.get('about_en')
+        company.company_email = request.form.get('email')
+        company.company_mobile = request.form.get('mobile')
+        
+        # Handle Logo Upload
+        if 'logo' in request.files:
+            file = request.files['logo']
+            if file and file.filename:
+                logo_dir = current_app.config.get('UPLOAD_company_logo', 'static/uploads/company/logo')
+                os.makedirs(logo_dir, exist_ok=True)
+                
+                # Delete old logo if exists
+                if company.company_logo:
+                    old_logo_path = os.path.join(logo_dir, company.company_logo)
+                    if os.path.exists(old_logo_path):
+                        try:
+                            os.remove(old_logo_path)
+                        except:
+                            pass
+                            
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(logo_dir, filename)
+                file.save(file_path)
+                company.company_logo = filename
+                
+        db.session.commit()
+        flash('تم تحديث ملف المنشأة بنجاح', 'success')
+        return redirect(url_for('company_panel.company_profile'))
+        
+    return render_template('company/profile.html', company=company)
+
+@company_panel_bp.route('/company/settings', methods=['GET', 'POST'])
+@company_required
+def company_settings():
+    comp_id = session['company_id']
+    company = Company.query.get(comp_id)
+    
+    if request.method == 'POST':
+        # Example for password update or email notifications
+        new_password = request.form.get('new_password')
+        if new_password:
+            company.login_password = generate_password_hash(new_password)
+            flash('تم تغيير كلمة المرور بنجاح', 'success')
+            db.session.commit()
+        else:
+            flash('تم حفظ الإعدادات بنجاح', 'success')
+            
+        return redirect(url_for('company_panel.company_settings'))
+        
+    return render_template('company/settings.html', company=company)
+
+@company_panel_bp.route('/company/jobs')
+@company_required
+def company_jobs_list():
+    comp_id = session['company_id']
+    jobs = Jobs.query.filter_by(company_id=comp_id).order_by(Jobs.date_posted.desc()).all()
+    return render_template('company/jobs.html', jobs=jobs)
+
+@company_panel_bp.route('/company/jobs/add', methods=['GET', 'POST'])
+@company_required
+def add_job():
+    comp_id = session['company_id']
+    company = Company.query.get(comp_id)
+    
+    if request.method == 'POST':
+        # Ensure company has completed basic profile fields before adding job
+        if not (company.company_english_name and company.company_email and company.company_mobile and company.company_field):
+            flash('يجب عليك إكمال جميع بيانات المنشأة الأساسية (الاسم، الإيميل، الجوال، والمجال) قبل نشر وظيفة', 'error')
+            return redirect(url_for('company_panel.company_profile'))
+            
+        job_type = request.form.get('job_type')
+        title = request.form.get('title')
+        town = request.form.get('city')
+        company_about = request.form.get('company_about')
+        job_description = request.form.get('job_description')
+        specialization = request.form.get('specialization')
+        skills_years = request.form.get('skills_years')
+        educational_qualification = request.form.get('educational_qualification')
+        workplace = request.form.get('workplace')
+        workdays = request.form.get('workdays')
+        rest_days = request.form.get('rest_days')
+        selected_languages = request.form.getlist('languages')
+        languages = ','.join(selected_languages) if selected_languages else request.form.get('languages')
+        work_hours = request.form.get('work_hours')
+
+        # Validate required fields
+        if not title or not town or not job_description or not job_type or not specialization or not company_about or not work_hours or not languages or not educational_qualification or not skills_years or not workplace or not workdays or not rest_days:
+            flash('يرجى ملئ جميع الحقول.', 'error')
+            return redirect(url_for('company_panel.add_job'))
+
+        # Create a new job listing with status='pending' by default
+        new_job = Jobs(
+            job_type=job_type,
+            title=title,
+            town=town,
+            company_about=company_about,
+            job_description=job_description,
+            specialization=specialization,
+            skills_years=skills_years,
+            educational_qualification=educational_qualification,
+            workplace=workplace,
+            workdays=workdays,
+            rest_days=rest_days,
+            work_hours=work_hours,
+            languages=languages,
+            company_id=comp_id
+        )
+
+        db.session.add(new_job)
+        db.session.commit()
+
+        flash('تم نشر طلب الوظيفة بنجاح. سيتم مراجعته من قبل الإدارة قريباً.', 'success')
+        return redirect(url_for('company_panel.company_jobs_list'))
+
+    return render_template('company/add_job.html', company=company)
+
+
+@company_panel_bp.route('/company/applicants')
+@company_required
+def company_applicants_list():
+    comp_id = session['company_id']
+    
+    # Query all applicants for jobs posted by this company
+    applicants = db.session.query(
+        customer_jobs.c.id.label('app_id'),
+        customer_jobs.c.status.label('app_status'),
+        customer_jobs.c.timestamp.label('applied_at'),
+        Customers,
+        Jobs
+    ).join(
+        Customers, Customers.user_id == customer_jobs.c.customer_id
+    ).join(
+        Jobs, Jobs.id == customer_jobs.c.job_id
+    ).filter(
+        Jobs.company_id == comp_id
+    ).order_by(customer_jobs.c.timestamp.desc()).all()
+    
+    return render_template('company/applicants.html', applicants=applicants)
+
+@company_panel_bp.route('/company/update_applicant_status/<int:app_id>', methods=['POST'])
+@company_required
+def update_applicant_status_api(app_id):
+    action = request.form.get('action') # 'accept', 'reject', 'review'
+    comp_id = session['company_id']
+    
+    # Verify this application belongs to a job of this company
+    app_record = db.session.query(customer_jobs, Jobs).join(
+        Jobs, Jobs.id == customer_jobs.c.job_id
+    ).filter(
+        customer_jobs.c.id == app_id,
+        Jobs.company_id == comp_id
+    ).first()
+    
+    if not app_record:
+        abort(403)
+        
+    if action == 'accept':
+        new_status = 'تم القبول النهائي'
+    elif action == 'reject':
+        new_status = 'تم الرفض'
+    else:
+        new_status = 'قيد المراجعة'
+        
+    stmt = customer_jobs.update().where(customer_jobs.c.id == app_id).values(status=new_status)
+    db.session.execute(stmt)
+    db.session.commit()
+    
+    flash(f'تم تحديث حالة الطلب', 'success')
+    return redirect(url_for('company_panel.company_applicants_list'))
+
+@company_panel_bp.route('/company/download_cv/<string:cv_filename>')
+@company_required
+def download_cv(cv_filename):
+    cv_dir = current_app.config.get('UPLOAD_CUSTOMERS_CV', 'static/uploads/customers/cv')
+    return send_from_directory(cv_dir, cv_filename, as_attachment=True)

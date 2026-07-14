@@ -84,16 +84,27 @@ def login():
         return redirect(url_for('admin.admin_dashboard'))
 
     if query is not None and query.password == password:
+        if query.status == 'suspended':
+            session['suspended_email'] = query.email
+            session['suspension_reason'] = query.suspension_reason or 'انتهاك شروط الاستخدام'
+            return redirect(url_for('core.suspended_account'))
+            
     # save session
         session['session_customer'] = True
         session['user_id'] = Customers.get_session_user_id(email=email)# noqa: F405
         session['email_session'] = email
         full_name = Customers.get_customer_fullname_by_user_email(email=email) # noqa: F405
-        flash('<span class="h1-size">مرحبا</span> <span class="h1-size">' + full_name + '</span>')
+        flash(f'مرحباً بك مجدداً {full_name}!', 'success')
         if query.activated == True:
             session['customer_activated'] = True
         return redirect('/')
+        
     if query2 is not None and query2.login_password == password:
+        if query2.status == 'suspended':
+            session['suspended_email'] = query2.company_email
+            session['suspension_reason'] = query2.suspension_reason or 'مخالفة سياسات المنصة'
+            return redirect(url_for('core.suspended_account'))
+            
         session['session_company'] = True
         company_id = Company.get_company_id_by_email(company_email=email) # noqa: F405
         session['company_id'] = company_id
