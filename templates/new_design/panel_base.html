@@ -273,6 +273,27 @@
 
         <!-- Content Area -->
         <main class="content-area">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mb-4">
+                        {% for category, message in messages %}
+                            {% set alert_class = 'alert-success' %}
+                            {% if category == 'error' or category == 'danger' %}
+                                {% set alert_class = 'alert-danger' %}
+                            {% elif category == 'warning' %}
+                                {% set alert_class = 'alert-warning' %}
+                            {% elif category == 'info' %}
+                                {% set alert_class = 'alert-info' %}
+                            {% endif %}
+                            <div class="alert {{ alert_class }} alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 12px; font-weight: bold;">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
             {% block content %}
             {% endblock %}
         </main>

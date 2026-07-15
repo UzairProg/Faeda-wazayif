@@ -703,20 +703,23 @@ def add_members_to_team(team_id):
     # Check if the team exists
     team = Teams.query.get(team_id)
     if team is None:
-        return "Team not found", 404
+        flash('الفريق غير موجود', 'error')
+        return redirect('/')
 
     # Check if the current user is an admin of the team
     user_id = session['user_id']
     admin_check = Teams.get_admin_id_by_id(id=team_id)
 
     if str(user_id) != str(admin_check):
-        return "You do not have permission to add members to this team", 403
+        flash('ليس لديك الصلاحية لإضافة أعضاء', 'error')
+        return redirect('/')
 
     for member_id, general_program, semi_special_program, special_program in zip(member_ids, general_programs, semi_special_programs, special_programs):
         # Check if the user exists
         user = Customers.query.filter_by(user_id=member_id).first()
         if user is None:
-            return f"User with id {member_id} not found", 404
+            flash("المستخدم غير موجود", 'error')
+            return redirect(f'/add_member_to_team/{team_id}')
 
         # Check if the user is already a member of the team
         existing_membership = db.session.query(team_members_association).filter(and_(
@@ -724,7 +727,8 @@ def add_members_to_team(team_id):
             team_members_association.c.member_id == member_id
             )).first()
         if existing_membership:
-            return jsonify({'message': f'User with id {member_id} is already a member of this team'}), 400
+            flash("المستخدم مضاف مسبقاً في هذا الفريق", 'error')
+            return redirect(f'/add_member_to_team/{team_id}')
 
         # Add member to the team_members association table
         db.session.execute(team_members_association.insert().values(
@@ -737,7 +741,8 @@ def add_members_to_team(team_id):
 
     db.session.commit()
 
-    return jsonify({'message': 'Members added to the team successfully'}), 200
+    flash('تم إضافة العضو بنجاح')
+    return redirect(f'/add_member_to_team/{team_id}')
 
 
 @customer.route('/accept_team_invetation')
