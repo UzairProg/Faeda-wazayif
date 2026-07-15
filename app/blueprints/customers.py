@@ -220,8 +220,8 @@ def post_reset_pass():
 
             # Email details
             # NOTE: Credentials have been moved to the .env file for security.
-            email_sender = os.environ.get('MAIL_SENDER', 'coursesforyo@gmail.com')
-            email_password = os.environ.get('MAIL_PASSWORD')
+            email_sender = os.environ.get('SENDER_EMAIL', 'coursesforyo@gmail.com')
+            email_password = os.environ.get('SENDER_PASSWORD')
             email_receiver = email
             subject = "Reset Your Password"
             em = EmailMessage()

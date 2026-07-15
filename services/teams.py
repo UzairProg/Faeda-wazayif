@@ -41,6 +41,10 @@ class Teams(db.Model):
     members = relationship("Customers", secondary=team_members_association, backref="teams")
     jobs = db.relationship("Jobs", secondary="customer_jobs", back_populates="teams")
     
+    def __init__(self, **kwargs):
+        super(Teams, self).__init__(**kwargs)
+    
+    
     @classmethod
     def get_teams_for_admin(cls, admin_id):
         query = cls.query.filter_by(admin_id=admin_id).all()

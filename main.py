@@ -9,19 +9,10 @@ from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 app = Flask(__name__)
-app.secret_key = "SecretKey!" #This supposed to be secret
+app.config.from_object('config.DevelopmentConfig')
 app.permanent_session_lifetime = timedelta(minutes=10)
 
-serial = URLSafeTimedSerializer('SecretKey!') #This supposed to be secret
-
-
-
-app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USERNAME'] = 'temproryosama123@gmail.com' #This supposed to be secret
-app.config['MAIL_PASSWORD'] = 'lhje fnuq vxlp njua' #This supposed to be secret
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
+serial = URLSafeTimedSerializer(app.config.get('SECRET_KEY', 'default-secret-key-for-dev'))
 
 mail = Mail(app)
 

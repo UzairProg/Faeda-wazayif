@@ -11,6 +11,7 @@ from services.message import *
 from email.message import EmailMessage
 import ssl
 import smtplib
+import os
 
 messages_routes = Blueprint('messages' , __name__)
 
@@ -32,8 +33,8 @@ def send_email():
 
  
     ##
-    email_sender = 'coursesforyo@gmail.com'
-    email_password = 'hthaynywgefenetz'
+    email_sender = os.environ.get('SENDER_EMAIL', 'coursesforyo@gmail.com')
+    email_password = os.environ.get('SENDER_PASSWORD')
     email_receiver = sender_email
     subject =  request.form.get('subject')
     body =  request.form.get('message')
