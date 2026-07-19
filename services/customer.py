@@ -46,6 +46,13 @@ class Customers(db.Model):
     suspension_reason = db.Column(db.Text, nullable=True)
     warnings_count = db.Column(db.Integer, default=0)
 
+    ############# AI Recommendation Fields ##########
+    resume_text = db.Column(db.Text, nullable=True)
+    expected_salary = db.Column(db.Integer, nullable=True)
+    languages_json = db.Column(db.String(500), nullable=True)
+    certifications = db.Column(db.String(500), nullable=True)
+    work_style = db.Column(db.String(120), nullable=True)
+
     ############# uploaded data names ##########
     cv = db.Column(db.String(120), nullable=True)
     token = db.Column(db.String(120))
@@ -60,7 +67,7 @@ class Customers(db.Model):
         self, fullname, email, mobile, password,about=None, sex=None, country=None,city = None,government = None, education_statue=None,
         educational_qualification=None, university=None, department_university=None, graduation_date=None,
         gpa=None, years_of_skills=None, preferred_field_of_work=None, work_type=None, activated=False, cv=None,
-     token=None, **kwargs
+        token=None, resume_text=None, expected_salary=None, languages_json=None, certifications=None, work_style=None, **kwargs
     ):
     # ... rest of the code ...
 
@@ -85,6 +92,11 @@ class Customers(db.Model):
         self.activated = activated
         self.cv = cv
         self.token = token
+        self.resume_text = resume_text
+        self.expected_salary = expected_salary
+        self.languages_json = languages_json
+        self.certifications = certifications
+        self.work_style = work_style
         super().__init__(**kwargs)  # handle additional fields and inheritance if necessary
 
 

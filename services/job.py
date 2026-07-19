@@ -41,11 +41,17 @@ class Jobs(db.Model):
     status = db.Column(db.String(20), default='pending')  # 'pending','approved','rejected','archived'
     category = db.Column(db.String(100), nullable=True)
     is_featured = db.Column(db.Boolean, default=False)
+    
+    # AI Recommendation Fields
+    salary_min = db.Column(db.Integer, nullable=True)
+    salary_max = db.Column(db.Integer, nullable=True)
+    required_skills = db.Column(db.String(500), nullable=True)
+    preferred_work_style = db.Column(db.String(120), nullable=True)
     customers = db.relationship('Customers', secondary="customer_jobs", back_populates="jobs")
     teams = db.relationship('Teams', secondary="customer_jobs", back_populates="jobs")
     skills = db.relationship('Skills', backref='customer_skills', lazy=True)
 
-    def __init__(self, title, job_type, town, company_about, job_description, specialization, skills_years, educational_qualification, workplace, company_id, workdays=None, rest_days=None, work_hours=None, languages=None):
+    def __init__(self, title, job_type, town, company_about, job_description, specialization, skills_years, educational_qualification, workplace, company_id, workdays=None, rest_days=None, work_hours=None, languages=None, salary_min=None, salary_max=None, required_skills=None, preferred_work_style=None):
         self.title = title
         self.job_type = job_type
         self.town = town
@@ -60,6 +66,10 @@ class Jobs(db.Model):
         self.rest_days = rest_days
         self.work_hours = work_hours
         self.languages = languages
+        self.salary_min = salary_min
+        self.salary_max = salary_max
+        self.required_skills = required_skills
+        self.preferred_work_style = preferred_work_style
 
     @classmethod
     def get_job_By_title(self, title):
