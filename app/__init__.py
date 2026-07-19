@@ -16,16 +16,7 @@ def create_app():
     template_dir = os.path.join(base_dir, 'templates')
     
     app = Flask(__name__,template_folder=os.path.join(base_dir, 'templates'),static_folder=os.path.join(base_dir, 'static'))
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-    # 🔴  هذا السطر لتفعيل الجلسات 🔴
-    app.secret_key = 'faeda_super_secret_key_2024'
-    
-    # Configure Upload Directories
-    app.config['UPLOAD_CUSTOMERS_IMAGES'] = os.path.join(base_dir, 'static', 'uploads', 'customers', 'images')
-    app.config['UPLOAD_TEAM_IMAGES'] = os.path.join(base_dir, 'static', 'uploads', 'customers', 'teams', 'images')
-    app.config['UPLOAD_CUSTOMERS_CV'] = os.path.join(base_dir, 'static', 'uploads', 'customers', 'cv')
-    app.config['UPLOAD_company_logo'] = os.path.join(base_dir, 'static', 'uploads', 'company', 'logo')
-    app.config['UPLOAD_COMPANY_COMMERCIAL_REGISTER'] = os.path.join(base_dir, 'static', 'uploads', 'company', 'commercial_register')
+    app.config.from_object('config.DevelopmentConfig')
     
     db.init_app(app)
 

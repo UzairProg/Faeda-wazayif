@@ -1,0 +1,1 @@
+#train_model.py: السكربت الذي سيقوم بتدريب خوارزمية التطابق (Cosine Similarity).
