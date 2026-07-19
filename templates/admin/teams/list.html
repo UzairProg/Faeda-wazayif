@@ -20,7 +20,7 @@
                 <tbody>
                     {% for team in teams %}
                     <tr>
-                        <td>{{ team.id }}</td>
+                        <td>{{ ((pagination.page - 1) * pagination.per_page + loop.index) if pagination is defined and pagination else loop.index }}</td>
                         <td><strong>{{ team.team_name }}</strong></td>
                         <td><span class="admin-badge verified">{{ team_stats[team.id].member_count }} عضو</span></td>
                         <td>{{ team.creation_date.strftime('%Y/%m/%d') if team.creation_date else '—' }}</td>

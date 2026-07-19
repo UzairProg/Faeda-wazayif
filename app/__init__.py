@@ -62,7 +62,34 @@ def create_app():
         app.register_blueprint(chat_bp)
         app.register_blueprint(company_panel_bp)
         
-        # إنشاء الجداول في قاعدة البيانات (في حال لم تكن موجودة)
         db.create_all()
+
+        @app.before_request
+        def check_maintenance():
+            from flask import request, render_template
+            # Allow static files
+            if request.endpoint == 'static':
+                return
+            # Allow admin panel routes to function normally
+            if request.endpoint and request.endpoint.startswith('admin.'):
+                return
+            # Allow support routes so users can contact support during maintenance
+            if request.endpoint in ['core.support', 'core.support_ticket', 'core.track_ticket']:
+                return
+            
+            try:
+                # If maintenance mode is active, render the dedicated page
+                if SystemSetting.is_maintenance_mode():
+                    return render_template('new_design/maintenance.html'), 503
+            except Exception:
+                pass
+
+        @app.context_processor
+        def inject_system_settings():
+            try:
+                settings = SystemSetting.get_all_settings()
+                return dict(system_settings=settings)
+            except Exception:
+                return dict(system_settings={})
 
     return app

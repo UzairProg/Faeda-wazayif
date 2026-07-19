@@ -26,7 +26,7 @@
                 <tbody>
                     {% for pay in payments %}
                     <tr>
-                        <td>{{ pay.id }}</td>
+                        <td>{{ ((pagination.page - 1) * pagination.per_page + loop.index) if pagination is defined and pagination else loop.index }}</td>
                         <td style="font-weight:800">{{ "%.2f"|format(pay.amount) }} {{ pay.currency }}</td>
                         <td>{{ pay.payment_method_label }}</td>
                         <td><span class="admin-badge {{ pay.status }}">{{ pay.status_label }}</span></td>

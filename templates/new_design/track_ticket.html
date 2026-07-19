@@ -1,99 +1,144 @@
 {% extends 'new_design/base.html' %}
-{% block title %}متابعة تذكرة دعم | فائدة{% endblock %}
+{% block title %}متابعة تذكرة دعم | منصة فائدة{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-card {
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        padding: 40px;
+        margin-top: 60px;
+        margin-bottom: 60px;
+        border-top: 5px solid var(--primary-dark);
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #ced4da;
+        background-color: #f8f9fa;
+        text-align: right;
+    }
+    .form-control:focus {
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.25);
+    }
+    .btn-custom-red {
+        background-color: var(--accent-red);
+        color: white;
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 700;
+        border: none;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+    .btn-custom-red:hover {
+        background-color: #9e203b;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .btn-outline-custom {
+        border: 2px solid var(--primary-dark);
+        color: var(--primary-dark);
+        background-color: transparent;
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 700;
+        transition: all 0.3s;
+    }
+    .btn-outline-custom:hover {
+        background-color: var(--primary-dark);
+        color: white;
+    }
+    .ticket-card {
+        background-color: #f8f9fa;
+        border-radius: 15px;
+        border: 1px solid #e9ecef;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm" style="border-radius: 15px; overflow: hidden;">
-                <div class="card-header bg-primary text-white text-center py-4">
-                    <h3 class="mb-0">متابعة حالة التذكرة</h3>
+<div class="container d-flex justify-content-center align-items-center flex-grow-1">
+    <div class="col-md-8 col-lg-7">
+        <div class="auth-card">
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="fas fa-search" style="font-size: 3rem; color: var(--accent-yellow);"></i>
                 </div>
-                <div class="card-body p-4 p-md-5">
-                    
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            {% for category, message in messages %}
-                                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show">
-                                    {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-
-                    {% if tickets is not none %}
-                        <div class="mb-4 d-flex justify-content-between align-items-center border-bottom pb-2">
-                            <h4 class="text-primary mb-0">تذاكر الدعم الخاصة بك</h4>
-                            <span class="badge bg-secondary">{{ tickets|length }} تذكرة</span>
-                        </div>
-                        
-                        {% for ticket in tickets %}
-                        <div class="card bg-light border-0 shadow-sm mb-4">
-                            <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3">
-                                <h5 class="mb-0 text-dark">
-                                    <strong>التذكرة #{{ ticket.id }}:</strong> {{ ticket.subject }}
-                                </h5>
-                                <div>
-                                    {% if ticket.status == 'open' %}
-                                        <span class="badge bg-warning text-dark px-3 py-2" style="font-size: 0.9rem;">قيد المراجعة</span>
-                                    {% else %}
-                                        <span class="badge bg-success px-3 py-2" style="font-size: 0.9rem;">مغلقة / تم الرد</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="row mb-3">
-                                    <div class="col-sm-3 text-muted fw-bold">تاريخ الإنشاء:</div>
-                                    <div class="col-sm-9">{{ ticket.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
-                                </div>
-                                <div class="row mb-4">
-                                    <div class="col-sm-3 text-muted fw-bold">تفاصيل المشكلة:</div>
-                                    <div class="col-sm-9 text-break">{{ ticket.description }}</div>
-                                </div>
-                                
-                                <h6 class="text-success mb-3 border-top pt-3"><i class="fas fa-reply me-2"></i> رد الدعم الفني:</h6>
-                                {% if ticket.admin_reply %}
-                                    <div class="p-3 bg-white rounded border border-success border-opacity-25 shadow-sm">
-                                        <p class="card-text text-break mb-0" style="font-size: 1.1rem; line-height: 1.6;">
-                                            {{ ticket.admin_reply | replace('\n', '<br>') | safe }}
-                                        </p>
-                                    </div>
-                                {% else %}
-                                    <div class="p-3 bg-white rounded border border-warning border-opacity-25 shadow-sm">
-                                        <p class="text-muted fst-italic mb-0">لم يتم الرد على تذكرتك بعد. يرجى الانتظار، سيقوم فريق الدعم بمراجعة تذكرتك قريباً.</p>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endfor %}
-
-                        <div class="text-center mt-5">
-                            <a href="{{ url_for('core.track_ticket') }}" class="btn btn-outline-primary px-4 py-2" style="border-radius: 10px;">
-                                <i class="fas fa-search me-2"></i> بحث ببريد إلكتروني آخر
-                            </a>
-                        </div>
-                    {% else %}
-                        <!-- نموذج البحث عن تذكرة -->
-                        <form method="POST" action="{{ url_for('core.track_ticket') }}">
-                            <div class="mb-4">
-                                <label class="form-label fw-bold">البريد الإلكتروني</label>
-                                <input type="email" class="form-control" name="email" required placeholder="البريد الإلكتروني المستخدم في التذكرة">
-                                <div class="form-text">أدخل بريدك الإلكتروني لعرض جميع التذاكر المرتبطة به.</div>
-                            </div>
-                            
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary btn-lg py-3" style="border-radius: 10px;">
-                                    <i class="fas fa-search me-2"></i> الاستعلام عن التذكرة
-                                </button>
-                            </div>
-                        </form>
-                        
-                        <div class="mt-4 text-center">
-                            <a href="{{ url_for('core.support_ticket') }}" class="text-muted">أو قم بفتح تذكرة دعم فني جديدة من هنا</a>
-                        </div>
-                    {% endif %}
-                </div>
+                <h2 class="almarai-extrabold" style="color: var(--primary-dark);">متابعة حالة التذكرة</h2>
+                <p class="almarai-regular text-muted">راجع حالة تذاكر الدعم الفني الخاصة بك</p>
             </div>
+
+            {% if tickets is not none %}
+                <div class="mb-4 d-flex justify-content-between align-items-center border-bottom pb-2">
+                    <h4 class="almarai-bold" style="color: var(--primary-dark);">تذاكر الدعم الخاصة بك</h4>
+                    <span class="badge bg-secondary almarai-regular fs-6">{{ tickets|length }} تذكرة</span>
+                </div>
+                
+                {% for ticket in tickets %}
+                <div class="ticket-card mb-4">
+                    <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3" style="border-radius: 15px 15px 0 0;">
+                        <h5 class="mb-0 almarai-bold" style="color: var(--primary-dark);">
+                            <strong>التذكرة #{{ ticket.id }}:</strong> {{ ticket.subject }}
+                        </h5>
+                        <div>
+                            {% if ticket.status == 'open' %}
+                                <span class="badge bg-warning text-dark px-3 py-2 almarai-regular" style="font-size: 0.9rem;">قيد المراجعة</span>
+                            {% else %}
+                                <span class="badge bg-success px-3 py-2 almarai-regular" style="font-size: 0.9rem;">مغلقة / تم الرد</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row mb-3 almarai-regular">
+                            <div class="col-sm-3 text-muted fw-bold">تاريخ الإنشاء:</div>
+                            <div class="col-sm-9">{{ ticket.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                        </div>
+                        <div class="row mb-4 almarai-regular">
+                            <div class="col-sm-3 text-muted fw-bold">تفاصيل المشكلة:</div>
+                            <div class="col-sm-9 text-break">{{ ticket.description }}</div>
+                        </div>
+                        
+                        <h6 class="text-success mb-3 border-top pt-3 almarai-bold"><i class="fas fa-reply me-2"></i> رد الدعم الفني:</h6>
+                        {% if ticket.admin_reply %}
+                            <div class="p-3 bg-white rounded shadow-sm" style="border-right: 4px solid #198754;">
+                                <p class="card-text text-break mb-0 almarai-regular" style="font-size: 1.05rem; line-height: 1.6;">
+                                    {{ ticket.admin_reply | replace('\n', '<br>') | safe }}
+                                </p>
+                            </div>
+                        {% else %}
+                            <div class="p-3 bg-white rounded shadow-sm" style="border-right: 4px solid #ffc107;">
+                                <p class="text-muted fst-italic mb-0 almarai-regular">لم يتم الرد على تذكرتك بعد. يرجى الانتظار، سيقوم فريق الدعم بمراجعة تذكرتك قريباً.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="text-center mt-5">
+                    <a href="{{ url_for('core.track_ticket') }}" class="btn btn-outline-custom almarai-bold">
+                        <i class="fas fa-search me-2"></i> بحث ببريد إلكتروني آخر
+                    </a>
+                </div>
+            {% else %}
+                <!-- نموذج البحث عن تذكرة -->
+                <form method="POST" action="{{ url_for('core.track_ticket') }}">
+                    <div class="mb-4">
+                        <label class="form-label almarai-bold" style="color: var(--primary-dark);">البريد الإلكتروني</label>
+                        <input type="email" class="form-control almarai-regular" name="email" required placeholder="البريد الإلكتروني المستخدم في التذكرة">
+                        <div class="form-text almarai-regular mt-2">أدخل بريدك الإلكتروني لعرض جميع التذاكر المرتبطة به.</div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-custom-red w-100 almarai-bold mb-4 fs-5">
+                        <i class="fas fa-search me-2"></i> الاستعلام عن التذكرة
+                    </button>
+                </form>
+                
+                <div class="text-center mt-3 almarai-regular">
+                    <a href="{{ url_for('core.support_ticket') }}" class="text-muted" style="text-decoration: underline;">أو قم بفتح تذكرة دعم فني جديدة من هنا</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

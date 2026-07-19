@@ -18,8 +18,8 @@ serial = URLSafeTimedSerializer('SecretKey!') #This supposed to be secret
 
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
-app.config['MAIL_USERNAME'] = 'temproryosama123@gmail.com' #This supposed to be secret
-app.config['MAIL_PASSWORD'] = 'lhje fnuq vxlp njua' #This supposed to be secret
+app.config['MAIL_USERNAME'] = 'xdij2023@gmail.com' #This supposed to be secret
+app.config['MAIL_PASSWORD'] = 'xxtp okgo dqwz nmrm' #This supposed to be secret
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 

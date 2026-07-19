@@ -7,9 +7,12 @@
 
 from flask import Blueprint  , render_template , redirect , request , session , flash, abort, url_for
 from services.job import *# noqa: F403
+from services.customer import *
 from services.skills import *# noqa: F403
 from services.company import *# noqa: F403
 from services.teams import *# noqa: F403
+from services.job_filters import City, JobType, Specialty
+from services.job_category import JobCategory
 
 from app import db
 
@@ -131,7 +134,13 @@ def job_list_get(page):
     if"session_customer" in session:
         customer_id = session['session_customer']
         application_count = Customers.get_number_of_job_applications_by_customer_id(customer_id)
-    return render_template("new_design/jobs.html", jobs=paginated_jobs,application_count = application_count)
+        
+    cities = City.get_active_cities()
+    job_types = JobType.get_active_job_types()
+    categories = JobCategory.get_active_categories()
+    specialties = Specialty.get_active_specialties()
+    
+    return render_template("new_design/jobs.html", jobs=paginated_jobs,application_count = application_count, cities=cities, job_types=job_types, categories=categories, specialties=specialties)
 
 @job.route('/read_job/<int:job_id>')
 def read_job(job_id):
@@ -344,5 +353,10 @@ def update_list(page):
     # Paginate the filtered jobs
     paginated_jobs = query.paginate(page=page, per_page=per_page, error_out=False)
 
+    cities = City.get_active_cities()
+    job_types = JobType.get_active_job_types()
+    categories = JobCategory.get_active_categories()
+    specialties = Specialty.get_active_specialties()
+
     # Render the template with the paginated jobs
-    return render_template('new_design/jobs.html', jobs=paginated_jobs)
+    return render_template('new_design/jobs.html', jobs=paginated_jobs, cities=cities, job_types=job_types, categories=categories, specialties=specialties)

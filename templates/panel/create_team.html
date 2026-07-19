@@ -1,208 +1,259 @@
-<!--
-==============================================================================
-الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
-الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
-المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
-==============================================================================
--->
 {% extends 'new_design/panel_base.html' %}
 {% block page_title %}انشاء مجموعة{% endblock %}
 {% block nav_create_team %}active{% endblock %}
 
+{% block extra_css %}
+<style>
+  .auth-card {
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+      padding: 40px;
+      border-top: 5px solid var(--primary-dark);
+      margin-bottom: 30px;
+  }
+
+  .form-control, .form-select {
+      border-radius: 10px;
+      padding: 12px 15px;
+      border: 1px solid #ced4da;
+      background-color: #f8f9fa;
+      font-family: 'Almarai', sans-serif;
+      text-align: right;
+  }
+
+  .form-control:focus, .form-select:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.25);
+  }
+
+  .btn-custom-red {
+      background-color: var(--accent-red);
+      color: white;
+      border-radius: 10px;
+      padding: 12px 30px;
+      font-weight: 700;
+      border: none;
+      transition: transform 0.3s, background-color 0.3s;
+  }
+
+  .btn-custom-red:hover {
+      background-color: #9e203b;
+      transform: translateY(-2px);
+      color: white;
+  }
+
+  .logo-upload-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      background-color: #f8f9fa;
+      border-radius: 15px;
+      border: 2px dashed #ced4da;
+      margin-bottom: 25px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+  }
+  
+  .logo-upload-container:hover {
+      border-color: var(--primary-light);
+      background-color: rgba(35, 46, 76, 0.02);
+  }
+  
+  .logo-icon-wrapper {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: rgba(35, 46, 76, 0.1);
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+  }
+  
+  .logo-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: 15px;
+      object-fit: cover;
+      display: none;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin-bottom: 15px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
-    <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">الوظائف /</span>  انشاء فريق </h4>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex align-items-center mb-4">
+        <h4 class="fw-bold m-0 text-primary-dark almarai-extrabold" style="color: var(--primary-dark);">
+            <i class="fas fa-users-cog me-2" style="color: var(--accent-yellow);"></i> المجموعات 
+            <span class="text-muted fw-light almarai-regular ms-2">/ إنشاء مجموعة (فريق)</span>
+        </h4>
+    </div>
 
-              <div class="row">
-                <form class="mt-4" method="POST" action="/create_team" enctype="multipart/form-data">
-
-     <!-- Form controls -->
-    
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          <!-- Form controls -->
-          <div class="col-md-9">
-            <div class="card mb-4">
-              <h5 class="card-header" style="color: var(--primary-dark);">إنشاء فريق</h5>
-              <div class="card-body">
-                <div class="mb-3">
-                  <label for="exampleFormControlInput1" class="form-label" style="color: var(--primary-dark);"> اسم الفريق <div style="color: red; font-size: 20px;">*</div></label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="exampleFormControlInput1"
-                    placeholder="اسم الفريق"
-                    name="team_name"
-                    required
-
-                  />
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert" style="border-radius: 10px;">
+                    {{ message|safe }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-                <div class="input-group" >
-                  <label class="input-group-text" for="inputGroupFile01"style="color: #000;">شعار الفريق</label>
-                  <input type="file" class="form-control" id="inputGroupFile01" name="new_image" 
-                  accept="image/png, image/jpeg"
-                  />
+    <div class="row justify-content-center">
+        <div class="col-xl-9">
+            <div class="auth-card">
+                <div class="text-center mb-4">
+                    <h4 class="almarai-bold" style="color: var(--primary-dark);">إنشاء فريق جديد</h4>
+                    <p class="text-muted almarai-regular">قم ببناء فريقك لتتعاونوا معاً في منصة فائدة</p>
                 </div>
-                <div>
-                  <label for="exampleFormControlTextarea1" class="form-label" style="color: var(--primary-dark);">حول الفريق <div style="color: red; font-size: 20px;">*</div> </label>
-                  <textarea name="team_about" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="من فضلك اكتب معلومات حول الفريق" required></textarea>
-                </div>
+                
+                <form method="POST" action="/create_team" enctype="multipart/form-data">
+                    
+                    <!-- Team Logo Upload -->
+                    <label for="inputGroupFile01" class="w-100">
+                        <div class="logo-upload-container text-center">
+                            <img src="" alt="Team Logo Preview" class="logo-preview" id="logoPreview"/>
+                            <div class="logo-icon-wrapper" id="logoIconWrapper">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <h6 class="almarai-bold mb-1" style="color: var(--primary-dark);">شعار الفريق</h6>
+                            <p class="text-muted almarai-regular fs-7 mb-0">اضغط هنا لرفع شعار الفريق (اختياري)</p>
+                            <input type="file" id="inputGroupFile01" name="new_image" accept="image/png, image/jpeg, image/jpg" hidden/>
+                        </div>
+                    </label>
 
-
-                <div>
-                  <label for="exampleFormControlTextarea1" class="form-label"style="color: var(--primary-dark);">انجازات الفريق</label>
-                  <textarea name="achievement" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="من فضلك تكلم عن انجازاتكم ك فريق"></textarea>
-                </div>
-               
-                <div class="mb-3">
-                  <label for="defaultInput" class="form-label"style="color: var(--primary-dark);">  التخصص العام <div style="color: red; font-size: 20px;">*</div></label>
-                  <select data-mdb-select-init class="form-select" name="general_specialization" required>
-
-                    <option name="general_specialization" value="">اختر</option>
-                    <option name="general_specialization" value="Undefined">غير محدد</option>
-                    <option name="general_specialization" value="محاسبة">محاسبة</option>
-                    <option name="general_specialization" value="مالية">مالية</option>
-                    <option name="general_specialization" value="موارد بشرية">موارد بشرية</option>
-                    <option name="general_specialization" value="تأمين">تأمين</option>
-                    <option name="general_specialization" value="تسويق">تسويق</option>
-                    <option name="general_specialization" value="إقتصاد">إقتصاد</option>
-                    <option name="general_specialization" value="علوم سياسية">علوم سياسية</option>
-                    <option name="general_specialization" value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
-                    <option name="general_specialization" value="إدارة أعمال">إدارة أعمال</option>
-                    <option name="general_specialization" value="إدارة البيع و التجزئة">إدارة البيع و التجزئة</option>
-                    <option name="general_specialization" value="إدارة سلسلة الإمداد">إدارة سلسلة الإمداد</option>
-                    <option name="general_specialization" value="هندسة البرمجيات">هندسة البرمجيات</option>
-                    <option name="general_specialization" value="هندسة تطبيقية">هندسة تطبيقية</option>
-                    <option name="general_specialization" value="هندسة مدنية">هندسة مدنية</option>
-                    <option name="general_specialization" value="هندسة معمارية">هندسة معمارية</option>
-                    <option name="general_specialization" value="هندسة صناعية">هندسة صناعية</option>
-                    <option name="general_specialization" value="هندسة كهربائية">هندسة كهربائية</option>
-                    <option name="general_specialization" value="هندسة ميكانيكية">هندسة ميكانيكية</option>
-                    <option name="general_specialization" value="هندسة الطيران والفضاء">هندسة الطيران والفضاء</option>
-                    <option name="general_specialization" value="هندسة التعدين">هندسة التعدين</option>
-                    <option name="general_specialization" value="هندسة نووية">هندسة نووية</option>
-                    <option name="general_specialization" value="هندسة بيئية">هندسة بيئية</option>
-                    <option name="general_specialization" value="هندسة كميائية">هندسة كميائية</option>
-                    <option name="general_specialization" value="هندسة حرارية">هندسة حرارية</option>
-                    <option name="general_specialization" value="هندسة الإنتاج">هندسة الإنتاج</option>
-                    <option name="general_specialization" value="هندسة البرتول">هندسة البرتول</option>
-                    <option name="general_specialization" value="علوم الحاسب">علوم الحاسب</option>
-                    <option name="general_specialization" value="نظم معلومات">نظم معلومات</option>
-                    <option name="general_specialization" value="الإعلان و الإتصال التسويقي">الإعلان و الإتصال التسويقي</option>
-                    <option name="general_specialization" value="إدارة الإعلانات">إدارة الإعلانات</option>
-                    <option name="general_specialization" value="تصميم إبتكاري">تصميم إبتكاري</option>
-                    <option name="general_specialization" value="النقل المائي - البحرية">النقل المائي - البحرية</option>
-                    <option name="general_specialization" value="الدراسات الإسلامية">الدراسات الإسلامية</option>
-                    <option name="general_specialization" value="تربية فنية">تربية فنية</option>
-                    <option name="general_specialization" value="خدمة مجتمعية">خدمة مجتمعية</option>
-                    <option name="general_specialization" value="التاريخ">التاريخ</option>
-                    <option name="general_specialization" value="الجغرافيا">الجغرافيا</option>
-                    <option name="general_specialization" value="علم المعلومات">علم المعلومات</option>
-                    <option name="general_specialization" value="إعلام">إعلام</option>
-                    <option name="general_specialization" value="مصمم جرافيك">مصمم جرافيك</option>
-                    <option name="general_specialization" value="علم نفس">علم نفس</option>
-                    <option name="general_specialization" value="العلاج الوظيفي">العلاج الوظيفي</option>
-                    <option name="general_specialization" value="إضطرابات السمع و النطق">إضطرابات السمع و النطق</option>
-                    <option name="general_specialization" value="التربية الخاصة">التربية الخاصة</option>
-                    <option name="general_specialization" value="الفيزياء">الفيزياء</option>
-                    <option name="general_specialization" value="الكيمياء">الكيمياء</option>
-                    <option name="general_specialization" value="الرياضيات">الرياضيات</option>
-                    <option name="general_specialization" value="الأحياء">الأحياء</option>
-                    <option name="general_specialization" value="علم الفلك">علم الفلك</option>
-                    <option name="general_specialization" value="الإحصاء">الإحصاء</option>
-                    <option name="general_specialization" value="الطب">الطب</option>
-                    <option name="general_specialization" value="الصيدلة">الصيدلة</option>
-                    <option name="general_specialization" value="طب الأسنان">طب الأسنان</option>
-                    <option name="general_specialization" value="التمريض">التمريض</option>
-                    <option name="general_specialization" value="العلاج الطبيعي">العلاج الطبيعي</option>
-                    <option name="general_specialization" value="سياحة">سياحة</option>
-                    <option name="general_specialization" value="اللغة العربية">اللغة العربية</option>
-                    <option name="general_specialization" value="قانون عام">قانون عام</option>
-                    <option name="general_specialization" value="قانون خاص">قانون خاص</option>
-                </select>                    </div>
-               
-
-
-                <div class="mb-3">
-                  <label for="exampleFormControlInput1" class="form-label" style="color: var(--primary-dark);">التخصص الفرعي </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="exampleFormControlInput1"
-                    placeholder="التخصص الفرعي"
-                    name="semi_special_program"
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="exampleFormControlInput1" class="form-label"style="color: var(--primary-dark);">التخصص الدقيق </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="exampleFormControlInput1"
-                    placeholder=" التخصص الدقيق"
-                    name="special_program"
-                  />
-                </div>
-                <div style="color: red; font-size: 20px;"> يجب ملئ الحقول ذات النجمة الحمراء</div>
-                <button type="submit" class="btn btn-primary me-2">انشاء</button>
-
-              </div>
+                    <!-- Team Details Form -->
+                    <div class="row g-4">
+                        <div class="col-md-12">
+                            <label for="team_name" class="form-label almarai-bold" style="color: var(--primary-dark);">اسم الفريق <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="team_name" name="team_name" placeholder="أدخل اسم الفريق..." required/>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label for="team_about" class="form-label almarai-bold" style="color: var(--primary-dark);">حول الفريق <span class="text-danger">*</span></label>
+                            <textarea name="team_about" class="form-control" id="team_about" rows="3" placeholder="اكتب نبذة مختصرة عن رؤية وأهداف الفريق..." required></textarea>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label for="achievement" class="form-label almarai-bold" style="color: var(--primary-dark);">إنجازات الفريق</label>
+                            <textarea name="achievement" class="form-control" id="achievement" rows="3" placeholder="اذكر إنجازات الفريق السابقة (إن وجدت)..."></textarea>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label for="general_specialization" class="form-label almarai-bold" style="color: var(--primary-dark);">التخصص العام للفريق <span class="text-danger">*</span></label>
+                            <select class="form-select" name="general_specialization" id="general_specialization" required>
+                                <option value="" disabled selected>-- اختر التخصص العام --</option>
+                                <option value="Undefined">غير محدد</option>
+                                <option value="محاسبة">محاسبة</option>
+                                <option value="مالية">مالية</option>
+                                <option value="موارد بشرية">موارد بشرية</option>
+                                <option value="تأمين">تأمين</option>
+                                <option value="تسويق">تسويق</option>
+                                <option value="إقتصاد">إقتصاد</option>
+                                <option value="علوم سياسية">علوم سياسية</option>
+                                <option value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
+                                <option value="إدارة أعمال">إدارة أعمال</option>
+                                <option value="إدارة البيع و التجزئة">إدارة البيع و التجزئة</option>
+                                <option value="إدارة سلسلة الإمداد">إدارة سلسلة الإمداد</option>
+                                <option value="هندسة البرمجيات">هندسة البرمجيات</option>
+                                <option value="هندسة تطبيقية">هندسة تطبيقية</option>
+                                <option value="هندسة مدنية">هندسة مدنية</option>
+                                <option value="هندسة معمارية">هندسة معمارية</option>
+                                <option value="هندسة صناعية">هندسة صناعية</option>
+                                <option value="هندسة كهربائية">هندسة كهربائية</option>
+                                <option value="هندسة ميكانيكية">هندسة ميكانيكية</option>
+                                <option value="هندسة الطيران والفضاء">هندسة الطيران والفضاء</option>
+                                <option value="هندسة التعدين">هندسة التعدين</option>
+                                <option value="هندسة نووية">هندسة نووية</option>
+                                <option value="هندسة بيئية">هندسة بيئية</option>
+                                <option value="هندسة كميائية">هندسة كميائية</option>
+                                <option value="هندسة حرارية">هندسة حرارية</option>
+                                <option value="هندسة الإنتاج">هندسة الإنتاج</option>
+                                <option value="هندسة البرتول">هندسة البرتول</option>
+                                <option value="علوم الحاسب">علوم الحاسب</option>
+                                <option value="نظم معلومات">نظم معلومات</option>
+                                <option value="الإعلان و الإتصال التسويقي">الإعلان و الإتصال التسويقي</option>
+                                <option value="إدارة الإعلانات">إدارة الإعلانات</option>
+                                <option value="تصميم إبتكاري">تصميم إبتكاري</option>
+                                <option value="النقل المائي - البحرية">النقل المائي - البحرية</option>
+                                <option value="الدراسات الإسلامية">الدراسات الإسلامية</option>
+                                <option value="تربية فنية">تربية فنية</option>
+                                <option value="خدمة مجتمعية">خدمة مجتمعية</option>
+                                <option value="التاريخ">التاريخ</option>
+                                <option value="الجغرافيا">الجغرافيا</option>
+                                <option value="علم المعلومات">علم المعلومات</option>
+                                <option value="إعلام">إعلام</option>
+                                <option value="مصمم جرافيك">مصمم جرافيك</option>
+                                <option value="علم نفس">علم نفس</option>
+                                <option value="العلاج الوظيفي">العلاج الوظيفي</option>
+                                <option value="إضطرابات السمع و النطق">إضطرابات السمع و النطق</option>
+                                <option value="التربية الخاصة">التربية الخاصة</option>
+                                <option value="الفيزياء">الفيزياء</option>
+                                <option value="الكيمياء">الكيمياء</option>
+                                <option value="الرياضيات">الرياضيات</option>
+                                <option value="الأحياء">الأحياء</option>
+                                <option value="علم الفلك">علم الفلك</option>
+                                <option value="الإحصاء">الإحصاء</option>
+                                <option value="الطب">الطب</option>
+                                <option value="الصيدلة">الصيدلة</option>
+                                <option value="طب الأسنان">طب الأسنان</option>
+                                <option value="التمريض">التمريض</option>
+                                <option value="العلاج الطبيعي">العلاج الطبيعي</option>
+                                <option value="سياحة">سياحة</option>
+                                <option value="اللغة العربية">اللغة العربية</option>
+                                <option value="قانون عام">قانون عام</option>
+                                <option value="قانون خاص">قانون خاص</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="semi_special_program" class="form-label almarai-bold" style="color: var(--primary-dark);">التخصص الفرعي</label>
+                            <input type="text" class="form-control" id="semi_special_program" name="semi_special_program" placeholder="مثال: ذكاء اصطناعي..."/>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="special_program" class="form-label almarai-bold" style="color: var(--primary-dark);">التخصص الدقيق</label>
+                            <input type="text" class="form-control" id="special_program" name="special_program" placeholder="تخصصكم الدقيق..."/>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4" style="border-color: #e9ecef;"/>
+                    
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                        <p class="text-danger almarai-regular mb-3 mb-md-0 fs-7"><i class="fas fa-info-circle me-1"></i> يرجى ملء جميع الحقول المميزة بنجمة (*)</p>
+                        <button type="submit" class="btn btn-custom-red almarai-bold w-100 w-md-auto fs-6">
+                            <i class="fas fa-plus-circle me-2"></i> إنشاء الفريق
+                        </button>
+                    </div>
+                </form>
             </div>
-          </div>
-
-</form>
-        
-            
-              </div>
-            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Team logo preview functionality
+  document.getElementById('inputGroupFile01').addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function(event) {
+              document.getElementById('logoPreview').src = event.target.result;
+              document.getElementById('logoPreview').style.display = 'block';
+              document.getElementById('logoIconWrapper').style.display = 'none';
+          }
+          reader.readAsDataURL(e.target.files[0]);
+      }
+  });
+</script>
 {% endblock %}

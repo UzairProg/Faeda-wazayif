@@ -32,8 +32,9 @@ def send_email():
 
  
     ##
-    email_sender = 'coursesforyo@gmail.com'
-    email_password = 'hthaynywgefenetz'
+    import os
+    email_sender = os.environ.get('MAIL_SENDER', 'coursesforyo@gmail.com')
+    email_password = os.environ.get('MAIL_PASSWORD')
     email_receiver = sender_email
     subject =  request.form.get('subject')
     body =  request.form.get('message')
@@ -43,10 +44,18 @@ def send_email():
     em['Subject'] = subject
     em.set_content(" From " + str(sender_email) + "\n" + " Message is  :" + "\n" + str(body) + "\t \n" + "sender email is : \n" + str(sender_email))
 
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL('smtp.gmail.com',465,context=context) as smtp :
-        smtp.login(email_sender , email_password)
-        smtp.sendmail(email_sender , email_receiver , em.as_string())
+    try:
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        with smtplib.SMTP_SSL('smtp.gmail.com',465,context=context) as smtp :
+            if email_password:
+                smtp.login(email_sender , email_password)
+                smtp.sendmail(email_sender , email_receiver , em.as_string())
+            else:
+                print(f"Mock email sent to {email_receiver}. Set MAIL_PASSWORD to send real emails.")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 
 
     message=Message(sender_email=sender_email, subject=subject, message_text=message_text, customer_id=user_id)

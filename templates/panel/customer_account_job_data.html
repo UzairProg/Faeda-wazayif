@@ -1,154 +1,185 @@
-<!--
-==============================================================================
-الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
-الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
-المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
-==============================================================================
--->
 {% extends 'new_design/panel_base.html' %}
 {% block title %}فائدة - إعدادات الحساب الوظيفية{% endblock %}
 {% block page_title %}فائدة - إعدادات الحساب الوظيفية{% endblock %}
+{% block nav_job_data %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+  .auth-card {
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+      padding: 40px;
+      border-top: 5px solid var(--primary-dark);
+      margin-bottom: 30px;
+  }
+
+  .form-control, .form-select {
+      border-radius: 10px;
+      padding: 12px 15px;
+      border: 1px solid #ced4da;
+      background-color: #f8f9fa;
+      font-family: 'Almarai', sans-serif;
+      text-align: right;
+  }
+
+  .form-control:focus, .form-select:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.25);
+  }
+
+  .btn-custom-red {
+      background-color: var(--accent-red);
+      color: white;
+      border-radius: 10px;
+      padding: 12px 30px;
+      font-weight: 700;
+      border: none;
+      transition: transform 0.3s, background-color 0.3s;
+  }
+
+  .btn-custom-red:hover {
+      background-color: #9e203b;
+      transform: translateY(-2px);
+      color: white;
+  }
+
+  .cv-upload-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 25px;
+      background-color: #f8f9fa;
+      border-radius: 15px;
+      border: 2px dashed #ced4da;
+      margin-bottom: 25px;
+      transition: all 0.3s ease;
+  }
+  
+  .cv-upload-container:hover {
+      border-color: var(--primary-light);
+      background-color: rgba(35, 46, 76, 0.02);
+  }
+  
+  .cv-icon-wrapper {
+      width: 70px;
+      height: 70px;
+      border-radius: 15px;
+      background-color: rgba(220, 53, 69, 0.1);
+      color: var(--accent-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
-    <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">إعدادات الحساب/</span> البيانات الوظيفية</h4>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex align-items-center mb-4">
+        <h4 class="fw-bold m-0 text-primary-dark almarai-extrabold" style="color: var(--primary-dark);">
+            <i class="fas fa-briefcase me-2" style="color: var(--accent-yellow);"></i> إعدادات الحساب 
+            <span class="text-muted fw-light almarai-regular ms-2">/ البيانات الوظيفية</span>
+        </h4>
+    </div>
 
-              <div class="row">
-                <div class="col-md-12">
-                
-                  <div class="card mb-4">
-                    <h5 class="card-header"style="color: var(--primary-dark);">بيانات الحساب</h5>
-                    <!-- Account -->
-                    <div class="card-body">
-                      <form  method="POST" action="/edit-profile/job_data" enctype="multipart/form-data" >
-
-                      <div class="d-flex align-items-start align-items-sm-center gap-4">
-                        {% if user.cv %}
-
-                        <img
-
-                        src="/static/pdf.jpeg"
-                          alt="user-avatar"
-                          class="d-block rounded"
-                          height="100"
-                          width="100"
-                          id="uploadedAvatar"
-                        />
-                    
-
-                        <button class="btn btn-outline-secondary account-image-reset mb-4">
-                          <a href="{{ url_for('static', filename='uploads/customers/cv/' + user.cv) }}" style="text-decoration: none; color: var(--primary-dark);" download>Download CV</a>
-                      </button>
-                      
-
-
-                      <div class="button-wrapper">
-                        <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
-                          <span class="d-none d-sm-block" style="color: var(--primary-dark);">تحديث السيرة الذاتية</span>
-                          <i class="bx bx-upload d-block d-sm-none"></i>
-                       
-                          <input 
-                          name="new_cv"
-                          id="upload"                              
-                          hidden
-                          value="{{ user.cv }}" 
-                          type="file" 
-                          accept="application/pdf"
-                          class="account-file-input"
-                          />
-
-                        </label>
-                   
-
-                        <p class="text-muted mb-0">Allowed PDF</p>
-                      </div>
-
-                        {% else %}
-                        <img
-
-                        src="/static/pdf.jpeg"
-
-                        alt="user-avatar"
-                        class="d-block rounded"
-                        height="100"
-                        width="100"
-                        id="uploadedAvatar"
-                      />
-
-                      <div class="button-wrapper">
-                        <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
-                          <span class="d-none d-sm-block"style="color: var(--primary-dark);">تحميل السيرة الذاتية</span>
-                          <i class="bx bx-upload d-block d-sm-none"></i>
-                       
-                          <input 
-                          name="new_cv"
-                          id="upload"                              
-                          hidden
-                          value="{{ user.cv }}" 
-                          type="file" 
-                          accept="application/pdf"
-                          class="account-file-input"
-                          required
-                          />
-
-                        </label>
-                   
-
-                        <p class="text-muted mb-0">Allowed PDF</p>
-                      </div>
-                        {% endif %}
-                      
-                      </div>
-                    </div>
-                    <hr class="my-0" />
-                    <div class="card-body">
-                        <div class="row">
-                          <div class="mb-3 col-md-6">
-                            <label for="firstName" class="form-label"style="color: var(--primary-dark);">سنوات الخبرة * </label>
-                            <select class="select2 form-select" type="text" required name="new_years_of_skills">
-                              {% if years_of_skills %}
-
-                              <option name="exp" value="{{years_of_skills}}">{{years_of_skills}}</option>
-                              {% endif %}
-
-                              <option name="exp" value="0">0</option>
-                              <option name="exp" value="1">1</option>
-                              <option name="exp" value="2">2</option>
-                              <option name="exp" value="3-4">3-4</option>
-                              <option name="exp" value="+5">+5</option>
-                          </select>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="lastName" class="form-label"style="color: var(--primary-dark);">مجال العمل المفضل * </label>
-                            <input type="text" required class="form-control" value="{{preferred_field_of_work}}" name="new_preferred_field_of_work">
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="university" class="form-label"style="color: var(--primary-dark);">طبيعة العمل * </label>
-                            <select class="form-select select2" required name="new_work_type">
-                              <option value="دوام كامل" {% if work_type == 'دوام كامل' %}selected{% endif %} >دوام كامل</option>
-                              <option value="دوام جزئي" {% if work_type == 'دوام جزئي' %}selected{% endif %} >دوام جزئي</option>
-                              <option value="تدريب تعاوني" {% if work_type == 'تدريب تعاوني' %}selected{% endif %} >تدريب تعاوني</option>
-                              <option value="تمهير" {% if work_type == 'تمهير' %}selected{% endif %} >تمهير</option>
-                              <option value="تدريب صيفي" {% if work_type == 'تدريب صيفي' %}selected{% endif %} >تدريب صيفي</option>
-                          </select>
-                          </div>
-                     
-                       
-
-                      
-                        </div>
-                        <div class="mt-2">
-                          <p style="color: red;">يرجى ملئ جميع الحقول المميزة بنجمة</p>
-                          <button type="submit" class="btn btn-primary me-2">حفظ التغييرات</button>
-                        </div>
-                      </form>
-                    </div>
-                    <!-- /Account -->
-                  </div>
-               
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert" style="border-radius: 10px;">
+                    {{ message|safe }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-              </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="auth-card">
+                <form method="POST" action="/edit-profile/job_data" enctype="multipart/form-data">
+                    
+                    <!-- CV Upload Section -->
+                    <div class="cv-upload-container">
+                        <div class="cv-icon-wrapper">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        
+                        <div class="flex-grow-1">
+                            <h5 class="almarai-bold mb-1" style="color: var(--primary-dark);">السيرة الذاتية (CV)</h5>
+                            <p class="text-muted mb-3 almarai-regular fs-7">الصيغة المدعومة: PDF فقط.</p>
+                            
+                            <div class="d-flex flex-wrap gap-2">
+                                <label for="upload" class="btn btn-outline-primary almarai-bold" style="border-radius: 8px;">
+                                    <i class="fas fa-upload me-2"></i> 
+                                    {% if user.cv %}تحديث السيرة الذاتية{% else %}رفع السيرة الذاتية{% endif %}
+                                    <input name="new_cv" id="upload" hidden type="file" accept="application/pdf" class="account-file-input" {% if not user.cv %}required{% endif %}/>
+                                </label>
+                                
+                                {% if user.cv %}
+                                <a href="{{ url_for('static', filename='uploads/customers/cv/' + user.cv) }}" class="btn btn-outline-secondary almarai-bold" style="border-radius: 8px;" download>
+                                    <i class="fas fa-download me-2"></i> تحميل السيرة الحالية
+                                </a>
+                                {% endif %}
+                            </div>
+                            <div id="file-name-display" class="mt-2 text-success almarai-regular fs-7" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Job Data Form -->
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label for="years_of_skills" class="form-label almarai-bold" style="color: var(--primary-dark);">سنوات الخبرة <span class="text-danger">*</span></label>
+                            <input class="form-control" type="number" id="years_of_skills" name="new_years_of_skills" value="{{user.years_of_skills}}" required placeholder="مثال: 3"/>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="preferred_field_of_work" class="form-label almarai-bold" style="color: var(--primary-dark);">مجال العمل المفضل <span class="text-danger">*</span></label>
+                            <input class="form-control" type="text" id="preferred_field_of_work" name="new_preferred_field_of_work" value="{{user.preferred_field_of_work}}" required placeholder="مثال: تقنية المعلومات، محاسبة..."/>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label for="work_type" class="form-label almarai-bold" style="color: var(--primary-dark);">طبيعة العمل المفضلة <span class="text-danger">*</span></label>
+                            <select class="form-select" name="new_work_type" id="work_type" required>
+                                {% if user.work_type %}
+                                    <option value="{{user.work_type}}" selected>{{user.work_type}}</option>
+                                {% endif %}
+                                <option value="دوام كامل">دوام كامل</option>
+                                <option value="دوام جزئي">دوام جزئي</option>
+                                <option value="العمل عن بعد">العمل عن بعد</option>
+                                <option value="عقد عمل">عقد عمل</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4" style="border-color: #e9ecef;"/>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="text-danger almarai-regular mb-0 fs-7"><i class="fas fa-info-circle me-1"></i> يرجى ملء جميع الحقول المميزة بنجمة (*)</p>
+                        <button type="submit" class="btn btn-custom-red almarai-bold fs-6">
+                            <i class="fas fa-save me-2"></i> حفظ التغييرات
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Display selected file name
+  document.getElementById('upload').addEventListener('change', function(e) {
+      var fileNameDisplay = document.getElementById('file-name-display');
+      if (e.target.files && e.target.files[0]) {
+          fileNameDisplay.style.display = 'block';
+          fileNameDisplay.innerHTML = '<i class="fas fa-check-circle me-1"></i> تم اختيار الملف: ' + e.target.files[0].name;
+      } else {
+          fileNameDisplay.style.display = 'none';
+      }
+  });
+</script>
 {% endblock %}

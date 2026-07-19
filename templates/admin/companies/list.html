@@ -25,7 +25,7 @@
                 <tbody>
                     {% for c in companies %}
                     <tr>
-                        <td>{{ c.id }}</td>
+                        <td>{{ ((pagination.page - 1) * pagination.per_page + loop.index) if pagination is defined and pagination else loop.index }}</td>
                         <td><strong>{{ c.company_arabic_name or c.company_english_name }}</strong></td>
                         <td>{{ c.company_email or '—' }}</td>
                         <td>{{ c.company_field or '—' }}</td>

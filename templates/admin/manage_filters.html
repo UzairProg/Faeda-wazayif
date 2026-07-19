@@ -1,0 +1,201 @@
+{% extends 'admin/admin_base.html' %}
+{% block title %}إدارة الفلاتر والتصنيفات{% endblock %}
+{% block page_title %}إدارة الفلاتر والتصنيفات{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="almarai-bold text-dark"><i class="fas fa-filter text-primary me-2"></i>إدارة الفلاتر والتصنيفات</h2>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-pills mb-4 gap-2" id="filtersTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link px-4 py-2 rounded-pill {% if active_tab == 'city' %}active{% endif %}" id="city-tab" data-bs-toggle="pill" data-bs-target="#city-content" type="button" role="tab" aria-selected="{{ 'true' if active_tab == 'city' else 'false' }}">
+                <i class="fas fa-map-marker-alt me-2"></i>المدن
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link px-4 py-2 rounded-pill {% if active_tab == 'job_type' %}active{% endif %}" id="job_type-tab" data-bs-toggle="pill" data-bs-target="#job_type-content" type="button" role="tab" aria-selected="{{ 'true' if active_tab == 'job_type' else 'false' }}">
+                <i class="fas fa-briefcase me-2"></i>أنواع الطلب
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link px-4 py-2 rounded-pill {% if active_tab == 'specialty' %}active{% endif %}" id="specialty-tab" data-bs-toggle="pill" data-bs-target="#specialty-content" type="button" role="tab" aria-selected="{{ 'true' if active_tab == 'specialty' else 'false' }}">
+                <i class="fas fa-tags me-2"></i>التخصصات
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="filtersTabContent">
+        
+        <!-- CITIES TAB -->
+        <div class="tab-pane fade {% if active_tab == 'city' %}show active{% endif %}" id="city-content" role="tabpanel" tabindex="0">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('admin.manage_filters') }}" class="mb-4 bg-light p-4 rounded-4">
+                        <input type="hidden" name="action" value="create">
+                        <input type="hidden" name="filter_type" value="city">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-9">
+                                <label class="form-label fw-bold">اسم المدينة (عربي)</label>
+                                <input type="text" name="name_ar" class="form-control form-control-lg" required placeholder="مثال: الرياض">
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill"><i class="fas fa-plus me-2"></i>إضافة مدينة</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>اسم المدينة</th>
+                                    <th>الحالة</th>
+                                    <th class="text-end">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for city in cities %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td class="fw-bold">{{ city.name_ar }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-{{ 'success' if city.is_active else 'secondary' }} fs-6">
+                                            {{ 'نشط' if city.is_active else 'غير نشط' }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <form method="POST" action="{{ url_for('admin.manage_filters') }}" class="d-inline">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="filter_type" value="city">
+                                            <input type="hidden" name="item_id" value="{{ city.id }}">
+                                            <button type="submit" class="btn btn-danger btn-sm rounded-circle shadow-sm" onclick="return confirm('هل أنت متأكد من حذف هذه المدينة؟');" title="حذف">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOB TYPES TAB -->
+        <div class="tab-pane fade {% if active_tab == 'job_type' %}show active{% endif %}" id="job_type-content" role="tabpanel" tabindex="0">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('admin.manage_filters') }}" class="mb-4 bg-light p-4 rounded-4">
+                        <input type="hidden" name="action" value="create">
+                        <input type="hidden" name="filter_type" value="job_type">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-9">
+                                <label class="form-label fw-bold">نوع الطلب (عربي)</label>
+                                <input type="text" name="name_ar" class="form-control form-control-lg" required placeholder="مثال: دوام كامل">
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill"><i class="fas fa-plus me-2"></i>إضافة نوع طلب</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>نوع الطلب</th>
+                                    <th>الحالة</th>
+                                    <th class="text-end">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for jt in job_types %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td class="fw-bold">{{ jt.name_ar }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-{{ 'success' if jt.is_active else 'secondary' }} fs-6">
+                                            {{ 'نشط' if jt.is_active else 'غير نشط' }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <form method="POST" action="{{ url_for('admin.manage_filters') }}" class="d-inline">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="filter_type" value="job_type">
+                                            <input type="hidden" name="item_id" value="{{ jt.id }}">
+                                            <button type="submit" class="btn btn-danger btn-sm rounded-circle shadow-sm" onclick="return confirm('هل أنت متأكد من حذف هذا النوع؟');" title="حذف">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SPECIALTIES TAB -->
+        <div class="tab-pane fade {% if active_tab == 'specialty' %}show active{% endif %}" id="specialty-content" role="tabpanel" tabindex="0">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('admin.manage_filters') }}" class="mb-4 bg-light p-4 rounded-4">
+                        <input type="hidden" name="action" value="create">
+                        <input type="hidden" name="filter_type" value="specialty">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-9">
+                                <label class="form-label fw-bold">اسم التخصص (عربي)</label>
+                                <input type="text" name="name_ar" class="form-control form-control-lg" required placeholder="مثال: هندسة برمجيات">
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill"><i class="fas fa-plus me-2"></i>إضافة تخصص</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>التخصص</th>
+                                    <th>الحالة</th>
+                                    <th class="text-end">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for spec in specialties %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td class="fw-bold">{{ spec.name_ar }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-{{ 'success' if spec.is_active else 'secondary' }} fs-6">
+                                            {{ 'نشط' if spec.is_active else 'غير نشط' }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <form method="POST" action="{{ url_for('admin.manage_filters') }}" class="d-inline">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="filter_type" value="specialty">
+                                            <input type="hidden" name="item_id" value="{{ spec.id }}">
+                                            <button type="submit" class="btn btn-danger btn-sm rounded-circle shadow-sm" onclick="return confirm('هل أنت متأكد من حذف هذا التخصص؟');" title="حذف">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,73 +1,188 @@
-<!--
-==============================================================================
-الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
-الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
-المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
-==============================================================================
--->
 {% extends 'new_design/panel_base.html' %}
 {% block title %}فائدة - لوحة التحكم{% endblock %}
-{% block page_title %}فائدة - لوحة التحكم{% endblock %}
+{% block page_title %}لوحة تحكم الأفراد{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        border-radius: 15px;
+        border: none;
+        transition: transform 0.3s;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    .text-primary-dark { color: var(--primary-dark); }
+    .bg-primary-light { background-color: rgba(35, 46, 76, 0.1); }
+    .bg-accent-red-light { background-color: rgba(220, 53, 69, 0.1); }
+    .bg-accent-yellow-light { background-color: rgba(240, 191, 86, 0.2); }
+    
+    .table-custom {
+        vertical-align: middle;
+    }
+    .table-custom thead th {
+        background-color: var(--primary-dark);
+        color: white;
+        border: none;
+        padding: 15px;
+    }
+    .table-custom tbody td {
+        padding: 15px;
+        border-bottom: 1px solid #f1f2f5;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
-    <div class="container-xxl flex-grow-1 container-p-y">
-                  
-                  
-      
-      <div class="row">
-        <div class="col-lg-8 mb-4 order-0">
-          <div class="card">
-            <div class="d-flex align-items-end row">
-              <div class="col-sm-7">
-                <div class="card-body">
-                  <h5 class="card-title " style="color: var(--primary-dark);">🎉 مرحبا بك في فائدة</h5>
-                  <p class="mb-4" style="color: var(--primary-dark);">خطط الى مستقبلك المشرق وانطلق معنا نحوالتطور</p>
-      
-                </div>
-              </div>
-              <div class="col-sm-5 text-center text-sm-left">
-                <div class="card-body pb-0 px-0 px-md-4">
-                  <img src="/static/panel/assets/img/illustrations/man-with-laptop-light.png" height="140" alt="View Badge User" data-app-dark-img="illustrations/man-with-laptop-dark.png" data-app-light-img="illustrations/man-with-laptop-light.png">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-4 order-1">
-          <div class="row">
-            <div class="col-lg-6 col-md-12 col-6 mb-4">
-              <div class="card">
-                <div class="card-body pb-0">
-                  <span class="d-block fw-medium mb-1"style="color: var(--primary-dark);">فائدة</span>
-                  <h3 class="card-title mb-1"style="color: var(--primary-dark);">تعني التميز</h3>
-                </div>
-                <div id="orderChart" class="mb-3"></div>
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-12 col-6 mb-4">
-              <div class="card">
-                <div class="card-body">
-                  <div class="card-title d-flex align-items-start justify-content-between">
-                    <div class="avatar flex-shrink-0">
-                      <img src="/static/panel/assets/img/icons/unicons/wallet-info.png" alt="Credit Card" class="rounded">
+<div class="container-xxl flex-grow-1 container-p-y">
+    
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card stat-card" style="background: linear-gradient(135deg, var(--primary-dark), #1a2238); color: white;">
+                <div class="card-body d-flex justify-content-between align-items-center p-4 p-md-5">
+                    <div>
+                        <h3 class="card-title text-white almarai-extrabold mb-2">مرحباً بك، {{ customer.fullname.split(' ')[0] if customer.fullname else 'يا صديق' }}! 👋</h3>
+                        <p class="mb-0 almarai-regular" style="color: #ced4da;">خطط لمستقبلك المشرق وانطلق معنا نحو التطور في منصة فائدة.</p>
+                        {% if not customer.cv %}
+                        <a href="{{ url_for('customer.get_edit_profile_personal_data') }}" class="btn btn-outline-light mt-4 almarai-bold" style="border-radius: 10px;">استكمل سيرتك الذاتية</a>
+                        {% endif %}
                     </div>
-                 
-                  </div>
-                  <span style="color: var(--primary-dark);">اسعارنا</span>
-                  <h3 class="card-title text-nowrap mb-3"style="color: var(--primary-dark);">لا تقبل المنافسة</h3>
+                    <div class="d-none d-sm-block">
+                        <img src="{{ url_for('static', filename='panel/assets/img/illustrations/man-with-laptop-light.png') }}" height="130" alt="Welcome Image">
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-        <!-- Total Revenue -->
-    
-        <!--/ Total Revenue -->
-    
-      </div>
-      
-      
+    </div>
+
+    <!-- Calculate Profile Completion -->
+    {% set profile_completion = 20 %}
+    {% if customer.cv %}{% set profile_completion = profile_completion + 30 %}{% endif %}
+    {% if customer.skills|length > 0 %}{% set profile_completion = profile_completion + 25 %}{% endif %}
+    {% if customer.education_statue %}{% set profile_completion = profile_completion + 25 %}{% endif %}
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <!-- Applications Stat -->
+        <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+            <div class="card stat-card h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-primary-light text-primary-dark me-3 ms-0 ms-md-3">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 text-muted almarai-bold">طلبات التوظيف</h6>
+                        <h3 class="mb-0 almarai-extrabold text-primary-dark">{{ customer.jobs|length }}</h3>
+                    </div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Profile Stat -->
+        <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-accent-yellow-light me-3 ms-0 ms-md-3" style="color: var(--accent-yellow);">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 text-muted almarai-bold">اكتمال الملف</h6>
+                            <h3 class="mb-0 almarai-extrabold text-primary-dark">{{ profile_completion }}%</h3>
+                        </div>
+                    </div>
+                    <div class="progress" style="height: 8px; border-radius: 10px;">
+                        <div class="progress-bar {% if profile_completion == 100 %}bg-success{% else %}bg-warning{% endif %}" role="progressbar" style="width: {{ profile_completion }}%;" aria-valuenow="{{ profile_completion }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Status Stat -->
+        <div class="col-lg-4 col-md-12">
+            <div class="card stat-card h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-accent-red-light text-danger me-3 ms-0 ms-md-3">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 text-muted almarai-bold">حالة الحساب</h6>
+                        {% if customer.status == 'active' %}
+                            <h3 class="mb-0 almarai-extrabold text-success">نشط</h3>
+                        {% elif customer.status == 'warned' %}
+                            <h3 class="mb-0 almarai-extrabold text-warning">تحذير ({{ customer.warnings_count }})</h3>
+                        {% else %}
+                            <h3 class="mb-0 almarai-extrabold text-danger">{{ customer.status }}</h3>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Records Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm" style="border-radius: 15px; border: none; overflow: hidden;">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 almarai-bold text-primary-dark"><i class="fas fa-history me-2"></i> أحدث طلبات التوظيف</h5>
+                    <a href="{{ url_for('customer.jobapplications_get') }}" class="btn btn-sm btn-outline-primary almarai-bold" style="border-radius: 8px;">عرض الكل</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover mb-0">
+                            <thead>
+                                <tr class="almarai-bold">
+                                    <th>المسمى الوظيفي</th>
+                                    <th>الشركة</th>
+                                    <th>المدينة</th>
+                                    <th>النوع</th>
+                                </tr>
+                            </thead>
+                            <tbody class="almarai-regular">
+                                {% if customer.jobs and customer.jobs|length > 0 %}
+                                    {% for job in customer.jobs[-5:]|reverse %}
+                                    <tr>
+                                        <td class="fw-bold text-primary-dark">{{ job.title }}</td>
+                                        <td>
+                                            {% if job.company %}
+                                                {{ job.company.company_arabic_name if job.company.company_arabic_name else job.company.company_english_name if job.company.company_english_name else 'اسم الشركة غير متوفر' }}
+                                            {% else %}
+                                                شركة غير محددة
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ job.town }}</td>
+                                        <td><span class="badge bg-light text-primary-dark border px-3 py-2" style="border-radius: 8px;">{{ job.job_type }}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5 text-muted">
+                                            <i class="fas fa-folder-open fs-1 mb-3 opacity-50"></i>
+                                            <p class="mb-0">لم تقم بالتقديم على أي وظائف بعد.</p>
+                                            <a href="{{ url_for('job.job_list_get') }}" class="btn btn-primary mt-3" style="border-radius: 10px;">ابحث عن وظيفة</a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

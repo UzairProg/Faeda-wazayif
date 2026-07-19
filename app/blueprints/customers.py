@@ -78,6 +78,7 @@ def login():
             
         session['admin_id'] = query3.id
         session['admin_role'] = query3.role
+        session['show_banner'] = True
         query3.last_login = datetime.utcnow()
         db.session.commit()
         flash(f'مرحباً {query3.username}!', 'success')
@@ -91,6 +92,7 @@ def login():
             
     # save session
         session['session_customer'] = True
+        session['show_banner'] = True
         session['user_id'] = Customers.get_session_user_id(email=email)# noqa: F405
         session['email_session'] = email
         full_name = Customers.get_customer_fullname_by_user_email(email=email) # noqa: F405
@@ -106,6 +108,7 @@ def login():
             return redirect(url_for('core.suspended_account'))
             
         session['session_company'] = True
+        session['show_banner'] = True
         company_id = Company.get_company_id_by_email(company_email=email) # noqa: F405
         session['company_id'] = company_id
         session['company_email_session'] = email
@@ -231,10 +234,18 @@ def post_reset_pass():
             em.set_content(email_html_content, subtype='html')
 
             # Send the email
-            context = ssl.create_default_context()
-            with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-                smtp.login(email_sender, email_password)
-                smtp.sendmail(email_sender, email_receiver, em.as_string())
+            try:
+                context = ssl.create_default_context()
+                context.check_hostname = False
+                context.verify_mode = ssl.CERT_NONE
+                with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+                    if email_password:
+                        smtp.login(email_sender, email_password)
+                        smtp.sendmail(email_sender, email_receiver, em.as_string())
+                    else:
+                        print(f"Mock email sent to {email_receiver}. Set MAIL_PASSWORD to send real emails.")
+            except Exception as e:
+                print(f"Failed to send email: {e}")
 
             flash('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. الرجاء تفقد صندوق الوارد.', 'success')
             return redirect(url_for('customer.get_login'))

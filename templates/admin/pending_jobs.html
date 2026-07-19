@@ -8,45 +8,60 @@
 <div class="admin-card">
     <div class="admin-card-body">
         {% if jobs %}
-        <div class="admin-table-wrapper">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>المسمى الوظيفي</th>
-                        <th>الشركة</th>
-                        <th>تاريخ النشر</th>
-                        <th>إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in jobs %}
-                    <tr>
-                        <td>{{ job.id }}</td>
-                        <td><strong>{{ job.title }}</strong></td>
-                        <td>{{ job.company_id }}</td> {# Ideally, we'd fetch company.company_name_on_faeda but let's just show ID or relation if possible #}
-                        <td>{{ job.date_posted.strftime('%Y-%m-%d') if job.date_posted else '' }}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <a href="{{ url_for('job.read_job', job_id=job.id) }}" class="btn-icon text-primary" title="عرض التفاصيل" target="_blank">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <form action="{{ url_for('admin.approve_job', id=job.id) }}" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn-icon" style="color: #28a745; border: none; background: none;" title="موافقة">
-                                        <i class="fas fa-check-circle"></i>
-                                    </button>
-                                </form>
-                                <form action="{{ url_for('admin.reject_job', id=job.id) }}" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn-icon" style="color: #dc3545; border: none; background: none;" title="رفض">
-                                        <i class="fas fa-times-circle"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="accordion" id="pendingJobsAccordion">
+            {% for company_name, company_jobs in jobs|groupby('company.company_english_name') %}
+            <div class="accordion-item" style="border: none; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow: hidden;">
+                <h2 class="accordion-header" id="heading{{ loop.index }}">
+                    <button class="accordion-button collapsed almarai-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}" style="background-color: white; color: var(--primary-dark); padding: 20px;">
+                        <i class="fas fa-building ms-1 me-3" style="color: var(--accent-red);"></i> 
+                        {{ company_name }} 
+                        <span class="badge ms-4 rounded-pill" style="background-color: var(--accent-yellow); color: var(--primary-dark);">{{ company_jobs|length }} وظائف</span>
+                    </button>
+                </h2>
+                <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#pendingJobsAccordion">
+                    <div class="accordion-body" style="padding: 0; background-color: #fcfcfc;">
+                        <div class="admin-table-wrapper" style="margin: 0; box-shadow: none;">
+                            <table class="admin-table m-0" style="border: none;">
+                                <thead style="background-color: rgba(0,0,0,0.02);">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>المسمى الوظيفي</th>
+                                        <th>تاريخ النشر</th>
+                                        <th>إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for job in company_jobs %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td><strong>{{ job.title }}</strong></td>
+                                        <td>{{ job.date_posted.strftime('%Y-%m-%d') if job.date_posted else '' }}</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <a href="{{ url_for('job.read_job', job_id=job.id) }}" class="btn-icon text-primary" title="عرض التفاصيل" target="_blank">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <form action="{{ url_for('admin.approve_job', id=job.id) }}" method="POST" style="display: inline;">
+                                                    <button type="submit" class="btn-icon" style="color: #28a745; border: none; background: none;" title="موافقة">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </button>
+                                                </form>
+                                                <form action="{{ url_for('admin.reject_job', id=job.id) }}" method="POST" style="display: inline;">
+                                                    <button type="submit" class="btn-icon" style="color: #dc3545; border: none; background: none;" title="رفض">
+                                                        <i class="fas fa-times-circle"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
         {% else %}
         <div class="admin-empty-state">

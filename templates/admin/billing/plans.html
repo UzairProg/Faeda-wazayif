@@ -15,7 +15,7 @@
                 <tbody>
                     {% for plan in plans %}
                     <tr>
-                        <td>{{ plan.id }}</td>
+                        <td>{{ ((pagination.page - 1) * pagination.per_page + loop.index) if pagination is defined and pagination else loop.index }}</td>
                         <td><strong>{{ plan.name_ar }}</strong><br><span style="font-size:0.78rem;color:var(--admin-text-muted)">{{ plan.name_en }}</span></td>
                         <td style="font-weight:800;color:var(--admin-accent)">{{ "%.0f"|format(plan.price) }} {{ plan.currency }}</td>
                         <td>{{ plan.billing_cycle_label }}</td>

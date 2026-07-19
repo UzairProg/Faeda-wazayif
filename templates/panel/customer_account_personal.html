@@ -1,200 +1,218 @@
-<!--
-==============================================================================
-الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
-الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
-المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
-==============================================================================
--->
 {% extends 'new_design/panel_base.html' %}
 {% block title %}فائدة - بيانات الحساب الشخصية{% endblock %}
 {% block page_title %}فائدة - بيانات الحساب الشخصية{% endblock %}
+{% block nav_personal %}active{% endblock %}
 
-{% block content %}
+{% block extra_css %}
 <style>
-  /* Match the React phone input to the Sneat theme .form-control styling */
+  /* Match the React phone input to the new theme */
   #react-phone-input-root input {
       display: block !important;
       width: 100% !important;
-      height: 39px !important;
-      font-size: 0.9375rem !important;
-      font-weight: 400 !important;
-      line-height: 1.53 !important;
-      color: #697a8d !important;
-      background-color: #fff !important;
-      background-clip: padding-box !important;
-      border: 1px solid #d9dee3 !important;
-      border-radius: 0.375rem !important;
-      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
-      padding-right: 15px !important; /* For Arabic/RTL text alignment */
+      height: 48px !important;
+      font-size: 1rem !important;
+      font-family: 'Almarai', sans-serif !important;
+      color: var(--primary-dark) !important;
+      background-color: #f8f9fa !important;
+      border: 1px solid #ced4da !important;
+      border-radius: 10px !important;
+      transition: all 0.3s ease !important;
+      padding-right: 15px !important;
   }
   
-  /* Target the country code box (select, button, or combobox) to match height */
   #react-phone-input-root select,
   #react-phone-input-root button,
   #react-phone-input-root [role="combobox"],
   #react-phone-input-root [role="button"],
   #react-phone-input-root .flag-dropdown {
-      height: 39px !important;
-      min-height: 39px !important;
-      border: 1px solid #d9dee3 !important;
-      border-radius: 0.375rem !important;
-      background-color: #fff !important;
+      height: 48px !important;
+      min-height: 48px !important;
+      border: 1px solid #ced4da !important;
+      border-radius: 10px !important;
+      background-color: #f8f9fa !important;
   }
 
-  /* Ensure the text is LTR and properly aligned */
   #react-phone-input-root input {
       direction: ltr !important; 
       text-align: left !important;
       flex: 1 1 auto !important;
   }
 
-  /* If it uses react-tel-input internally, preserve its padding */
   #react-phone-input-root .react-tel-input input {
       padding-left: 48px !important; 
   }
 
   #react-phone-input-root input:focus {
-      border-color: #696cff !important;
+      border-color: var(--primary-light) !important;
       outline: 0 !important;
-      box-shadow: 0 0 0.25rem 0.05rem rgba(105, 108, 255, 0.1) !important;
+      box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.25) !important;
+  }
+
+  .auth-card {
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+      padding: 40px;
+      border-top: 5px solid var(--primary-dark);
+      margin-bottom: 30px;
+  }
+
+  .form-control, .form-select {
+      border-radius: 10px;
+      padding: 12px 15px;
+      border: 1px solid #ced4da;
+      background-color: #f8f9fa;
+      font-family: 'Almarai', sans-serif;
+      text-align: right;
+  }
+
+  .form-control:focus, .form-select:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.25);
+  }
+
+  .btn-custom-red {
+      background-color: var(--accent-red);
+      color: white;
+      border-radius: 10px;
+      padding: 12px 30px;
+      font-weight: 700;
+      border: none;
+      transition: transform 0.3s, background-color 0.3s;
+  }
+
+  .btn-custom-red:hover {
+      background-color: #9e203b;
+      transform: translateY(-2px);
+      color: white;
+  }
+
+  .avatar-upload-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-radius: 15px;
+      border: 1px dashed #ced4da;
+      margin-bottom: 25px;
+  }
+  
+  .avatar-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border: 3px solid white;
   }
 </style>
-<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
-    <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">إعدادات الحساب/</span> البيانات الشخصية</h4>
+{% endblock %}
 
-              <div class="row">
-                <div class="col-md-12">
-                 
-                  <div class="card mb-4">
-                    <h5 class="card-header"style="color: var(--primary-dark);">بيانات الحساب الشخصية</h5>
-                    <!-- Account -->
-                    <div class="card-body">
-                      <form  method="POST" action="/edit-profile/personal_data" enctype="multipart/form-data">
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex align-items-center mb-4">
+        <h4 class="fw-bold m-0 text-primary-dark almarai-extrabold" style="color: var(--primary-dark);">
+            <i class="fas fa-user-cog me-2" style="color: var(--accent-yellow);"></i> إعدادات الحساب 
+            <span class="text-muted fw-light almarai-regular ms-2">/ البيانات الشخصية</span>
+        </h4>
+    </div>
 
-                      <div class="d-flex align-items-start align-items-sm-center gap-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="auth-card">
+                <form method="POST" action="/edit-profile/personal_data" enctype="multipart/form-data">
+                    
+                    <!-- Avatar Upload Section -->
+                    <div class="avatar-upload-container">
                         {% if user.img %}
-
-                        <img
-
-                        src="/static/uploads/customers/images/{{user.img}}"
-                          alt="user-avatar"
-                          class="d-block rounded"
-                          height="100"
-                          width="100"
-                          id="uploadedAvatar"
-                        />
+                            <img src="/static/uploads/customers/images/{{user.img}}" alt="user-avatar" class="avatar-preview" id="uploadedAvatar"/>
                         {% else %}
-                        <img
-
-                        src="/static/no_image.jpg"
-
-                        alt="user-avatar"
-                        class="d-block rounded"
-                        height="100"
-                        width="100"
-                        id="uploadedAvatar"
-                      />
+                            <img src="/static/no_image.jpg" alt="user-avatar" class="avatar-preview" id="uploadedAvatar"/>
                         {% endif %}
-
-                        <div class="button-wrapper">
-                          <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
-                            <span class="d-none d-sm-block" style="color: var(--primary-dark);">تحميل صورة شخصية</span>
-                            <i class="bx bx-upload d-block d-sm-none"></i>
-                            <input
-                              type="file"
-                              id="upload"
-                              class="account-file-input"
-                              hidden
-                              accept="image/png, image/jpeg, image/jpg"
-                              name="new_image"
-                            />
-                          </label>
-                  
-
-                          <p class="text-muted mb-0">Allowed JPG, JPEG or PNG</p>
+                        
+                        <div class="flex-grow-1">
+                            <h5 class="almarai-bold" style="color: var(--primary-dark);">الصورة الشخصية</h5>
+                            <label for="upload" class="btn btn-outline-primary almarai-bold mb-2" style="border-radius: 8px;">
+                                <i class="fas fa-upload me-2"></i> تحميل صورة جديدة
+                                <input type="file" id="upload" class="account-file-input" hidden accept="image/png, image/jpeg, image/jpg" name="new_image"/>
+                            </label>
+                            <p class="text-muted mb-0 almarai-regular fs-7">الصيغ المدعومة: JPG, JPEG أو PNG.</p>
                         </div>
-                      </div>
                     </div>
-                    <hr class="my-0" />
-                    <div class="card-body">
-                        <div class="row">
-                         
-                          <div class="mb-3 col-md-6">
-                            <label for="lastName" class="form-label" style="color: var(--primary-dark);">اسم بالكامل *</label>
-                            <input class="form-control" type="text" name="name" id="lastName" value="{{user.fullname}}"/>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="email" class="form-label" style="color: var(--primary-dark);">* الإيميل</label>
-                            <input
 
-                              class="form-control"
-                              type="text"
-                              id="email"
-                              name="email"
-                              placeholder="example@example.com"
-                              value="{{user.email}}"
-                              required
-                              disabled
-                              />
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="language" class="form-label" style="color: var(--primary-dark);">النوع * </label>
-                            <select id="language" class="select2 form-select" name="new_sex" required>
-                              {% if user.sex%}
-                              <option value="{{user.sex}}">{{user.sex}}</option>
-                              {%endif%}
-                              <option value="">اختر النوع</option>
-                              <option value="ذكر">ذكر</option>
-                              <option value="انثى">انثى</option>
-
+                    <!-- Personal Information Form -->
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label for="lastName" class="form-label almarai-bold" style="color: var(--primary-dark);">الاسم بالكامل <span class="text-danger">*</span></label>
+                            <input class="form-control" type="text" name="name" id="lastName" value="{{user.fullname}}" required/>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="email" class="form-label almarai-bold" style="color: var(--primary-dark);">البريد الإلكتروني <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+                                <input class="form-control border-start-0 ps-0" type="email" id="email" name="email" value="{{user.email}}" required disabled style="background-color: #e9ecef;"/>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="language" class="form-label almarai-bold" style="color: var(--primary-dark);">النوع <span class="text-danger">*</span></label>
+                            <select id="language" class="form-select" name="new_sex" required>
+                                {% if user.sex %}
+                                <option value="{{user.sex}}" selected>{{user.sex}}</option>
+                                {% endif %}
+                                <option value="">اختر النوع</option>
+                                <option value="ذكر">ذكر</option>
+                                <option value="انثى">انثى</option>
                             </select>
-                          </div>
-                          <div class="mb-3 col-md-6" >
-                            <label class="form-label" for="phoneNumber" style="color: var(--primary-dark);">رقم الهاتف * </label>
+                        </div>
+                        
+                        <div class="col-md-6" dir="ltr">
+                            <label class="form-label almarai-bold w-100 text-end" for="phoneNumber" style="color: var(--primary-dark);">رقم الهاتف <span class="text-danger">*</span></label>
                             <div id="react-phone-input-root" data-initial-value="{{user.mobile}}"></div>
                             <!-- Hidden input to store the phone number for form submission -->
                             <input type="hidden" name="phoneNumber" id="hiddenPhoneNumber" value="{{user.mobile}}">
-                          </div>
-                     
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="country" style="color: var(--primary-dark);">الدولة * </label>
-                            <select id="country" onchange="populateCities()" class="select2 form-select" name="country" required >
-
-                              {% if user.country %}
-                              <option value="{{user.country}}" selected>{{user.country}}</option>
-                              {% else %}
-                              <option value="المملكة العربية السعودية" selected>المملكة العربية السعودية</option>
-                              {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold" for="country" style="color: var(--primary-dark);">الدولة <span class="text-danger">*</span></label>
+                            <select id="country" onchange="populateCities()" class="form-select" name="country" required>
+                                {% if user.country %}
+                                <option value="{{user.country}}" selected>{{user.country}}</option>
+                                {% else %}
+                                <option value="المملكة العربية السعودية" selected>المملكة العربية السعودية</option>
+                                {% endif %}
                             </select>
-                          </div>
-
-                          <div class="mb-3 col-md-6">
-                            <label for="state" class="form-label" style="color: var(--primary-dark);">المدينة * </label>
-                            <select  class="select2 form-select" name="state" id="city" required  >
-                              {% if user.government%}
-                              <option value="{{user.government}}">{{user.government}}</option>
-                              {%endif%}
-                                     </select>                          </div>
-                          
-                          <div class="mb-3 col-md-12">
-                            <label for="address" class="form-label"style="color: var(--primary-dark);">وصف مختصر</label>
-                            <textarea class="form-control" name="about" id="" cols="10" rows="5">{{user.about}}</textarea>
-                          </div>
-                      
                         </div>
-                        <div class="mt-2">
-                          <p style="color: red;"> يرجى ملئ جميع الحقول المميزة بنجمة </p>
-                          <button type="submit" class="btn btn-primary me-2">حفظ التغييرات</button>
+                        
+                        <div class="col-md-6">
+                            <label for="state" class="form-label almarai-bold" style="color: var(--primary-dark);">المدينة <span class="text-danger">*</span></label>
+                            <select class="form-select" name="state" id="city" required>
+                                {% if user.government %}
+                                <option value="{{user.government}}" selected>{{user.government}}</option>
+                                {% endif %}
+                            </select>
                         </div>
-                      </form>
+                        
+                        <div class="col-12">
+                            <label for="address" class="form-label almarai-bold" style="color: var(--primary-dark);">وصف مختصر (نبذة عنك)</label>
+                            <textarea class="form-control" name="about" id="address" rows="4" placeholder="اكتب نبذة مختصرة عنك...">{{user.about}}</textarea>
+                        </div>
                     </div>
-                    <!-- /Account -->
-                  </div>
-                  
-                </div>
-              </div>
+                    
+                    <hr class="my-4" style="border-color: #e9ecef;"/>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="text-danger almarai-regular mb-0 fs-7"><i class="fas fa-info-circle me-1"></i> يرجى ملء جميع الحقول المميزة بنجمة (*)</p>
+                        <button type="submit" class="btn btn-custom-red almarai-bold fs-6">
+                            <i class="fas fa-save me-2"></i> حفظ التغييرات
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -203,6 +221,17 @@
 <script type="module" src="{{ url_for('static', filename='react/assets/index.js') }}"></script>
 <script src="{{ url_for('static', filename='API/ar_country.js') }}"></script>
 <script>
+  // Image preview functionality
+  document.getElementById('upload').addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function(event) {
+              document.getElementById('uploadedAvatar').src = event.target.result;
+          }
+          reader.readAsDataURL(e.target.files[0]);
+      }
+  });
+
   // Capture the React phone input value right before form submission
   document.querySelector('form').addEventListener('submit', function() {
     var reactInput = document.querySelector('#react-phone-input-root input');

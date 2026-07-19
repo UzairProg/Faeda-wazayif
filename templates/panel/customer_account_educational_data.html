@@ -1,168 +1,168 @@
-<!--
-==============================================================================
-الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
-الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
-المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
-==============================================================================
--->
 {% extends 'new_design/panel_base.html' %}
 {% block title %}فائدة - اعدادات الحساب التعليمية{% endblock %}
 {% block page_title %}فائدة - اعدادات الحساب التعليمية{% endblock %}
+{% block nav_edu %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+  .auth-card {
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+      padding: 40px;
+      border-top: 5px solid var(--primary-dark);
+      margin-bottom: 30px;
+  }
+
+  .form-control, .form-select {
+      border-radius: 10px;
+      padding: 12px 15px;
+      border: 1px solid #ced4da;
+      background-color: #f8f9fa;
+      font-family: 'Almarai', sans-serif;
+      text-align: right;
+  }
+
+  .form-control:focus, .form-select:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.25);
+  }
+
+  .btn-custom-red {
+      background-color: var(--accent-red);
+      color: white;
+      border-radius: 10px;
+      padding: 12px 30px;
+      font-weight: 700;
+      border: none;
+      transition: transform 0.3s, background-color 0.3s;
+  }
+
+  .btn-custom-red:hover {
+      background-color: #9e203b;
+      transform: translateY(-2px);
+      color: white;
+  }
+
+  .avatar-display-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-radius: 15px;
+      border: 1px solid #ced4da;
+      margin-bottom: 25px;
+  }
+  
+  .avatar-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border: 3px solid white;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
-    <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class=" fw-light">إعدادات الحساب /</span> البيانات التعليمية</h4>
-              {% for message in get_flashed_messages() %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex align-items-center mb-4">
+        <h4 class="fw-bold m-0 text-primary-dark almarai-extrabold" style="color: var(--primary-dark);">
+            <i class="fas fa-graduation-cap me-2" style="color: var(--accent-yellow);"></i> إعدادات الحساب 
+            <span class="text-muted fw-light almarai-regular ms-2">/ البيانات التعليمية</span>
+        </h4>
+    </div>
 
-              <style>
-                .flash-message {
-                  background-color: #372b70;
-                  color: var(--primary-dark)fff;
-                  padding: 15px;
-                  border-radius: 10px;
-                  border: 2px solid #4a3f8a; /* Amazing border color */
-                  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                  opacity: 1;
-                  transition: opacity 0.5s ease-in-out;
-                }
-              
-                .fadeOut {
-                  opacity: 0;
-                }
-              </style>
-              
-              <div class="flash-message" role="alert">
-                {{ message|safe }}
-              </div>
-              
-              <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                  var flashMessage = document.querySelector('.flash-message');
-              
-                  setTimeout(function () {
-                    flashMessage.classList.add('fadeOut');
-                    setTimeout(function () {
-                      flashMessage.parentNode.removeChild(flashMessage);
-                    }, 500); // 500 milliseconds for fade-out animation
-                  }, 5000); // 5000 milliseconds = 5 seconds
-                });
-              </script>
-              
-              {% endfor %}
-              <div class="row">
-                <div class="col-md-12">
-                  
-                  <div class="card mb-4">
-                    <h5 class="card-header"style="color: var(--primary-dark);">بيانات الحساب التعليمية</h5>
-                    <!-- Account -->
-                    <div class="card-body">
-                      <div class="d-flex align-items-start align-items-sm-center gap-4">
-                        {% if user.img %}
-
-                        <img
-
-                        src="/static/uploads/customers/images/{{user.img}}"
-                          alt="user-avatar"
-                          class="d-block rounded"
-                          height="100"
-                          width="100"
-                          id="uploadedAvatar"
-                        />
-                        {% else %}
-                        <img
-
-                        src="/static/no_image.jpg"
-
-                        alt="user-avatar"
-                        class="d-block rounded"
-                        height="100"
-                        width="100"
-                        id="uploadedAvatar"
-                      />
-                        {% endif %}
-                      
-                      </div>
-                    </div>
-                    <hr class="my-0" />
-                    <div class="card-body">
-                      <form  method="POST" action="/edit-profile/educational_data">
-                        <div class="row">
-                          <div class="mb-3 col-md-6">
-                            <label for="firstName" class="form-label"style="color: var(--primary-dark);">الحالة التعليمية * </label>
-                            <select  class="select2 form-select" name="new_education_statue" required>
-                              {% if user.education_statue %}
-
-                              <option value="{{education_statue}}">{{education_statue}}</option>
-
-                              {% endif %}
-                         
-                              <option value="طالب">طالب</option>
-                              <option value="متخرج">متخرج</option>
-                              <option value="موظف">موظف</option>
-
-                            </select>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="lastName" class="form-label" style="color: var(--primary-dark);">المؤهل العلمي * </label>
-                            <select class="select2 form-select" required type="text" name="new_educational_qualification">
-                              {% if user.educational_qualification %}
-
-                              
-                                                       <option name="education" value="{{educational_qualification}}" >{{educational_qualification}} </option>
-
-                              {% endif %}
-                              <option name="education" value="المرحلة الثانوية">المرحلة الثانوية</option>
-                              <option name="education" value="دبلوم">دبلوم</option>
-                              <option name="education" value="بكالوريوس">بكالوريوس</option>
-                              <option name="education" value="ماجستير">ماجستير</option>
-                              <option name="education" value="دكتوراه">دكتوراه</option>
-                          </select>                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="university" class="form-label" style="color: var(--primary-dark);">الجامعة * </label>
-                            <input
-                              class="form-control"
-                              type="text"
-                              id="email"
-                              name="new_university"
-                              value="{{university}}"
-                              required
-                            />
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="language" class="form-label" style="color: var(--primary-dark);">التخصص * </label>
-                            
-                            <input type="text" required value= "{{department_university}}" name="new_department_university" class="form-control">
-
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="phoneNumber" style="color: var(--primary-dark);">تاريخ التخرج  * </label>
-                            <div class="input-group input-group-merge">
-                              <input class="form-control" required type="date" name="new_graduation_date" value="{{ user.graduation_date }}"  autocomplete="on"/>
-
-                            </div>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="state" class="form-label" style="color: var(--primary-dark);">التقدير * </label>
-                            <input id="gpa" value="{{gpa}}" required placeholder="0.00" type="number" name="new_gpa" max="5" step=".01" class="form-control">
-
-                          </div>
-                       
-
-                      
-                        </div>
-                        <div class="mt-2">
-                          <p style="color: red;"> يرجى ملئ الحقول المميزة بنجمة </p>
-                          <button type="submit" class="btn btn-primary me-2">حفظ التغييرات</button>
-                        </div>
-                      </form>
-                    </div>
-                    <!-- /Account -->
-                  </div>
-               
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert" style="border-radius: 10px;">
+                    {{ message|safe }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-              </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="auth-card">
+                <!-- Avatar Display -->
+                <div class="avatar-display-container">
+                    {% if user.img %}
+                        <img src="/static/uploads/customers/images/{{user.img}}" alt="user-avatar" class="avatar-preview"/>
+                    {% else %}
+                        <img src="/static/no_image.jpg" alt="user-avatar" class="avatar-preview"/>
+                    {% endif %}
+                    <div>
+                        <h5 class="almarai-bold mb-1" style="color: var(--primary-dark);">بيانات الحساب التعليمية</h5>
+                        <p class="text-muted mb-0 almarai-regular fs-7">قم بتحديث مؤهلاتك العلمية لتعزيز فرصك الوظيفية.</p>
+                    </div>
+                </div>
+
+                <form method="POST" action="/edit-profile/educational_data">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label for="education_statue" class="form-label almarai-bold" style="color: var(--primary-dark);">الحالة التعليمية <span class="text-danger">*</span></label>
+                            <select class="form-select" name="new_education_statue" id="education_statue" required>
+                                {% if user.education_statue %}
+                                    <option value="{{user.education_statue}}" selected>{{user.education_statue}}</option>
+                                {% endif %}
+                                <option value="طالب">طالب</option>
+                                <option value="متخرج">متخرج</option>
+                                <option value="موظف">موظف</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="educational_qualification" class="form-label almarai-bold" style="color: var(--primary-dark);">المؤهل العلمي <span class="text-danger">*</span></label>
+                            <select class="form-select" name="new_educational_qualification" id="educational_qualification" required>
+                                {% if user.educational_qualification %}
+                                    <option value="{{user.educational_qualification}}" selected>{{user.educational_qualification}}</option>
+                                {% endif %}
+                                <option value="الثانوية">الثانوية</option>
+                                <option value="دبلوم">دبلوم</option>
+                                <option value="بكالوريوس">بكالوريوس</option>
+                                <option value="ماجستير">ماجستير</option>
+                                <option value="دكتوراه">دكتوراه</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="university" class="form-label almarai-bold" style="color: var(--primary-dark);">الجامعة <span class="text-danger">*</span></label>
+                            <input class="form-control" type="text" id="university" name="new_university" value="{{user.university}}" required placeholder="اسم الجامعة..."/>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="department_university" class="form-label almarai-bold" style="color: var(--primary-dark);">التخصص <span class="text-danger">*</span></label>
+                            <input class="form-control" type="text" id="department_university" name="new_department_university" value="{{user.department_university}}" required placeholder="تخصصك الدقيق..."/>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="graduation_date" class="form-label almarai-bold" style="color: var(--primary-dark);">تاريخ التخرج <span class="text-danger">*</span></label>
+                            <input class="form-control" type="date" id="graduation_date" name="new_graduation_date" value="{{user.graduation_date}}" required/>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="gpa" class="form-label almarai-bold" style="color: var(--primary-dark);">التقدير / المعدل <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="gpa" name="new_gpa" value="{{user.gpa}}" required placeholder="مثال: 4.5 أو ممتاز"/>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4" style="border-color: #e9ecef;"/>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="text-danger almarai-regular mb-0 fs-7"><i class="fas fa-info-circle me-1"></i> يرجى ملء جميع الحقول المميزة بنجمة (*)</p>
+                        <button type="submit" class="btn btn-custom-red almarai-bold fs-6">
+                            <i class="fas fa-save me-2"></i> حفظ التغييرات
+                        </button>
+                    </div>
+                </form>
             </div>
-            <!-- / Content -->
+        </div>
+    </div>
 </div>
 {% endblock %}

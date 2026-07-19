@@ -1,50 +1,77 @@
 {% extends 'new_design/base.html' %}
-{% block title %}فتح تذكرة دعم فني | فائدة{% endblock %}
-{% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm" style="border-radius: 15px; overflow: hidden;">
-                <div class="card-header bg-primary text-white text-center py-4">
-                    <h3 class="mb-0">فتح تذكرة دعم فني</h3>
-                </div>
-                <div class="card-body p-4 p-md-5">
-                    
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            {% for category, message in messages %}
-                                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show">
-                                    {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
+{% block title %}فتح تذكرة دعم فني | منصة فائدة{% endblock %}
 
-                    <form method="POST" action="{{ url_for('core.support_ticket') }}">
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">البريد الإلكتروني</label>
-                            <input type="email" class="form-control" name="email" value="{{ session.get('suspended_email') or session.get('email_session') or session.get('company_email_session') or '' }}" required placeholder="البريد الإلكتروني المسجل في المنصة">
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">عنوان التذكرة / المشكلة</label>
-                            <input type="text" class="form-control" name="subject" required placeholder="مثال: استفسار عن تعليق الحساب">
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">تفاصيل المشكلة</label>
-                            <textarea class="form-control" name="description" rows="6" required placeholder="يرجى كتابة تفاصيل المشكلة أو استفسارك هنا بكل وضوح..."></textarea>
-                        </div>
-                        
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg py-3" style="border-radius: 10px;">
-                                <i class="fas fa-paper-plane me-2"></i> إرسال التذكرة
-                            </button>
-                        </div>
-                    </form>
+{% block extra_css %}
+<style>
+    .auth-card {
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        padding: 40px;
+        margin-top: 60px;
+        margin-bottom: 60px;
+        border-top: 5px solid var(--primary-dark);
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #ced4da;
+        background-color: #f8f9fa;
+        text-align: right;
+    }
+    .form-control:focus {
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.25);
+    }
+    .btn-custom-red {
+        background-color: var(--accent-red);
+        color: white;
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 700;
+        border: none;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+    .btn-custom-red:hover {
+        background-color: #9e203b;
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center flex-grow-1">
+    <div class="col-md-8 col-lg-6">
+        <div class="auth-card">
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="fas fa-headset" style="font-size: 3rem; color: var(--accent-yellow);"></i>
                 </div>
+                <h2 class="almarai-extrabold" style="color: var(--primary-dark);">فتح تذكرة دعم فني</h2>
+                <p class="almarai-regular text-muted">فريق الدعم في منصة فائدة متواجد لمساعدتك</p>
             </div>
+            
+            <form method="POST" action="{{ url_for('core.support_ticket') }}">
+                <div class="mb-3">
+                    <label class="form-label almarai-bold" style="color: var(--primary-dark);">البريد الإلكتروني</label>
+                    <input type="email" class="form-control almarai-regular" name="email" value="{{ session.get('suspended_email') or session.get('email_session') or session.get('company_email_session') or '' }}" required placeholder="البريد الإلكتروني المسجل في المنصة">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label almarai-bold" style="color: var(--primary-dark);">عنوان التذكرة / المشكلة</label>
+                    <input type="text" class="form-control almarai-regular" name="subject" required placeholder="مثال: استفسار عن تعليق الحساب">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label almarai-bold" style="color: var(--primary-dark);">تفاصيل المشكلة</label>
+                    <textarea class="form-control almarai-regular" name="description" rows="5" required placeholder="يرجى كتابة تفاصيل المشكلة أو استفسارك هنا بكل وضوح..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-custom-red w-100 almarai-bold mb-3 fs-5">
+                    <i class="fas fa-paper-plane me-2"></i> إرسال التذكرة
+                </button>
+            </form>
         </div>
     </div>
 </div>

@@ -18,6 +18,86 @@
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="{{ url_for('static', filename='new_design/images/Group.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/admin.css') }}">
+    <style>
+        /* Modern Premium Notification Styling */
+        .admin-flash-container {
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1060;
+            width: auto;
+            min-width: 350px;
+            max-width: 80%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            pointer-events: none;
+        }
+
+        .admin-alert {
+            pointer-events: auto;
+            border: none !important;
+            border-radius: 12px !important;
+            padding: 16px 20px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+            font-family: 'Almarai', sans-serif !important;
+            font-weight: 700 !important;
+            display: flex !important;
+            align-items: center !important;
+            background-color: white !important;
+            border-right: 5px solid transparent !important;
+            color: #232E4C !important;
+            animation: slideDownFadeIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .admin-alert i {
+            font-size: 1.4rem;
+            margin-left: 12px;
+        }
+
+        .admin-alert.alert-success {
+            border-right-color: #28a745 !important;
+        }
+        .admin-alert.alert-success i { color: #28a745 !important; }
+
+        .admin-alert.alert-danger {
+            border-right-color: #BF2A4A !important;
+        }
+        .admin-alert.alert-danger i { color: #BF2A4A !important; }
+
+        .admin-alert.alert-warning {
+            border-right-color: #F0BF56 !important;
+        }
+        .admin-alert.alert-warning i { color: #F0BF56 !important; }
+
+        .admin-alert.alert-info {
+            border-right-color: #17a2b8 !important;
+        }
+        .admin-alert.alert-info i { color: #17a2b8 !important; }
+
+        .admin-alert .btn-close {
+            position: static !important;
+            margin-right: auto !important;
+            margin-left: 0 !important;
+            padding: 0 !important;
+            background-size: 0.8rem;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        .admin-alert .btn-close:hover { opacity: 1; }
+
+        @keyframes slideDownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -67,9 +147,9 @@
                 <i class="fas fa-clock"></i>
                 <span>وظائف قيد المراجعة</span>
             </a>
-            <a href="{{ url_for('admin.manage_categories') }}" class="sidebar-link {% block nav_categories %}{% endblock %}">
-                <i class="fas fa-tags"></i>
-                <span>التصنيفات</span>
+            <a href="{{ url_for('admin.manage_filters') }}" class="sidebar-link {% block nav_filters %}{% endblock %}">
+                <i class="fas fa-filter"></i>
+                <span>الفلاتر والتصنيفات</span>
             </a>
             {% endif %}
 

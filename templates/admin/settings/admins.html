@@ -15,7 +15,7 @@
                 <tbody>
                     {% for a in admins %}
                     <tr>
-                        <td>{{ a.id }}</td>
+                        <td>{{ ((pagination.page - 1) * pagination.per_page + loop.index) if pagination is defined and pagination else loop.index }}</td>
                         <td><strong>{{ a.username }}</strong></td>
                         <td>{{ a.email }}</td>
                         <td><span class="admin-badge verified">{{ a.role_label }}</span></td>

@@ -30,7 +30,7 @@
                 <tbody>
                     {% for job in jobs %}
                     <tr>
-                        <td>{{ job.id }}</td>
+                        <td>{{ ((pagination.page - 1) * pagination.per_page + loop.index) if pagination is defined and pagination else loop.index }}</td>
                         <td><strong>{{ job.title }}</strong></td>
                         <td>{{ job.specialization }}</td>
                         <td>{{ job.date_posted.strftime('%Y/%m/%d') if job.date_posted else '—' }}</td>

@@ -33,7 +33,7 @@
                 <tbody>
                     {% for job in jobs %}
                     <tr>
-                        <td>{{ job.id }}</td>
+                        <td>{{ ((pagination.page - 1) * pagination.per_page + loop.index) if pagination is defined and pagination else loop.index }}</td>
                         <td><strong>{{ job.title }}</strong>{% if job.is_featured %} <i class="fas fa-star" style="color:var(--admin-warning)" title="مميزة"></i>{% endif %}</td>
                         <td>{{ job.company.company_arabic_name or job.company.company_english_name if job.company else '—' }}</td>
                         <td>{{ job.job_type }}</td>

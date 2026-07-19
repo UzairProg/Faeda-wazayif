@@ -21,6 +21,7 @@ from services.customer import Customers, customer_jobs
 from services.company import Company
 from services.job import Jobs
 from services.teams import Teams, team_members_association
+from services.job_filters import City, JobType, Specialty
 from services.report import Report, REPORT_STATUSES, REPORT_STATUS_LABELS, REPORT_REASONS, REPORT_PRIORITIES
 from services.audit_log import AuditLog
 from services.subscription import SubscriptionPlan, Subscription, Payment
@@ -929,6 +930,56 @@ def manage_categories():
 
     categories = JobCategory.get_all()
     return render_template('admin/jobs/categories.html', categories=categories)
+
+@admin_bp.route('/filters', methods=['GET', 'POST'])
+@admin_login_required
+@require_permission('jobs.crud')
+def manage_filters():
+    if request.method == 'POST':
+        action = request.form.get('action')
+        filter_type = request.form.get('filter_type') # 'city' or 'job_type'
+        
+        if filter_type == 'city':
+            model_class = City
+        elif filter_type == 'job_type':
+            model_class = JobType
+        elif filter_type == 'specialty':
+            model_class = Specialty
+        
+        if action == 'create':
+            name_ar = request.form.get('name_ar', '').strip()
+            if name_ar:
+                item = model_class(name_ar=name_ar)
+                db.session.add(item)
+                db.session.commit()
+                flash(f'تمت الإضافة بنجاح: {name_ar}', 'success')
+                
+        elif action == 'edit':
+            item_id = request.form.get('item_id', type=int)
+            item = model_class.get_by_id(item_id)
+            if item:
+                item.name_ar = request.form.get('name_ar', item.name_ar)
+                item.is_active = request.form.get('is_active') == 'on'
+                db.session.commit()
+                flash('تم التحديث بنجاح', 'success')
+                
+        elif action == 'delete':
+            item_id = request.form.get('item_id', type=int)
+            item = model_class.get_by_id(item_id)
+            if item:
+                db.session.delete(item)
+                db.session.commit()
+                flash('تم الحذف بنجاح', 'success')
+                
+        return redirect(url_for('admin.manage_filters', tab=filter_type))
+        
+    cities = City.query.order_by(City.id.desc()).all()
+    job_types = JobType.query.order_by(JobType.id.desc()).all()
+    specialties = Specialty.query.order_by(Specialty.id.desc()).all()
+    
+    active_tab = request.args.get('tab', 'city')
+    
+    return render_template('admin/manage_filters.html', cities=cities, job_types=job_types, specialties=specialties, active_tab=active_tab)
 
 
 # ─────────────────────────────────────────────────────────────

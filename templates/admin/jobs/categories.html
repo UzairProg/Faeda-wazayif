@@ -15,7 +15,7 @@
                 <tbody>
                     {% for cat in categories %}
                     <tr>
-                        <td>{{ cat.id }}</td>
+                        <td>{{ ((pagination.page - 1) * pagination.per_page + loop.index) if pagination is defined and pagination else loop.index }}</td>
                         <td>{% if cat.icon %}<i class="{{ cat.icon }}" style="font-size:1.2rem;color:var(--admin-accent)"></i>{% else %}—{% endif %}</td>
                         <td><strong>{{ cat.name_ar }}</strong></td>
                         <td>{{ cat.name_en }}</td>
