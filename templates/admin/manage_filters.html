@@ -92,9 +92,13 @@
                         <input type="hidden" name="action" value="create">
                         <input type="hidden" name="filter_type" value="job_type">
                         <div class="row g-3 align-items-end">
-                            <div class="col-md-9">
+                            <div class="col-md-5">
                                 <label class="form-label fw-bold">نوع الطلب (عربي)</label>
                                 <input type="text" name="name_ar" class="form-control form-control-lg" required placeholder="مثال: دوام كامل">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">الاسم الإنجليزي (للبحث في القاعدة)</label>
+                                <input type="text" name="name_en" class="form-control form-control-lg" placeholder="مثال: Full-time">
                             </div>
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill"><i class="fas fa-plus me-2"></i>إضافة نوع طلب</button>
@@ -107,6 +111,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>نوع الطلب</th>
+                                    <th>الاسم الإنجليزي</th>
                                     <th>الحالة</th>
                                     <th class="text-end">الإجراءات</th>
                                 </tr>
@@ -116,6 +121,7 @@
                                 <tr>
                                     <td>{{ loop.index }}</td>
                                     <td class="fw-bold">{{ jt.name_ar }}</td>
+                                    <td>{{ jt.name_en or '-' }}</td>
                                     <td>
                                         <span class="badge rounded-pill bg-{{ 'success' if jt.is_active else 'secondary' }} fs-6">
                                             {{ 'نشط' if jt.is_active else 'غير نشط' }}
@@ -148,9 +154,13 @@
                         <input type="hidden" name="action" value="create">
                         <input type="hidden" name="filter_type" value="specialty">
                         <div class="row g-3 align-items-end">
-                            <div class="col-md-9">
+                            <div class="col-md-5">
                                 <label class="form-label fw-bold">اسم التخصص (عربي)</label>
                                 <input type="text" name="name_ar" class="form-control form-control-lg" required placeholder="مثال: هندسة برمجيات">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">الاسم الإنجليزي (للبحث في القاعدة)</label>
+                                <input type="text" name="name_en" class="form-control form-control-lg" placeholder="مثال: Engineering">
                             </div>
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill"><i class="fas fa-plus me-2"></i>إضافة تخصص</button>
@@ -163,6 +173,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>التخصص</th>
+                                    <th>الاسم الإنجليزي</th>
                                     <th>الحالة</th>
                                     <th class="text-end">الإجراءات</th>
                                 </tr>
@@ -172,6 +183,7 @@
                                 <tr>
                                     <td>{{ loop.index }}</td>
                                     <td class="fw-bold">{{ spec.name_ar }}</td>
+                                    <td>{{ spec.name_en or '-' }}</td>
                                     <td>
                                         <span class="badge rounded-pill bg-{{ 'success' if spec.is_active else 'secondary' }} fs-6">
                                             {{ 'نشط' if spec.is_active else 'غير نشط' }}

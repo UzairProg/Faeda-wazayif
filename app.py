@@ -4,11 +4,17 @@
 # المتطلبات الخاصة: يعتمد على تطبيق فلاسك المُنشأ في مجلد app.
 # ==============================================================================
 from dotenv import load_dotenv
+
 load_dotenv()  # Loads variables from .env into os.environ before the app starts
 
 from app import create_app
 
 app = create_app()
+
+import sys, os
+from flask import session, redirect, url_for, render_template
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
