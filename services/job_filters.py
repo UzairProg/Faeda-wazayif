@@ -54,8 +54,13 @@ class Specialty(db.Model):
     __tablename__ = 'specialties'
 
     id = db.Column(db.Integer, primary_key=True)
-    name_ar = db.Column(db.String(100), nullable=False, unique=True)
+    name_ar = db.Column(db.String(100), nullable=False)
+    name_en = db.Column(db.String(100), nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
+
+    def __init__(self, name_ar, name_en=None):
+        self.name_ar = name_ar
+        self.name_en = name_en
 
     @classmethod
     def get_active_specialties(cls):

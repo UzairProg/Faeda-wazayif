@@ -17,6 +17,7 @@ from services.job_category import JobCategory
 from app import db
 
 job = Blueprint('job' , __name__)
+from ai_engine.recommendation_model import get_job_recommendations
 
 
 
@@ -130,17 +131,54 @@ def add_job_post():
 def job_list_get(page):
     per_page = 6  # Adjust as needed
     application_count = 0
-    paginated_jobs = Jobs.query.filter_by(status='approved').paginate(page=page, per_page=per_page, error_out=False)
-    if"session_customer" in session:
-        customer_id = session['session_customer']
-        application_count = Customers.get_number_of_job_applications_by_customer_id(customer_id)
+    recommended_jobs = []
+    recommended_ids = []
+    
+    if "session_customer" in session:
+        # Get AI Recommendations
+        if "user_id" in session:
+            customer_id = session['user_id']
+            application_count = Customers.get_number_of_job_applications_by_customer_id(customer_id)
+            
+            # Fetch recommendations (only on page 1 to avoid showing them on every page)
+            if page == 1:
+                customer_record = Customers.query.get(customer_id)
+                target_string_id = customer_record.user_id if customer_record else None
+                rec_dicts = get_job_recommendations(target_string_id) if target_string_id else []
+                
+                if rec_dicts:
+                    recommended_ids = [r['job_id'] for r in rec_dicts]
+                    # Fetch ORM objects for these IDs
+                    rec_jobs_query = Jobs.query.filter(Jobs.id.in_(recommended_ids)).all()
+                    rec_jobs_map = {j.id: j for j in rec_jobs_query}
+                    
+                    # Construct list in the order of recommendations with match scores
+                    for r in rec_dicts:
+                        j_obj = rec_jobs_map.get(r['job_id'])
+                        if j_obj:
+                            j_obj.match_score = r['match_score']
+                            recommended_jobs.append(j_obj)
+                            
+    # Build main query excluding recommended jobs
+    main_query = Jobs.query.filter_by(status='approved')
+    if recommended_ids:
+        main_query = main_query.filter(~Jobs.id.in_(recommended_ids))
+        
+    paginated_jobs = main_query.paginate(page=page, per_page=per_page, error_out=False)
         
     cities = City.get_active_cities()
     job_types = JobType.get_active_job_types()
     categories = JobCategory.get_active_categories()
     specialties = Specialty.get_active_specialties()
     
-    return render_template("new_design/jobs.html", jobs=paginated_jobs,application_count = application_count, cities=cities, job_types=job_types, categories=categories, specialties=specialties)
+    return render_template("new_design/jobs.html", 
+                           jobs=paginated_jobs,
+                           recommended_jobs=recommended_jobs,
+                           application_count=application_count, 
+                           cities=cities, 
+                           job_types=job_types, 
+                           categories=categories, 
+                           specialties=specialties)
 
 @job.route('/read_job/<int:job_id>')
 def read_job(job_id):
@@ -342,11 +380,63 @@ def update_list(page):
 
     # Apply filters if parameters are provided
     if job_type:
-        query = query.filter(Jobs.job_type == job_type)
+        jt_obj = JobType.query.filter_by(name_ar=job_type).first()
+        if jt_obj and jt_obj.name_en:
+            query = query.filter(Jobs.job_type.ilike(f'%{jt_obj.name_en}%'))
+        else:
+            query = query.filter(Jobs.job_type == job_type)
+
     if specialization:
-        query = query.filter(Jobs.specialization == specialization)
+        spec_obj = Specialty.query.filter_by(name_ar=specialization).first()
+        if spec_obj and spec_obj.name_en:
+            # name_en might contain multiple English equivalents separated by | (e.g. 'Finance|Accounting')
+            if '|' in spec_obj.name_en:
+                from sqlalchemy import or_
+                conditions = [Jobs.specialization.ilike(f'%{s}%') for s in spec_obj.name_en.split('|')]
+                query = query.filter(or_(*conditions))
+            else:
+                query = query.filter(Jobs.specialization.ilike(f'%{spec_obj.name_en}%'))
+        else:
+            query = query.filter(Jobs.specialization == study)
+
     if city:
-        query = query.filter(Jobs.town == city)
+        if city == 'الرياض': query = query.filter(Jobs.town.ilike('%Riyadh%'))
+        elif city == 'جدة': query = query.filter(Jobs.town.ilike('%Jeddah%') | Jobs.town.ilike('%Jiddah%'))
+        elif city == 'الدمام': query = query.filter(Jobs.town.ilike('%Dammam%'))
+        elif city == 'الظهران': query = query.filter(Jobs.town.ilike('%Dhahran%'))
+        elif city == 'الخبر': query = query.filter(Jobs.town.ilike('%Khobar%'))
+        elif city == 'مكة المكرمة' or city == 'مكة': query = query.filter(Jobs.town.ilike('%Mecca%') | Jobs.town.ilike('%Makkah%'))
+        elif city == 'المدينة المنورة': query = query.filter(Jobs.town.ilike('%Medina%') | Jobs.town.ilike('%Madinah%'))
+        else: query = query.filter(Jobs.town.in_(city.split('|')) | (Jobs.town == city))
+
+    recommended_jobs = []
+    recommended_ids = []
+    
+    if page == 1 and "user_id" in session:
+        customer_id = session['user_id']
+        try:
+            # Get recommendations
+            customer_record = Customers.query.get(customer_id)
+            target_string_id = customer_record.user_id if customer_record else None
+            rec_dicts = get_job_recommendations(target_string_id) if target_string_id else []
+            if rec_dicts:
+                # Extract IDs
+                recommended_ids = [r['job_id'] for r in rec_dicts]
+                # Fetch ORM objects for these IDs
+                rec_jobs_query = Jobs.query.filter(Jobs.id.in_(recommended_ids)).all()
+                rec_jobs_map = {j.id: j for j in rec_jobs_query}
+                
+                # Construct list in the order of recommendations with match scores
+                for r in rec_dicts:
+                    j_obj = rec_jobs_map.get(r['job_id'])
+                    if j_obj:
+                        j_obj.match_score = r['match_score']
+                        recommended_jobs.append(j_obj)
+        except Exception as e:
+            print("Error getting AI recommendations:", e)
+            
+    if recommended_ids:
+        query = query.filter(~Jobs.id.in_(recommended_ids))
 
     per_page = 6  # Adjust as needed
 
@@ -359,4 +449,10 @@ def update_list(page):
     specialties = Specialty.get_active_specialties()
 
     # Render the template with the paginated jobs
-    return render_template('new_design/jobs.html', jobs=paginated_jobs, cities=cities, job_types=job_types, categories=categories, specialties=specialties)
+    return render_template('new_design/jobs.html', 
+                           jobs=paginated_jobs, 
+                           recommended_jobs=recommended_jobs,
+                           cities=cities, 
+                           job_types=job_types, 
+                           categories=categories, 
+                           specialties=specialties)

@@ -948,8 +948,11 @@ def manage_filters():
         
         if action == 'create':
             name_ar = request.form.get('name_ar', '').strip()
+            name_en = request.form.get('name_en', '').strip()
             if name_ar:
                 item = model_class(name_ar=name_ar)
+                if hasattr(item, 'name_en'):
+                    item.name_en = name_en if name_en else None
                 db.session.add(item)
                 db.session.commit()
                 flash(f'تمت الإضافة بنجاح: {name_ar}', 'success')
@@ -959,6 +962,9 @@ def manage_filters():
             item = model_class.get_by_id(item_id)
             if item:
                 item.name_ar = request.form.get('name_ar', item.name_ar)
+                if hasattr(item, 'name_en'):
+                    name_en = request.form.get('name_en', '').strip()
+                    item.name_en = name_en if name_en else None
                 item.is_active = request.form.get('is_active') == 'on'
                 db.session.commit()
                 flash('تم التحديث بنجاح', 'success')

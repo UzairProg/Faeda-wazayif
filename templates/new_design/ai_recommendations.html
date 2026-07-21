@@ -1,0 +1,39 @@
+{% extends 'base.html' %} <!-- تأكد أن هذا يطابق القالب الأساسي لديك -->
+
+{% block content %}
+<div class="container mt-5" dir="rtl" style="text-align: right;">
+    <h2 class="mb-4" style="color: #232E4C; font-family: 'Almarai', sans-serif;">
+        <i class="fa fa-magic"></i> وظائف مرشحة لك بالذكاء الاصطناعي
+    </h2>
+    <p class="text-muted">قام محرك التوصية الخاص بنا بتحليل سيرتك الذاتية ومهاراتك، ووجدنا أن هذه الوظائف هي الأنسب لك:</p>
+
+    <div class="row">
+        {% if jobs %}
+            {% for job in jobs %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm" style="border-top: 4px solid #BF2A4A;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title mb-0" style="color: #232E4C; font-weight: bold;">{{ job.title }}</h5>
+                            <span class="badge" style="background-color: #BF2A4A; color: white; font-size: 14px;">
+                                تطابق {{ job.match_score }}%
+                            </span>
+                        </div>
+                        <p class="card-text mt-3"><strong>التخصص:</strong> {{ job.specialization }}</p>
+                        <p class="card-text"><strong>نوع العمل:</strong> {{ job.job_type }}</p>
+                        
+                        <a href="/job/{{ job.job_id }}" class="btn btn-outline-dark btn-block mt-3" style="border-color: #232E4C; color: #232E4C;">عرض التفاصيل</a>
+                    </div>
+                </div>
+            </div>
+            {% endhof %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center">
+                    عذراً، لم نتمكن من العثور على وظائف مطابقة حالياً. يرجى تحديث سيرتك الذاتية.
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
