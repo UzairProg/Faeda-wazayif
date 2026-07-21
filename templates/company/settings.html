@@ -1,47 +1,99 @@
 {% extends "company/company_base.html" %}
-{% block title %}الإعدادات | فائدة{% endblock %}
+{% block title %}الإعدادات | بوابة المنشآت{% endblock %}
 {% block nav_settings %}active{% endblock %}
-{% block breadcrumb %}<li>الإعدادات</li>{% endblock %}
 {% block page_title %}الإعدادات والتفضيلات{% endblock %}
 
+{% block extra_css %}
+<style>
+    .settings-card {
+        border-radius: 15px;
+        border: none;
+        height: 100%;
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e0e4ec;
+        background-color: #f8f9fc;
+    }
+    .form-control:focus {
+        border-color: var(--primary-dark);
+        box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.1);
+        background-color: white;
+    }
+    .btn-save {
+        background-color: var(--primary-dark);
+        color: white;
+        border-radius: 10px;
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
+    }
+    .btn-save:hover {
+        background-color: #1a233a;
+        color: white;
+    }
+    .form-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+        cursor: pointer;
+    }
+    .form-switch .form-check-input:checked {
+        background-color: var(--accent-red);
+        border-color: var(--accent-red);
+    }
+    .form-check-label {
+        color: var(--primary-dark);
+        margin-right: 1.5rem; /* Space for the large toggle switch (RTL) */
+        padding-top: 0.2rem;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-md-6 mb-4">
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <h2><i class="fas fa-lock"></i> الأمان وكلمة المرور</h2>
+<div class="row g-4 mb-5">
+    <!-- Password Section -->
+    <div class="col-md-6">
+        <div class="card shadow-sm settings-card">
+            <div class="card-header bg-white border-0 pt-4 pb-2 px-4">
+                <h4 class="almarai-bold" style="color: var(--primary-dark);">
+                    <i class="fas fa-lock me-2 text-muted"></i> الأمان وكلمة المرور
+                </h4>
             </div>
-            <div class="admin-card-body">
+            <div class="card-body p-4">
                 <form action="{{ url_for('company_panel.company_settings') }}" method="POST">
-                    <div class="mb-3">
-                        <label class="form-label">كلمة المرور الجديدة</label>
-                        <input type="password" class="form-control" name="new_password" placeholder="أدخل كلمة المرور الجديدة" required>
+                    <div class="mb-4">
+                        <label class="form-label almarai-bold" style="color: var(--primary-dark);">كلمة المرور الجديدة</label>
+                        <input type="password" class="form-control almarai-regular" name="new_password" placeholder="أدخل كلمة المرور الجديدة المعقدة" required>
                     </div>
-                    <button type="submit" class="btn-admin btn-admin-primary">
-                        <i class="fas fa-key"></i> تغيير كلمة المرور
+                    <button type="submit" class="btn btn-save almarai-bold shadow-sm w-100">
+                        <i class="fas fa-key ms-1"></i> تغيير كلمة المرور
                     </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6 mb-4">
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <h2><i class="fas fa-bell"></i> تفضيلات الإشعارات</h2>
+    <!-- Notifications Section -->
+    <div class="col-md-6">
+        <div class="card shadow-sm settings-card">
+            <div class="card-header bg-white border-0 pt-4 pb-2 px-4">
+                <h4 class="almarai-bold" style="color: var(--primary-dark);">
+                    <i class="fas fa-bell me-2 text-muted"></i> تفضيلات الإشعارات
+                </h4>
             </div>
-            <div class="admin-card-body">
+            <div class="card-body p-4">
                 <form action="{{ url_for('company_panel.company_settings') }}" method="POST">
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" id="notifyEmail" name="notify_email" checked>
-                        <label class="form-check-label" for="notifyEmail">إرسال بريد إلكتروني عند تقديم طلب توظيف جديد</label>
+                    <div class="form-check form-switch d-flex align-items-center mb-4">
+                        <input class="form-check-input float-end" type="checkbox" id="notifyEmail" name="notify_email" checked>
+                        <label class="form-check-label almarai-regular" for="notifyEmail">إرسال بريد إلكتروني عند تقديم طلب توظيف جديد</label>
                     </div>
-                    <div class="form-check form-switch mb-4">
-                        <input class="form-check-input" type="checkbox" id="notifyMarketing" name="notify_marketing">
-                        <label class="form-check-label" for="notifyMarketing">استلام العروض الترويجية والنشرات البريدية</label>
+                    <div class="form-check form-switch d-flex align-items-center mb-5">
+                        <input class="form-check-input float-end" type="checkbox" id="notifyMarketing" name="notify_marketing">
+                        <label class="form-check-label almarai-regular" for="notifyMarketing">استلام العروض الترويجية والنشرات البريدية</label>
                     </div>
-                    <button type="submit" class="btn-admin btn-admin-primary">
-                        <i class="fas fa-save"></i> حفظ التفضيلات
+                    <button type="submit" class="btn btn-save almarai-bold shadow-sm w-100">
+                        <i class="fas fa-save ms-1"></i> حفظ التفضيلات
                     </button>
                 </form>
             </div>

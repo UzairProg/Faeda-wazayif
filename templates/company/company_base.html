@@ -262,6 +262,11 @@
                     <i class="fas fa-users"></i> طلبات التوظيف
                 </a>
             </li>
+            <li>
+                <a href="{{ url_for('company_panel.browse_teams') }}" class="{% block nav_teams %}{% endblock %}">
+                    <i class="fas fa-users-cog"></i> الفرق والمجموعات
+                </a>
+            </li>
             
             <li class="mt-4 mb-2 px-3 text-danger" style="font-size: 0.85rem; color: var(--accent-red) !important;">الحساب</li>
             <li>
@@ -316,19 +321,35 @@
             </div>
         </header>
 
-        <!-- Flash Messages -->
-        <div class="container-fluid pt-3">
+        <!-- Flash Messages Global Container -->
+        <div class="flash-messages-container" id="flash-messages" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%;">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible fade show almarai-bold shadow-sm" role="alert" style="border-radius: 10px;">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+                        <div class="custom-alert custom-alert-{{ 'success' if category == 'success' else 'error' if category == 'danger' else 'warning' if category == 'warning' else 'info' }} d-flex align-items-center justify-content-between p-3 bg-white shadow" style="pointer-events: auto; min-width: 320px; max-width: 90vw; border-radius: 12px; border-right: 6px solid {{ '#28a745' if category == 'success' else '#dc3545' if category == 'danger' else '#ffc107' if category == 'warning' else '#17a2b8' }};">
+                            <i class="icon fas fa-{{ 'check-circle text-success' if category == 'success' else 'exclamation-circle text-danger' if category == 'danger' else 'exclamation-triangle text-warning' if category == 'warning' else 'info-circle text-info' }} fs-4 ms-3"></i>
+                            <p class="message almarai-bold m-0 flex-grow-1" style="color: var(--primary-dark);">{{ message }}</p>
+                            <button type="button" class="btn-close ms-2" onclick="this.parentElement.remove()" aria-label="إغلاق"></button>
                         </div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
         </div>
+        
+        <!-- Auto-hide flash messages script -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const alerts = document.querySelectorAll('.custom-alert');
+                alerts.forEach(alert => {
+                    setTimeout(() => {
+                        alert.style.opacity = '0';
+                        alert.style.transform = 'translateY(-20px)';
+                        alert.style.transition = 'all 0.4s ease';
+                        setTimeout(() => alert.remove(), 400);
+                    }, 5000);
+                });
+            });
+        </script>
 
         <!-- Content Area -->
         <main class="content-area">

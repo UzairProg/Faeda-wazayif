@@ -53,6 +53,7 @@ def create_app():
         app.register_blueprint(chat_bp)
         app.register_blueprint(company_panel_bp)
         
+        from services.team_offer import TeamOffer
         db.create_all()
 
         @app.before_request

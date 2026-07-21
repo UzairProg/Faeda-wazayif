@@ -69,7 +69,9 @@
                     
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label almarai-bold" style="color: var(--primary-dark);">البريد الإلكتروني للشركة</label>
-                        <input type="email" class="form-control almarai-regular" name="email" id="exampleInputEmail1" placeholder="أدخل البريد الإلكتروني للشركة" required>
+                        <input type="email" class="form-control almarai-regular" name="email" id="exampleInputEmail1" placeholder="أدخل البريد الإلكتروني للشركة" required dir="rtl" value="{{ request.form.get('email', '') }}"
+                        oninvalid="this.setCustomValidity('يرجى إدخال بريد إلكتروني صحيح')"
+                        oninput="this.setCustomValidity('')">
                     </div>
                     
                     <div class="mb-3">

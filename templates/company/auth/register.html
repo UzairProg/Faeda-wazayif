@@ -69,18 +69,25 @@
                     
                     <div class="mb-3">
                         <label class="form-label almarai-bold" style="color: var(--primary-dark);">اسم المنشأة</label>
-                        <input type="text" class="form-control almarai-regular" name="company_name" placeholder="أدخل اسم المنشأة" required>
+                        <input type="text" class="form-control almarai-regular" name="company_name" placeholder="أدخل اسم المنشأة" required value="{{ request.form.get('company_name', '') }}"
+                        oninvalid="this.setCustomValidity('يرجى إدخال اسم المنشأة')"
+                        oninput="this.setCustomValidity('')">
                     </div>
 
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label almarai-bold" style="color: var(--primary-dark);">البريد الإلكتروني للشركة</label>
-                        <input type="email" class="form-control almarai-regular" name="email" id="exampleInputEmail1" placeholder="أدخل البريد الإلكتروني" required>
+                        <input type="email" class="form-control almarai-regular" name="email" id="exampleInputEmail1" placeholder="أدخل البريد الإلكتروني" required dir="rtl" value="{{ request.form.get('email', '') }}"
+                        oninvalid="this.setCustomValidity('يرجى إدخال بريد إلكتروني صحيح')"
+                        oninput="this.setCustomValidity('')">
                     </div>
                     
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label almarai-bold" style="color: var(--primary-dark);">كلمة المرور</label>
                         <div class="input-group">
-                            <input type="password" class="form-control almarai-regular" name="password" id="exampleInputPassword1" placeholder="أدخل كلمة المرور" required style="border-left: none;">
+                            <input type="password" class="form-control almarai-regular" name="password" id="exampleInputPassword1" placeholder="أدخل كلمة المرور" required style="border-left: none;"
+                            pattern="(?=.*[!@#$&*]).{8,}" title="يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتحتوي على رمز خاص من (!@#$&*)"
+                            oninvalid="this.setCustomValidity('يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتحتوي على رمز خاص من (!@#$&*)')"
+                            oninput="this.setCustomValidity('')">
                             <span class="input-group-text" id="togglePassword">
                                 <i id="eyeIcon" class="fa-solid fa-eye text-muted"></i>
                             </span>

@@ -1,0 +1,97 @@
+{% extends "company/company_base.html" %}
+{% block title %}تفاصيل الفريق | بوابة المنشآت{% endblock %}
+{% block nav_teams %}active{% endblock %}
+{% block page_title %}تفاصيل فريق: {{ team.team_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .member-card {
+        border-radius: 12px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .member-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.08) !important;
+    }
+    .cv-btn {
+        background-color: var(--primary-dark);
+        color: white;
+        border-radius: 8px;
+    }
+    .cv-btn:hover {
+        background-color: #1a233a;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('company_panel.browse_teams') }}" class="btn btn-outline-secondary almarai-bold" style="border-radius: 8px;">
+        <i class="fas fa-arrow-right me-1"></i> العودة للفرق
+    </a>
+</div>
+
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+            <div class="card-body p-4 d-flex align-items-center">
+                <div class="me-4 ms-4">
+                    {% if team.img %}
+                        <img src="{{ url_for('static', filename='uploads/teams/images/' + team.img) }}" alt="{{ team.team_name }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
+                    {% else %}
+                        <div style="width: 100px; height: 100px; border-radius: 50%; background-color: rgba(35,46,76,0.1); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-users fa-3x" style="color: var(--primary-dark);"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div>
+                    <h3 class="almarai-bold mb-2" style="color: var(--primary-dark);">{{ team.team_name }}</h3>
+                    <p class="text-muted mb-2">{{ team.about or 'لا يوجد وصف متاح' }}</p>
+                    <div class="d-flex gap-3 text-muted small">
+                        {% if team.general_program %}<span><i class="fas fa-tag ms-1"></i> {{ team.general_program }}</span>{% endif %}
+                        {% if team.special_program %}<span><i class="fas fa-star ms-1"></i> {{ team.special_program }}</span>{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="almarai-bold mb-4" style="color: var(--primary-dark);">أعضاء الفريق ({{ members|length }})</h4>
+
+<div class="row g-4">
+    {% for member in members %}
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm border-0 member-card h-100">
+            <div class="card-body p-4 text-center d-flex flex-column">
+                <div class="mb-3">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; background-color: rgba(35,46,76,0.05); display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <i class="fas fa-user fa-2x" style="color: var(--primary-dark);"></i>
+                    </div>
+                </div>
+                <h5 class="almarai-bold mb-1" style="color: var(--primary-dark);">{{ member.fullname }}</h5>
+                <p class="text-muted small mb-3">{{ member.email }}</p>
+                
+                <div class="mt-auto">
+                    {% if member.cv %}
+                    <a href="{{ url_for('static', filename='uploads/customers/cvs/' + member.cv) }}" target="_blank" class="btn cv-btn w-100 almarai-bold">
+                        <i class="fas fa-file-pdf ms-1"></i> استعراض السيرة الذاتية (CV)
+                    </a>
+                    {% else %}
+                    <button class="btn btn-light w-100 almarai-bold text-muted" disabled>
+                        <i class="fas fa-times-circle ms-1"></i> لا توجد سيرة ذاتية
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <i class="fas fa-user-slash text-muted mb-3" style="font-size: 3rem; opacity: 0.3;"></i>
+        <h5 class="almarai-bold mb-2" style="color: var(--primary-dark);">لا يوجد أعضاء منضمين حالياً</h5>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

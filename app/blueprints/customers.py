@@ -16,6 +16,7 @@ import os
 from werkzeug.utils import secure_filename
 import random
 import secrets
+import re
 from email.message import EmailMessage
 import ssl
 import smtplib
@@ -158,6 +159,10 @@ def reg_page():
     if not all([full_name, email, mobile, password, acc_type]):
         flash('يجب ملئ جميع الحقول ', 'error')
         return redirect('/register')
+
+    if len(password) < 8 or not re.search(r'[!@#$&*]', password):
+        flash('يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتحتوي على رمز خاص من (!@#$&*)', 'error')
+        return render_template('/new_design/register.html', error=True)
 
     # Check if email is already registered
     check_customer = Customers.get_by_email(email) # noqa: F405
@@ -1142,7 +1147,34 @@ def controlled_teams():
     user_id = session.get('user_id')
     customer_obj = Customers.query.get(user_id)  # noqa: F405
     admin_teams = Teams.query.filter_by(admin_id=user_id).all()
-    return render_template('panel/controlled_teams.html', teams=admin_teams, customer=customer_obj)
+    
+    from services.team_offer import TeamOffer
+    offers = TeamOffer.query.join(Teams).filter(Teams.admin_id == user_id).order_by(TeamOffer.created_at.desc()).all()
+    
+    return render_template('panel/controlled_teams.html', teams=admin_teams, customer=customer_obj, offers=offers)
+
+@customer.route('/team_offer/<int:offer_id>/<action>', methods=['POST'])
+def handle_team_offer(offer_id, action):
+    if 'user_id' not in session:
+        return redirect('/login')
+    
+    from services.team_offer import TeamOffer
+    offer = TeamOffer.query.get_or_404(offer_id)
+    
+    # Check authorization
+    if str(offer.team.admin_id) != str(session.get('user_id')):
+        flash('غير مصرح لك باتخاذ هذا الإجراء', 'danger')
+        return redirect(url_for('customer.controlled_teams'))
+        
+    if action == 'accept':
+        offer.status = 'accepted'
+        flash('تم قبول العرض بنجاح', 'success')
+    elif action == 'reject':
+        offer.status = 'rejected'
+        flash('تم رفض العرض', 'info')
+        
+    db.session.commit()
+    return redirect(url_for('customer.controlled_teams'))
 
 
 @customer.route('/teams_invites', methods=['GET', 'POST'])

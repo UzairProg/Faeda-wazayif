@@ -1,67 +1,137 @@
 {% extends "company/company_base.html" %}
-{% block title %}إدارة الوظائف | فائدة{% endblock %}
+{% block title %}إدارة الوظائف | بوابة المنشآت{% endblock %}
 {% block nav_jobs %}active{% endblock %}
-{% block breadcrumb %}<li>إدارة الوظائف</li>{% endblock %}
 {% block page_title %}إدارة الوظائف{% endblock %}
 
+{% block extra_css %}
+<style>
+    .jobs-card {
+        border-radius: 15px;
+        border: none;
+    }
+    .table > :not(caption) > * > * {
+        padding: 1rem 1.5rem;
+        vertical-align: middle;
+        background-color: transparent;
+        border-bottom-color: #f1f3f8;
+    }
+    .table thead th {
+        color: var(--primary-dark);
+        font-weight: bold;
+        background-color: #f8f9fc;
+        border-bottom: 2px solid #e0e4ec;
+    }
+    .table-hover tbody tr:hover {
+        background-color: rgba(35, 46, 76, 0.02);
+    }
+    .badge-status {
+        padding: 0.5rem 1rem;
+        border-radius: 50rem;
+        font-weight: normal;
+    }
+    .badge-approved { background-color: rgba(40, 167, 69, 0.1); color: #28a745; border: 1px solid rgba(40, 167, 69, 0.2); }
+    .badge-pending { background-color: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.2); }
+    .badge-rejected { background-color: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid rgba(220, 53, 69, 0.2); }
+    
+    .action-btn {
+        width: 35px;
+        height: 35px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background-color: #f8f9fc;
+        color: var(--primary-dark);
+        transition: all 0.2s;
+        border: 1px solid #e0e4ec;
+    }
+    .action-btn:hover {
+        background-color: var(--primary-dark);
+        color: white;
+    }
+    .empty-state {
+        padding: 4rem 2rem;
+        text-align: center;
+    }
+    .empty-icon {
+        font-size: 4rem;
+        color: rgba(35, 46, 76, 0.1);
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
 {% block page_actions %}
-<a href="{{ url_for('company_panel.add_job') }}" class="btn-admin btn-admin-primary">
-    <i class="fas fa-plus"></i> نشر وظيفة جديدة
+<a href="{{ url_for('company_panel.add_job') }}" class="btn almarai-bold shadow-sm" style="background-color: var(--accent-red); color: white; border-radius: 10px;">
+    <i class="fas fa-plus me-1"></i> نشر وظيفة جديدة
 </a>
 {% endblock %}
 
 {% block content %}
-<div class="admin-card">
-    <div class="admin-card-body">
-        {% if jobs %}
-        <div class="admin-table-wrapper">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>المسمى الوظيفي</th>
-                        <th>التخصص</th>
-                        <th>تاريخ النشر</th>
-                        <th>الحالة</th>
-                        <th>عدد المتقدمين</th>
-                        <th>إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in jobs %}
-                    <tr>
-                        <td>{{ ((pagination.page - 1) * pagination.per_page + loop.index) if pagination is defined and pagination else loop.index }}</td>
-                        <td><strong>{{ job.title }}</strong></td>
-                        <td>{{ job.specialization }}</td>
-                        <td>{{ job.date_posted.strftime('%Y/%m/%d') if job.date_posted else '—' }}</td>
-                        <td>
-                            {% if job.status == 'approved' %}
-                                <span class="admin-badge active">مقبولة</span>
-                            {% elif job.status == 'pending' %}
-                                <span class="admin-badge warned">قيد المراجعة</span>
-                            {% else %}
-                                <span class="admin-badge suspended">مرفوضة/مغلقة</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ job.customers|length }}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <a href="{{ url_for('job.read_job', job_id=job.id) }}" class="btn-icon" title="عرض الوظيفة بالموقع" target="_blank"><i class="fas fa-eye"></i></a>
-                                <a href="{{ url_for('company_panel.company_applicants_list') }}" class="btn-icon" title="إدارة طلبات التوظيف"><i class="fas fa-users"></i></a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm jobs-card">
+            <div class="card-body p-0">
+                {% if jobs %}
+                <div class="table-responsive">
+                    <table class="table table-hover almarai-regular mb-0">
+                        <thead>
+                            <tr>
+                                <th class="almarai-bold">#</th>
+                                <th class="almarai-bold">المسمى الوظيفي</th>
+                                <th class="almarai-bold">التخصص</th>
+                                <th class="almarai-bold">تاريخ النشر</th>
+                                <th class="almarai-bold">الحالة</th>
+                                <th class="almarai-bold text-center">المتقدمين</th>
+                                <th class="almarai-bold text-center">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in jobs %}
+                            <tr>
+                                <td class="text-muted">{{ loop.index }}</td>
+                                <td><strong style="color: var(--primary-dark);">{{ job.title }}</strong></td>
+                                <td class="text-muted">{{ job.specialization }}</td>
+                                <td class="text-muted">{{ job.date_posted.strftime('%Y/%m/%d') if job.date_posted else '—' }}</td>
+                                <td>
+                                    {% if job.status == 'approved' %}
+                                        <span class="badge badge-status badge-approved almarai-regular"><i class="fas fa-check-circle me-1"></i> مقبولة</span>
+                                    {% elif job.status == 'pending' %}
+                                        <span class="badge badge-status badge-pending almarai-regular"><i class="fas fa-clock me-1"></i> قيد المراجعة</span>
+                                    {% else %}
+                                        <span class="badge badge-status badge-rejected almarai-regular"><i class="fas fa-times-circle me-1"></i> مرفوضة/مغلقة</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill bg-secondary px-3 py-2" style="font-size: 0.9rem;">{{ job.customers|length }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <a href="{{ url_for('job.read_job', job_id=job.id) }}" class="action-btn" title="عرض الوظيفة بالموقع" target="_blank">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ url_for('company_panel.company_applicants_list') }}" class="action-btn" title="إدارة طلبات التوظيف">
+                                            <i class="fas fa-users"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-briefcase empty-icon"></i>
+                    <h4 class="almarai-bold" style="color: var(--primary-dark);">لا يوجد وظائف حالياً</h4>
+                    <p class="text-muted almarai-regular mt-2 mb-4">لم تقم بنشر أي وظائف حتى الآن. ابدأ في البحث عن الكفاءات الآن!</p>
+                    <a href="{{ url_for('company_panel.add_job') }}" class="btn almarai-bold shadow-sm" style="background-color: var(--primary-dark); color: white; border-radius: 10px; padding: 0.6rem 2rem;">
+                        <i class="fas fa-plus me-1"></i> انشر أول وظيفة
+                    </a>
+                </div>
+                {% endif %}
+            </div>
         </div>
-        {% else %}
-        <div class="admin-empty-state">
-            <i class="fas fa-briefcase"></i>
-            <h4>لا يوجد وظائف</h4>
-            <p>لم تقم بنشر أي وظائف حتى الآن.</p>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
