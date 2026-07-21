@@ -1,0 +1,132 @@
+{% extends "company/company_base.html" %}
+{% block title %}الفرق والمجموعات | بوابة المنشآت{% endblock %}
+{% block nav_teams %}active{% endblock %}
+{% block page_title %}الفرق والمجموعات{% endblock %}
+
+{% block extra_css %}
+<style>
+    .team-card {
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .team-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+    }
+    .team-img-container {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(35, 46, 76, 0.05);
+        border: 2px dashed rgba(35, 46, 76, 0.2);
+    }
+    .team-img-container img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .team-img-container i {
+        font-size: 2rem;
+        color: var(--primary-dark);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <h4 class="almarai-bold" style="color: var(--primary-dark);">تصفح الفرق المتاحة</h4>
+        <span class="badge" style="background-color: rgba(35, 46, 76, 0.1); color: var(--primary-dark); padding: 8px 15px; font-size: 1rem;">
+            {{ teams|length }} فريق
+        </span>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for team in teams %}
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm border-0 team-card">
+            <div class="card-body text-center p-4 d-flex flex-column">
+                <div class="team-img-container">
+                    {% if team.img %}
+                        <img src="{{ url_for('static', filename='uploads/teams/images/' + team.img) }}" alt="{{ team.team_name }}">
+                    {% else %}
+                        <i class="fas fa-users"></i>
+                    {% endif %}
+                </div>
+                
+                <h5 class="almarai-bold mb-2" style="color: var(--primary-dark);">{{ team.team_name }}</h5>
+                <p class="text-muted small mb-3 flex-grow-1">
+                    {{ team.about[:100] ~ '...' if team.about and team.about|length > 100 else team.about or 'لا يوجد وصف متاح' }}
+                </p>
+                
+                <div class="d-flex justify-content-around mb-4">
+                    <div class="text-center">
+                        <span class="d-block almarai-bold fs-5" style="color: var(--primary-dark);">{{ team.num_members }}</span>
+                        <span class="text-muted small">الأعضاء</span>
+                    </div>
+                </div>
+
+                <div class="mt-auto d-flex gap-2 justify-content-center">
+                    <a href="{{ url_for('company_panel.team_details', team_id=team.id) }}" class="btn btn-outline-secondary w-50 almarai-bold" style="border-radius: 10px;">
+                        <i class="fas fa-eye ms-1"></i> التفاصيل
+                    </a>
+                    <button type="button" class="btn btn-custom-red w-50 almarai-bold" style="background-color: var(--accent-red); color: white; border-radius: 10px;" data-bs-toggle="modal" data-bs-target="#offerModal{{ team.id }}">
+                        <i class="fas fa-paper-plane ms-1"></i> إرسال عرض
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for sending offer -->
+    <div class="modal fade" id="offerModal{{ team.id }}" tabindex="-1" aria-labelledby="offerModalLabel{{ team.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 15px; border: none;">
+                <div class="modal-header" style="background-color: var(--primary-dark); color: white; border-top-right-radius: 15px; border-top-left-radius: 15px;">
+                    <h5 class="modal-title almarai-bold" id="offerModalLabel{{ team.id }}">إرسال عرض لفريق: {{ team.team_name }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <form action="{{ url_for('company_panel.make_offer', team_id=team.id) }}" method="POST">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label almarai-bold" style="color: var(--primary-dark);">هل العرض مرتبط بوظيفة محددة؟ (اختياري)</label>
+                            <select class="form-select almarai-regular" name="job_id" style="border-radius: 10px;">
+                                <option value="">عرض عام (غير مرتبط بوظيفة)</option>
+                                {% if current_company and current_company.jobs %}
+                                    {% for job in current_company.jobs %}
+                                        <option value="{{ job.id }}">{{ job.job_title }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label almarai-bold" style="color: var(--primary-dark);">رسالة العرض والتفاصيل</label>
+                            <textarea class="form-control almarai-regular" name="message" rows="5" placeholder="اكتب تفاصيل العرض، الراتب المتوقع، أو طبيعة العمل المطلوب من الفريق..." required style="border-radius: 10px; resize: none;"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border-bottom-right-radius: 15px; border-bottom-left-radius: 15px;">
+                        <button type="button" class="btn btn-light almarai-bold px-4" data-bs-dismiss="modal" style="border-radius: 10px;">إلغاء</button>
+                        <button type="submit" class="btn btn-custom-red almarai-bold px-4" style="background-color: var(--accent-red); color: white; border-radius: 10px;">إرسال العرض</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <i class="fas fa-users-slash text-muted mb-3" style="font-size: 4rem; opacity: 0.3;"></i>
+        <h4 class="almarai-bold mb-3" style="color: var(--primary-dark);">لا توجد فرق متاحة حالياً</h4>
+        <p class="text-muted">يبدو أنه لم يتم إنشاء فرق بعد، أو لا توجد نتائج.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

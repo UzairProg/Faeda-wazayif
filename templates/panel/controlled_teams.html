@@ -57,6 +57,49 @@
          
            
               <!--/ Card layout -->
+
+              <!-- Offers Section -->
+              <h4 class="fw-bold py-3 mb-4 mt-5" style="color: rgb(0, 0, 0);"><span class=" fw-light">مجموعاتي /</span> عروض المنشآت الواردة</h4>
+              <div class="row">
+                  {% if offers %}
+                      {% for offer in offers %}
+                      <div class="col-md-6 mb-4">
+                          <div class="card shadow-sm border-{{ 'success' if offer.status == 'accepted' else 'danger' if offer.status == 'rejected' else 'primary' }}">
+                              <div class="card-body">
+                                  <h5 class="card-title almarai-bold" style="color: var(--primary-dark);">عرض من: {{ offer.company.company_english_name }}</h5>
+                                  <h6 class="card-subtitle mb-2 text-muted">مُوجه إلى فريق: {{ offer.team.team_name }}</h6>
+                                  {% if offer.job %}
+                                  <p class="mb-2"><span class="badge bg-info text-dark">مرتبط بوظيفة: {{ offer.job.job_title }}</span></p>
+                                  {% endif %}
+                                  <p class="card-text mt-3">{{ offer.message }}</p>
+                                  <div class="d-flex justify-content-between align-items-center mt-4">
+                                      <span class="text-muted small">تاريخ العرض: {{ offer.created_at.strftime('%Y-%m-%d') }}</span>
+                                      
+                                      {% if offer.status == 'pending' %}
+                                      <div class="btn-group">
+                                          <form action="{{ url_for('customer.handle_team_offer', offer_id=offer.id, action='accept') }}" method="POST" style="display: inline;">
+                                              <button type="submit" class="btn btn-sm btn-success me-2 almarai-bold">قبول</button>
+                                          </form>
+                                          <form action="{{ url_for('customer.handle_team_offer', offer_id=offer.id, action='reject') }}" method="POST" style="display: inline;">
+                                              <button type="submit" class="btn btn-sm btn-danger almarai-bold">رفض</button>
+                                          </form>
+                                      </div>
+                                      {% else %}
+                                      <span class="badge bg-{{ 'success' if offer.status == 'accepted' else 'danger' }} almarai-bold fs-6">
+                                          {{ 'تم القبول' if offer.status == 'accepted' else 'مرفوض' }}
+                                      </span>
+                                      {% endif %}
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      {% endfor %}
+                  {% else %}
+                      <div class="col-12 text-center py-4">
+                          <p class="text-muted almarai-regular fs-5">لا توجد عروض واردة لفرقك حتى الآن.</p>
+                      </div>
+                  {% endif %}
+              </div>
             </div>
 </div>
 {% endblock %}

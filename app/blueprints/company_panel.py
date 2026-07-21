@@ -5,11 +5,14 @@ from werkzeug.utils import secure_filename
 import os
 from sqlalchemy import and_, extract
 from app import db
+import re
 
 # Import existing models
 from services.company import Company
 from services.customer import Customers, customer_jobs
 from services.job import Jobs
+from services.teams import Teams
+from services.team_offer import TeamOffer
 
 company_panel_bp = Blueprint('company_panel', __name__)
 
@@ -59,6 +62,61 @@ def company_login():
             
     return render_template('company/auth/login.html')
 
+@company_panel_bp.route('/company/teams', methods=['GET'])
+@company_required
+def browse_teams():
+    all_teams = Teams.query.all()
+    for team in all_teams:
+        team.num_members = len(team.members)
+    return render_template('company/browse_teams.html', teams=all_teams)
+
+@company_panel_bp.route('/company/teams/<int:team_id>', methods=['GET'])
+@company_required
+def team_details(team_id):
+    team = Teams.query.get_or_404(team_id)
+    
+    # Retrieve team members
+    from services.teams import team_members_association
+    team_members = db.session.query(
+        Customers.id,
+        Customers.fullname,
+        Customers.email,
+        Customers.user_id,
+        Customers.cv,
+        team_members_association.c.status
+    ).join(
+        team_members_association,
+        team_members_association.c.member_id == Customers.user_id
+    ).filter(
+        team_members_association.c.team_id == team_id,
+        team_members_association.c.status == 'منضم'
+    ).all()
+    
+    return render_template('company/team_details.html', team=team, members=team_members)
+
+@company_panel_bp.route('/company/teams/<int:team_id>/offer', methods=['POST'])
+@company_required
+def make_offer(team_id):
+    team = Teams.query.get_or_404(team_id)
+    company_id = session.get('company_id')
+    message = request.form.get('message', '').strip()
+    job_id = request.form.get('job_id')
+    
+    if not message:
+        flash('يجب كتابة رسالة العرض', 'danger')
+        return redirect(url_for('company_panel.browse_teams'))
+        
+    offer = TeamOffer(
+        company_id=company_id,
+        team_id=team_id,
+        message=message,
+        job_id=job_id if job_id else None
+    )
+    db.session.add(offer)
+    db.session.commit()
+    flash(f'تم إرسال العرض إلى مجموعة {team.team_name} بنجاح!', 'success')
+    return redirect(url_for('company_panel.browse_teams'))
+
 @company_panel_bp.route('/company/register', methods=['GET', 'POST'])
 def company_register():
     if 'company_id' in session and session.get('session_company'):
@@ -68,6 +126,10 @@ def company_register():
         company_name = request.form.get('company_name', '').strip()
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '')
+        
+        if len(password) < 8 or not re.search(r'[!@#$&*]', password):
+            flash('يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتحتوي على رمز خاص من (!@#$&*)', 'danger')
+            return render_template('company/auth/register.html')
         
         if Company.query.filter_by(company_email=email).first():
             flash('البريد الإلكتروني مسجل بالفعل', 'danger')
@@ -106,10 +168,14 @@ def company_dashboard():
     # Calculate total applicants by joining jobs
     total_applicants = db.session.query(customer_jobs).join(Jobs, Jobs.id == customer_jobs.c.job_id).filter(Jobs.company_id == comp_id).count()
     
+    from services.team_offer import TeamOffer
+    total_offers = TeamOffer.query.filter_by(company_id=comp_id).count()
+    
     return render_template('company/dashboard.html', 
                            active_jobs=active_jobs, 
                            total_jobs=total_jobs, 
-                           total_applicants=total_applicants)
+                           total_applicants=total_applicants,
+                           total_offers=total_offers)
 
 @company_panel_bp.route('/company/profile', methods=['GET', 'POST'])
 @company_required

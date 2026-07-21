@@ -385,7 +385,7 @@ def create_user():
             fullname=fullname,
             email=email,
             mobile=mobile,
-            password=generate_password_hash(password),
+            password=password,
             activated=True,
         )
         user.user_id = mobile  # Using mobile as user_id per existing pattern
@@ -505,7 +505,7 @@ def reset_password(id):
         flash('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'danger')
         return redirect(url_for('admin.view_user', id=user.id))
 
-    user.password = generate_password_hash(new_password)
+    user.password = new_password
     db.session.commit()
     log_admin_action('reset_password', 'customer', user.id)
     flash(f'تم إعادة تعيين كلمة مرور {user.fullname}', 'success')
@@ -612,7 +612,7 @@ def edit_company(id):
         
         new_password = request.form.get('login_password', '').strip()
         if new_password:
-            company.login_password = generate_password_hash(new_password)
+            company.login_password = new_password
             
         company.activated = request.form.get('activated') == 'on'
         company.is_verified = request.form.get('is_verified') == 'on'
