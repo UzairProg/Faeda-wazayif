@@ -295,8 +295,8 @@
                         <div class="col-6 col-md-3">
                             <div class="mv-metric-card">
                                 <i class="fas fa-globe mv-metric-icon"></i>
-                                <div class="mv-metric-value almarai-extrabold">موثوق</div>
-                                <div class="mv-metric-label almarai-regular">بلد المنشأ</div>
+                                <div class="mv-metric-value almarai-extrabold">{{ customer.country or 'غير محدد' }}</div>
+                                <div class="mv-metric-label almarai-regular">الدولة</div>
                             </div>
                         </div>
                         <!-- Box 2 -->
@@ -335,7 +335,18 @@
                         <div class="col-6 col-md-3">
                             <div class="mv-metric-card">
                                 <i class="fas fa-project-diagram mv-metric-icon"></i>
-                                <div class="mv-metric-value almarai-extrabold" style="font-size: 1rem;">متوسط - كبير</div>
+                                {% set p_size = 'لا يوجد' %}
+                                {% if customer.projects %}
+                                    {% set sizes = customer.projects | map(attribute='project_size') | list %}
+                                    {% if 'كبير' in sizes %}
+                                        {% set p_size = 'كبير' %}
+                                    {% elif 'متوسط' in sizes %}
+                                        {% set p_size = 'متوسط' %}
+                                    {% elif 'صغير' in sizes %}
+                                        {% set p_size = 'صغير' %}
+                                    {% endif %}
+                                {% endif %}
+                                <div class="mv-metric-value almarai-extrabold" style="font-size: 1rem;">{{ p_size }}</div>
                                 <div class="mv-metric-label almarai-regular">حجم المشاريع</div>
                             </div>
                         </div>
@@ -343,7 +354,7 @@
                         <div class="col-6 col-md-3">
                             <div class="mv-metric-card">
                                 <i class="fas fa-lightbulb mv-metric-icon"></i>
-                                <div class="mv-metric-value almarai-extrabold">0</div>
+                                <div class="mv-metric-value almarai-extrabold">{{ customer.ip_contributions|length if customer.ip_contributions else 0 }}</div>
                                 <div class="mv-metric-label almarai-regular">مساهمات الملكية الفكرية</div>
                             </div>
                         </div>

@@ -154,6 +154,96 @@
                         </div>
                     </div>
                     
+                    <!-- Certifications Section -->
+                    <div class="row g-4 mt-2">
+                        <div class="col-md-12">
+                            <label for="certifications" class="form-label almarai-bold" style="color: var(--primary-dark);">الشهادات الاحترافية</label>
+                            <input class="form-control" type="text" id="certifications" name="certifications" value="{{user.certifications or ''}}" placeholder="مثال: PMP, AWS Certified, CCNA (افصل بينها بفاصلة)"/>
+                        </div>
+                    </div>
+
+                    <!-- Projects Section -->
+                    <div class="row g-4 mt-2">
+                        <div class="col-md-12">
+                            <label class="form-label almarai-bold" style="color: var(--primary-dark);">المشاريع</label>
+                            <div id="projects-container">
+                                {% if user.projects %}
+                                    {% for project in user.projects %}
+                                    <div class="row g-2 mb-2 align-items-center project-row">
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" name="project_name[]" value="{{ project.project_name }}" placeholder="اسم المشروع" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select" name="project_size[]" required>
+                                                <option value="صغير" {% if project.project_size == 'صغير' %}selected{% endif %}>صغير</option>
+                                                <option value="متوسط" {% if project.project_size == 'متوسط' %}selected{% endif %}>متوسط</option>
+                                                <option value="كبير" {% if project.project_size == 'كبير' %}selected{% endif %}>كبير</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="url" class="form-control" name="project_url[]" value="{{ project.project_url or '' }}" placeholder="رابط المشروع (اختياري)">
+                                        </div>
+                                        <div class="col-md-1 text-center">
+                                            <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="row g-2 mb-2 align-items-center project-row">
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" name="project_name[]" placeholder="اسم المشروع (اختياري)">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select" name="project_size[]">
+                                                <option value="صغير">صغير</option>
+                                                <option value="متوسط" selected>متوسط</option>
+                                                <option value="كبير">كبير</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="url" class="form-control" name="project_url[]" placeholder="رابط المشروع (اختياري)">
+                                        </div>
+                                        <div class="col-md-1 text-center">
+                                            <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <button type="button" id="add-project-btn" class="btn btn-sm btn-outline-primary mt-2"><i class="fas fa-plus"></i> إضافة مشروع آخر</button>
+                        </div>
+                    </div>
+
+                    <!-- IP Contributions Section -->
+                    <div class="row g-4 mt-2">
+                        <div class="col-md-12">
+                            <label class="form-label almarai-bold" style="color: var(--primary-dark);">مساهمات الملكية الفكرية</label>
+                            <div id="ips-container">
+                                {% if user.ip_contributions %}
+                                    {% for ip in user.ip_contributions %}
+                                    <div class="row g-2 mb-2 align-items-center ip-row">
+                                        <div class="col-md-11">
+                                            <input type="text" class="form-control" name="ip_name[]" value="{{ ip.ip_name }}" placeholder="وصف المساهمة / براءة الاختراع" required>
+                                        </div>
+                                        <div class="col-md-1 text-center">
+                                            <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="row g-2 mb-2 align-items-center ip-row">
+                                        <div class="col-md-11">
+                                            <input type="text" class="form-control" name="ip_name[]" placeholder="وصف المساهمة / براءة الاختراع (اختياري)">
+                                        </div>
+                                        <div class="col-md-1 text-center">
+                                            <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <button type="button" id="add-ip-btn" class="btn btn-sm btn-outline-primary mt-2"><i class="fas fa-plus"></i> إضافة مساهمة أخرى</button>
+                        </div>
+                    </div>
+
                     <hr class="my-4" style="border-color: #e9ecef;"/>
                     
                     <div class="d-flex justify-content-between align-items-center">
@@ -171,15 +261,83 @@
 
 {% block extra_js %}
 <script>
-  // Display selected file name
-  document.getElementById('upload').addEventListener('change', function(e) {
-      var fileNameDisplay = document.getElementById('file-name-display');
-      if (e.target.files && e.target.files[0]) {
-          fileNameDisplay.style.display = 'block';
-          fileNameDisplay.innerHTML = '<i class="fas fa-check-circle me-1"></i> تم اختيار الملف: ' + e.target.files[0].name;
-      } else {
-          fileNameDisplay.style.display = 'none';
-      }
-  });
+document.addEventListener('DOMContentLoaded', function() {
+    // File input preview
+    const fileInput = document.getElementById('upload');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    if(fileInput && fileNameDisplay) {
+        fileInput.addEventListener('change', function(e) {
+            if(this.files && this.files.length > 0) {
+                fileNameDisplay.textContent = 'تم اختيار الملف: ' + this.files[0].name;
+                fileNameDisplay.style.display = 'block';
+            } else {
+                fileNameDisplay.style.display = 'none';
+            }
+        });
+    }
+
+    // Dynamic Projects
+    const addProjectBtn = document.getElementById('add-project-btn');
+    const projectsContainer = document.getElementById('projects-container');
+    if(addProjectBtn && projectsContainer) {
+        addProjectBtn.addEventListener('click', function() {
+            const row = document.createElement('div');
+            row.className = 'row g-2 mb-2 align-items-center project-row';
+            row.innerHTML = `
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="project_name[]" placeholder="اسم المشروع" required>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" name="project_size[]" required>
+                        <option value="صغير">صغير</option>
+                        <option value="متوسط" selected>متوسط</option>
+                        <option value="كبير">كبير</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <input type="url" class="form-control" name="project_url[]" placeholder="رابط المشروع (اختياري)">
+                </div>
+                <div class="col-md-1 text-center">
+                    <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+            projectsContainer.appendChild(row);
+        });
+    }
+
+    // Dynamic IPs
+    const addIpBtn = document.getElementById('add-ip-btn');
+    const ipsContainer = document.getElementById('ips-container');
+    if(addIpBtn && ipsContainer) {
+        addIpBtn.addEventListener('click', function() {
+            const row = document.createElement('div');
+            row.className = 'row g-2 mb-2 align-items-center ip-row';
+            row.innerHTML = `
+                <div class="col-md-11">
+                    <input type="text" class="form-control" name="ip_name[]" placeholder="وصف المساهمة / براءة الاختراع" required>
+                </div>
+                <div class="col-md-1 text-center">
+                    <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+            ipsContainer.appendChild(row);
+        });
+    }
+
+    // Remove Row logic
+    document.addEventListener('click', function(e) {
+        if(e.target.closest('.remove-row-btn')) {
+            const btn = e.target.closest('.remove-row-btn');
+            const row = btn.closest('.row');
+            if(row.parentNode.children.length > 1) {
+                row.remove();
+            } else {
+                // If last row, clear inputs instead of removing
+                const inputs = row.querySelectorAll('input');
+                inputs.forEach(input => input.value = '');
+            }
+        }
+    });
+});
 </script>
 {% endblock %}

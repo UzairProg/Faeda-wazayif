@@ -934,6 +934,35 @@ def edit_profile_job_data():
         user.years_of_skills = request.form.get('new_years_of_skills')
         user.preferred_field_of_work = request.form.get('new_preferred_field_of_work')
         user.work_type = request.form.get('new_work_type')
+        if request.form.get('certifications') is not None:
+            user.certifications = request.form.get('certifications')
+
+        # Handle Projects
+        project_names = request.form.getlist('project_name[]')
+        project_sizes = request.form.getlist('project_size[]')
+        project_urls = request.form.getlist('project_url[]')
+        
+        CustomerProject.query.filter_by(customer_id=user_id).delete()
+        for i in range(len(project_names)):
+            if project_names[i].strip():
+                new_proj = CustomerProject(
+                    customer_id=user_id,
+                    project_name=project_names[i],
+                    project_size=project_sizes[i] if i < len(project_sizes) else 'متوسط',
+                    project_url=project_urls[i] if i < len(project_urls) else None
+                )
+                db.session.add(new_proj)
+
+        # Handle IP Contributions
+        ip_names = request.form.getlist('ip_name[]')
+        CustomerIPContribution.query.filter_by(customer_id=user_id).delete()
+        for ip in ip_names:
+            if ip.strip():
+                new_ip = CustomerIPContribution(
+                    customer_id=user_id,
+                    ip_name=ip
+                )
+                db.session.add(new_ip)
 
         user.cv  =  Customers.get_customer_cv_by_user_id(id=user_id)# noqa: F405
 
