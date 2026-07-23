@@ -162,6 +162,8 @@ def company_register():
 @company_required
 def company_dashboard():
     comp_id = session['company_id']
+    comp = Company.query.get(comp_id)
+    
     active_jobs = Jobs.query.filter_by(company_id=comp_id, status='approved').count()
     total_jobs = Jobs.query.filter_by(company_id=comp_id).count()
     
@@ -171,11 +173,54 @@ def company_dashboard():
     from services.team_offer import TeamOffer
     total_offers = TeamOffer.query.filter_by(company_id=comp_id).count()
     
+    # Calculate Market Value dynamically (100 Points System)
+    points = 0.0
+    
+    # 1. Success Rate (Max 20 pts) - 1% = 0.2 pts
+    success = getattr(comp, 'success_rate', 0.0) or 0.0
+    points += min(success * 0.2, 20.0)
+    
+    # 2. Profit Percentage (Max 15 pts) - 1% = 0.15 pts
+    profit = getattr(comp, 'profit_percentage', 0.0) or 0.0
+    points += min(profit * 0.15, 15.0)
+    
+    # 3. Number of Projects (Max 15 pts) - 1 project = 1 pt
+    projects = getattr(comp, 'number_of_projects', 0) or 0
+    points += min(projects * 1.0, 15.0)
+    
+    # 4. Intellectual Property (Max 10 pts) - 1 IP = 2 pts
+    ip = getattr(comp, 'intellectual_property', 0) or 0
+    points += min(ip * 2.0, 10.0)
+    
+    # 5. Reputation (Max 10 pts)
+    rep = (getattr(comp, 'reputation', '') or '').strip().upper()
+    if 'A+' in rep: points += 10.0
+    elif 'A' in rep: points += 8.0
+    elif 'B' in rep: points += 6.0
+    elif 'C' in rep: points += 4.0
+    
+    # 6. Social Impact (Max 5 pts)
+    social = (getattr(comp, 'social_impact', '') or '').strip().upper()
+    if 'HIGH' in social: points += 5.0
+    elif 'MEDIUM' in social: points += 3.0
+    elif 'LOW' in social: points += 1.0
+        
+    # 7. Services Provided (Max 5 pts)
+    services = (getattr(comp, 'services_provided', '') or '').strip()
+    if services and services != 'N/A': points += 5.0
+        
+    # 8. Project Size (Max 20 pts) - 10 size units = 1 pt (or 1M = 1pt depending on scale)
+    size = getattr(comp, 'project_size', 0) or 0
+    points += min(size * 0.1, 20.0)
+    
+    market_value = round(points, 1)
+    
     return render_template('company/dashboard.html', 
                            active_jobs=active_jobs, 
                            total_jobs=total_jobs, 
                            total_applicants=total_applicants,
-                           total_offers=total_offers)
+                           total_offers=total_offers,
+                           market_value=market_value)
 
 @company_panel_bp.route('/company/profile', methods=['GET', 'POST'])
 @company_required
@@ -191,6 +236,19 @@ def company_profile():
         company.about_company_english = request.form.get('about_en')
         company.company_email = request.form.get('email')
         company.company_mobile = request.form.get('mobile')
+        
+        # Save the 8 new metrics fields
+        try:
+            company.project_size = int(request.form.get('project_size') or 0)
+            company.number_of_projects = int(request.form.get('number_of_projects') or 0)
+            company.success_rate = float(request.form.get('success_rate') or 0.0)
+            company.profit_percentage = float(request.form.get('profit_percentage') or 0.0)
+            company.intellectual_property = int(request.form.get('intellectual_property') or 0)
+        except ValueError:
+            pass
+        company.reputation = request.form.get('reputation', 'N/A')
+        company.services_provided = request.form.get('services_provided', 'N/A')
+        company.social_impact = request.form.get('social_impact', 'N/A')
         
         # Handle Logo Upload
         if 'logo' in request.files:

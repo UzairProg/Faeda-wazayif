@@ -158,6 +158,47 @@
                             <textarea class="form-control almarai-regular" name="about_en" rows="4" placeholder="Write a brief description about the company..." style="resize: none;" dir="ltr">{{ company.about_company_english or '' }}</textarea>
                         </div>
 
+                        <hr class="mb-4 text-muted">
+                        <h4 class="almarai-bold mb-4" style="color: var(--primary-dark);">مؤشرات المنشأة (للوحة التحكم)</h4>
+                        
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-3">
+                                <label class="form-label almarai-bold">حجم المشاريع</label>
+                                <input type="number" class="form-control almarai-regular" name="project_size" value="{{ company.project_size or 0 }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label almarai-bold">عدد المشاريع</label>
+                                <input type="number" class="form-control almarai-regular" name="number_of_projects" value="{{ company.number_of_projects or 0 }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label almarai-bold">نسبة نجاح المشاريع (%)</label>
+                                <input type="number" step="0.1" class="form-control almarai-regular" name="success_rate" value="{{ company.success_rate or 0.0 }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label almarai-bold">السمعة</label>
+                                <input type="text" class="form-control almarai-regular" name="reputation" value="{{ company.reputation or 'N/A' }}" placeholder="مثال: A+">
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-3">
+                                <label class="form-label almarai-bold">صافي أرباح الشركة (%)</label>
+                                <input type="number" step="0.1" class="form-control almarai-regular" name="profit_percentage" value="{{ company.profit_percentage or 0.0 }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label almarai-bold">الخدمات المقدمة</label>
+                                <input type="text" class="form-control almarai-regular" name="services_provided" value="{{ company.services_provided or 'N/A' }}" placeholder="مثال: SaaS">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label almarai-bold">الملكية الفكرية</label>
+                                <input type="number" class="form-control almarai-regular" name="intellectual_property" value="{{ company.intellectual_property or 0 }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label almarai-bold">Social Impact</label>
+                                <input type="text" class="form-control almarai-regular" name="social_impact" value="{{ company.social_impact or 'N/A' }}" placeholder="مثال: High">
+                            </div>
+                        </div>
+
                         <div class="text-center">
                             <button type="submit" class="btn btn-save almarai-bold shadow-sm w-50">
                                 <i class="fas fa-save me-1"></i> حفظ التغييرات

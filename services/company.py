@@ -41,6 +41,15 @@ class Company(db.Model):
     
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # Added 8 new metrics fields
+    project_size = db.Column(db.Integer, default=0)
+    number_of_projects = db.Column(db.Integer, default=0)
+    success_rate = db.Column(db.Float, default=0.0)
+    reputation = db.Column(db.String(20), default='N/A')
+    profit_percentage = db.Column(db.Float, default=0.0)
+    services_provided = db.Column(db.String(100), default='N/A')
+    intellectual_property = db.Column(db.Integer, default=0)
+    social_impact = db.Column(db.String(20), default='N/A')
 
     company_jobs = db.relationship('Jobs', backref='company', lazy=True)
 
