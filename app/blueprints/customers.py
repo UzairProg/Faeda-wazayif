@@ -22,10 +22,28 @@ import ssl
 import smtplib
 from services.teams import Teams , team_members_association
 from sqlalchemy import and_
+from ai_engine.market_value_calculator import get_market_value_for_customer
+
 
 import string
 from services.admin import Admin
 from datetime import datetime
+
+from ai_engine.market_value_calculator import get_market_value_for_customer
+from services.customer import CustomerProfileHistory
+
+def log_profile_update(customer_obj, event_desc):
+    """Recalculates market value and logs it to history."""
+    try:
+        market_data = get_market_value_for_customer(customer_obj)
+        new_history = CustomerProfileHistory(
+            customer_id=customer_obj.id,
+            score=market_data['total_score'],
+            event_description=event_desc
+        )
+        db.session.add(new_history)
+    except Exception as e:
+        print(f"Failed to log profile update: {str(e)}")
 
 existing_user_ids = set()
 
@@ -883,6 +901,7 @@ def edit_profile_personal_data():
 
             # Commit changes to the database
             try:
+                log_profile_update(user, 'تحديث البيانات الشخصية')
                 db.session.commit()# noqa: F405
                 flash('تم تحديث البيانات بنجاح', 'success')
                 return redirect('/edit-profile/personal_data')
@@ -915,6 +934,35 @@ def edit_profile_job_data():
         user.years_of_skills = request.form.get('new_years_of_skills')
         user.preferred_field_of_work = request.form.get('new_preferred_field_of_work')
         user.work_type = request.form.get('new_work_type')
+        if request.form.get('certifications') is not None:
+            user.certifications = request.form.get('certifications')
+
+        # Handle Projects
+        project_names = request.form.getlist('project_name[]')
+        project_sizes = request.form.getlist('project_size[]')
+        project_urls = request.form.getlist('project_url[]')
+        
+        CustomerProject.query.filter_by(customer_id=user_id).delete()
+        for i in range(len(project_names)):
+            if project_names[i].strip():
+                new_proj = CustomerProject(
+                    customer_id=user_id,
+                    project_name=project_names[i],
+                    project_size=project_sizes[i] if i < len(project_sizes) else 'متوسط',
+                    project_url=project_urls[i] if i < len(project_urls) else None
+                )
+                db.session.add(new_proj)
+
+        # Handle IP Contributions
+        ip_names = request.form.getlist('ip_name[]')
+        CustomerIPContribution.query.filter_by(customer_id=user_id).delete()
+        for ip in ip_names:
+            if ip.strip():
+                new_ip = CustomerIPContribution(
+                    customer_id=user_id,
+                    ip_name=ip
+                )
+                db.session.add(new_ip)
 
         user.cv  =  Customers.get_customer_cv_by_user_id(id=user_id)# noqa: F405
 
@@ -936,8 +984,9 @@ def edit_profile_job_data():
                 file_path = os.path.join(current_app.config['UPLOAD_CUSTOMERS_CV'], filename)
                 file.save(file_path)
                 new_cv = filename
-                # Update the user's CV field with the new CV filename
                 user.cv = new_cv
+                
+        log_profile_update(user, 'تحديث البيانات المهنية والسيرة الذاتية')
  # Commit the changes to the database
         db.session.commit()# noqa: F405
 
@@ -966,6 +1015,7 @@ def edit_profile_educational_data():
         user.department_university = request.form.get('new_department_university')
         user.gpa = request.form.get('new_gpa')
         user.img  =  Customers.get_customer_image_by_user_id(id=user_id)# noqa: F405
+        log_profile_update(user, 'تحديث المؤهلات العلمية')
         db.session.commit()# noqa: F405
         flash('تم تحديث البيانات بنجاح', 'success')
         return redirect('/edit-profile/educational_data')
@@ -1049,6 +1099,7 @@ def edit_profile():
                     # Update the user's CV field with the new CV filename
                     user.img = new_cv
 
+        log_profile_update(user, 'تحديث شامل للملف الشخصي')
  # Commit the changes to the database
         db.session.commit()# noqa: F405
 
@@ -1071,7 +1122,15 @@ def redirects():
     if 'session_customer' in session:
         user_id = session.get('user_id')
         customer_obj = Customers.query.get(user_id)  # noqa: F405
-        return render_template('panel/customer_panel.html', customer=customer_obj)
+        
+        # Calculate market value for the dashboard
+        market_data = get_market_value_for_customer(customer_obj)
+        
+        # Get history (last 6 events)
+        history_records = CustomerProfileHistory.query.filter_by(customer_id=customer_obj.id).order_by(CustomerProfileHistory.created_at.desc()).limit(6).all()
+        history_records.reverse()  # chronological order for chart
+        
+        return render_template('panel/customer_panel.html', customer=customer_obj, market_data=market_data, history=history_records)
     elif 'session_company' in session:
         company_id = session.get('company_id')
         company_obj = Company.query.get(company_id)  # noqa: F405
@@ -1098,6 +1157,7 @@ def my_profile():
         if not customer_obj:
             flash('لم يتم العثور على المستخدم', 'error')
             return redirect('/login')
+            
         return render_template('panel/profile.html', customer=customer_obj)
     elif 'session_company' in session:
         company_id = session.get('company_id')

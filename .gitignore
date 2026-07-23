@@ -24,3 +24,5 @@ env/
 instance/*.db
 *.lnk
 *.link
+
+requirements.txt

@@ -62,6 +62,9 @@ class Customers(db.Model):
     messages = db.relationship('Message', backref='customer', lazy=True)
     skills = db.relationship('Skills', backref='job_skills', lazy=True)
     lang = db.relationship('Lang', backref='customer_languages', lazy=True)
+    profile_history = db.relationship('CustomerProfileHistory', backref='customer', lazy=True, order_by="desc(CustomerProfileHistory.created_at)")
+    projects = db.relationship('CustomerProject', backref='customer', lazy=True, cascade="all, delete-orphan")
+    ip_contributions = db.relationship('CustomerIPContribution', backref='customer', lazy=True, cascade="all, delete-orphan")
 
     def __init__(
         self, fullname, email, mobile, password,about=None, sex=None, country=None,city = None,government = None, education_statue=None,
@@ -414,5 +417,31 @@ customer_jobs = db.Table(
     db.Column('timestamp', db.DateTime, default=datetime.utcnow)
 )
 
+class CustomerProfileHistory(db.Model):
+    __tablename__ = 'customer_profile_history'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+    score = db.Column(db.Float, nullable=False)
+    event_description = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def __init__(self, customer_id, score, event_description):
+        self.customer_id = customer_id
+        self.score = score
+        self.event_description = event_description
 
+class CustomerProject(db.Model):
+    __tablename__ = 'customer_projects'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+    project_name = db.Column(db.String(200), nullable=False)
+    project_size = db.Column(db.String(50), nullable=False)
+    project_url = db.Column(db.String(500), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class CustomerIPContribution(db.Model):
+    __tablename__ = 'customer_ip_contributions'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+    ip_name = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
