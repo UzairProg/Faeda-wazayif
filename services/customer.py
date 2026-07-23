@@ -62,6 +62,7 @@ class Customers(db.Model):
     messages = db.relationship('Message', backref='customer', lazy=True)
     skills = db.relationship('Skills', backref='job_skills', lazy=True)
     lang = db.relationship('Lang', backref='customer_languages', lazy=True)
+    profile_history = db.relationship('CustomerProfileHistory', backref='customer', lazy=True, order_by="desc(CustomerProfileHistory.created_at)")
 
     def __init__(
         self, fullname, email, mobile, password,about=None, sex=None, country=None,city = None,government = None, education_statue=None,
@@ -414,5 +415,15 @@ customer_jobs = db.Table(
     db.Column('timestamp', db.DateTime, default=datetime.utcnow)
 )
 
+class CustomerProfileHistory(db.Model):
+    __tablename__ = 'customer_profile_history'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+    score = db.Column(db.Float, nullable=False)
+    event_description = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-
+    def __init__(self, customer_id, score, event_description):
+        self.customer_id = customer_id
+        self.score = score
+        self.event_description = event_description

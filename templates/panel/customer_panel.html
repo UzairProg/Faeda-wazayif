@@ -9,11 +9,13 @@
         border-radius: 15px;
         border: none;
         transition: transform 0.3s;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
+
     .stat-card:hover {
         transform: translateY(-5px);
     }
+
     .icon-box {
         width: 60px;
         height: 60px;
@@ -23,44 +25,133 @@
         justify-content: center;
         font-size: 1.5rem;
     }
-    .text-primary-dark { color: var(--primary-dark); }
-    .bg-primary-light { background-color: rgba(35, 46, 76, 0.1); }
-    .bg-accent-red-light { background-color: rgba(220, 53, 69, 0.1); }
-    .bg-accent-yellow-light { background-color: rgba(240, 191, 86, 0.2); }
-    
+
+    .text-primary-dark {
+        color: var(--primary-dark);
+    }
+
+    .bg-primary-light {
+        background-color: rgba(35, 46, 76, 0.1);
+    }
+
+    .bg-accent-red-light {
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    .bg-accent-yellow-light {
+        background-color: rgba(240, 191, 86, 0.2);
+    }
+
     .table-custom {
         vertical-align: middle;
     }
+
     .table-custom thead th {
         background-color: var(--primary-dark);
         color: white;
         border: none;
         padding: 15px;
     }
+
     .table-custom tbody td {
         padding: 15px;
         border-bottom: 1px solid #f1f2f5;
+    }
+    
+    /* ===== Advanced Market Value Dashboard ===== */
+    .mv-metric-card {
+        background-color: #f8fafc;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        height: 100%;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+    .mv-metric-icon {
+        font-size: 1.5rem;
+        color: #101c38;
+        margin-bottom: 8px;
+    }
+    .mv-metric-value {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #101c38;
+        margin-bottom: 2px;
+    }
+    .mv-metric-label {
+        font-size: 0.75rem;
+        color: #94a3b8;
+    }
+    .mv-score-card {
+        background: #101c38;
+        border-radius: 12px;
+        color: white;
+        padding: 30px 20px;
+        height: 100%;
+        position: relative;
+    }
+    .mv-score-value {
+        font-size: 4rem;
+        font-weight: 900;
+        color: #dc3545;
+        line-height: 1;
+        margin: 20px 0;
+    }
+    .mv-history-card, .mv-chart-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e2e8f0;
+        height: 100%;
+    }
+    .mv-timeline {
+        position: relative;
+        padding-right: 20px;
+        border-right: 2px solid #e2e8f0;
+    }
+    .mv-timeline-item {
+        position: relative;
+        margin-bottom: 20px;
+        padding-right: 15px;
+    }
+    .mv-timeline-item::before {
+        content: '';
+        position: absolute;
+        right: -25px;
+        top: 5px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #4ade80;
+        border: 2px solid white;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container-xxl flex-grow-1 container-p-y">
-    
+
     <!-- Welcome Section -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card stat-card" style="background: linear-gradient(135deg, var(--primary-dark), #1a2238); color: white;">
+            <div class="card stat-card"
+                style="background: linear-gradient(135deg, var(--primary-dark), #1a2238); color: white;">
                 <div class="card-body d-flex justify-content-between align-items-center p-4 p-md-5">
                     <div>
-                        <h3 class="card-title text-white almarai-extrabold mb-2">مرحباً بك، {{ customer.fullname.split(' ')[0] if customer.fullname else 'يا صديق' }}! 👋</h3>
-                        <p class="mb-0 almarai-regular" style="color: #ced4da;">خطط لمستقبلك المشرق وانطلق معنا نحو التطور في منصة فائدة.</p>
+                        <h3 class="card-title text-white almarai-extrabold mb-2">مرحباً بك، {{ customer.fullname.split('
+                            ')[0] if customer.fullname else 'يا صديق' }}! 👋</h3>
+                        <p class="mb-0 almarai-regular" style="color: #ced4da;">خطط لمستقبلك المشرق وانطلق معنا نحو
+                            التطور في منصة فائدة.</p>
                         {% if not customer.cv %}
-                        <a href="{{ url_for('customer.get_edit_profile_personal_data') }}" class="btn btn-outline-light mt-4 almarai-bold" style="border-radius: 10px;">استكمل سيرتك الذاتية</a>
+                        <a href="{{ url_for('customer.get_edit_profile_personal_data') }}"
+                            class="btn btn-outline-light mt-4 almarai-bold" style="border-radius: 10px;">استكمل سيرتك
+                            الذاتية</a>
                         {% endif %}
                     </div>
                     <div class="d-none d-sm-block">
-                        <img src="{{ url_for('static', filename='panel/assets/img/illustrations/man-with-laptop-light.png') }}" height="130" alt="Welcome Image">
+                        <img src="{{ url_for('static', filename='panel/assets/img/illustrations/man-with-laptop-light.png') }}"
+                            height="130" alt="Welcome Image">
                     </div>
                 </div>
             </div>
@@ -89,13 +180,14 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Profile Stat -->
         <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
             <div class="card stat-card h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="icon-box bg-accent-yellow-light me-3 ms-0 ms-md-3" style="color: var(--accent-yellow);">
+                        <div class="icon-box bg-accent-yellow-light me-3 ms-0 ms-md-3"
+                            style="color: var(--accent-yellow);">
                             <i class="fas fa-user-check"></i>
                         </div>
                         <div>
@@ -104,7 +196,9 @@
                         </div>
                     </div>
                     <div class="progress" style="height: 8px; border-radius: 10px;">
-                        <div class="progress-bar {% if profile_completion == 100 %}bg-success{% else %}bg-warning{% endif %}" role="progressbar" style="width: {{ profile_completion }}%;" aria-valuenow="{{ profile_completion }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar {% if profile_completion == 100 %}bg-success{% else %}bg-warning{% endif %}"
+                            role="progressbar" style="width: {{ profile_completion }}%;"
+                            aria-valuenow="{{ profile_completion }}" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
             </div>
@@ -120,12 +214,179 @@
                     <div>
                         <h6 class="mb-1 text-muted almarai-bold">حالة الحساب</h6>
                         {% if customer.status == 'active' %}
-                            <h3 class="mb-0 almarai-extrabold text-success">نشط</h3>
+                        <h3 class="mb-0 almarai-extrabold text-success">نشط</h3>
                         {% elif customer.status == 'warned' %}
-                            <h3 class="mb-0 almarai-extrabold text-warning">تحذير ({{ customer.warnings_count }})</h3>
+                        <h3 class="mb-0 almarai-extrabold text-warning">تحذير ({{ customer.warnings_count }})</h3>
                         {% else %}
-                            <h3 class="mb-0 almarai-extrabold text-danger">{{ customer.status }}</h3>
+                        <h3 class="mb-0 almarai-extrabold text-danger">{{ customer.status }}</h3>
                         {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Market Value Card ===== -->
+    <div class="row mt-4 mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 mb-2"
+                style="border-radius: 15px; overflow: hidden; background: linear-gradient(135deg, #232E4C 0%, #1A233A 100%); color: #ffffff;"
+                dir="rtl">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="almarai-extrabold mb-0 d-flex align-items-center gap-2" style="color: #ffffff;">
+                            <i class="fas fa-chart-line text-warning"></i> القيمة السوقية التقديرية
+                        </h5>
+                        <span class="badge bg-warning text-dark almarai-bold px-3 py-2" style="border-radius: 8px;">{{
+                            market_data.percentile_label }}</span>
+                    </div>
+
+                    <div class="row align-items-center g-4">
+                        <div class="col-md-6 text-center text-md-start">
+                            <p class="almarai-regular text-light mb-1 opacity-75">الراتب المتوقع (متوسط)</p>
+                            {% if market_data.salary_range %}
+                            <h2 class="almarai-extrabold mb-1" style="color: #F0BF56 !important;">
+                                {{ "{:,.0f}".format(market_data.salary_range.avg_salary) }} <small
+                                    class="fs-5 text-light opacity-75">ريال / شهرياً</small>
+                            </h2>
+                            <p class="almarai-regular text-light opacity-75 mb-0">
+                                النطاق: {{ "{:,.0f}".format(market_data.salary_range.min_salary) }} - {{
+                                "{:,.0f}".format(market_data.salary_range.max_salary) }} ريال
+                            </p>
+                            {% else %}
+                            <h3 class="almarai-extrabold mb-1" style="color: #F0BF56 !important;">غير متوفر</h3>
+                            <p class="almarai-regular text-light opacity-75 mb-0">لم يتم العثور على بيانات سوقية كافية
+                                لتخصصك</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="almarai-bold">التقييم الشامل المرجح</span>
+                                <span class="almarai-bold" style="color: #F0BF56 !important;">{{ market_data.total_score
+                                    }} / 100</span>
+                            </div>
+                            <div class="progress"
+                                style="height: 12px; background-color: rgba(255,255,255,0.1); border-radius: 10px;">
+                                <div class="progress-bar bg-warning" role="progressbar"
+                                    style="width: {{ market_data.total_score }}%; border-radius: 10px;"
+                                    aria-valuenow="{{ market_data.total_score }}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                            <div class="mt-3 almarai-regular" style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">
+                                مبني على خوارزميات تحليل بيانات سوق العمل (التعليم، الخبرة، تقييم الجامعة، والشهادات).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Advanced Market Value Dashboard ===== -->
+    <div class="row mt-4 mb-4" dir="rtl">
+        <div class="col-12">
+            <!-- Top Section: Score and Metrics -->
+            <div class="row g-3 mb-3">
+                <!-- Metrics Grid -->
+                <div class="col-12">
+                    <div class="row g-3">
+                        <!-- Box 1 -->
+                        <div class="col-6 col-md-3">
+                            <div class="mv-metric-card">
+                                <i class="fas fa-globe mv-metric-icon"></i>
+                                <div class="mv-metric-value almarai-extrabold">موثوق</div>
+                                <div class="mv-metric-label almarai-regular">بلد المنشأ</div>
+                            </div>
+                        </div>
+                        <!-- Box 2 -->
+                        <div class="col-6 col-md-3">
+                            <div class="mv-metric-card">
+                                <i class="fas fa-certificate mv-metric-icon"></i>
+                                <div class="mv-metric-value almarai-extrabold">{{ (customer.certifications|string).count(',') + 1 if customer.certifications else 0 }}</div>
+                                <div class="mv-metric-label almarai-regular">الشهادات الاحترافية</div>
+                            </div>
+                        </div>
+                        <!-- Box 3 -->
+                        <div class="col-6 col-md-3">
+                            <div class="mv-metric-card">
+                                <i class="fas fa-graduation-cap mv-metric-icon"></i>
+                                <div class="mv-metric-value almarai-extrabold" style="font-size: 1.1rem;">{{ customer.educational_qualification or 'بكالوريوس' }}</div>
+                                <div class="mv-metric-label almarai-regular">الدرجة العلمية</div>
+                            </div>
+                        </div>
+                        <!-- Box 4 -->
+                        <div class="col-6 col-md-3">
+                            <div class="mv-metric-card">
+                                <i class="fas fa-layer-group mv-metric-icon"></i>
+                                <div class="mv-metric-value almarai-extrabold">{{ customer.projects|length if customer.projects else 0 }}</div>
+                                <div class="mv-metric-label almarai-regular">عدد المشاريع</div>
+                            </div>
+                        </div>
+                        <!-- Box 5 -->
+                        <div class="col-6 col-md-3">
+                            <div class="mv-metric-card">
+                                <i class="fas fa-briefcase mv-metric-icon"></i>
+                                <div class="mv-metric-value almarai-extrabold" style="font-size: 1.1rem;">{{ customer.years_of_skills or 'لا يوجد' }}</div>
+                                <div class="mv-metric-label almarai-regular">سنوات الخبرة</div>
+                            </div>
+                        </div>
+                        <!-- Box 6 -->
+                        <div class="col-6 col-md-3">
+                            <div class="mv-metric-card">
+                                <i class="fas fa-project-diagram mv-metric-icon"></i>
+                                <div class="mv-metric-value almarai-extrabold" style="font-size: 1rem;">متوسط - كبير</div>
+                                <div class="mv-metric-label almarai-regular">حجم المشاريع</div>
+                            </div>
+                        </div>
+                        <!-- Box 7 -->
+                        <div class="col-6 col-md-3">
+                            <div class="mv-metric-card">
+                                <i class="fas fa-lightbulb mv-metric-icon"></i>
+                                <div class="mv-metric-value almarai-extrabold">0</div>
+                                <div class="mv-metric-label almarai-regular">مساهمات الملكية الفكرية</div>
+                            </div>
+                        </div>
+                        <!-- Box 8 -->
+                        <div class="col-6 col-md-3">
+                            <div class="mv-metric-card">
+                                <i class="fas fa-university mv-metric-icon"></i>
+                                <div class="mv-metric-value almarai-extrabold" style="font-size: 1.1rem;">{{ customer.university or 'غير محدد' }}</div>
+                                <div class="mv-metric-label almarai-regular">الجامعة</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Section: Chart and History -->
+            <div class="row g-3">
+                <!-- Chart Card -->
+                <div class="col-lg-7">
+                    <div class="mv-chart-card">
+                        <h6 class="almarai-bold mb-4" style="color: #101c38;">آخر 6 شهور — نقاط التقييم</h6>
+                        <canvas id="marketValueChart" height="120"></canvas>
+                    </div>
+                </div>
+
+                <!-- History Card -->
+                <div class="col-lg-5">
+                    <div class="mv-history-card" style="max-height: 300px; overflow-y: auto;">
+                        <h6 class="almarai-bold mb-4" style="color: #101c38;">سجل الملف الشخصي</h6>
+                        <div class="mv-timeline almarai-regular" style="color: #64748b; font-size: 0.9rem;">
+                            {% if history and history|length > 0 %}
+                                {% for event in history|reverse %}
+                                <div class="mv-timeline-item">
+                                    <strong class="text-dark">{{ event.created_at.strftime('%Y-%m-%d') }}</strong> - {{ event.event_description }} <span class="text-success">({{ event.score }} pts)</span>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="mv-timeline-item">
+                                    لا يوجد سجل تحديثات بعد. قم بتعديل ملفك لتسجيل أول تحديث!
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -137,8 +398,10 @@
         <div class="col-12">
             <div class="card shadow-sm" style="border-radius: 15px; border: none; overflow: hidden;">
                 <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="m-0 almarai-bold text-primary-dark"><i class="fas fa-history me-2"></i> أحدث طلبات التوظيف</h5>
-                    <a href="{{ url_for('customer.jobapplications_get') }}" class="btn btn-sm btn-outline-primary almarai-bold" style="border-radius: 8px;">عرض الكل</a>
+                    <h5 class="m-0 almarai-bold text-primary-dark"><i class="fas fa-history me-2"></i> أحدث طلبات
+                        التوظيف</h5>
+                    <a href="{{ url_for('customer.jobapplications_get') }}"
+                        class="btn btn-sm btn-outline-primary almarai-bold" style="border-radius: 8px;">عرض الكل</a>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -153,28 +416,32 @@
                             </thead>
                             <tbody class="almarai-regular">
                                 {% if customer.jobs and customer.jobs|length > 0 %}
-                                    {% for job in customer.jobs[-5:]|reverse %}
-                                    <tr>
-                                        <td class="fw-bold text-primary-dark">{{ job.title }}</td>
-                                        <td>
-                                            {% if job.company %}
-                                                {{ job.company.company_arabic_name if job.company.company_arabic_name else job.company.company_english_name if job.company.company_english_name else 'اسم الشركة غير متوفر' }}
-                                            {% else %}
-                                                شركة غير محددة
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ job.town }}</td>
-                                        <td><span class="badge bg-light text-primary-dark border px-3 py-2" style="border-radius: 8px;">{{ job.job_type }}</span></td>
-                                    </tr>
-                                    {% endfor %}
+                                {% for job in customer.jobs[-5:]|reverse %}
+                                <tr>
+                                    <td class="fw-bold text-primary-dark">{{ job.title }}</td>
+                                    <td>
+                                        {% if job.company %}
+                                        {{ job.company.company_arabic_name if job.company.company_arabic_name else
+                                        job.company.company_english_name if job.company.company_english_name else 'اسم
+                                        الشركة غير متوفر' }}
+                                        {% else %}
+                                        شركة غير محددة
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ job.town }}</td>
+                                    <td><span class="badge bg-light text-primary-dark border px-3 py-2"
+                                            style="border-radius: 8px;">{{ job.job_type }}</span></td>
+                                </tr>
+                                {% endfor %}
                                 {% else %}
-                                    <tr>
-                                        <td colspan="4" class="text-center py-5 text-muted">
-                                            <i class="fas fa-folder-open fs-1 mb-3 opacity-50"></i>
-                                            <p class="mb-0">لم تقم بالتقديم على أي وظائف بعد.</p>
-                                            <a href="{{ url_for('job.job_list_get') }}" class="btn btn-primary mt-3" style="border-radius: 10px;">ابحث عن وظيفة</a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">
+                                        <i class="fas fa-folder-open fs-1 mb-3 opacity-50"></i>
+                                        <p class="mb-0">لم تقم بالتقديم على أي وظائف بعد.</p>
+                                        <a href="{{ url_for('job.job_list_get') }}" class="btn btn-primary mt-3"
+                                            style="border-radius: 10px;">ابحث عن وظيفة</a>
+                                    </td>
+                                </tr>
                                 {% endif %}
                             </tbody>
                         </table>
@@ -184,5 +451,79 @@
         </div>
     </div>
 
+
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('marketValueChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(220, 53, 69, 0.2)');
+        gradient.addColorStop(1, 'rgba(220, 53, 69, 0)');
+
+        // Prepare data from backend
+        let labels = [
+            {% for event in history %}
+            "{{ event.created_at.strftime('%m-%d') }}",
+            {% endfor %}
+        ];
+        
+        let dataPoints = [
+            {% for event in history %}
+            {{ event.score }},
+            {% endfor %}
+        ];
+
+        // If no history exists, show an empty chart gracefully
+        if (labels.length === 0) {
+            labels = ['اليوم'];
+            dataPoints = [{{ market_data.total_score }}];
+        } else {
+            // Append the current score at the end if the last event wasn't today
+            labels.push('الآن');
+            dataPoints.push({{ market_data.total_score }});
+        }
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'النقاط',
+                    data: dataPoints,
+                    borderColor: '#dc3545',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#dc3545',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: '#f1f5f9',
+                            drawBorder: false,
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
 {% endblock %}
