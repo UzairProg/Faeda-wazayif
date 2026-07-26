@@ -14,6 +14,64 @@ import logging
 from typing import Dict, Optional, Any, List, Tuple
 
 import pandas as pd
+from thefuzz import fuzz, process
+
+_qs_df: pd.DataFrame | None = None
+
+def _load_qs_data() -> pd.DataFrame:
+    """Load QS rankings CSV into a cached DataFrame.
+
+    Returns:
+        pd.DataFrame: DataFrame with at least '2025 Rank' and 'Institution Name' columns.
+    """
+    global _qs_df
+    if _qs_df is None:
+        try:
+            csv_path = os.path.join(BASE_DIR, "ai_engine", "data", "qs_rankings_2025.csv")
+            _qs_df = pd.read_csv(csv_path)
+        except Exception as e:
+            logger.warning("Failed to load QS rankings data: %s", e)
+            _qs_df = pd.DataFrame(columns=["2025 Rank", "Institution Name"])
+    return _qs_df
+
+def get_qs_university_bonus(user_university_name: str) -> int:
+    """Return bonus points based on QS world ranking using fuzzy matching.
+
+    Matching confidence threshold is 80. Bonus tiers:
+        rank <= 100  → +20
+        rank <= 500  → +15
+        rank <= 1000 → +10
+        otherwise    → +5
+    If no confident match, returns +5 as fallback.
+    """
+    if not user_university_name:
+        return 0
+    df = _load_qs_data()
+    if df.empty:
+        return 5
+    # Prepare list of institution names
+    institutions = df["Institution Name"].astype(str).tolist()
+    match, score = process.extractOne(user_university_name, institutions, scorer=fuzz.ratio) or (None, 0)
+    if score < 80 or match is None:
+        logger.debug("No confident QS match for university '%s' (best score %s)", user_university_name, score)
+        return 5
+    # Retrieve rank for matched institution
+    try:
+        rank_val = int(df.loc[df["Institution Name"] == match, "2025 Rank"].iloc[0])
+    except Exception as e:
+        logger.debug("Failed to retrieve rank for matched university '%s': %s", match, e)
+        return 5
+    if rank_val <= 100:
+        bonus = 20
+    elif rank_val <= 500:
+        bonus = 15
+    elif rank_val <= 1000:
+        bonus = 10
+    else:
+        bonus = 5
+    logger.info("[+] QS university match: '%s' (rank %d) → +%d bonus points", match, rank_val, bonus)
+    return bonus
+
 
 # ---------------------------------------------------------------------------
 # Constants & Configuration
@@ -25,39 +83,7 @@ DB_PATH: str = os.path.join(BASE_DIR, "instance", "database.db")
 # QS World University Rankings — Top Saudi Universities (2024-2026)
 # Source: QS World University Rankings regional listings for Saudi Arabia.
 # These universities consistently rank in the top tier globally and regionally.
-QS_TOP_SAUDI_UNIVERSITIES: List[str] = [
-    # Arabic names (as stored in the Customers model)
-    "جامعة الملك فهد للبترول والمعادن",
-    "جامعة الملك عبد العزيز",
-    "جامعة الملك عبدالعزيز",           # Alternate spelling (no space)
-    "جامعة الملك سعود",
-    "جامعة الإمام عبد الرحمن بن فيصل",
-    "جامعة الإمام عبدالرحمن بن فيصل",  # Alternate spelling
-    "جامعة أم القرى",
-    "جامعة الملك خالد",
-    "جامعة الأمير سلطان",
-    "جامعة الفيصل",
-    "جامعة الملك عبدالله للعلوم والتقنية",  # KAUST
-    # English names (for bilingual profiles)
-    "King Fahd University of Petroleum and Minerals",
-    "KFUPM",
-    "King Abdulaziz University",
-    "KAU",
-    "King Saud University",
-    "KSU",
-    "Imam Abdulrahman Bin Faisal University",
-    "IAU",
-    "Umm Al-Qura University",
-    "UQU",
-    "King Khalid University",
-    "KKU",
-    "Prince Sultan University",
-    "PSU",
-    "Alfaisal University",
-    "King Abdullah University of Science and Technology",
-    "KAUST",
-]
-
+# Removed hardcoded QS_TOP_SAUDI_UNIVERSITIES list; using fuzzy matching against CSV.
 # Degree-level scoring (base points)
 DEGREE_SCORES: Dict[str, int] = {
     # Arabic values (as stored in the Customers model)
@@ -166,46 +192,18 @@ def score_education(educational_qualification: Optional[str]) -> int:
 
 
 def score_university(university: Optional[str]) -> int:
-    """Award bonus points if the user's university is in the QS Top Saudi list.
-
-    Performs case-insensitive and whitespace-normalized matching to handle
-    Arabic spelling variations.
+    """Award bonus points based on QS ranking using fuzzy matching.
 
     Args:
         university: University name from the user's profile.
 
     Returns:
-        int: QS_UNIVERSITY_BONUS if matched, 0 otherwise.
+        int: Bonus points according to ranking tier, or 0 if no university provided.
     """
     if not university:
         return 0
+    return get_qs_university_bonus(university)
 
-    # Normalize: strip, collapse whitespace
-    normalized_input = re.sub(r"\s+", " ", university.strip())
-
-    for qs_uni in QS_TOP_SAUDI_UNIVERSITIES:
-        normalized_qs = re.sub(r"\s+", " ", qs_uni.strip())
-
-        # Case-insensitive comparison
-        if normalized_input.lower() == normalized_qs.lower():
-            logger.info(
-                "[+] QS university match: '%s' -> +%d bonus points",
-                university, QS_UNIVERSITY_BONUS,
-            )
-            return QS_UNIVERSITY_BONUS
-
-    # Partial/substring matching for edge cases
-    for qs_uni in QS_TOP_SAUDI_UNIVERSITIES:
-        normalized_qs = re.sub(r"\s+", " ", qs_uni.strip()).lower()
-        if normalized_qs in normalized_input.lower() or normalized_input.lower() in normalized_qs:
-            logger.info(
-                "[+] QS university partial match: '%s' -> +%d bonus points",
-                university, QS_UNIVERSITY_BONUS,
-            )
-            return QS_UNIVERSITY_BONUS
-
-    logger.debug("No QS university match for: '%s'", university)
-    return 0
 
 
 def score_experience(years_of_skills: Optional[str]) -> int:

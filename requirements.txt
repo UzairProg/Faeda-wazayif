@@ -13,3 +13,11 @@ Werkzeug==3.1.8
 pandas>=2.0.0
 schedule>=1.2.0
 scikit-learn>=1.3.0
+thefuzz[speedup]
+python-Levenshtein
+reportlab
+arabic-reshaper
+python-bidi
+pdfplumber
+spacy
+deep-translator

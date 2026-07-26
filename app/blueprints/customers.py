@@ -21,6 +21,7 @@ from email.message import EmailMessage
 import ssl
 import smtplib
 from services.teams import Teams , team_members_association
+from ai_engine.ats_parser import parse_cv
 from sqlalchemy import and_
 from ai_engine.market_value_calculator import get_market_value_for_customer
 
@@ -983,8 +984,49 @@ def edit_profile_job_data():
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(current_app.config['UPLOAD_CUSTOMERS_CV'], filename)
                 file.save(file_path)
-                new_cv = filename
-                user.cv = new_cv
+                user.cv = filename
+
+                # -----------------------------------------------------------
+                # ATS Parsing: extract professional data from the uploaded CV.
+                # CRITICAL SAFETY: wrapped in try-except so the app never
+                # crashes if the PDF is malformed or the translator times out.
+                # All log messages are in English per AI_AGENT_RULES.md §4.
+                # -----------------------------------------------------------
+                try:
+                    parsed_data = parse_cv(file_path)
+
+                    # Update university with the English-translated name (for
+                    # accurate QS Ranking dataset matching).
+                    if parsed_data.get('university_en'):
+                        user.university = parsed_data['university_en']
+
+                    # Update educational qualification extracted from the CV.
+                    if parsed_data.get('educational_qualification'):
+                        user.educational_qualification = parsed_data['educational_qualification']
+
+                    # Update years of experience extracted from the CV.
+                    if parsed_data.get('years_of_experience') is not None:
+                        user.years_of_skills = parsed_data['years_of_experience']
+
+                    current_app.logger.info(
+                        "ATS: CV parsed successfully for user_id=%s — "
+                        "university_en='%s', qualification='%s', experience='%s'",
+                        user_id,
+                        parsed_data.get('university_en'),
+                        parsed_data.get('educational_qualification'),
+                        parsed_data.get('years_of_experience'),
+                    )
+
+                except Exception as ats_error:
+                    # Log the error in English and continue seamlessly.
+                    current_app.logger.error(
+                        "ATS: CV parsing failed for user_id=%s, file='%s'. "
+                        "Profile update will proceed without ATS data. Error: %s",
+                        user_id,
+                        file_path,
+                        str(ats_error),
+                    )
+
                 
         log_profile_update(user, 'تحديث البيانات المهنية والسيرة الذاتية')
  # Commit the changes to the database
