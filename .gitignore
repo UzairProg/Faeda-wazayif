@@ -1,4 +1,4 @@
-# Python
+# Python Cache
 __pycache__/
 *.py[cod]
 *.pyc
@@ -7,22 +7,28 @@ __pycache__/
 .Python
 *.egg-info/
 
-# Virtual environments
+# Virtual Environments
 .venv/
 venv/
 env/
 
-# Database
+# Database Files
 *.db
 *.sqlite3
-
-# Environment secrets — NEVER commit these
-.env
-.env.*
-
-# Database
 instance/*.db
+
+# Secrets & Local Configuration — NEVER commit these
+.env
+.env.local
+.env.*.local
+!.env.example
+keys.txt
+client_secret.json
+repo_context.txt
+
+# OS & IDE Files
+.DS_Store
 *.lnk
 *.link
-
-requirements.txt
+.vscode/
+.idea/
