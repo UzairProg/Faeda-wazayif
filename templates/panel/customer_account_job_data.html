@@ -72,6 +72,110 @@
       justify-content: center;
       font-size: 2rem;
   }
+
+  /* ===== Certification Cards (LinkedIn-style) ===== */
+  .cert-card {
+      background: #fff;
+      border: 1px solid #e4e7ec;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      animation: certSlideIn 0.35s ease-out;
+  }
+  .cert-card:hover {
+      box-shadow: 0 8px 25px rgba(35,46,76,0.1);
+      border-color: var(--primary-light);
+  }
+  @keyframes certSlideIn {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes certSlideOut {
+      from { opacity: 1; transform: translateY(0); max-height: 600px; margin-bottom: 16px; }
+      to   { opacity: 0; transform: translateY(-12px); max-height: 0; margin-bottom: 0; padding: 0; }
+  }
+  .cert-card.removing {
+      animation: certSlideOut 0.3s ease-in forwards;
+      overflow: hidden;
+  }
+  .cert-card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, rgba(35,46,76,0.03), rgba(240,191,86,0.05));
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+  }
+  .cert-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+  }
+  .cert-card-title-area {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+  }
+  .cert-card-title {
+      font-size: 0.95rem;
+      color: var(--primary-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
+  .cert-card-subtitle {
+      font-size: 0.8rem;
+      color: #8b8fa3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
+  .cert-remove-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(191,42,74,0.08);
+      color: var(--accent-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+  }
+  .cert-remove-btn:hover {
+      background: var(--accent-red);
+      color: #fff;
+      transform: scale(1.08);
+  }
+  .cert-card-body {
+      padding: 20px;
+  }
+  .cert-field-label {
+      font-size: 0.82rem;
+      color: #495057;
+      margin-bottom: 4px;
+  }
+  #cert-empty-state {
+      border: 2px dashed #e4e7ec;
+      border-radius: 16px;
+      padding: 35px 20px;
+      transition: border-color 0.3s ease;
+  }
+  #cert-empty-state:hover {
+      border-color: var(--primary-light);
+  }
 </style>
 {% endblock %}
 
@@ -154,11 +258,115 @@
                         </div>
                     </div>
                     
-                    <!-- Certifications Section -->
+                    <!-- ===== Certifications Section (LinkedIn-style) ===== -->
                     <div class="row g-4 mt-2">
                         <div class="col-md-12">
-                            <label for="certifications" class="form-label almarai-bold" style="color: var(--primary-dark);">الشهادات الاحترافية</label>
-                            <input class="form-control" type="text" id="certifications" name="certifications" value="{{user.certifications or ''}}" placeholder="مثال: PMP, AWS Certified, CCNA (افصل بينها بفاصلة)"/>
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg, var(--accent-yellow), #e6a730);display:flex;align-items:center;justify-content:center;">
+                                        <i class="fas fa-certificate" style="color:#fff;font-size:1.1rem;"></i>
+                                    </div>
+                                    <div>
+                                        <label class="form-label almarai-bold mb-0" style="color: var(--primary-dark); font-size:1.05rem;">الشهادات الاحترافية</label>
+                                        <p class="text-muted mb-0" style="font-size:0.78rem;">أضف شهاداتك المهنية والاحترافية</p>
+                                    </div>
+                                </div>
+                                <button type="button" id="add-cert-btn" class="btn btn-sm almarai-bold" style="border-radius:10px;background:linear-gradient(135deg,var(--primary-dark),var(--primary-light));color:#fff;padding:8px 18px;transition:all 0.3s ease;border:none;">
+                                    <i class="fas fa-plus me-1"></i> إضافة شهادة
+                                </button>
+                            </div>
+
+                            <div id="certifications-container">
+                                {% if user.certifications_list %}
+                                    {% for cert in user.certifications_list %}
+                                    <div class="cert-card" data-index="{{ loop.index0 }}">
+                                        <div class="cert-card-header">
+                                            <div class="cert-card-icon">
+                                                <i class="fas fa-award"></i>
+                                            </div>
+                                            <div class="cert-card-title-area flex-grow-1">
+                                                <span class="cert-card-title almarai-bold">{{ cert.cert_name }}</span>
+                                                <span class="cert-card-subtitle almarai-regular">{{ cert.issuing_org }}</span>
+                                            </div>
+                                            <button type="button" class="cert-remove-btn" title="حذف الشهادة">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                        <div class="cert-card-body">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label almarai-bold cert-field-label">اسم الشهادة <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control cert-name-input" name="cert_name[]" value="{{ cert.cert_name }}" placeholder="مثال: PMP, AWS Solutions Architect" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label almarai-bold cert-field-label">الجهة المانحة <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control cert-org-input" name="cert_org[]" value="{{ cert.issuing_org }}" placeholder="مثال: Microsoft, Amazon, PMI" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label almarai-bold cert-field-label">شهر الإصدار</label>
+                                                    <select class="form-select" name="cert_issue_month[]">
+                                                        <option value="">الشهر</option>
+                                                        {% for m in range(1, 13) %}
+                                                        <option value="{{ m }}" {% if cert.issue_month == m %}selected{% endif %}>{{ ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][m-1] }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label almarai-bold cert-field-label">سنة الإصدار</label>
+                                                    <select class="form-select" name="cert_issue_year[]">
+                                                        <option value="">السنة</option>
+                                                        {% for y in range(2030, 1989, -1) %}
+                                                        <option value="{{ y }}" {% if cert.issue_year == y %}selected{% endif %}>{{ y }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label almarai-bold cert-field-label">شهر الانتهاء</label>
+                                                    <select class="form-select cert-expiry-month" name="cert_expiry_month[]" {% if cert.no_expiry %}disabled{% endif %}>
+                                                        <option value="">الشهر</option>
+                                                        {% for m in range(1, 13) %}
+                                                        <option value="{{ m }}" {% if cert.expiry_month == m %}selected{% endif %}>{{ ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][m-1] }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label almarai-bold cert-field-label">سنة الانتهاء</label>
+                                                    <select class="form-select cert-expiry-year" name="cert_expiry_year[]" {% if cert.no_expiry %}disabled{% endif %}>
+                                                        <option value="">السنة</option>
+                                                        {% for y in range(2040, 1989, -1) %}
+                                                        <option value="{{ y }}" {% if cert.expiry_year == y %}selected{% endif %}>{{ y }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-check" style="padding-right:1.5em; padding-left:0;">
+                                                        <input class="form-check-input cert-no-expiry-cb" type="checkbox" name="cert_no_expiry[]" value="{{ loop.index0 }}" id="no_expiry_{{ loop.index0 }}" {% if cert.no_expiry %}checked{% endif %} style="margin-right:-1.5em; margin-left:0.5em;">
+                                                        <label class="form-check-label almarai-regular" for="no_expiry_{{ loop.index0 }}" style="color:#6c757d;">بدون تاريخ انتهاء</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label almarai-bold cert-field-label">رقم التعريف (Credential ID)</label>
+                                                    <input type="text" class="form-control" name="cert_credential_id[]" value="{{ cert.credential_id or '' }}" placeholder="مثال: ABC123XYZ">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label almarai-bold cert-field-label">رابط التحقق (Credential URL)</label>
+                                                    <input type="url" class="form-control" name="cert_credential_url[]" value="{{ cert.credential_url or '' }}" placeholder="https://verify.example.com/...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+
+                            <!-- Empty state -->
+                            <div id="cert-empty-state" class="text-center py-4" style="display:{% if user.certifications_list %}none{% else %}block{% endif %};">
+                                <div style="width:70px;height:70px;border-radius:50%;background:rgba(35,46,76,0.06);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                                    <i class="fas fa-certificate" style="font-size:1.8rem;color:var(--primary-light);opacity:0.5;"></i>
+                                </div>
+                                <p class="almarai-regular text-muted mb-0">لم تتم إضافة شهادات احترافية بعد</p>
+                                <p class="almarai-regular text-muted" style="font-size:0.8rem;">اضغط على "إضافة شهادة" لبدء الإضافة</p>
+                            </div>
                         </div>
                     </div>
 
@@ -276,6 +484,166 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ===== Dynamic Certifications (LinkedIn-style) =====
+    let certIndex = document.querySelectorAll('.cert-card').length;
+    const certContainer = document.getElementById('certifications-container');
+    const certEmptyState = document.getElementById('cert-empty-state');
+    const addCertBtn = document.getElementById('add-cert-btn');
+
+    const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+
+    function buildMonthOptions() {
+        let html = '<option value="">الشهر</option>';
+        for (let m = 1; m <= 12; m++) {
+            html += `<option value="${m}">${MONTHS_AR[m-1]}</option>`;
+        }
+        return html;
+    }
+    function buildYearOptions(startYear, endYear) {
+        let html = '<option value="">السنة</option>';
+        for (let y = startYear; y >= endYear; y--) {
+            html += `<option value="${y}">${y}</option>`;
+        }
+        return html;
+    }
+
+    function toggleEmptyState() {
+        const cards = certContainer.querySelectorAll('.cert-card');
+        certEmptyState.style.display = cards.length === 0 ? 'block' : 'none';
+    }
+
+    function updateCardHeader(card) {
+        const nameInput = card.querySelector('.cert-name-input');
+        const orgInput = card.querySelector('.cert-org-input');
+        const titleEl = card.querySelector('.cert-card-title');
+        const subtitleEl = card.querySelector('.cert-card-subtitle');
+        if (nameInput && titleEl) {
+            titleEl.textContent = nameInput.value || 'شهادة جديدة';
+        }
+        if (orgInput && subtitleEl) {
+            subtitleEl.textContent = orgInput.value || 'الجهة المانحة';
+        }
+    }
+
+    if (addCertBtn) {
+        addCertBtn.addEventListener('click', function() {
+            const idx = certIndex++;
+            const card = document.createElement('div');
+            card.className = 'cert-card';
+            card.dataset.index = idx;
+            card.innerHTML = `
+                <div class="cert-card-header">
+                    <div class="cert-card-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div class="cert-card-title-area flex-grow-1">
+                        <span class="cert-card-title almarai-bold">شهادة جديدة</span>
+                        <span class="cert-card-subtitle almarai-regular">الجهة المانحة</span>
+                    </div>
+                    <button type="button" class="cert-remove-btn" title="حذف الشهادة">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                <div class="cert-card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold cert-field-label">اسم الشهادة <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control cert-name-input" name="cert_name[]" placeholder="مثال: PMP, AWS Solutions Architect" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold cert-field-label">الجهة المانحة <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control cert-org-input" name="cert_org[]" placeholder="مثال: Microsoft, Amazon, PMI" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label almarai-bold cert-field-label">شهر الإصدار</label>
+                            <select class="form-select" name="cert_issue_month[]">${buildMonthOptions()}</select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label almarai-bold cert-field-label">سنة الإصدار</label>
+                            <select class="form-select" name="cert_issue_year[]">${buildYearOptions(2030, 1990)}</select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label almarai-bold cert-field-label">شهر الانتهاء</label>
+                            <select class="form-select cert-expiry-month" name="cert_expiry_month[]">${buildMonthOptions()}</select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label almarai-bold cert-field-label">سنة الانتهاء</label>
+                            <select class="form-select cert-expiry-year" name="cert_expiry_year[]">${buildYearOptions(2040, 1990)}</select>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-check" style="padding-right:1.5em; padding-left:0;">
+                                <input class="form-check-input cert-no-expiry-cb" type="checkbox" name="cert_no_expiry[]" value="${idx}" id="no_expiry_${idx}" style="margin-right:-1.5em; margin-left:0.5em;">
+                                <label class="form-check-label almarai-regular" for="no_expiry_${idx}" style="color:#6c757d;">بدون تاريخ انتهاء</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold cert-field-label">رقم التعريف (Credential ID)</label>
+                            <input type="text" class="form-control" name="cert_credential_id[]" placeholder="مثال: ABC123XYZ">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold cert-field-label">رابط التحقق (Credential URL)</label>
+                            <input type="url" class="form-control" name="cert_credential_url[]" placeholder="https://verify.example.com/...">
+                        </div>
+                    </div>
+                </div>
+            `;
+            certContainer.appendChild(card);
+            toggleEmptyState();
+
+            // Focus on the name field
+            const nameInput = card.querySelector('.cert-name-input');
+            if (nameInput) nameInput.focus();
+
+            // Bind live header updates
+            bindCardHeaderUpdates(card);
+        });
+    }
+
+    function bindCardHeaderUpdates(card) {
+        const nameInput = card.querySelector('.cert-name-input');
+        const orgInput = card.querySelector('.cert-org-input');
+        if (nameInput) nameInput.addEventListener('input', () => updateCardHeader(card));
+        if (orgInput) orgInput.addEventListener('input', () => updateCardHeader(card));
+    }
+
+    // Bind header updates for existing cards
+    document.querySelectorAll('.cert-card').forEach(card => bindCardHeaderUpdates(card));
+
+    // Cert remove logic
+    document.addEventListener('click', function(e) {
+        const removeBtn = e.target.closest('.cert-remove-btn');
+        if (removeBtn) {
+            const card = removeBtn.closest('.cert-card');
+            if (card) {
+                card.classList.add('removing');
+                setTimeout(() => {
+                    card.remove();
+                    toggleEmptyState();
+                }, 300);
+            }
+            e.stopPropagation();
+            return;
+        }
+    });
+
+    // "No Expiry" checkbox toggle
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('cert-no-expiry-cb')) {
+            const card = e.target.closest('.cert-card');
+            if (card) {
+                const expiryMonth = card.querySelector('.cert-expiry-month');
+                const expiryYear = card.querySelector('.cert-expiry-year');
+                if (e.target.checked) {
+                    if (expiryMonth) { expiryMonth.disabled = true; expiryMonth.value = ''; }
+                    if (expiryYear) { expiryYear.disabled = true; expiryYear.value = ''; }
+                } else {
+                    if (expiryMonth) expiryMonth.disabled = false;
+                    if (expiryYear) expiryYear.disabled = false;
+                }
+            }
+        }
+    });
+
     // Dynamic Projects
     const addProjectBtn = document.getElementById('add-project-btn');
     const projectsContainer = document.getElementById('projects-container');
@@ -324,9 +692,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Remove Row logic
+    // Remove Row logic (for projects and IPs)
     document.addEventListener('click', function(e) {
-        if(e.target.closest('.remove-row-btn')) {
+        if(e.target.closest('.remove-row-btn') && !e.target.closest('.cert-card')) {
             const btn = e.target.closest('.remove-row-btn');
             const row = btn.closest('.row');
             if(row.parentNode.children.length > 1) {

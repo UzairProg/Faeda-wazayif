@@ -65,6 +65,7 @@ class Customers(db.Model):
     profile_history = db.relationship('CustomerProfileHistory', backref='customer', lazy=True, order_by="desc(CustomerProfileHistory.created_at)")
     projects = db.relationship('CustomerProject', backref='customer', lazy=True, cascade="all, delete-orphan")
     ip_contributions = db.relationship('CustomerIPContribution', backref='customer', lazy=True, cascade="all, delete-orphan")
+    certifications_list = db.relationship('CustomerCertification', backref='customer', lazy=True, cascade="all, delete-orphan")
 
     def __init__(
         self, fullname, email, mobile, password,about=None, sex=None, country=None,city = None,government = None, education_statue=None,
@@ -444,4 +445,21 @@ class CustomerIPContribution(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     ip_name = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class CustomerCertification(db.Model):
+    """Model for storing professional certifications with detailed fields (LinkedIn-style)."""
+    __tablename__ = 'customer_certifications'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+    cert_name = db.Column(db.String(200), nullable=False)
+    issuing_org = db.Column(db.String(200), nullable=False)
+    issue_month = db.Column(db.Integer, nullable=True)
+    issue_year = db.Column(db.Integer, nullable=True)
+    expiry_month = db.Column(db.Integer, nullable=True)
+    expiry_year = db.Column(db.Integer, nullable=True)
+    no_expiry = db.Column(db.Boolean, default=False)
+    credential_id = db.Column(db.String(200), nullable=True)
+    credential_url = db.Column(db.String(500), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

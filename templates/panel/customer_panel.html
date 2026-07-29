@@ -392,7 +392,7 @@
                         <div class="col-6 col-md-3">
                             <div class="mv-metric-card">
                                 <i class="fas fa-certificate mv-metric-icon"></i>
-                                <div class="mv-metric-value almarai-extrabold">{{ (customer.certifications|string).count(',') + 1 if customer.certifications else 0 }}</div>
+                                <div class="mv-metric-value almarai-extrabold">{{ customer.certifications_list|length if customer.certifications_list else 0 }}</div>
                                 <div class="mv-metric-label almarai-regular">الشهادات الاحترافية</div>
                             </div>
                         </div>
