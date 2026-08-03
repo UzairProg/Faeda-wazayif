@@ -971,7 +971,7 @@ def edit_profile_job_data():
 
         # Handle Projects
         project_names = request.form.getlist('project_name[]')
-        project_sizes = request.form.getlist('project_size[]')
+        project_descs = request.form.getlist('project_desc[]')
         project_urls = request.form.getlist('project_url[]')
         
         CustomerProject.query.filter_by(customer_id=user_id).delete()
@@ -980,19 +980,39 @@ def edit_profile_job_data():
                 new_proj = CustomerProject(
                     customer_id=user_id,
                     project_name=project_names[i],
-                    project_size=project_sizes[i] if i < len(project_sizes) else 'متوسط',
+                    description=project_descs[i] if i < len(project_descs) else None,
                     project_url=project_urls[i] if i < len(project_urls) else None
                 )
                 db.session.add(new_proj)
 
         # Handle IP Contributions
         ip_names = request.form.getlist('ip_name[]')
+        patent_numbers = request.form.getlist('patent_number[]')
+        ip_credential_urls = request.form.getlist('ip_credential_url[]')
+        existing_ip_evidences = request.form.getlist('existing_ip_evidence[]')
+
         CustomerIPContribution.query.filter_by(customer_id=user_id).delete()
-        for ip in ip_names:
-            if ip.strip():
+        
+        ip_evidence_dir = os.path.join('mysite/static/uploads/customers/ip_evidence')
+        os.makedirs(ip_evidence_dir, exist_ok=True)
+        
+        for i in range(len(ip_names)):
+            if ip_names[i].strip():
+                filename = existing_ip_evidences[i] if i < len(existing_ip_evidences) else None
+                
+                # Check for new file upload for this IP
+                evidence_file = request.files.get(f'ip_evidence_file_{i}')
+                if evidence_file and evidence_file.filename:
+                    filename = secure_filename(evidence_file.filename)
+                    file_path = os.path.join(ip_evidence_dir, filename)
+                    evidence_file.save(file_path)
+
                 new_ip = CustomerIPContribution(
                     customer_id=user_id,
-                    ip_name=ip
+                    ip_name=ip_names[i],
+                    patent_number=patent_numbers[i] if i < len(patent_numbers) else None,
+                    credential_url=ip_credential_urls[i] if i < len(ip_credential_urls) else None,
+                    evidence_file=filename
                 )
                 db.session.add(new_ip)
 

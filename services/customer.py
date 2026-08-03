@@ -436,7 +436,7 @@ class CustomerProject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     project_name = db.Column(db.String(200), nullable=False)
-    project_size = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.Text, nullable=True)
     project_url = db.Column(db.String(500), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -445,6 +445,9 @@ class CustomerIPContribution(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     ip_name = db.Column(db.String(255), nullable=False)
+    patent_number = db.Column(db.String(100), nullable=True)
+    credential_url = db.Column(db.String(500), nullable=True)
+    evidence_file = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 

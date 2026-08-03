@@ -206,6 +206,7 @@
                 <form method="POST" action="/edit-profile/job_data" enctype="multipart/form-data">
                     
                     <!-- CV Upload Section -->
+                    <!-- ملاحظة أمنية: يتم حفظ السير الذاتية (CVs) وملفات الدليل الخاصة بالملكية الفكرية في مجلدات الرفع المخصصة (مثل uploads/customers/cv و uploads/customers/ip_evidence). يجب في بيئة الإنتاج (Production) نقل هذه الملفات خارج المجلد العام (static/) أو حمايتها عبر مسارات تتطلب تسجيل الدخول للوصول إليها لضمان الأمان والحفاظ على سرية البيانات، وذلك كما هو موضح في ملف هيكلة النظام. -->
                     <div class="cv-upload-container">
                         <div class="cv-icon-wrapper">
                             <i class="fas fa-file-pdf"></i>
@@ -219,7 +220,7 @@
                                 <label for="upload" class="btn btn-outline-primary almarai-bold" style="border-radius: 8px;">
                                     <i class="fas fa-upload me-2"></i> 
                                     {% if user.cv %}تحديث السيرة الذاتية{% else %}رفع السيرة الذاتية{% endif %}
-                                    <input name="new_cv" id="upload" hidden type="file" accept="application/pdf" class="account-file-input" {% if not user.cv %}required{% endif %}/>
+                                    <input name="new_cv" id="upload" hidden type="file" accept="application/pdf" class="account-file-input" />
                                 </label>
                                 
                                 {% if user.cv %}
@@ -373,82 +374,142 @@
                     <!-- Projects Section -->
                     <div class="row g-4 mt-2">
                         <div class="col-md-12">
-                            <label class="form-label almarai-bold" style="color: var(--primary-dark);">المشاريع</label>
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg, var(--accent-yellow), #e6a730);display:flex;align-items:center;justify-content:center;">
+                                        <i class="fas fa-project-diagram" style="color:#fff;font-size:1.1rem;"></i>
+                                    </div>
+                                    <div>
+                                        <label class="form-label almarai-bold mb-0" style="color: var(--primary-dark); font-size:1.05rem;">المشاريع</label>
+                                        <p class="text-muted mb-0" style="font-size:0.78rem;">أضف مشاريعك التي عملت عليها</p>
+                                    </div>
+                                </div>
+                                <button type="button" id="add-project-btn" class="btn btn-sm almarai-bold" style="border-radius:10px;background:linear-gradient(135deg,var(--primary-dark),var(--primary-light));color:#fff;padding:8px 18px;transition:all 0.3s ease;border:none;">
+                                    <i class="fas fa-plus me-1"></i> إضافة مشروع
+                                </button>
+                            </div>
+
                             <div id="projects-container">
                                 {% if user.projects %}
                                     {% for project in user.projects %}
-                                    <div class="row g-2 mb-2 align-items-center project-row">
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control" name="project_name[]" value="{{ project.project_name }}" placeholder="اسم المشروع" required>
+                                    <div class="cert-card" data-index="{{ loop.index0 }}">
+                                        <div class="cert-card-header">
+                                            <div class="cert-card-icon">
+                                                <i class="fas fa-laptop-code"></i>
+                                            </div>
+                                            <div class="cert-card-title-area flex-grow-1">
+                                                <span class="cert-card-title almarai-bold">{{ project.project_name }}</span>
+                                            </div>
+                                            <button type="button" class="cert-remove-btn" title="حذف المشروع">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
                                         </div>
-                                        <div class="col-md-3">
-                                            <select class="form-select" name="project_size[]" required>
-                                                <option value="صغير" {% if project.project_size == 'صغير' %}selected{% endif %}>صغير</option>
-                                                <option value="متوسط" {% if project.project_size == 'متوسط' %}selected{% endif %}>متوسط</option>
-                                                <option value="كبير" {% if project.project_size == 'كبير' %}selected{% endif %}>كبير</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="url" class="form-control" name="project_url[]" value="{{ project.project_url or '' }}" placeholder="رابط المشروع (اختياري)">
-                                        </div>
-                                        <div class="col-md-1 text-center">
-                                            <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
+                                        <div class="cert-card-body">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label almarai-bold cert-field-label">اسم المشروع <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control cert-name-input" name="project_name[]" value="{{ project.project_name }}" placeholder="اسم المشروع" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label almarai-bold cert-field-label">رابط المشروع (اختياري)</label>
+                                                    <input type="url" class="form-control" name="project_url[]" value="{{ project.project_url or '' }}" placeholder="https://example.com/...">
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="form-label almarai-bold cert-field-label">الوصف والمهارات المكتسبة</label>
+                                                    <textarea class="form-control" name="project_desc[]" rows="3" placeholder="وصف المشروع والمهارات التي اكتسبتها">{{ project.description or '' }}</textarea>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     {% endfor %}
-                                {% else %}
-                                    <div class="row g-2 mb-2 align-items-center project-row">
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control" name="project_name[]" placeholder="اسم المشروع (اختياري)">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <select class="form-select" name="project_size[]">
-                                                <option value="صغير">صغير</option>
-                                                <option value="متوسط" selected>متوسط</option>
-                                                <option value="كبير">كبير</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="url" class="form-control" name="project_url[]" placeholder="رابط المشروع (اختياري)">
-                                        </div>
-                                        <div class="col-md-1 text-center">
-                                            <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    </div>
                                 {% endif %}
                             </div>
-                            <button type="button" id="add-project-btn" class="btn btn-sm btn-outline-primary mt-2"><i class="fas fa-plus"></i> إضافة مشروع آخر</button>
+
+                            <!-- Empty state projects -->
+                            <div id="project-empty-state" class="text-center py-4" style="display:{% if user.projects %}none{% else %}block{% endif %}; border: 2px dashed #e4e7ec; border-radius: 16px;">
+                                <div style="width:70px;height:70px;border-radius:50%;background:rgba(35,46,76,0.06);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                                    <i class="fas fa-project-diagram" style="font-size:1.8rem;color:var(--primary-light);opacity:0.5;"></i>
+                                </div>
+                                <p class="almarai-regular text-muted mb-0">لم تتم إضافة مشاريع بعد</p>
+                                <p class="almarai-regular text-muted" style="font-size:0.8rem;">اضغط على "إضافة مشروع" لبدء الإضافة</p>
+                            </div>
                         </div>
                     </div>
 
                     <!-- IP Contributions Section -->
                     <div class="row g-4 mt-2">
                         <div class="col-md-12">
-                            <label class="form-label almarai-bold" style="color: var(--primary-dark);">مساهمات الملكية الفكرية</label>
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg, var(--accent-yellow), #e6a730);display:flex;align-items:center;justify-content:center;">
+                                        <i class="fas fa-lightbulb" style="color:#fff;font-size:1.1rem;"></i>
+                                    </div>
+                                    <div>
+                                        <label class="form-label almarai-bold mb-0" style="color: var(--primary-dark); font-size:1.05rem;">مساهمات الملكية الفكرية</label>
+                                        <p class="text-muted mb-0" style="font-size:0.78rem;">أضف براءات الاختراع والمساهمات الفكرية</p>
+                                    </div>
+                                </div>
+                                <button type="button" id="add-ip-btn" class="btn btn-sm almarai-bold" style="border-radius:10px;background:linear-gradient(135deg,var(--primary-dark),var(--primary-light));color:#fff;padding:8px 18px;transition:all 0.3s ease;border:none;">
+                                    <i class="fas fa-plus me-1"></i> إضافة مساهمة
+                                </button>
+                            </div>
+
                             <div id="ips-container">
                                 {% if user.ip_contributions %}
                                     {% for ip in user.ip_contributions %}
-                                    <div class="row g-2 mb-2 align-items-center ip-row">
-                                        <div class="col-md-11">
-                                            <input type="text" class="form-control" name="ip_name[]" value="{{ ip.ip_name }}" placeholder="وصف المساهمة / براءة الاختراع" required>
+                                    <div class="cert-card" data-index="{{ loop.index0 }}">
+                                        <div class="cert-card-header">
+                                            <div class="cert-card-icon">
+                                                <i class="fas fa-stamp"></i>
+                                            </div>
+                                            <div class="cert-card-title-area flex-grow-1">
+                                                <span class="cert-card-title almarai-bold">{{ ip.ip_name }}</span>
+                                            </div>
+                                            <button type="button" class="cert-remove-btn" title="حذف المساهمة">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
                                         </div>
-                                        <div class="col-md-1 text-center">
-                                            <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
+                                        <div class="cert-card-body">
+                                            <div class="row g-3">
+                                                <div class="col-md-12">
+                                                    <label class="form-label almarai-bold cert-field-label">وصف المساهمة / براءة الاختراع <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control cert-name-input" name="ip_name[]" value="{{ ip.ip_name }}" placeholder="وصف المساهمة / براءة الاختراع" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label almarai-bold cert-field-label">رقم توثيق شهادة براءة الاختراع</label>
+                                                    <input type="text" class="form-control" name="patent_number[]" value="{{ ip.patent_number or '' }}" placeholder="مثال: SA12345678">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label almarai-bold cert-field-label">رابط التحقق (اختياري)</label>
+                                                    <input type="url" class="form-control" name="ip_credential_url[]" value="{{ ip.credential_url or '' }}" placeholder="https://verify.example.com/...">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label almarai-bold cert-field-label">ملف الدليل (اختياري)</label>
+                                                    <input type="file" class="form-control" name="ip_evidence_file_{{ loop.index0 }}" accept=".pdf,.jpg,.jpeg,.png">
+                                                    <input type="hidden" name="existing_ip_evidence[]" value="{{ ip.evidence_file or '' }}">
+                                                    {% if ip.evidence_file %}
+                                                    <div class="mt-1">
+                                                        <a href="{{ url_for('static', filename='uploads/customers/ip_evidence/' + ip.evidence_file) }}" target="_blank" style="font-size: 0.8rem; color: var(--primary-light);">
+                                                            <i class="fas fa-paperclip"></i> عرض الملف الحالي
+                                                        </a>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     {% endfor %}
-                                {% else %}
-                                    <div class="row g-2 mb-2 align-items-center ip-row">
-                                        <div class="col-md-11">
-                                            <input type="text" class="form-control" name="ip_name[]" placeholder="وصف المساهمة / براءة الاختراع (اختياري)">
-                                        </div>
-                                        <div class="col-md-1 text-center">
-                                            <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    </div>
                                 {% endif %}
                             </div>
-                            <button type="button" id="add-ip-btn" class="btn btn-sm btn-outline-primary mt-2"><i class="fas fa-plus"></i> إضافة مساهمة أخرى</button>
+
+                            <!-- Empty state ips -->
+                            <div id="ip-empty-state" class="text-center py-4" style="display:{% if user.ip_contributions %}none{% else %}block{% endif %}; border: 2px dashed #e4e7ec; border-radius: 16px;">
+                                <div style="width:70px;height:70px;border-radius:50%;background:rgba(35,46,76,0.06);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                                    <i class="fas fa-lightbulb" style="font-size:1.8rem;color:var(--primary-light);opacity:0.5;"></i>
+                                </div>
+                                <p class="almarai-regular text-muted mb-0">لم تتم إضافة مساهمات ملكية فكرية بعد</p>
+                                <p class="almarai-regular text-muted" style="font-size:0.8rem;">اضغط على "إضافة مساهمة" لبدء الإضافة</p>
+                            </div>
                         </div>
                     </div>
 
@@ -644,32 +705,74 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    let projectIndex = document.querySelectorAll('#projects-container .cert-card').length;
+    let ipIndex = document.querySelectorAll('#ips-container .cert-card').length;
+
+    const projectEmptyState = document.getElementById('project-empty-state');
+    const ipEmptyState = document.getElementById('ip-empty-state');
+
+    function toggleProjectEmptyState() {
+        const cards = projectsContainer.querySelectorAll('.cert-card');
+        projectEmptyState.style.display = cards.length === 0 ? 'block' : 'none';
+    }
+
+    function toggleIpEmptyState() {
+        const cards = ipsContainer.querySelectorAll('.cert-card');
+        ipEmptyState.style.display = cards.length === 0 ? 'block' : 'none';
+    }
+
     // Dynamic Projects
     const addProjectBtn = document.getElementById('add-project-btn');
     const projectsContainer = document.getElementById('projects-container');
     if(addProjectBtn && projectsContainer) {
         addProjectBtn.addEventListener('click', function() {
-            const row = document.createElement('div');
-            row.className = 'row g-2 mb-2 align-items-center project-row';
-            row.innerHTML = `
-                <div class="col-md-4">
-                    <input type="text" class="form-control" name="project_name[]" placeholder="اسم المشروع" required>
+            const idx = projectIndex++;
+            const card = document.createElement('div');
+            card.className = 'cert-card';
+            card.dataset.index = idx;
+            card.innerHTML = `
+                <div class="cert-card-header">
+                    <div class="cert-card-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <div class="cert-card-title-area flex-grow-1">
+                        <span class="cert-card-title almarai-bold">مشروع جديد</span>
+                    </div>
+                    <button type="button" class="cert-remove-btn" title="حذف المشروع">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </div>
-                <div class="col-md-3">
-                    <select class="form-select" name="project_size[]" required>
-                        <option value="صغير">صغير</option>
-                        <option value="متوسط" selected>متوسط</option>
-                        <option value="كبير">كبير</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <input type="url" class="form-control" name="project_url[]" placeholder="رابط المشروع (اختياري)">
-                </div>
-                <div class="col-md-1 text-center">
-                    <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
+                <div class="cert-card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold cert-field-label">اسم المشروع <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control cert-name-input" name="project_name[]" placeholder="اسم المشروع" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label almarai-bold cert-field-label">رابط المشروع (اختياري)</label>
+                            <input type="url" class="form-control" name="project_url[]" placeholder="https://example.com/...">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label almarai-bold cert-field-label">الوصف والمهارات المكتسبة</label>
+                            <textarea class="form-control" name="project_desc[]" rows="3" placeholder="وصف المشروع والمهارات التي اكتسبتها"></textarea>
+                        </div>
+                    </div>
                 </div>
             `;
-            projectsContainer.appendChild(row);
+            projectsContainer.appendChild(card);
+            toggleProjectEmptyState();
+
+            // Focus on the name field
+            const nameInput = card.querySelector('.cert-name-input');
+            if (nameInput) nameInput.focus();
+
+            // Bind live header updates
+            if (nameInput) {
+                nameInput.addEventListener('input', () => {
+                    const titleEl = card.querySelector('.cert-card-title');
+                    if (titleEl) titleEl.textContent = nameInput.value || 'مشروع جديد';
+                });
+            }
         });
     }
 
@@ -678,32 +781,77 @@ document.addEventListener('DOMContentLoaded', function() {
     const ipsContainer = document.getElementById('ips-container');
     if(addIpBtn && ipsContainer) {
         addIpBtn.addEventListener('click', function() {
-            const row = document.createElement('div');
-            row.className = 'row g-2 mb-2 align-items-center ip-row';
-            row.innerHTML = `
-                <div class="col-md-11">
-                    <input type="text" class="form-control" name="ip_name[]" placeholder="وصف المساهمة / براءة الاختراع" required>
+            const idx = ipIndex++;
+            const card = document.createElement('div');
+            card.className = 'cert-card';
+            card.dataset.index = idx;
+            card.innerHTML = `
+                <div class="cert-card-header">
+                    <div class="cert-card-icon">
+                        <i class="fas fa-stamp"></i>
+                    </div>
+                    <div class="cert-card-title-area flex-grow-1">
+                        <span class="cert-card-title almarai-bold">مساهمة جديدة</span>
+                    </div>
+                    <button type="button" class="cert-remove-btn" title="حذف المساهمة">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </div>
-                <div class="col-md-1 text-center">
-                    <button type="button" class="btn btn-danger btn-sm rounded-circle remove-row-btn"><i class="fas fa-trash"></i></button>
+                <div class="cert-card-body">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label almarai-bold cert-field-label">وصف المساهمة / براءة الاختراع <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control cert-name-input" name="ip_name[]" placeholder="وصف المساهمة / براءة الاختراع" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label almarai-bold cert-field-label">رقم توثيق شهادة براءة الاختراع</label>
+                            <input type="text" class="form-control" name="patent_number[]" placeholder="مثال: SA12345678">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label almarai-bold cert-field-label">رابط التحقق (اختياري)</label>
+                            <input type="url" class="form-control" name="ip_credential_url[]" placeholder="https://verify.example.com/...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label almarai-bold cert-field-label">ملف الدليل (اختياري)</label>
+                            <input type="file" class="form-control" name="ip_evidence_file_${idx}" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="hidden" name="existing_ip_evidence[]" value="">
+                        </div>
+                    </div>
                 </div>
             `;
-            ipsContainer.appendChild(row);
+            ipsContainer.appendChild(card);
+            toggleIpEmptyState();
+            
+            // Focus on the name field
+            const nameInput = card.querySelector('.cert-name-input');
+            if (nameInput) nameInput.focus();
+
+            // Bind live header updates
+            if (nameInput) {
+                nameInput.addEventListener('input', () => {
+                    const titleEl = card.querySelector('.cert-card-title');
+                    if (titleEl) titleEl.textContent = nameInput.value || 'مساهمة جديدة';
+                });
+            }
         });
     }
 
-    // Remove Row logic (for projects and IPs)
+    // Remove Row logic for all cert-cards
     document.addEventListener('click', function(e) {
-        if(e.target.closest('.remove-row-btn') && !e.target.closest('.cert-card')) {
-            const btn = e.target.closest('.remove-row-btn');
-            const row = btn.closest('.row');
-            if(row.parentNode.children.length > 1) {
-                row.remove();
-            } else {
-                // If last row, clear inputs instead of removing
-                const inputs = row.querySelectorAll('input');
-                inputs.forEach(input => input.value = '');
+        const removeBtn = e.target.closest('.cert-remove-btn');
+        if (removeBtn) {
+            const card = removeBtn.closest('.cert-card');
+            if (card) {
+                card.classList.add('removing');
+                setTimeout(() => {
+                    card.remove();
+                    if(document.getElementById('certifications-container') && certContainer.contains(card)) toggleEmptyState();
+                    if(document.getElementById('projects-container') && projectsContainer.contains(card)) toggleProjectEmptyState();
+                    if(document.getElementById('ips-container') && ipsContainer.contains(card)) toggleIpEmptyState();
+                }, 300);
             }
+            e.stopPropagation();
+            return;
         }
     });
 });
