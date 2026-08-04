@@ -81,7 +81,7 @@
 - **Data Minimization:** Collect only the personal data strictly necessary for the feature. For example, do not require a phone number if email suffices for the flow.
 
 ### 6.2 User Data Handling
-- **CV & Document Storage:** User-uploaded CVs (`UPLOAD_CUSTOMERS_CV`) contain highly sensitive PII. Store them outside the publicly-accessible `static/` folder in production, or serve them through an authenticated route that checks ownership.
+- **CV & Document Storage:** User-uploaded CVs (`UPLOAD_CUSTOMERS_CV`) and Intellectual Property evidence files (`ip_evidence`) contain highly sensitive PII and confidential information. Store them outside the publicly-accessible `static/` folder in production, or serve them through an authenticated route that checks ownership.
 - **Profile Visibility:** Give users control over what profile fields are visible to companies vs. the public. Default to minimal exposure.
 - **Data Retention:** Define and enforce retention periods. Delete or anonymize inactive accounts and their data after a documented period (e.g., 2 years of inactivity).
 - **Right to Deletion:** Provide a mechanism for users to request full account and data deletion. Cascade properly across all related tables (`Teams`, `Messages`, `Applications`, `Reports`, etc.).
@@ -224,3 +224,9 @@
   4. Notify affected users as required by Saudi PDPL.
 - **Uptime Monitoring:** Monitor the `/health` endpoint and set up alerts for downtime exceeding 5 minutes.
 - **Dependency Updates:** Regularly update Python dependencies (`pip list --outdated`). Monitor for known CVEs in Flask, SQLAlchemy, Jinja2, and other libraries using `pip-audit` or `safety`.
+
+---
+
+## 16. AI Agent Guidelines
+
+- **Temporary Scripts:** Whenever the AI agent creates any temporary script or file for execution (e.g., database migration script, debugging script), it MUST explicitly delete that file immediately after execution is complete to keep the workspace clean, without needing explicit reminders from the user.

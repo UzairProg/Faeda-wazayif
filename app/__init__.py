@@ -16,7 +16,11 @@ def create_app():
     template_dir = os.path.join(base_dir, 'templates')
     
     app = Flask(__name__,template_folder=os.path.join(base_dir, 'templates'),static_folder=os.path.join(base_dir, 'static'))
-    app.config.from_object('config.DevelopmentConfig')
+    env = os.environ.get('FLASK_ENV', 'development')
+    if env == 'production':
+        app.config.from_object('config.ProductionConfig')
+    else:
+        app.config.from_object('config.DevelopmentConfig')
     
     db.init_app(app)
 
