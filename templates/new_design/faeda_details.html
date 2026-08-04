@@ -1,291 +1,430 @@
-<!--
-==============================================================================
-الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
-الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
-المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
-==============================================================================
--->
 {% extends 'new_design/base.html' %}
-{% block title %}تصميم{% endblock %}
+{% block title %}كيف نساعد الأفراد والمنشآت{% endblock %}
 
 {% block extra_css %}
 <style>
-    * {
-            box-sizing: border-box;
-        }
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-size: 14px;
-            font-family: 'Cairo', sans-serif;
-        }
-        .full-background {
-            background: url('/static/new_design/faeda_details_images/v558_120.png') no-repeat center center fixed;
-            background-size: cover;
-            height: 100vh;
-            width: 100%;
-            position: relative;
-            z-index: 1;
-        }
-        .overlay {
-            background: rgba(70, 96, 145, 0.8);
-            height: 100vh;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 2;
-        }
-        .content-wrapper {
-            position: relative;
-            z-index: 3;
-            padding-top: 15%;
-        }
-        .v558_132 {
-            width: 100%;
+    :root {
+        /* Core Brand Colors */
+        --misk-dark: #1a2238;    
+        --misk-light: #f4ecda;   
+        --misk-white: #f8fafc;   
+        --misk-green: #2CB884;   
+        --misk-yellow: #F0B247;  
+        
+        /* Text Colors */
+        --text-main: #1a2238;    
+        --text-muted: #4B5563;
+        --text-inverse: #ffffff;
+        
+        /* Luxurious Gradients */
+        --gradient-primary: linear-gradient(135deg, #2CB884, #24996d);
+        --gradient-dark: linear-gradient(-45deg, #1a2238, #233050, #131929, #1a2238);
+    }
+    
+    /* Ultra Fluid Page Style - Matching Home Page Focus Section */
+    .details-section {
+        min-height: 100vh;
+        background-color: var(--misk-white); /* Matching main page background */
+        position: relative;
+        padding: 150px 0 100px 0;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    /* Fluid Ambient Glows - Same as Main Page */
+    .details-section::before, .details-section::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        z-index: 0;
+        animation: floatGlow 12s ease-in-out infinite alternate;
+        opacity: 0.6;
+    }
+    .details-section::before {
+        top: 20%; left: -5%;
+        width: 450px; height: 450px;
+        background: rgba(44, 184, 132, 0.12); /* Subtle green */
+    }
+    .details-section::after {
+        bottom: 10%; right: -5%;
+        width: 550px; height: 550px;
+        background: rgba(240, 178, 71, 0.12); /* Subtle yellow */
+        animation-delay: -3s;
+    }
+    
+    /* Particles Background */
+    #particles-js {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    @keyframes floatGlow {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(50px, 80px) scale(1.1); }
+    }
+
+    .content-wrapper {
+        position: relative;
+        z-index: 5;
+        width: 100%;
+    }
+
+    /* Header */
+    .details-header {
+        color: var(--text-main);
+        font-size: 3.5rem;
+        text-align: center;
+        margin-bottom: 60px;
+        position: relative;
+    }
+    .details-header::after {
+        content: '';
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 6px;
+        background: var(--gradient-primary); /* Fluid gradient underline */
+        border-radius: 10px;
+    }
+
+    /* Glass Tabs (Pill Style) */
+    .nav-tabs-custom {
+        border-bottom: none;
+        background: #F1F5F9; /* Light slate gray for contrast */
+        padding: 8px;
+        border-radius: 50px;
+        display: inline-flex;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        margin: 0 auto 50px auto;
+    }
+    
+    .nav-tabs-custom .nav-link {
+        border: none !important;
+        color: var(--misk-dark) !important; /* Force dark blue text */
+        font-size: 1.3rem;
+        padding: 12px 50px;
+        background: transparent !important;
+        border-radius: 40px;
+        transition: all 0.4s ease;
+        font-weight: 700;
+    }
+    
+    .nav-tabs-custom .nav-link.active {
+        color: white !important;
+        background: var(--gradient-primary) !important;
+        box-shadow: 0 10px 20px rgba(44, 184, 132, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    .nav-tabs-custom .nav-link:hover:not(.active) {
+        background: white !important;
+        color: var(--misk-green) !important;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    /* Clean White Interactive Card */
+    .details-card {
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 40px; /* Massive rounded corners like main page */
+        padding: 60px;
+        border: 1px solid rgba(255,255,255,1);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 15px 40px rgba(35, 46, 76, 0.05);
+        max-width: 900px;
+        margin: 0 auto;
+        transform-style: preserve-3d;
+        transition: box-shadow 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .details-card:hover {
+        box-shadow: 0 40px 80px rgba(44, 184, 132, 0.15); /* Glowing soft shadow */
+    }
+    
+    /* Fluid Transition for Tabs */
+    .tab-content-custom {
+        position: relative;
+        min-height: 380px; 
+    }
+    .tab-content-custom .tab-pane {
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateY(30px) scale(0.95);
+        opacity: 0;
+        filter: blur(10px);
+        display: block; 
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        visibility: hidden;
+    }
+    .tab-content-custom .tab-pane.active.show {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        filter: blur(0);
+        position: relative;
+        visibility: visible;
+    }
+
+    /* Feature Items */
+    .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 20px 25px;
+        border-radius: 20px;
+        transition: all 0.4s ease;
+        background: transparent;
+        transform-style: preserve-3d;
+        border: 1px solid transparent;
+    }
+    .feature-item:hover {
+        background: white;
+        border-color: rgba(44, 184, 132, 0.1);
+        transform: translateZ(30px) translateX(10px); /* 3D pop and slide */
+        box-shadow: 0 15px 30px rgba(35, 46, 76, 0.05);
+    }
+    
+    .feature-icon-box {
+        width: 70px;
+        height: 70px;
+        margin-left: 25px;
+        flex-shrink: 0;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .feature-item:hover .feature-icon-box {
+        transform: scale(1.1) rotate(5deg);
+    }
+    .feature-icon-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    
+    .feature-text {
+        flex-grow: 1;
+        transform: translateZ(20px);
+    }
+    .feature-text h4 {
+        color: var(--text-main); 
+        font-size: 1.6rem;
+        margin-bottom: 8px;
+        font-family: 'Almarai', sans-serif;
+        font-weight: 800;
+        transition: color 0.3s ease;
+    }
+    .feature-item:hover .feature-text h4 {
+        color: var(--misk-green);
+    }
+    .feature-text p {
+        color: var(--text-muted);
+        font-size: 1.15rem;
+        margin: 0;
+        line-height: 1.7;
+    }
+
+    /* Action Button - Same as Main Page */
+    .action-btn-container {
+        text-align: center;
+        margin-top: 20px;
+        transform: translateZ(40px);
+    }
+    .btn-action-glow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        background: #F1F5F9;
+        color: var(--misk-dark);
+        padding: 16px 45px;
+        border-radius: 50px;
+        font-size: 1.3rem;
+        font-weight: 800;
+        text-decoration: none;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border: none;
+        z-index: 1;
+    }
+    .btn-action-glow::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--gradient-primary);
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+    .btn-action-glow:hover {
+        color: white;
+        transform: translateY(-5px) scale(1.05); /* Soft button pop */
+        box-shadow: 0 15px 30px rgba(44, 184, 132, 0.3);
+        text-decoration: none;
+    }
+    .btn-action-glow:hover::before {
+        opacity: 1;
+    }
+    .btn-action-glow i {
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-action-glow:hover i {
+        transform: translateX(-10px); /* Arrow slides smoothly */
+    }
+
+    @media (max-width: 768px) {
+        .details-header {
             font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            margin-top: -9rem;
-            color: rgba(239,239,239,1);
-            font-family: Cairo;
         }
-        .header-line {
-            border: 2px solid rgba(229, 229, 229, 1);
-            width: 45%;
-            margin: 1rem auto 9rem auto;
+        .details-card {
+            padding: 30px 20px;
         }
-        .button-row {
-            position: relative;
-            margin-top: 2rem;
-            margin-bottom: 7rem;
-            margin-left: 25rem;
+        .feature-item {
+            flex-direction: column;
+            text-align: center;
         }
-        .v558_134, .v558_137 {
-            width: 180px;
-            height: 40px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            border-radius: 10px;
+        .feature-icon-box {
+            margin-left: 0;
+            margin-bottom: 15px;
         }
-        .v558_134 {
-            background: rgba(217, 217, 217, 0.8);
-            color: white;
-            position: absolute;
-            top: 19.8rem;
-            left: calc(51% - 5px);
-            margin-left: 15rem;
-        }
-        .v558_134:hover {
-            background: #4A608F;
-        }
-        .v558_137 {
-            background: rgba(217, 217, 217, 0.8);
-            color: rgb(241, 236, 236);
-            position: absolute;
-            top: 19.8rem;
-            left: calc(50% + 1px);
-        }
-        .v558_137:hover {
-            background: #4A608F;
-        }
-        .text-icon-container {
-            width: 90%;
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(229, 229, 229, 1);
-            border-radius: 15px;
-        }
-        .text-container {
-            flex: 1;
-        }
-        .icon {
-            width: 80px;
-            height: 80px;
-            margin-left: 1rem;
-        }
-        .v558_150, .v558_154, .v558_157 {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #bf2a4a;
-        }
-        .v558_147, .v558_152, .v558_155 {
-            font-size: 1.5rem;
-            color: #000;
-        }
-        .v558_125 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            padding: 0.75rem 2rem;
-            border-radius: 30px;
-            margin-top: 1rem;
-            color: white;
-        }
-        @media (max-width: 768px) {
-            .v558_132 {
-                font-size: 1.5rem;
-            }
-            .header-line {
-                width: 60%;
-            }
-            .icon {
-                width: 60px;
-                height: 60px;
-            }
-            .v558_150, .v558_154, .v558_157 {
-                font-size: 1.25rem;
-            }
-            .v558_147, .v558_152, .v558_155 {
-                font-size: 1rem;
-            }
-            .v558_125 {
-                font-size: 1.25rem;
-                padding: 0.5rem 1.5rem;
-            }
-            .v558_134, .v558_137 {
-                width: 140px;
-                height: 35px;
-                font-size: 1.25rem;
-                top: 40px;
-            }
-            .v558_134 {
-                left: calc(50% - 95px);
-            }
-            .v558_137 {
-                left: calc(50% + 10px);
-            }
-        }
-        @media (max-width: 576px) {
-            .v558_132 {
-                font-size: 1.25rem;
-            }
-            .header-line {
-                width: 70%;
-            }
-            .icon {
-                width: 50px;
-                height: 50px;
-            }
-            .v558_150, .v558_154, .v558_157 {
-                font-size: 1rem;
-            }
-            .v558_147, .v558_152, .v558_155 {
-                font-size: 0.75rem;
-            }
-            .v558_125 {
-                font-size: 1rem;
-                padding: 0.5rem 1rem;
-            }
-            .v558_134, .v558_137 {
-                width: 120px;
-                height: 30px;
-                font-size: 1rem;
-                top: 30px;
-            }
-            .v558_134 {
-                left: calc(50% - 75px);
-            }
-            .v558_137 {
-                left: calc(50% + 5px);
-            }
-        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="full-background">
-        <div class="overlay">
-            <div class="container text-center text-white content-wrapper">
-                <h1 class="v558_132">كيف تيم فائدة تساعد الأفراد والمنشآت؟</h1>
-                <hr class="header-line">
-                <div class="row justify-content-center mt-4">
-                    <button class="btn v558_134" style="color: white;" onclick="showMainContent()">منشآت</button>
-                    <button class="btn v558_137 ml-3" style="color: white;" onclick="showIndividualContent()">أفراد</button>
+<section class="details-section">
+    <div id="particles-js"></div>
+    <div class="container content-wrapper" data-aos="fade-up" data-aos-duration="1200">
+        <h1 class="details-header almarai-extrabold">كيف تيم فائدة تساعد الأفراد والمنشآت؟</h1>
+        
+        <div class="text-center">
+            <ul class="nav nav-tabs nav-tabs-custom" id="faedaTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active almarai-bold" id="companies-tab" data-bs-toggle="tab" data-bs-target="#companies" type="button" role="tab">منشآت</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link almarai-bold" id="individuals-tab" data-bs-toggle="tab" data-bs-target="#individuals" type="button" role="tab">أفراد</button>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="details-card" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-perspective="1500">
+            <div class="tab-content tab-content-custom" id="faedaTabsContent">
+                
+                <!-- Companies Content -->
+                <div class="tab-pane active show" id="companies" role="tabpanel">
+                    <div class="feature-item">
+                        <div class="feature-text text-right">
+                            <h4>بناء فريق قوي</h4>
+                            <p>استقطاب فرق عمل متكاملة تتضمن تخصصات متنوعة ومهارات ممتازة.</p>
+                        </div>
+                        <div class="feature-icon-box">
+                            <img src="/static/new_design/faeda_details2_images/v645_81.png" alt="Icon">
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-text text-right">
+                            <h4>تعزيز الإنتاجية</h4>
+                            <p>تعاون فعال يقلل وقت إنجاز المهام.</p>
+                        </div>
+                        <div class="feature-icon-box">
+                            <img src="/static/new_design/faeda_details2_images/v644_80.png" alt="Icon">
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-text text-right">
+                            <h4>تحسين الجودة</h4>
+                            <p>تنوع التخصصات يرفع مستوى الجودة.</p>
+                        </div>
+                        <div class="feature-icon-box">
+                            <img src="/static/new_design/faeda_details2_images/v643_79.png" alt="Icon">
+                        </div>
+                    </div>
                 </div>
-                <div id="content-area" class="text-icon-container mt-5 text-right p-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="text-container">
-                            <h5 class="v558_150">بناء فريق قوي</h5>
-                            <p class="v558_147">.استقطاب فرق عمل متكاملة تتضمن تخصصات متنوعة ومهارات ممتازة</p>
+                
+                <!-- Individuals Content -->
+                <div class="tab-pane" id="individuals" role="tabpanel">
+                    <div class="feature-item">
+                        <div class="feature-text text-right">
+                            <h4>تكوين الفرق بسهولة</h4>
+                            <p>دعوة الأعضاء وإنشاء فرق متعددة.</p>
                         </div>
-                        <img src="/static/new_design/faeda_details_images/v645_81.png" class="icon ml-3" alt="Icon">
+                        <div class="feature-icon-box">
+                            <img src="/static/new_design/faeda_details_images/v645_81.png" alt="Icon">
+                        </div>
                     </div>
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="text-container">
-                            <h5 class="v558_154">تعزيز الإنتاجية</h5>
-                            <p class="v558_152">.تعاون فعال يقلل وقت إنجاز المهام</p>
+                    <div class="feature-item">
+                        <div class="feature-text text-right">
+                            <h4>تعزيز التواصل</h4>
+                            <p>أدوات تواصل فورية، مشاركة الملفات، الاجتماعات الافتراضية.</p>
                         </div>
-                        <img src="/static/new_design/faeda_details_images/v644_80.png" class="icon ml-3" alt="Icon">
+                        <div class="feature-icon-box">
+                            <img src="/static/new_design/faeda_details_images/v644_80.png" alt="Icon">
+                        </div>
                     </div>
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="text-container">
-                            <h5 class="v558_157">تحسين الجودة</h5>
-                            <p class="v558_155">.تنوع التخصصات يرفع مستوى الجودة</p>
+                    <div class="feature-item">
+                        <div class="feature-text text-right">
+                            <h4>تطوير مهارات الأعضاء</h4>
+                            <p>العمل بانسجام لتحقيق الأهداف المشتركة.</p>
                         </div>
-                        <img src="/static/new_design/faeda_details_images/v643_79.png" class="icon ml-3" alt="Icon">
+                        <div class="feature-icon-box">
+                            <img src="/static/new_design/faeda_details_images/v643_79.png" alt="Icon">
+                        </div>
                     </div>
                 </div>
-                <button class="btn btn-danger btn-lg v558_125">!استقطب فريقك</button>
+                
+            </div>
+            
+            <div class="action-btn-container">
+                <a href="#" class="btn-action-glow almarai-bold">
+                    <i class="ph ph-arrow-left"></i> استقطب فريقك!
+                </a>
             </div>
         </div>
+        
     </div>
+</section>
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-        function showMainContent() {
-            document.getElementById('content-area').innerHTML = `
-                <div class="d-flex align-items-center mb-4">
-                    <div class="text-container">
-                        <h5 class="v558_150">بناء فريق قوي</h5>
-                        <p class="v558_147">.استقطاب فرق عمل متكاملة تتضمن تخصصات متنوعة ومهارات ممتازة</p>
-                    </div>
-                    <img src="/static/new_design/faeda_details2_images/v645_81.png" class="icon ml-3" alt="Icon">
-                </div>
-                <div class="d-flex align-items-center mb-4">
-                    <div class="text-container">
-                        <h5 class="v558_154">تعزيز الإنتاجية</h5>
-                        <p class="v558_152">.تعاون فعال يقلل وقت إنجاز المهام</p>
-                    </div>
-                    <img src="/static/new_design/faeda_details2_images/v644_80.png" class="icon ml-3" alt="Icon">
-                </div>
-                <div class="d-flex align-items-center mb-4">
-                    <div class="text-container">
-                        <h5 class="v558_157">تحسين الجودة</h5>
-                        <p class="v558_155">.تنوع التخصصات يرفع مستوى الجودة</p>
-                    </div>
-                    <img src="/static/new_design/faeda_details2_images/v643_79.png" class="icon ml-3" alt="Icon">
-                </div>
-            `;
-        }
+<!-- Vanilla Tilt for 3D interactions -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+<!-- Phosphor Icons -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<!-- Particles JS -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
-        function showIndividualContent() {
-            document.getElementById('content-area').innerHTML = `
-                <div class="d-flex align-items-center mb-4">
-                    <div class="text-container">
-                        <h5 class="v558_150">تكوين الفرق بسهولة</h5>
-                        <p class="v558_147">.دعوة الأعضاء وإنشاء فرق متعددة</p>
-                    </div>
-                    <img src="/static/new_design/faeda_details_images/v645_81.png" class="icon ml-3" alt="Icon">
-                </div>
-                <div class="d-flex align-items-center mb-4">
-                    <div class="text-container">
-                        <h5 class="v558_154">تعزيز التواصل</h5>
-                        <p class="v558_152">.أدوات تواصل فورية، مشاركة الملفات، الاجتماعات الافتراضية</p>
-                    </div>
-                    <img src="/static/new_design/faeda_details_images/v644_80.png" class="icon ml-3" alt="Icon">
-                </div>
-                <div class="d-flex align-items-center mb-4">
-                    <div class="text-container">
-                        <h5 class="v558_157">تطوير مهارات الأعضاء</h5>
-                        <p class="v558_155">.العمل بانسجام لتحقيق الأهداف المشتركة</p>
-                    </div>
-                    <img src="/static/new_design/faeda_details_images/v643_79.png" class="icon ml-3" alt="Icon">
-                </div>
-            `;
-        }
-    </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize Particles with Light Theme Look (matching brand colors)
+        particlesJS('particles-js', {
+            "particles": {
+                "number": { "value": 70, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": ["#2CB884", "#F0B247"] }, // Green and Yellow
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": false },
+                "size": { "value": 4, "random": true },
+                "line_linked": { "enable": true, "distance": 160, "color": "#2CB884", "opacity": 0.3, "width": 1 },
+                "move": { "enable": true, "speed": 1.5, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": { "distance": 220, "line_linked": { "opacity": 0.8, "color": "#1a2238" } },
+                    "push": { "particles_nb": 4 }
+                }
+            },
+            "retina_detect": true
+        });
+    });
+</script>
 {% endblock %}
