@@ -71,7 +71,7 @@
         object-fit: cover;
         z-index: 1;
         transform: scale(1.05);
-        animation: slowZoom 30s ease-out infinite alternate;
+        /* animation: slowZoom 30s ease-out infinite alternate; Removed for GPU performance */
     }
 
     @keyframes slowZoom {
@@ -89,14 +89,7 @@
         z-index: 2;
     }
 
-    #particles-js {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        z-index: 2; 
-    }
+    /* particles-js removed for GPU performance */
 
     /* Glows */
     .hero-glow-green {
@@ -108,7 +101,7 @@
         background: radial-gradient(circle, rgba(44, 184, 132, 0.25) 0%, transparent 70%);
         border-radius: 50%;
         z-index: 2;
-        animation: pulseGlow 8s ease-in-out infinite alternate;
+        /* animation: pulseGlow 8s ease-in-out infinite alternate; Removed for GPU performance */
     }
     
     .hero-glow-yellow {
@@ -120,7 +113,7 @@
         background: radial-gradient(circle, rgba(240, 178, 71, 0.2) 0%, transparent 70%);
         border-radius: 50%;
         z-index: 2;
-        animation: pulseGlow 10s ease-in-out infinite alternate-reverse;
+        /* animation: pulseGlow 10s ease-in-out infinite alternate-reverse; Removed for GPU performance */
     }
 
     @keyframes pulseGlow {
@@ -232,21 +225,9 @@
         transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         position: relative;
         overflow: hidden;
-        animation: floatStat 6s ease-in-out infinite;
     }
-
-    /* Stagger the floating animation for organic feel */
-    .col-6:nth-child(even) .fluid-stat-card {
-        animation-delay: 1.5s;
-    }
-    .col-6:nth-child(3) .fluid-stat-card {
-        animation-delay: 3s;
-    }
-
-    @keyframes floatStat {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-15px); }
-    }
+    
+    /* No idle float animations to save GPU */
     
     /* Internal animated gradient for hover */
     .fluid-stat-card::before {
@@ -271,12 +252,7 @@
 
     .fluid-stat-card:hover::before {
         opacity: 1;
-        animation: rotateGradient 10s linear infinite;
-    }
-    
-    @keyframes rotateGradient {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        /* Static glowing gradient on hover, no rotation for GPU performance */
     }
 
     .stat-icon-wrapper {
@@ -325,14 +301,13 @@
         overflow: hidden;
     }
     
-    /* Soft ambient glows for motion feel */
+    /* Soft ambient glows (static, no animation) */
     .core-section::before, .core-section::after {
         content: '';
         position: absolute;
         border-radius: 50%;
         filter: blur(80px);
         z-index: 0;
-        animation: floatGlow 15s ease-in-out infinite alternate;
     }
     .core-section::before {
         top: -10%; right: -5%;
@@ -395,7 +370,7 @@
         align-items: center;
         gap: 20px;
         z-index: 5;
-        animation: floatBadgeSmooth 6s ease-in-out infinite;
+        /* animation: floatBadgeSmooth 6s ease-in-out infinite; Removed for GPU performance */
         transform: translateZ(50px); /* 3D pop out */
     }
     
@@ -506,7 +481,7 @@
         border-radius: 50%;
         filter: blur(100px);
         z-index: 0;
-        animation: floatGlow 12s ease-in-out infinite alternate;
+        /* animation: floatGlow 12s ease-in-out infinite alternate; Removed for GPU performance */
         opacity: 0.6;
     }
     .focus-section::before {
@@ -684,7 +659,7 @@
     .cta-banner {
         background: var(--gradient-dark);
         background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
+        /* animation: gradientBG 15s ease infinite; Removed for GPU performance */
         padding: 140px 0;
         position: relative;
         overflow: hidden;
@@ -708,7 +683,7 @@
         height: 100%;
         background: radial-gradient(circle, rgba(44, 184, 132, 0.2) 0%, transparent 70%);
         z-index: 0;
-        animation: pulseGlow 8s ease-in-out infinite alternate;
+        /* animation: pulseGlow 8s ease-in-out infinite alternate; Removed for GPU performance */
     }
     .cta-content {
         position: relative;
@@ -723,7 +698,7 @@
 <section class="hero-fullscreen">
     <img src="{{ url_for('static', filename='new_design/images/First Page Background.png') }}" class="hero-bg-image" alt="Faeda Hero Background">
     <div class="hero-overlay"></div>
-    <div id="particles-js"></div>
+    <!-- particles-js removed for GPU performance -->
     
     <div class="hero-glow-green"></div>
     <div class="hero-glow-yellow"></div>
@@ -752,7 +727,7 @@
         
         <div class="row text-center g-4 justify-content-center">
             <div class="col-lg-3 col-md-6 col-6" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
-                <div class="fluid-stat-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000">
+                <div class="fluid-stat-card">
                     <div class="stat-icon-wrapper">
                         <i class="ph ph-users-three"></i>
                     </div>
@@ -765,7 +740,7 @@
             </div>
             
             <div class="col-lg-3 col-md-6 col-6" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-                <div class="fluid-stat-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000">
+                <div class="fluid-stat-card">
                     <div class="stat-icon-wrapper">
                         <i class="ph ph-briefcase"></i>
                     </div>
@@ -778,7 +753,7 @@
             </div>
             
             <div class="col-lg-3 col-md-6 col-6" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="300">
-                <div class="fluid-stat-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000">
+                <div class="fluid-stat-card">
                     <div class="stat-icon-wrapper">
                         <i class="ph ph-graduation-cap"></i>
                     </div>
@@ -791,7 +766,7 @@
             </div>
             
             <div class="col-lg-3 col-md-6 col-6" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
-                <div class="fluid-stat-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000">
+                <div class="fluid-stat-card">
                     <div class="stat-icon-wrapper">
                         <i class="ph ph-buildings"></i>
                     </div>
@@ -953,8 +928,7 @@
 <!-- AOS Animation JS -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-<!-- Particles JS -->
-<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<!-- Particles JS removed for GPU performance -->
 
 <!-- Vanilla Tilt JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
@@ -967,31 +941,7 @@
             offset: 50,
         });
 
-        // Initialize Particles with Premium Original Look
-        particlesJS('particles-js', {
-            "particles": {
-                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#ffffff" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.4, "random": false, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
-                "size": { "value": 3, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 0.1, "sync": false } },
-                "line_linked": { "enable": true, "distance": 150, "color": "#2CB884", "opacity": 0.5, "width": 1 },
-                "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false, "attract": { "enable": false } }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": { "enable": true, "mode": "grab" },
-                    "onclick": { "enable": true, "mode": "push" },
-                    "resize": true
-                },
-                "modes": {
-                    "grab": { "distance": 180, "line_linked": { "opacity": 0.9, "color": "#F0B247" } },
-                    "push": { "particles_nb": 4 }
-                }
-            },
-            "retina_detect": true
-        });
+        // Particles.js removed for GPU performance
 
         // Counter Logic with Intersection Observer
         const counters = document.querySelectorAll('.stat-number');

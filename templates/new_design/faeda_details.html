@@ -39,7 +39,7 @@
         border-radius: 50%;
         filter: blur(100px);
         z-index: 0;
-        animation: floatGlow 12s ease-in-out infinite alternate;
+        /* animation: floatGlow 12s ease-in-out infinite alternate; Removed for GPU performance */
         opacity: 0.6;
     }
     .details-section::before {
@@ -54,15 +54,7 @@
         animation-delay: -3s;
     }
     
-    /* Particles Background */
-    #particles-js {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-    }
+    /* particles-js removed for GPU performance */
 
     @keyframes floatGlow {
         0% { transform: translate(0, 0) scale(1); }
@@ -297,7 +289,7 @@
 
 {% block content %}
 <section class="details-section">
-    <div id="particles-js"></div>
+    <!-- particles-js removed for GPU performance -->
     <div class="container content-wrapper" data-aos="fade-up" data-aos-duration="1200">
         <h1 class="details-header almarai-extrabold">كيف تيم فائدة تساعد الأفراد والمنشآت؟</h1>
         
@@ -395,36 +387,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
 <!-- Phosphor Icons -->
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
-<!-- Particles JS -->
-<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<!-- Particles JS removed for GPU performance -->
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialize Particles with Light Theme Look (matching brand colors)
-        particlesJS('particles-js', {
-            "particles": {
-                "number": { "value": 70, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": ["#2CB884", "#F0B247"] }, // Green and Yellow
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.5, "random": false },
-                "size": { "value": 4, "random": true },
-                "line_linked": { "enable": true, "distance": 160, "color": "#2CB884", "opacity": 0.3, "width": 1 },
-                "move": { "enable": true, "speed": 1.5, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": { "enable": true, "mode": "grab" },
-                    "onclick": { "enable": true, "mode": "push" },
-                    "resize": true
-                },
-                "modes": {
-                    "grab": { "distance": 220, "line_linked": { "opacity": 0.8, "color": "#1a2238" } },
-                    "push": { "particles_nb": 4 }
-                }
-            },
-            "retina_detect": true
-        });
+        // Particles.js removed for GPU performance
     });
 </script>
 {% endblock %}
