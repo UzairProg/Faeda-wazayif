@@ -13,43 +13,7 @@
 <div class="card p-4 shadow-sm" style="border-radius: 15px; border: none;">
     <div class="container-xxl flex-grow-1 container-p-y">
               <h4 class="fw-bold py-3 mb-4" style="color: rgb(0, 0, 0);"><span class="fw-light" >الوظائف /</span>  نشر وظيفة</h4>
-              {% for message in get_flashed_messages() %}
-
-              <style>
-                .flash-message {
-                  background-color: #372b70;
-                  color: var(--primary-dark)fff;
-                  padding: 15px;
-                  border-radius: 10px;
-                  border: 2px solid #4a3f8a; /* Amazing border color */
-                  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                  opacity: 1;
-                  transition: opacity 0.5s ease-in-out;
-                }
               
-                .fadeOut {
-                  opacity: 0;
-                }
-              </style>
-              
-              <div class="flash-message" role="alert">
-                {{ message|safe }}
-              </div>
-              
-              <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                  var flashMessage = document.querySelector('.flash-message');
-              
-                  setTimeout(function () {
-                    flashMessage.classList.add('fadeOut');
-                    setTimeout(function () {
-                      flashMessage.parentNode.removeChild(flashMessage);
-                    }, 500); // 500 milliseconds for fade-out animation
-                  }, 5000); // 5000 milliseconds = 5 seconds
-                });
-              </script>
-              
-              {% endfor %}
               <div class="row">
                 <form class="mt-4" method="POST" action="/add_new_job">
 

@@ -199,6 +199,77 @@
             text-decoration: none;
             transition: all 0.3s ease;
         }
+
+        /* Custom Flash Messages */
+        .flash-messages-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+            width: 350px;
+            max-width: 90vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .custom-alert {
+            background-color: #fff;
+            border-right: 4px solid #17a2b8;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            animation: slideDownFade 0.4s ease forwards;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .custom-alert.hide {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        .custom-alert-success { border-color: #28a745; }
+        .custom-alert-error { border-color: #dc3545; }
+        .custom-alert-info { border-color: #17a2b8; }
+        .custom-alert-warning { border-color: #ffc107; }
+        
+        .custom-alert .icon {
+            font-size: 1.5rem;
+            margin-left: 15px;
+        }
+        .custom-alert-success .icon { color: #28a745; }
+        .custom-alert-error .icon { color: #dc3545; }
+        .custom-alert-info .icon { color: #17a2b8; }
+        .custom-alert-warning .icon { color: #ffc107; }
+
+        .custom-alert .message {
+            flex-grow: 1;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0;
+            line-height: 1.4;
+        }
+        .custom-alert .close-btn {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 15px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-alert .close-btn:hover { color: #333; }
+        
+        @keyframes slideDownFade {
+            0% { transform: translateY(-50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
         .btn-icon:hover {
             background: #e9ecef;
             color: var(--primary-dark);
@@ -322,31 +393,32 @@
         </header>
 
         <!-- Flash Messages Global Container -->
-        <div class="flash-messages-container" id="flash-messages" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%;">
+        <div class="flash-messages-container" id="flash-messages">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="custom-alert custom-alert-{{ 'success' if category == 'success' else 'error' if category == 'danger' else 'warning' if category == 'warning' else 'info' }} d-flex align-items-center justify-content-between p-3 bg-white shadow" style="pointer-events: auto; min-width: 320px; max-width: 90vw; border-radius: 12px; border-right: 6px solid {{ '#28a745' if category == 'success' else '#dc3545' if category == 'danger' else '#ffc107' if category == 'warning' else '#17a2b8' }};">
-                            <i class="icon fas fa-{{ 'check-circle text-success' if category == 'success' else 'exclamation-circle text-danger' if category == 'danger' else 'exclamation-triangle text-warning' if category == 'warning' else 'info-circle text-info' }} fs-4 ms-3"></i>
-                            <p class="message almarai-bold m-0 flex-grow-1" style="color: var(--primary-dark);">{{ message }}</p>
-                            <button type="button" class="btn-close ms-2" onclick="this.parentElement.remove()" aria-label="إغلاق"></button>
+                        {% set alert_type = 'success' if category == 'success' else 'error' if category == 'error' or category == 'danger' else 'warning' if category == 'warning' else 'info' %}
+                        {% set icon_class = 'bi-check-circle-fill' if category == 'success' else 'bi-exclamation-triangle-fill' if alert_type in ['error', 'warning'] else 'bi-info-circle-fill' %}
+                        <div class="custom-alert custom-alert-{{ alert_type }}" role="alert">
+                            <i class="bi {{ icon_class }} icon"></i>
+                            <div class="message">{{ message | safe }}</div>
+                            <button type="button" class="close-btn" onclick="this.parentElement.classList.add('hide'); setTimeout(() => this.parentElement.remove(), 400);"><i class="bi bi-x"></i></button>
                         </div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
         </div>
-        
-        <!-- Auto-hide flash messages script -->
+
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const alerts = document.querySelectorAll('.custom-alert');
                 alerts.forEach(alert => {
                     setTimeout(() => {
-                        alert.style.opacity = '0';
-                        alert.style.transform = 'translateY(-20px)';
-                        alert.style.transition = 'all 0.4s ease';
-                        setTimeout(() => alert.remove(), 400);
-                    }, 5000);
+                        if (alert && !alert.classList.contains('hide')) {
+                            alert.classList.add('hide');
+                            setTimeout(() => alert.remove(), 400);
+                        }
+                    }, 4000);
                 });
             });
         </script>
