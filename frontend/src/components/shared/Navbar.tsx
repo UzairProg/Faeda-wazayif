@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Menu, X, ChevronDown, Bell, User } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { motion } from "framer-motion"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -18,7 +19,7 @@ export function Navbar() {
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/[0.04] bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-white/[0.04] bg-gradient-to-r from-background/95 via-[#0A2D8F]/15 to-background/95 backdrop-blur-xl transition-all duration-300">
       <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Right side (RTL Start) - Logo */}
         <Link to="/" className="flex items-center gap-3">
@@ -29,7 +30,7 @@ export function Navbar() {
             منصة فائدة
           </span>
         </Link>
-        
+
         {/* Center - Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-1">
           {links.map((link) => {
@@ -39,13 +40,19 @@ export function Navbar() {
                 key={link.label}
                 to={link.href}
                 className={cn(
-                  "px-4 py-2 text-sm font-medium transition-colors rounded-full hover:bg-white/5 hover:text-white",
+                  "relative px-4 py-2 text-sm font-medium transition-colors hover:text-white group",
                   isActive ? "text-primary" : "text-muted-foreground"
                 )}
               >
                 {link.label}
                 {isActive && (
-                  <span className="block h-0.5 w-full bg-primary mt-1 rounded-full absolute bottom-4" />
+                  <motion.span 
+                    layoutId="navbar-indicator"
+                    className="absolute -bottom-2 left-0 right-0 h-0.5 bg-primary rounded-full shadow-[0_0_10px_rgba(18,75,201,0.5)]" 
+                  />
+                )}
+                {!isActive && (
+                  <span className="absolute -bottom-2 left-0 right-0 h-0.5 bg-primary/50 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
                 )}
               </Link>
             )
@@ -60,12 +67,12 @@ export function Navbar() {
           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-white hover:bg-white/5 rounded-full">
             <User className="h-5 w-5" />
           </Button>
-          
+
           <Button variant="outline" size="sm" className="gap-2 bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-full h-10 px-4 ml-2">
             <span>العربية</span>
             <ChevronDown className="h-4 w-4 opacity-50" />
           </Button>
-          
+
           <Link to="/login">
             <Button className="rounded-full h-10 px-6 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
               تسجيل دخول

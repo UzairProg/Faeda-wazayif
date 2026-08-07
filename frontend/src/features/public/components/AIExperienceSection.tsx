@@ -7,7 +7,7 @@ export function AIExperienceSection() {
   return (
     <section className="py-24 relative overflow-hidden bg-background">
       {/* Abstract AI Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-primary/10 to-accent/5 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -29,10 +29,10 @@ export function AIExperienceSection() {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             >
-              <div className="flex items-start gap-4">
-                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-primary">
+              <div className="flex items-start gap-4 group p-5 rounded-2xl hover:bg-card/40 hover:backdrop-blur-md border border-transparent hover:border-white/10 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300">
+                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-primary group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300 shadow-sm group-hover:shadow-lg">
                   <Target className="h-6 w-6" />
                 </div>
                 <div className="text-start">
@@ -48,10 +48,10 @@ export function AIExperienceSection() {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
             >
-              <div className="flex items-start gap-4">
-                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-primary">
+              <div className="flex items-start gap-4 group p-5 rounded-2xl hover:bg-card/40 hover:backdrop-blur-md border border-transparent hover:border-white/10 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300">
+                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-primary group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300 shadow-sm group-hover:shadow-lg">
                   <MessageSquare className="h-6 w-6" />
                 </div>
                 <div className="text-start">
@@ -67,10 +67,10 @@ export function AIExperienceSection() {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
             >
-              <div className="flex items-start gap-4">
-                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-primary">
+              <div className="flex items-start gap-4 group p-5 rounded-2xl hover:bg-card/40 hover:backdrop-blur-md border border-transparent hover:border-white/10 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300">
+                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-primary group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300 shadow-sm group-hover:shadow-lg">
                   <Briefcase className="h-6 w-6" />
                 </div>
                 <div className="text-start">
@@ -89,7 +89,7 @@ export function AIExperienceSection() {
               transition={{ duration: 0.5, delay: 0.5 }}
               className="pt-4 text-start"
             >
-              <Button size="lg" className="rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300 bg-gradient-to-r from-primary to-accent hover:to-primary text-primary-foreground font-bold px-8">
+              <Button size="lg" className="rounded-full shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-transform bg-primary text-primary-foreground font-bold px-8">
                 استكشف ميزات الذكاء الاصطناعي
               </Button>
             </motion.div>
@@ -103,8 +103,8 @@ export function AIExperienceSection() {
             transition={{ duration: 0.7 }}
             className="lg:col-span-7 relative"
           >
-            <GlassCard className="h-[550px] p-0 bg-card/60 backdrop-blur-2xl border-white/10 flex flex-col relative overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5">
-              
+            <GlassCard className="h-[550px] p-0 bg-card border-white/10 flex flex-col relative overflow-hidden shadow-2xl">
+
               {/* Dashboard Header */}
               <div className="flex items-center justify-between border-b border-white/5 bg-background px-4 py-3">
                 <div className="flex gap-2">
@@ -125,10 +125,23 @@ export function AIExperienceSection() {
                     <Target className="w-5 h-5 text-primary" />
                     <h4 className="font-bold text-white font-heading">تحسين السيرة الذاتية</h4>
                   </div>
-                  
+
                   <div className="space-y-4 p-5 bg-card rounded-xl border border-white/5 text-sm text-muted-foreground relative text-start" dir="ltr">
-                    <p className="font-mono opacity-70">• Led team of 5 engineers to deliver project...</p>
-                    <div className="relative group">
+                    <motion.p 
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5, duration: 0.5 }}
+                      className="font-mono opacity-70"
+                    >• Led team of 5 engineers to deliver project...</motion.p>
+                    
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 1, duration: 0.5 }}
+                      className="relative group p-2 -mx-2 rounded-lg hover:bg-white/5 transition-colors duration-300"
+                    >
                       <p className="font-mono line-through decoration-red-500/70 decoration-2 text-white/80">
                         • Responsible for improving backend performance
                       </p>
@@ -136,11 +149,18 @@ export function AIExperienceSection() {
                         <span className="font-bold block mb-1">اقتراح الذكاء الاصطناعي:</span>
                         الرجاء تحديد الأثر بلغة الأرقام. "تم تحسين وقت استجابة الخادم بنسبة 40٪ باستخدام Redis".
                       </div>
-                      <div className="absolute start-2 top-1/2 -translate-y-1/2">
+                      <div className="absolute start-0 top-1/2 -translate-y-1/2">
                         <Sparkles className="w-4 h-4 text-primary animate-pulse" />
                       </div>
-                    </div>
-                    <p className="font-mono opacity-70">• Architected microservices infrastructure...</p>
+                    </motion.div>
+
+                    <motion.p 
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.7, duration: 0.5 }}
+                      className="font-mono opacity-70"
+                    >• Architected microservices infrastructure...</motion.p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mt-6">
@@ -157,17 +177,35 @@ export function AIExperienceSection() {
 
                 {/* Chat Mock (Left Side of Mockup) */}
                 <div className="w-full md:w-72 bg-background p-4 flex flex-col gap-4">
-                  <div className="p-4 bg-card border border-white/5 rounded-2xl rounded-tr-sm text-sm text-white text-start shadow-sm leading-relaxed">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 1.2, duration: 0.5, type: "spring" }}
+                    className="p-4 bg-card border border-white/5 rounded-2xl rounded-tr-sm text-sm text-white text-start shadow-sm leading-relaxed"
+                  >
                     لاحظت خبرتك في React. هل نبدأ بتوليد بعض أسئلة المقابلات الشائعة لدور مهندس واجهات أمامية في شركة Stripe؟
-                  </div>
-                  <div className="p-4 bg-primary text-primary-foreground rounded-2xl rounded-tl-sm text-sm self-end text-start shadow-md font-medium">
+                  </motion.div>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 2.0, duration: 0.5, type: "spring" }}
+                    className="p-4 bg-primary text-primary-foreground rounded-2xl rounded-tl-sm text-sm self-end text-start shadow-md font-medium"
+                  >
                     نعم، لنبدأ بتصميم الأنظمة (System Design).
-                  </div>
-                  <div className="p-4 bg-card border border-white/5 rounded-2xl rounded-tr-sm text-sm flex items-center gap-2 w-fit">
-                    <span className="flex w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce" />
-                    <span className="flex w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce delay-75" />
-                    <span className="flex w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce delay-150" />
-                  </div>
+                  </motion.div>
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 2.5, duration: 0.3 }}
+                    className="p-4 bg-card/80 backdrop-blur-md border border-primary/30 rounded-2xl rounded-tr-sm text-sm flex items-center gap-2 w-fit shadow-lg shadow-primary/10"
+                  >
+                    <span className="flex w-2 h-2 bg-primary rounded-full animate-bounce" />
+                    <span className="flex w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                    <span className="flex w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+                  </motion.div>
                 </div>
               </div>
 

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Search, MapPin, Sparkles, Play, Pause, Volume2, VolumeX } from "lucide-react"
 
 // @ts-ignore
-import heroVideo from "../../../../video/Video_heroPage.webm"
+import heroVideo from "../../../assets/video/Video_heroPage.webm"
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -76,10 +76,10 @@ export function HeroSection() {
     <section ref={sectionRef} className="relative overflow-hidden">
       {/* Soft Blue Radial Background */}
       <div className="absolute top-0 end-0 -translate-y-1/4 translate-x-1/4">
-        <div className="h-[600px] w-[600px] rounded-full bg-gradient-to-br from-primary/30 to-accent/10 blur-[120px] pointer-events-none" />
+        <div className="h-[600px] w-[600px] rounded-full bg-primary/20 blur-[120px] pointer-events-none" />
       </div>
       <div className="absolute bottom-0 start-0 -translate-y-1/4 -translate-x-1/4">
-        <div className="h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-[#124BC9]/20 to-primary/5 blur-[100px] pointer-events-none" />
+        <div className="h-[500px] w-[500px] rounded-full bg-[#124BC9]/10 blur-[100px] pointer-events-none" />
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full h-full pb-0 lg:pb-0">
@@ -88,59 +88,59 @@ export function HeroSection() {
           {/* Content (Visually Right in RTL) */}
           <div className="flex flex-col justify-end text-start relative z-20 w-full max-w-2xl py-12 lg:py-4 pb-8 lg:pb-12 h-full">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-md px-4 py-1.5 text-sm font-medium text-primary shadow-[0_0_20px_rgba(34,199,242,0.15)] w-fit mt-8 lg:mt-20"
+              initial={{ opacity: 0, x: 50, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary shadow-sm w-fit mt-8 lg:mt-20"
             >
-              <Sparkles className="h-4 w-4" />
+              <Sparkles className="h-4 w-4 animate-pulse" />
               <span>ذكاء اصطناعي لمستقبلك المهني</span>
             </motion.div>
 
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
               className="text-5xl font-extrabold font-heading tracking-tight sm:text-6xl lg:text-7xl mb-6 text-white leading-tight"
             >
               اكتشف قيمتك <br />
-              <span className="text-primary">وضاعف فرصك</span>
+              <span className="text-primary bg-clip-text text-transparent bg-gradient-to-l from-primary to-accent">وضاعف فرصك</span>
             </motion.h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
               className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed"
             >
-              انضم إلى المنصة التي تجمع نخبة الكفاءات مع أفضل الشركات. حلل سيرتك الذاتية، واعرف قيمتك السوقية الحقيقية بدقة متناهية.
+              انضم إلى المنصة التي تجمع نخبة الكفاءات مع أفضل الشركات، واعرف قيمتك السوقية الحقيقية بدقة متناهية.
             </motion.p>
 
             {/* Smart Search */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
               className="w-full max-w-2xl mb-8"
             >
-              <div className="flex flex-col sm:flex-row items-center gap-2 rounded-2xl bg-card/80 backdrop-blur-xl p-2 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.4)] ring-1 ring-white/10 focus-within:ring-primary/50 focus-within:shadow-[0_20px_50px_-12px_rgba(18,75,201,0.25)] transition-all duration-300">
-                <div className="flex flex-1 items-center gap-3 px-4 py-3 w-full border-b sm:border-b-0 sm:border-e border-white/10 group">
-                  <Search className="h-5 w-5 text-primary group-focus-within:text-accent transition-colors" />
+              <div className="flex flex-col sm:flex-row items-center gap-2 rounded-2xl bg-card p-2 shadow-2xl ring-1 ring-white/10 focus-within:ring-primary/50 transition-all">
+                <div className="flex flex-1 items-center gap-3 px-4 py-3 w-full border-b sm:border-b-0 sm:border-e border-white/10">
+                  <Search className="h-5 w-5 text-primary" />
                   <input
                     type="text"
                     placeholder="المسمى الوظيفي أو المهارة..."
                     className="w-full bg-transparent outline-none text-white placeholder:text-muted-foreground/60 focus:ring-0"
                   />
                 </div>
-                <div className="flex flex-1 items-center gap-3 px-4 py-3 w-full group">
-                  <MapPin className="h-5 w-5 text-primary group-focus-within:text-accent transition-colors" />
+                <div className="flex flex-1 items-center gap-3 px-4 py-3 w-full">
+                  <MapPin className="h-5 w-5 text-primary" />
                   <input
                     type="text"
                     placeholder="المدينة أو عن بعد..."
                     className="w-full bg-transparent outline-none text-white placeholder:text-muted-foreground/60 focus:ring-0"
                   />
                 </div>
-                <Button size="lg" className="w-full sm:w-auto rounded-xl px-8 shadow-lg shadow-primary/25 hover:shadow-primary/40 text-white font-bold text-base bg-gradient-to-r from-primary to-accent hover:to-primary transition-all duration-300">
+                <Button size="lg" className="w-full sm:w-auto rounded-xl px-8 shadow-lg shadow-primary/20 text-white font-bold text-base bg-primary hover:bg-[#2D6BFF]">
                   ابحث
                 </Button>
               </div>
@@ -150,14 +150,14 @@ export function HeroSection() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.5 }}
+              transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
               className="flex flex-wrap gap-2 text-sm text-muted-foreground items-center"
             >
               <span className="font-semibold ms-1 text-[#C8D2E4]">الأكثر بحثاً:</span>
               {["مهندس برمجيات", "محلل بيانات", "مدير منتج", "عن بعد", "الرياض"].map((chip) => (
                 <button
                   key={chip}
-                  className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-primary/20 hover:border-primary/50 hover:text-white transition-all duration-300 text-xs text-muted-foreground shadow-sm hover:shadow-[0_0_15px_rgba(18,75,201,0.2)]"
+                  className="px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/50 hover:text-white transition-colors text-xs text-muted-foreground"
                 >
                   {chip}
                 </button>

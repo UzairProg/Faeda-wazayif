@@ -57,16 +57,20 @@ export function FeaturedJobsSection() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Ambient Azure Glow */}
+        <div className="absolute top-1/2 start-0 -translate-y-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-[#124BC9]/10 rounded-full blur-[150px] pointer-events-none" />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 relative z-10 items-center pt-12">
           {jobs.map((job, index) => (
             <motion.div
               key={job.id}
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.2, ease: "easeOut" }}
+              className={`relative z-10 ${index === 1 ? 'lg:-translate-y-12 lg:scale-105 z-20' : ''}`}
             >
-              <GlassCard interactive className="p-6 flex flex-col h-full group bg-card border-white/5">
+              <GlassCard interactive className={`p-6 md:p-8 flex flex-col h-full group bg-card/40 backdrop-blur-md border-white/5 shadow-xl hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 hover:border-white/10 transition-all duration-500 ease-out ${index === 1 ? 'border-primary/20 bg-card/60 shadow-primary/10 shadow-2xl' : ''}`}>
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg ${job.color}`}>
@@ -114,7 +118,7 @@ export function FeaturedJobsSection() {
             </motion.div>
           ))}
         </div>
-        
+
         <Button variant="outline" className="w-full mt-8 md:hidden rounded-full border-white/10 bg-white/5 text-white">
           عرض جميع الوظائف
         </Button>

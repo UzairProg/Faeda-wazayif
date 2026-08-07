@@ -1,6 +1,6 @@
 // Mock company names for the marquee
 const companies = [
-  "أرامكو", "سابك", "STC", "نيوم", "مايكروسوفت", 
+  "أرامكو", "سابك", "STC", "نيوم", "مايكروسوفت",
   "جوجل", "أمازون", "الراجحي", "روشن", "علم"
 ]
 
@@ -16,7 +16,7 @@ export function TrustedBySection() {
       <div className="relative flex overflow-hidden">
         {/* Left Fade Gradient */}
         <div className="absolute start-0 top-0 z-10 h-full w-24 sm:w-48 bg-gradient-to-l from-card to-transparent pointer-events-none" />
-        
+
         {/* Scrolling Content */}
         <div className="flex animate-[marquee_40s_linear_infinite] whitespace-nowrap">
           {[...companies, ...companies, ...companies].map((company, index) => (

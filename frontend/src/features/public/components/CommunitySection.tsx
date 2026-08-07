@@ -3,27 +3,31 @@ import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, BookOpen, MessageCircle } from "lucide-react"
 
+import imgNegotiate from "@/assets/images/Professional_insights/1_negotiate.png"
+import imgInterview from "@/assets/images/Professional_insights/2_interviewPrep.png"
+import imgHolistic from "@/assets/images/Professional_insights/3_holistic_engineers.png"
+
 const articles = [
   {
     id: 1,
     title: "كيف تفاوض على زيادة راتبك بنسبة 20% في عام 2026",
     category: "نصائح مهنية",
     readTime: "5 دقائق",
-    image: "bg-gradient-to-br from-blue-600/20 to-purple-600/20",
+    image: imgNegotiate,
   },
   {
     id: 2,
     title: "صعود المقابلات التقنية المدعومة بالذكاء الاصطناعي",
     category: "التحضير للمقابلات",
     readTime: "8 دقائق",
-    image: "bg-gradient-to-br from-cyan-600/20 to-blue-600/20",
+    image: imgInterview,
   },
   {
     id: 3,
     title: "لماذا تفضل الشركات الناشئة المهندسين الشموليين؟",
     category: "اتجاهات الصناعة",
     readTime: "6 دقائق",
-    image: "bg-gradient-to-br from-orange-600/20 to-red-600/20",
+    image: imgHolistic,
   },
 ]
 
@@ -45,20 +49,24 @@ export function CommunitySection() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Ambient Glow */}
+        <div className="absolute top-[20%] left-[20%] -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-primary/10 rounded-full blur-[150px] pointer-events-none" />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
           {articles.map((article, index) => (
             <motion.div
               key={article.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
             >
-              <GlassCard interactive className="flex flex-col h-full group overflow-hidden bg-card border-white/5 text-start">
+              <GlassCard interactive className="flex flex-col h-full group overflow-hidden bg-card/40 backdrop-blur-md border-white/5 text-start shadow-lg hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-1 hover:scale-[1.01] hover:border-white/10 transition-all duration-500 ease-out">
                 {/* Image Placeholder */}
-                <div className={`h-48 w-full ${article.image} relative overflow-hidden`}>
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
-                  <div className="absolute top-4 start-4 bg-background/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-white border border-white/10">
+                <div className={`h-56 w-full relative overflow-hidden`}>
+                  <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors duration-500 z-10" />
+                  <div className="absolute top-4 start-4 bg-background/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-white border border-white/10 z-20">
                     {article.category}
                   </div>
                 </div>

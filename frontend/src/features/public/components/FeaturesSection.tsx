@@ -51,7 +51,7 @@ export function FeaturesSection() {
   return (
     <section className="py-24 relative bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-16 relative z-10">
           <h2 className="text-3xl font-extrabold font-heading tracking-tight sm:text-4xl md:text-5xl mb-6 text-white">
             لماذا <span className="text-primary">منصة فائدة؟</span>
           </h2>
@@ -60,31 +60,38 @@ export function FeaturesSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[200px]">
+        {/* Ambient Cyan Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-secondary/5 rounded-full blur-[150px] pointer-events-none" />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
               className={`h-full ${feature.colSpan}`}
             >
-              <GlassCard interactive className="h-full p-8 flex flex-col justify-between group overflow-hidden bg-card/40 backdrop-blur-md border-white/5 shadow-md hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1 hover:border-white/10 transition-all duration-300">
+              <GlassCard interactive className="h-full p-8 flex flex-col justify-between group overflow-hidden bg-card/40 backdrop-blur-md border-white/5 shadow-lg hover:shadow-2xl hover:shadow-[0_0_40px_-10px_rgba(18,75,201,0.4)] hover:-translate-y-2 hover:border-primary/50 transition-all duration-500 ease-out">
+                
+                {/* Abstract light sweep on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
                 <div className="relative z-10">
-                  <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 text-muted-foreground transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground border border-white/10 group-hover:border-primary">
-                    <feature.icon className="h-5 w-5" />
+                  <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 text-muted-foreground transition-all duration-500 group-hover:scale-125 group-hover:-rotate-6 group-hover:bg-primary group-hover:text-primary-foreground border border-white/10 group-hover:border-primary shadow-lg">
+                    <feature.icon className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-bold font-heading mb-3 text-white group-hover:text-primary transition-colors">
+                  <h3 className="text-xl sm:text-2xl font-bold font-heading mb-3 text-white group-hover:text-primary transition-colors">
                     {feature.title}
                   </h3>
-                  <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
-                
+
                 {/* Decorative background glow */}
-                <div className="absolute -bottom-24 -end-24 h-48 w-48 rounded-full bg-primary/0 blur-3xl transition-all duration-500 group-hover:bg-primary/10 group-hover:scale-150 pointer-events-none" />
+                <div className="absolute -bottom-24 -end-24 h-48 w-48 rounded-full bg-primary/0 blur-3xl transition-all duration-700 group-hover:bg-primary/30 group-hover:scale-[2.5] pointer-events-none" />
               </GlassCard>
             </motion.div>
           ))}

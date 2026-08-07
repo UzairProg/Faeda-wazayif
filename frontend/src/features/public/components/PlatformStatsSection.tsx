@@ -40,8 +40,11 @@ const stats = [
 
 export function PlatformStatsSection() {
   return (
-    <section className="py-24 relative z-10 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 relative z-10 bg-transparent">
+      {/* Intense Ambient Primary Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[500px] bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20 rounded-[100%] blur-[120px] pointer-events-none" />
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <motion.div
@@ -49,10 +52,10 @@ export function PlatformStatsSection() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
             >
-              <div className="flex flex-col items-center text-center p-6 group h-full justify-center">
-                <div className={`mb-4 transition-transform duration-300 group-hover:-translate-y-2`}>
+              <div className="flex flex-col items-center text-center p-8 group h-full justify-center bg-card/40 backdrop-blur-md border border-white/5 rounded-3xl shadow-lg hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 hover:border-white/10 transition-all duration-500">
+                <div className="mb-4 transition-transform duration-500 group-hover:scale-110">
                   <stat.icon className={`h-12 w-12 text-primary drop-shadow-md`} strokeWidth={1.5} />
                 </div>
                 <div className="flex items-baseline gap-1 mb-2">
