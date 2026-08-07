@@ -392,7 +392,7 @@
                         <div class="col-6 col-md-3">
                             <div class="mv-metric-card">
                                 <i class="fas fa-certificate mv-metric-icon"></i>
-                                <div class="mv-metric-value almarai-extrabold">{{ (customer.certifications|string).count(',') + 1 if customer.certifications else 0 }}</div>
+                                <div class="mv-metric-value almarai-extrabold">{{ customer.certifications_list|length if customer.certifications_list else 0 }}</div>
                                 <div class="mv-metric-label almarai-regular">الشهادات الاحترافية</div>
                             </div>
                         </div>
@@ -420,25 +420,6 @@
                                 <div class="mv-metric-label almarai-regular">سنوات الخبرة</div>
                             </div>
                         </div>
-                        <!-- Box 6 -->
-                        <div class="col-6 col-md-3">
-                            <div class="mv-metric-card">
-                                <i class="fas fa-project-diagram mv-metric-icon"></i>
-                                {% set p_size = 'لا يوجد' %}
-                                {% if customer.projects %}
-                                    {% set sizes = customer.projects | map(attribute='project_size') | list %}
-                                    {% if 'كبير' in sizes %}
-                                        {% set p_size = 'كبير' %}
-                                    {% elif 'متوسط' in sizes %}
-                                        {% set p_size = 'متوسط' %}
-                                    {% elif 'صغير' in sizes %}
-                                        {% set p_size = 'صغير' %}
-                                    {% endif %}
-                                {% endif %}
-                                <div class="mv-metric-value almarai-extrabold" style="font-size: 1rem;">{{ p_size }}</div>
-                                <div class="mv-metric-label almarai-regular">حجم المشاريع</div>
-                            </div>
-                        </div>
                         <!-- Box 7 -->
                         <div class="col-6 col-md-3">
                             <div class="mv-metric-card">
@@ -447,12 +428,18 @@
                                 <div class="mv-metric-label almarai-regular">مساهمات الملكية الفكرية</div>
                             </div>
                         </div>
-                        <!-- Box 8 -->
-                        <div class="col-6 col-md-3">
-                            <div class="mv-metric-card">
-                                <i class="fas fa-university mv-metric-icon"></i>
-                                <div class="mv-metric-value almarai-extrabold" style="font-size: 1.1rem;">{{ customer.university or 'غير محدد' }}</div>
-                                <div class="mv-metric-label almarai-regular">الجامعة</div>
+                        <!-- Box 8 (Expanded) -->
+                        <div class="col-12 col-md-6">
+                            <div class="mv-metric-card d-flex align-items-center h-100" style="padding: 15px;">
+                                <i class="fas fa-university mv-metric-icon me-3 mb-0"></i>
+                                <div class="text-start flex-grow-1 ms-3">
+                                    <div class="mv-metric-value almarai-extrabold mb-1" style="font-size: 1.1rem;">{{ customer.university or 'غير محدد' }}</div>
+                                    <div class="mv-metric-label almarai-regular text-muted" style="font-size: 0.85rem;">
+                                        الجامعة | 
+                                        <span class="text-primary-dark almarai-bold">تصنيف QS: {{ market_data.qs_rank_string if market_data else 'غير مصنفة' }}</span>
+                                        <div style="font-size: 0.7rem; color: #a0aec0; margin-top: 3px;">(إصدار البيانات: 2025)</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

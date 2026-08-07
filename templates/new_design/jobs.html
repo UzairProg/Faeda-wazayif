@@ -1,171 +1,495 @@
-<!--
-==============================================================================
-الوظيفة الأساسية للملف: قالب HTML (Template) لواجهة المستخدم لعرض البيانات والتفاعل معها.
-الروابط أو الميزات: يستخدم محرك Jinja2 لوراثة القوالب وعرض المتغيرات المرسلة من الـ Backend.
-المتطلبات الخاصة: يعتمد على القوالب الأساسية (مثل base.html أو panel_base.html) وملفات التنسيق (CSS/JS) الموجودة في مجلد static.
-==============================================================================
--->
 {% extends 'new_design/base.html' %}
 
 {% block title %}منصة فائدة | تصفح الوظائف{% endblock %}
 
 {% block extra_css %}
-<style>
-    /* Search & Filter Section */
-    .search-section {
-        background-color: #ffffff;
-        border-radius: 15px;
-        padding: 30px;
-        margin-top: 40px;
-        margin-bottom: 80px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        border: 1px solid #eaeaea;
-    }
-    .form-label { color: var(--primary-dark); font-weight: 700; margin-bottom: 8px; }
-    .form-control, .form-select { border-radius: 10px; padding: 12px; border: 1px solid #ddd; }
+<!-- Phosphor Icons for modern thin icons -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<!-- AOS Animations -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    /* Job Cards */
+<style>
+    /* Hero Banner */
+    .jobs-hero {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, #2a375a 100%);
+        padding: 80px 0 120px 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Subtle static pattern overlay */
+    .jobs-hero::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(rgba(255,255,255,0.05) 2px, transparent 2px);
+        background-size: 30px 30px;
+        z-index: 1;
+    }
+
+    .jobs-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .jobs-hero h1 {
+        font-size: 2.8rem;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    .jobs-hero p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    /* Floating Search Section */
+    .search-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 35px;
+        margin-top: -60px; /* Overlap hero */
+        margin-bottom: 60px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        border: 1px solid rgba(255,255,255,0.4);
+        position: relative;
+        z-index: 10;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .search-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(44, 184, 132, 0.15);
+    }
+    
+    .form-label { 
+        color: var(--primary-dark); 
+        font-weight: 700; 
+        margin-bottom: 10px; 
+        font-size: 0.95rem;
+    }
+    
+    .search-input-group {
+        position: relative;
+    }
+    
+    .search-input-group i {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+        font-size: 1.2rem;
+        pointer-events: none;
+    }
+    
+    .search-input-group .form-select { 
+        border-radius: 12px; 
+        padding: 14px 45px 14px 15px; /* Extra padding for icon on the right */
+        border: 2px solid #edf2f7; 
+        background-color: #f8fafc;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        color: var(--primary-dark);
+        appearance: none;
+    }
+    
+    .search-input-group .form-select:focus {
+        border-color: var(--misk-green);
+        background-color: #fff;
+        box-shadow: 0 0 0 4px rgba(44, 184, 132, 0.1);
+    }
+    
+    /* Custom chevron for select */
+    .search-input-group::after {
+        content: '\25BC';
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        font-size: 0.7rem;
+        pointer-events: none;
+    }
+
+    /* Modern Job Cards */
     .job-card {
         background-color: #fff;
-        border-radius: 15px;
+        border-radius: 20px;
         overflow: hidden;
-        transition: transform 0.3s, box-shadow 0.3s;
-        border: 2px solid transparent;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #edf2f7;
         height: 100%;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .job-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--misk-green), var(--misk-yellow));
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+    
+    .job-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+        border-color: transparent;
+    }
+    
+    .job-card:hover::before {
+        opacity: 1;
+    }
+    
+    .job-header {
+        padding: 25px 25px 15px 25px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .job-logo-wrapper {
+        width: 70px;
+        height: 70px;
+        border-radius: 15px;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        border: 1px solid #edf2f7;
+        transition: transform 0.4s ease, background 0.4s ease;
+    }
+    
+    .job-card:hover .job-logo-wrapper {
+        transform: scale(1.05) rotate(-3deg);
+        background: #fff;
         box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
-    .job-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        border-color: var(--cream);
+    
+    .job-logo-wrapper img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
     }
-    .job-image-container {
-        background-color: #EFEFEF;
-        padding: 20px;
-        text-align: center;
-        border-bottom: 3px solid var(--cream);
+    
+    .ai-badge {
+        background: rgba(191, 42, 74, 0.1);
+        color: var(--accent-red);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
     }
-    .job-image-container img { max-height: 120px; object-fit: contain; border-radius: 10px; }
-    .job-details { padding: 25px; color: var(--primary-dark); }
-    .job-info-item { margin-bottom: 15px; font-size: 0.95rem; }
-    .job-info-item i { color: var(--accent-red); margin-left: 8px; width: 20px; text-align: center; }
 
-    /* Pagination */
-    .pagination .page-link { color: var(--primary-dark); border: none; margin: 0 5px; border-radius: 8px; font-weight: bold; }
-    .pagination .page-item.active .page-link { background-color: var(--primary-dark); color: white; }
+    .job-body {
+        padding: 25px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .job-title {
+        color: var(--primary-dark);
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+        line-height: 1.4;
+    }
+    
+    .job-badges-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+    
+    .info-badge {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .job-card:hover .info-badge {
+        background: rgba(44, 184, 132, 0.08);
+        color: var(--misk-green);
+    }
+    
+    .info-badge i {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        transition: color 0.3s ease;
+    }
+    
+    .job-card:hover .info-badge i {
+        color: var(--misk-green);
+    }
+
+    .job-footer {
+        padding: 0 25px 25px 25px;
+        margin-top: auto;
+    }
+    
+    .btn-apply {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        background: #f8fafc;
+        color: var(--primary-dark);
+        border: 1px solid #edf2f7;
+        font-weight: 700;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+    }
+    
+    .job-card:hover .btn-apply {
+        background: var(--accent-red);
+        color: white;
+        border-color: var(--accent-red);
+        box-shadow: 0 10px 20px rgba(191, 42, 74, 0.2);
+    }
+
+    /* Section Titles */
+    .section-title-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .section-title-icon {
+        width: 45px;
+        height: 45px;
+        background: rgba(44, 184, 132, 0.1);
+        color: var(--misk-green);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+    
+    .section-title-wrapper h4 {
+        margin: 0;
+        color: var(--primary-dark);
+    }
+
+    /* Pagination Redesign */
+    .pagination .page-link { 
+        background-color: #fff !important;
+        color: var(--primary-dark) !important; 
+        border: 2px solid #edf2f7 !important; 
+        margin: 0 5px; 
+        border-radius: 12px; 
+        font-weight: bold; 
+        padding: 10px 18px;
+        transition: all 0.3s ease;
+    }
+    .pagination .page-link:hover {
+        background: var(--accent-yellow) !important;
+        color: var(--primary-dark) !important;
+        border-color: var(--accent-yellow) !important;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(240, 191, 86, 0.4);
+    }
+    .pagination .page-item.disabled .page-link {
+        background-color: #f8fafc !important;
+        color: #cbd5e1 !important;
+        border-color: #f1f5f9 !important;
+        pointer-events: none;
+    }
+    .pagination .page-item.active .page-link { 
+        background-color: var(--primary-dark) !important; 
+        color: white !important; 
+        border-color: var(--primary-dark) !important;
+        box-shadow: 0 5px 15px rgba(26, 34, 56, 0.2) !important;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
+
+<!-- HERO BANNER -->
+{% set is_first_load = not request.args %}
+<section class="jobs-hero">
+    <div class="container jobs-hero-content text-center text-white">
+        <h1 class="almarai-extrabold mb-3" {% if is_first_load %}data-aos="zoom-in" data-aos-duration="1000"{% endif %}>اكتشف فرصتك المهنية القادمة</h1>
+        <p class="almarai-regular" {% if is_first_load %}data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000"{% endif %}>آلاف الوظائف في كبرى الشركات بانتظارك، ابدأ رحلتك الآن</p>
+    </div>
+</section>
+
 <div class="container pb-5">
-    <div class="search-section">
-        <h3 class="almarai-extrabold mb-4" style="color: var(--primary-dark);"><i class="fa-solid fa-magnifying-glass ms-2"></i> البحث عن وظائف</h3>
+    
+    <!-- SEARCH SECTION (FLOATING) -->
+    <div class="search-section" {% if is_first_load %}data-aos="fade-up" data-aos-delay="400"{% endif %}>
         <form method="GET" action="/update-list" class="row g-4 align-items-end">
             <div class="col-md-3">
-                <label for="requestType" class="form-label almarai-regular">نوع الطلب</label>
-                <select class="form-select almarai-bold" id="requestType" name="ttype">
-                    <option value="" selected>الكل</option>
-                    {% for jt in job_types %}
-                    <option value="{{ jt.name_ar }}" {% if request.args.get('ttype') == jt.name_ar %}selected{% endif %}>{{ jt.name_ar }}</option>
-                    {% endfor %}
-                </select>
+                <label for="requestType" class="form-label almarai-bold">نوع الطلب</label>
+                <div class="search-input-group">
+                    <i class="ph ph-briefcase"></i>
+                    <select class="form-select almarai-regular" id="requestType" name="ttype">
+                        <option value="" selected>الكل</option>
+                        {% for jt in job_types %}
+                        <option value="{{ jt.name_ar }}" {% if request.args.get('ttype') == jt.name_ar %}selected{% endif %}>{{ jt.name_ar }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
+            
             <div class="col-md-4">
-                <label for="specialty" class="form-label almarai-regular">التخصص</label>
-                <select class="form-select almarai-bold" id="specialty" name="study">
-                    <option value="" selected>الكل</option>
-                    {% for spec in specialties %}
-                    <option value="{{ spec.name_ar }}" {% if request.args.get('study') == spec.name_ar %}selected{% endif %}>{{ spec.name_ar }}</option>
-                    {% endfor %}
-                    
-                </select>
+                <label for="specialty" class="form-label almarai-bold">التخصص</label>
+                <div class="search-input-group">
+                    <i class="ph ph-graduation-cap"></i>
+                    <select class="form-select almarai-regular" id="specialty" name="study">
+                        <option value="" selected>الكل</option>
+                        {% for spec in specialties %}
+                        <option value="{{ spec.name_ar }}" {% if request.args.get('study') == spec.name_ar %}selected{% endif %}>{{ spec.name_ar }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
+            
             <div class="col-md-3">
-                <label for="city" class="form-label almarai-regular">المدينة</label>
-                <select class="form-select almarai-bold" id="city" name="city">
-                    <option value="" selected>الكل</option>
-                    {% for city in cities %}
-                    <option value="{{ city.name_ar }}" {% if request.args.get('city') == city.name_ar %}selected{% endif %}>{{ city.name_ar }}</option>
-                    {% endfor %}
-                </select>
+                <label for="city" class="form-label almarai-bold">المدينة</label>
+                <div class="search-input-group">
+                    <i class="ph ph-map-pin"></i>
+                    <select class="form-select almarai-regular" id="city" name="city">
+                        <option value="" selected>الكل</option>
+                        {% for city in cities %}
+                        <option value="{{ city.name_ar }}" {% if request.args.get('city') == city.name_ar %}selected{% endif %}>{{ city.name_ar }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
+            
             <div class="col-md-2">
-                <button type="submit" class="btn-custom-red w-100 almarai-bold" style="padding: 12px;">ابحث الآن</button>
+                <button type="submit" class="btn-custom-red w-100 almarai-bold" style="padding: 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(191,42,74,0.15);">
+                    <i class="ph ph-magnifying-glass me-1"></i> ابحث الآن
+                </button>
             </div>
         </form>
     </div>
 
+    <!-- AI RECOMMENDED JOBS -->
     {% if recommended_jobs %}
-    <div class="row mb-5">
-        <div class="col-12">
-            <h4 class="almarai-extrabold mb-3" style="color: #BF2A4A;">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> وظائف مقترحة لك بالذكاء الاصطناعي
-            </h4>
+    <div class="row mb-5 mt-4">
+        <div class="col-12" data-aos="fade-up">
+            <div class="section-title-wrapper">
+                <div class="section-title-icon" style="background: rgba(191, 42, 74, 0.1); color: var(--accent-red);">
+                    <i class="ph ph-magic-wand"></i>
+                </div>
+                <h4 class="almarai-extrabold">وظائف مقترحة لك بالذكاء الاصطناعي</h4>
+            </div>
         </div>
+        
         <div class="row g-4">
             {% for job in recommended_jobs %}
-            <div class="col-lg-4 col-md-6 col-12">
-                <div class="job-card d-flex flex-column" style="border: 2px solid #BF2A4A; box-shadow: 0 8px 20px rgba(191,42,74,0.15);">
-                    <div class="job-image-container" style="position: relative;">
-                        <!-- AI Match Badge -->
-                        <span class="badge position-absolute top-0 end-0 m-2 px-3 py-2" style="background-color: #BF2A4A; font-size: 13px; border-radius: 8px; z-index: 10;">
-                            <i class="fa-solid fa-star text-warning me-1"></i> تطابق {{ job.match_score }}%
-                        </span>
-                        
-                        {% if job.company and job.company.company_logo %}
-                            <img src="{{ url_for('static', filename='uploads/companies/logo/' + job.company.company_logo) }}" alt="Company Logo" class="img-fluid">
-                        {% else %}
-                            <img src="{{ url_for('static', filename='new_design/images/Card-img2.png') }}" alt="Default" class="img-fluid">
-                        {% endif %}
+            <div class="col-lg-4 col-md-6 col-12" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+                <div class="job-card" style="border: 1px solid rgba(191, 42, 74, 0.2);">
+                    <!-- Header -->
+                    <div class="job-header">
+                        <div class="job-logo-wrapper">
+                            {% if job.company and job.company.company_logo %}
+                                <img src="{{ url_for('static', filename='uploads/companies/logo/' + job.company.company_logo) }}" alt="Company Logo">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='new_design/images/Card-img2.png') }}" alt="Default">
+                            {% endif %}
+                        </div>
+                        <div class="ai-badge almarai-bold">
+                            <i class="ph-fill ph-star"></i> تطابق {{ job.match_score }}%
+                        </div>
                     </div>
-                    <div class="job-details flex-grow-1 d-flex flex-column">
-                        <h4 class="almarai-extrabold mb-4">{{ job.title }}</h4>
-                        <div class="job-info-item almarai-bold">
-                            <i class="fas fa-building"></i> الشركة: <span class="almarai-regular">{{ job.company.company_english_name if job.company else 'غير محدد' }}</span>
+                    
+                    <!-- Body -->
+                    <div class="job-body">
+                        <h4 class="job-title almarai-extrabold">{{ job.title }}</h4>
+                        <div class="job-badges-container">
+                            <span class="info-badge almarai-bold">
+                                <i class="ph ph-buildings"></i>
+                                {{ job.company.company_english_name if job.company else 'غير محدد' }}
+                            </span>
+                            <span class="info-badge almarai-bold">
+                                <i class="ph ph-map-pin"></i>
+                                {{ job.town }}
+                            </span>
                         </div>
-                        <div class="job-info-item almarai-bold">
-                            <i class="fas fa-map-marker-alt"></i> المكان: <span class="almarai-regular">{{ job.town }}</span>
-                        </div>
-                        <div class="mt-auto pt-4 text-center">
-                            <a href="/read_job/{{ job.id }}" class="btn-custom-red d-inline-block w-100 py-2">قراءة التفاصيل والتقديم</a>
-                        </div>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="job-footer">
+                        <a href="/read_job/{{ job.id }}" class="btn-apply almarai-regular">قراءة التفاصيل والتقديم</a>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
-    
-    <!-- Divider -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <h4 class="almarai-extrabold" style="color: var(--primary-dark);">كافة الوظائف المتاحة</h4>
+    {% endif %}
+
+    <!-- ALL JOBS -->
+    <div class="row mb-4 mt-5">
+        <div class="col-12" data-aos="fade-up">
+            <div class="section-title-wrapper">
+                <div class="section-title-icon">
+                    <i class="ph ph-briefcase"></i>
+                </div>
+                <h4 class="almarai-extrabold">كافة الوظائف المتاحة</h4>
+            </div>
         </div>
     </div>
-    {% endif %}
 
     <div class="row g-4">
         {% for job in jobs.items %}
-        <div class="col-lg-4 col-md-6 col-12">
-            <div class="job-card d-flex flex-column">
-                <div class="job-image-container">
-                    {% if job.company and job.company.company_logo %}
-                        <img src="{{ url_for('static', filename='uploads/companies/logo/' + job.company.company_logo) }}" alt="Company Logo" class="img-fluid">
-                    {% else %}
-                        <img src="{{ url_for('static', filename='new_design/images/Card-img2.png') }}" alt="Default" class="img-fluid">
-                    {% endif %}
+        <div class="col-lg-4 col-md-6 col-12" data-aos="fade-up" data-aos-delay="{{ loop.index0 % 3 * 100 }}">
+            <div class="job-card">
+                <!-- Header -->
+                <div class="job-header">
+                    <div class="job-logo-wrapper">
+                        {% if job.company and job.company.company_logo %}
+                            <img src="{{ url_for('static', filename='uploads/companies/logo/' + job.company.company_logo) }}" alt="Company Logo">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='new_design/images/Card-img2.png') }}" alt="Default">
+                        {% endif %}
+                    </div>
+                    <!-- Empty div to push logo to right if needed, or we can add post date here later -->
+                    <div class="job-date text-muted almarai-regular" style="font-size: 0.85rem;">
+                        <i class="ph ph-clock"></i> حديث
+                    </div>
                 </div>
-                <div class="job-details flex-grow-1 d-flex flex-column">
-                    <h4 class="almarai-extrabold mb-4">{{ job.title }}</h4>
-                    <div class="job-info-item almarai-bold">
-                        <i class="fas fa-building"></i> الشركة: <span class="almarai-regular">{{ job.company.company_english_name if job.company else 'غير محدد' }}</span>
+                
+                <!-- Body -->
+                <div class="job-body">
+                    <h4 class="job-title almarai-extrabold">{{ job.title }}</h4>
+                    <div class="job-badges-container">
+                        <span class="info-badge almarai-bold">
+                            <i class="ph ph-buildings"></i>
+                            {{ job.company.company_english_name if job.company else 'غير محدد' }}
+                        </span>
+                        <span class="info-badge almarai-bold">
+                            <i class="ph ph-map-pin"></i>
+                            {{ job.town }}
+                        </span>
                     </div>
-                    <div class="job-info-item almarai-bold">
-                        <i class="fas fa-map-marker-alt"></i> المكان: <span class="almarai-regular">{{ job.town }}</span>
-                    </div>
-                    <div class="mt-auto pt-4 text-center">
-                        <a href="/read_job/{{ job.id }}" class="btn-custom-red d-inline-block w-100 py-2">قراءة التفاصيل والتقديم</a>
-                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <div class="job-footer">
+                    <a href="/read_job/{{ job.id }}" class="btn-apply almarai-regular">قراءة التفاصيل والتقديم</a>
                 </div>
             </div>
         </div>
@@ -174,33 +498,64 @@
     
     <!-- Pagination -->
     {% if jobs.pages > 1 %}
-    <nav aria-label="Page navigation" class="mt-5">
+    <nav aria-label="Page navigation" class="mt-5 pt-4" data-aos="fade-up">
         <ul class="pagination justify-content-center" dir="ltr">
             {% if jobs.has_prev %}
             <li class="page-item">
-                <a class="page-link" href="{{ url_for(request.endpoint, page=jobs.prev_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">السابق</a>
+                <a class="page-link almarai-bold" href="{{ url_for(request.endpoint, page=jobs.prev_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">السابق</a>
             </li>
             {% endif %}
             
             {% for page_num in jobs.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
                 {% if page_num %}
                     {% if jobs.page == page_num %}
-                    <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                    <li class="page-item active"><span class="page-link almarai-bold">{{ page_num }}</span></li>
                     {% else %}
-                    <li class="page-item"><a class="page-link" href="{{ url_for(request.endpoint, page=page_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">{{ page_num }}</a></li>
+                    <li class="page-item"><a class="page-link almarai-bold" href="{{ url_for(request.endpoint, page=page_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">{{ page_num }}</a></li>
                     {% endif %}
                 {% else %}
-                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                    <li class="page-item disabled"><span class="page-link almarai-bold">...</span></li>
                 {% endif %}
             {% endfor %}
             
             {% if jobs.has_next %}
             <li class="page-item">
-                <a class="page-link" href="{{ url_for(request.endpoint, page=jobs.next_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">التالي</a>
+                <a class="page-link almarai-bold" href="{{ url_for(request.endpoint, page=jobs.next_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">التالي</a>
             </li>
             {% endif %}
         </ul>
     </nav>
     {% endif %}
+    
 </div>
+
+<!-- AOS Animation JS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Use sessionStorage to ensure the animation only plays on the VERY FIRST visit
+        const hasVisited = sessionStorage.getItem('jobsPageVisited');
+        
+        if (hasVisited) {
+            // Not the first visit (e.g. they clicked Page 2 or searched) -> Remove animations
+            const topElements = document.querySelectorAll('.jobs-hero h1, .jobs-hero p, .search-section');
+            topElements.forEach(el => {
+                el.removeAttribute('data-aos');
+                // Also remove AOS classes just in case
+                el.classList.remove('aos-init', 'aos-animate');
+            });
+        } else {
+            // First visit -> mark as visited
+            sessionStorage.setItem('jobsPageVisited', 'true');
+        }
+
+        // Initialize AOS animations
+        AOS.init({
+            once: true, // Only animate once when scrolling down
+            offset: 50,
+            duration: 800
+        });
+    });
+</script>
+
 {% endblock %}

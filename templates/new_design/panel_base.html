@@ -148,6 +148,76 @@
             flex: 1;
         }
 
+        /* Custom Flash Messages */
+        .flash-messages-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+            width: 350px;
+            max-width: 90vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .custom-alert {
+            background-color: #fff;
+            border-right: 4px solid #17a2b8;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            animation: slideDownFade 0.4s ease forwards;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .custom-alert.hide {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        .custom-alert-success { border-color: #28a745; }
+        .custom-alert-error { border-color: #dc3545; }
+        .custom-alert-info { border-color: #17a2b8; }
+        .custom-alert-warning { border-color: #ffc107; }
+        
+        .custom-alert .icon {
+            font-size: 1.5rem;
+            margin-left: 15px;
+        }
+        .custom-alert-success .icon { color: #28a745; }
+        .custom-alert-error .icon { color: #dc3545; }
+        .custom-alert-info .icon { color: #17a2b8; }
+        .custom-alert-warning .icon { color: #ffc107; }
+
+        .custom-alert .message {
+            flex-grow: 1;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0;
+            line-height: 1.4;
+        }
+        .custom-alert .close-btn {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 15px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-alert .close-btn:hover { color: #333; }
+        
+        @keyframes slideDownFade {
+            0% { transform: translateY(-50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
         /* Responsive */
         @media (max-width: 992px) {
             .sidebar {
@@ -168,8 +238,8 @@
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
-            <a href="{{ url_for('core.home') }}">
-                <img src="{{ url_for('static', filename='new_design/images/logowhite.png') }}" alt="Faeda Logo">
+            <a href="{{ url_for('core.home') }}" style="display: inline-block;">
+                <img src="{{ url_for('static', filename='new_design/images/faeda_white_logo.png') }}" alt="Faeda Logo" style="height: 70px;">
             </a>
         </div>
         
@@ -273,26 +343,36 @@
 
         <!-- Content Area -->
         <main class="content-area">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div class="mb-4">
+            <!-- Flash Messages Global Container -->
+            <div class="flash-messages-container" id="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
                         {% for category, message in messages %}
-                            {% set alert_class = 'alert-success' %}
-                            {% if category == 'error' or category == 'danger' %}
-                                {% set alert_class = 'alert-danger' %}
-                            {% elif category == 'warning' %}
-                                {% set alert_class = 'alert-warning' %}
-                            {% elif category == 'info' %}
-                                {% set alert_class = 'alert-info' %}
-                            {% endif %}
-                            <div class="alert {{ alert_class }} alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 12px; font-weight: bold;">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            {% set alert_type = 'success' if category == 'success' else 'error' if category == 'error' or category == 'danger' else 'warning' if category == 'warning' else 'info' %}
+                            {% set icon_class = 'bi-check-circle-fill' if category == 'success' else 'bi-exclamation-triangle-fill' if alert_type in ['error', 'warning'] else 'bi-info-circle-fill' %}
+                            <div class="custom-alert custom-alert-{{ alert_type }}" role="alert">
+                                <i class="bi {{ icon_class }} icon"></i>
+                                <div class="message">{{ message | safe }}</div>
+                                <button type="button" class="close-btn" onclick="this.parentElement.classList.add('hide'); setTimeout(() => this.parentElement.remove(), 400);"><i class="bi bi-x"></i></button>
                             </div>
                         {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const alerts = document.querySelectorAll('.custom-alert');
+                    alerts.forEach(alert => {
+                        setTimeout(() => {
+                            if (alert && !alert.classList.contains('hide')) {
+                                alert.classList.add('hide');
+                                setTimeout(() => alert.remove(), 400);
+                            }
+                        }, 4000);
+                    });
+                });
+            </script>
 
             {% block content %}
             {% endblock %}

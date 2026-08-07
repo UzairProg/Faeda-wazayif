@@ -55,15 +55,7 @@
                     <p class="almarai-regular text-muted">قم بتسجيل الدخول كمنشأة لإدارة طلبات التوظيف</p>
                 </div>
 
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }} almarai-bold text-center p-2 mb-3" role="alert">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
+                
 
                 <form class="login-form" action="{{ url_for('company_panel.company_login') }}" method="post">
                     

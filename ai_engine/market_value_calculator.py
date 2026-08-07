@@ -70,7 +70,26 @@ def get_qs_university_bonus(user_university_name: str) -> int:
     else:
         bonus = 5
     logger.info("[+] QS university match: '%s' (rank %d) → +%d bonus points", match, rank_val, bonus)
+    logger.info("[+] QS university match: '%s' (rank %d) → +%d bonus points", match, rank_val, bonus)
     return bonus
+
+
+def get_qs_university_rank_string(user_university_name: str) -> str:
+    """Return a string representing the QS university rank."""
+    if not user_university_name:
+        return "غير مصنفة"
+    df = _load_qs_data()
+    if df.empty:
+        return "غير مصنفة"
+    institutions = df["Institution Name"].astype(str).tolist()
+    match, score = process.extractOne(user_university_name, institutions, scorer=fuzz.ratio) or (None, 0)
+    if score < 80 or match is None:
+        return "غير مصنفة"
+    try:
+        rank_val = df.loc[df["Institution Name"] == match, "2025 Rank"].iloc[0]
+        return str(rank_val)
+    except Exception:
+        return "غير مصنفة"
 
 
 # ---------------------------------------------------------------------------
@@ -537,6 +556,8 @@ def calculate_market_value(user_profile: Dict[str, Any]) -> Dict[str, Any]:
         percentile_label = "Below Average"
     else:
         percentile_label = "Entry Level"
+        
+    qs_rank_string = get_qs_university_rank_string(user_profile.get("university"))
 
     # --- Build result ---
     result: Dict[str, Any] = {
@@ -552,6 +573,7 @@ def calculate_market_value(user_profile: Dict[str, Any]) -> Dict[str, Any]:
         "specialization": specialization,
         "experience_tier": exp_tier,
         "percentile_label": percentile_label,
+        "qs_rank_string": qs_rank_string,
     }
 
     logger.info(
