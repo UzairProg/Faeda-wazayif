@@ -1,111 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap');
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
 @theme {
-  --font-sans: "Inter", "sans-serif";
-  --font-heading: "Outfit", "sans-serif";
+  --font-sans: "Tajawal", "sans-serif";
+  --font-heading: "Cairo", "sans-serif";
 }
 
 :root {
   /* Scale & Radii */
   --radius-sm: 0.25rem;
-  --radius: 0.5rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+  --radius: 0.75rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
   
-  --card-radius: 1rem;
+  --card-radius: 1.5rem;
 
-  /* Base Colors */
-  --background: 0 0% 100%;
-  --foreground: 224 71.4% 4.1%;
+  /* Blue Brand Theme - Faeda Jobs */
   
-  /* Surface Colors */
-  --card: 0 0% 100%;
-  --card-foreground: 224 71.4% 4.1%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 224 71.4% 4.1%;
-  --surface-hover: 240 4.8% 98%;
+  /* Background: Background Blue #081628 */
+  --background: 214 67% 9%;
+  --foreground: 0 0% 100%;
   
-  /* Primary (Deep Blue/Purple - Linear inspired) */
-  --primary: 262.1 83.3% 57.8%;
-  --primary-foreground: 210 40% 98%;
+  /* Surface Colors: Secondary Surface #0F2247 */
+  --card: 220 65% 17%;
+  --card-foreground: 0 0% 100%;
+  --popover: 220 65% 17%;
+  --popover-foreground: 0 0% 100%;
+  --surface-hover: 222 65% 20%;
   
-  /* Secondary */
-  --secondary: 240 4.8% 95.9%;
-  --secondary-foreground: 240 5.9% 10%;
+  /* Primary Accent: Primary Blue #124BC9 */
+  --primary: 221 83% 43%;
+  --primary-foreground: 0 0% 100%;
   
-  /* Accent */
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
+  /* Secondary Accent: Accent Cyan #22C7F2 */
+  --secondary: 192 90% 54%;
+  --secondary-foreground: 214 67% 9%;
+  
+  /* Accent: Hover Blue #2D6BFF */
+  --accent: 222 100% 59%;
+  --accent-foreground: 0 0% 100%;
 
   /* Muted */
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
+  --muted: 220 65% 17%;
+  /* Secondary Text: Soft gray #C8D2E4 */
+  --muted-foreground: 219 31% 84%;
   
-  /* Feedback Colors (Success, Warning, Danger, Info) */
-  --success: 142.1 76.2% 36.3%;
-  --success-foreground: 355.7 100% 97.3%;
-  --warning: 38 92% 50%;
-  --warning-foreground: 48 96% 89%;
+  /* Feedback Colors */
+  --success: 161 96% 40%;
+  --success-foreground: 157 33% 5%;
+  --warning: 48 96% 89%;
+  --warning-foreground: 38 92% 50%;
   --danger: 0 84.2% 60.2%;
   --danger-foreground: 210 40% 98%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-  --info: 217 91.2% 59.8%;
-  --info-foreground: 210 40% 98%;
+  --info: 221 83% 43%;
+  --info-foreground: 0 0% 100%;
 
   /* Borders & Inputs */
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 262.1 83.3% 57.8%;
-}
-
-.dark {
-  /* Base Colors */
-  --background: 224 71.4% 4.1%;
-  --foreground: 210 40% 98%;
-  
-  /* Surface Colors */
-  --card: 224 71.4% 4.1%;
-  --card-foreground: 210 40% 98%;
-  --popover: 224 71.4% 4.1%;
-  --popover-foreground: 210 40% 98%;
-  --surface-hover: 215 27.9% 10%;
-  
-  /* Primary */
-  --primary: 262.1 83.3% 57.8%;
-  --primary-foreground: 210 40% 98%;
-  
-  /* Secondary */
-  --secondary: 215 27.9% 16.9%;
-  --secondary-foreground: 210 40% 98%;
-  
-  /* Accent */
-  --accent: 215 27.9% 16.9%;
-  --accent-foreground: 210 40% 98%;
-
-  /* Muted */
-  --muted: 215 27.9% 16.9%;
-  --muted-foreground: 217.9 10.6% 64.9%;
-  
-  /* Feedback Colors */
-  --success: 149 61.3% 20.2%;
-  --success-foreground: 142.1 76.2% 36.3%;
-  --warning: 48 96% 89%;
-  --warning-foreground: 38 92% 50%;
-  --danger: 0 62.8% 30.6%;
-  --danger-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --info: 217 91.2% 59.8%;
-  --info-foreground: 210 40% 98%;
-
-  /* Borders & Inputs */
-  --border: 215 27.9% 16.9%;
-  --input: 215 27.9% 16.9%;
-  --ring: 262.1 83.3% 57.8%;
+  --border: 220 65% 25%;
+  --input: 220 65% 25%;
+  --ring: 221 83% 43%;
 }
 
 @theme {
@@ -145,9 +102,9 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/30 selection:text-primary;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    @apply font-heading tracking-tight;
   }
 }
