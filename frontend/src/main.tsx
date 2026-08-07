@@ -1,31 +1,31 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { createRoot } from 'react-dom/client'
-import { PhoneInput } from '@/components/ui/phone-input'
+import App from './App'
+import { AppProviders } from './providers/AppProviders'
 import './index.css'
 
-function PhoneInputWrapper({ initialValue }: { initialValue: string }) {
-  const [phone, setPhone] = useState(initialValue)
-
-  return (
-    <div className="w-full">
-      <PhoneInput
-        value={phone}
-        onChange={(_value, formatted) => setPhone(formatted)}
-        defaultCountry="SA"
-        placeholder="رقم الهاتف"
-      />
-      {/* Hidden input to sync with Flask's form submission */}
-      <input type="hidden" name="new_mobile" value={phone} />
-    </div>
-  )
-}
-
-const rootElement = document.getElementById('react-phone-input-root')
+const rootElement = document.getElementById('root')
 if (rootElement) {
-  const initialValue = rootElement.getAttribute('data-initial-value') || ''
   createRoot(rootElement).render(
     <React.StrictMode>
-      <PhoneInputWrapper initialValue={initialValue} />
+      <AppProviders>
+        <App />
+      </AppProviders>
     </React.StrictMode>,
   )
+} else {
+  // Fallback for hybrid flask mount if needed during transition, 
+  // but strictly we are building an independent SPA now.
+  const phoneRoot = document.getElementById('react-phone-input-root')
+  if (phoneRoot) {
+    createRoot(phoneRoot).render(
+      <React.StrictMode>
+        <AppProviders>
+          <div className="p-4 text-red-500 font-bold">
+            Please mount the full App on a #root div for the independent frontend.
+          </div>
+        </AppProviders>
+      </React.StrictMode>,
+    )
+  }
 }
