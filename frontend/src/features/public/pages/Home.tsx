@@ -7,6 +7,7 @@ import { FeaturedJobsSection } from "../components/FeaturedJobsSection"
 import { ApplicationJourneySection } from "../components/ApplicationJourneySection"
 import { TeamMarketplaceSection } from "../components/TeamMarketplaceSection"
 import { AIExperienceSection } from "../components/AIExperienceSection"
+import { WhyFaedaSection } from "../components/WhyFaedaSection"
 import { CommunitySection } from "../components/CommunitySection"
 import { EcosystemCtaSection } from "../components/EcosystemCtaSection"
 
@@ -20,37 +21,40 @@ export function Home() {
       <div className="absolute top-[55%] right-[-5%] w-[600px] h-[600px] bg-[#0A2D8F]/20 rounded-full blur-[160px] pointer-events-none -z-10" />
       <div className="absolute top-[80%] left-[-10%] w-[700px] h-[700px] bg-cyan-600/5 rounded-full blur-[180px] pointer-events-none -z-10" />
 
-      {/* 1. Hero Section (Presenter WebM video preserved) */}
+      {/* 01. Hero Section (Presenter WebM video preserved) */}
       <HeroSection />
 
-      {/* 2. Visual Ecosystem Diagram (Candidate ↔ Company ↔ Team ↔ Education) */}
+      {/* 02. What is Faeda? (Disconnected Tools vs. Faeda Ecosystem Diagram) */}
       <EcosystemOverviewSection />
 
-      {/* 3. Major Interactive Role Experience ([ الكفاءات ] [ الشركات ] [ الفرق ] [ الجامعات ]) */}
+      {/* 03. Who is it for? (Interactive Perspective Role Selector & Product UI Transformation) */}
       <InteractiveRoleExperienceSection />
 
-      {/* 4. Interactive Professional Journey Step Timeline & Single UI Preview */}
+      {/* 04. How does it work? (Professional Journey Step Timeline with Controlled 4s Auto-Advance) */}
       <ProfessionalJourneySection />
 
-      {/* 5. Dedicated Market Value Showcase & Interactive Factor Breakdown */}
+      {/* 05. Market Value Showcase & Interactive Factor Breakdown */}
       <MarketValueShowcaseSection />
 
-      {/* 6. Single Primary Interactive Job Preview (1 / 3) */}
+      {/* 06. Opportunity Discovery (Single Primary Job Preview Card 1/3) */}
       <FeaturedJobsSection />
 
-      {/* 7. Application Journey Visual Pipeline Bar */}
+      {/* 07. Transparent Application Journey (Horizontal Visual Pipeline Bar) */}
       <ApplicationJourneySection />
 
-      {/* 8. Specialized Teams Capability Visualization */}
+      {/* 08. Specialized Teams Capability Visualization */}
       <TeamMarketplaceSection />
 
-      {/* 9. Assistive AI Interactive Workspace Demo */}
+      {/* 09. Integrated Assistive AI ("الذكاء يساعدك، والقرار لك" — AI Workspace Demo) */}
       <AIExperienceSection />
 
-      {/* 10. Compact Professional Knowledge Strip */}
+      {/* 10. Why Choose Faeda? (4 Core Differentiators around Faeda Hub) */}
+      <WhyFaedaSection />
+
+      {/* 11. Compact Professional Knowledge Strip */}
       <CommunitySection />
 
-      {/* 11. Simple Closing Ecosystem CTA */}
+      {/* 12. Simple Start / Join Ecosystem CTA */}
       <EcosystemCtaSection />
     </div>
   )

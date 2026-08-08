@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
-import { User, Building2, Users, GraduationCap, Layers, RefreshCw } from "lucide-react"
+import { User, Building2, Users, GraduationCap, Layers, RefreshCw, XCircle, CheckCircle2 } from "lucide-react"
 
 const nodes = [
   { id: "candidate", title: "الكفاءات والباحثين", sub: "هوية مهنية • جاهزية ATS • قيمة سوقية", icon: User },
@@ -17,6 +17,8 @@ export function EcosystemOverviewSection() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/10 rounded-full blur-[160px] pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary mb-3">
             <Layers className="w-3.5 h-3.5" />
@@ -27,8 +29,31 @@ export function EcosystemOverviewSection() {
             منظومة متكاملة توحّد أطراف التوظيف والنمو
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            تترابط الهوية المهنية، الذكاء المفسر، الفرص المتاحة، والشركات والفرق داخل بيئة واحدة.
+            بدلاً من تشتيت مسارك بين أدوات منفصلة، فائدة توحد الهوية، التقييم، الفرص، والشركات.
           </p>
+        </div>
+
+        {/* Visual Contrast: Disconnected Tools vs Faeda */}
+        <div className="max-w-4xl mx-auto mb-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-4 rounded-2xl bg-card/30 border border-white/5 text-start">
+            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground mb-3">
+              <XCircle className="w-4 h-4 text-destructive/80" />
+              <span>الأدوات المشتتة التقليدية</span>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              سيرة ذاتية ملغية • منصات إعلانات عشوائية • حساب راتب تقديري مجهول • تقديم وتتبع بدون نتائج مسببة.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-primary/10 border border-primary/30 text-start">
+            <div className="flex items-center gap-2 text-xs font-bold text-primary mb-3">
+              <CheckCircle2 className="w-4 h-4 text-primary" />
+              <span>منظومة فائدة الموحدة</span>
+            </div>
+            <p className="text-xs text-white/90 leading-relaxed">
+              هوية موثقة • جاهزية ATS • قيمة سوقية مفسرة • ترشيحات شفافة • تتبع مباشر • توظيف أفراد وفرق.
+            </p>
+          </div>
         </div>
 
         {/* Visual Connected Ecosystem Diagram */}

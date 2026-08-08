@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
-import { User, Building2, Users, GraduationCap, ArrowLeft, CheckCircle2, Sparkles, Layers, ShieldCheck } from "lucide-react"
+import { User, Building2, Users, GraduationCap, ArrowLeft, CheckCircle2, Sparkles, Layers } from "lucide-react"
 import { Link } from "react-router-dom"
 import { ROUTES } from "@/config/routes"
 
@@ -17,72 +17,98 @@ interface RoleData {
   ctaText: string
   ctaLink: string
   steps: { name: string; desc: string }[]
+  previewTitle: string
+  previewItems: { label: string; tag: string }[]
   highlights: string[]
 }
 
 const perspectives: Record<PerspectiveRole, RoleData> = {
   candidate: {
     label: "الكفاءات والباحثين",
-    title: "منظومة نمو وتوجيه مهني متكاملة",
-    subtitle: "فهم ذاتك المهنية، تقييم جاهزية سيرتك الذاتية، واكتشاف قيمتك في السوق",
+    title: "مسار متكامل لبناء هويتك واقتناص فرصك",
+    subtitle: "عرف بنفسك صح، افحص سيرتك الذاتية، واعرف مستواك وراتبك المستحق في السوق.",
     icon: User,
-    ctaText: "ابدأ مسارك كمرشح",
+    ctaText: "سجل كمرشح",
     ctaLink: `${ROUTES.AUTH.REGISTER}?role=candidate`,
     steps: [
-      { name: "01. الهوية المهنية", desc: "بناء بروفايل شامل يُبرز المهارات، الخبرات، والمشاريع بكفاءة." },
-      { name: "02. جاهزية ATS", desc: "تحليل السيرة الذاتية واكتشاف الكلمات المفتاحية وفجوات التأثير." },
-      { name: "03. القيمة السوقية", desc: "اعرف نطاق الراتب المستحق بناءً على طلب السوق الحقيقي." },
-      { name: "04. الفرص المشفوعة ببيانات", desc: "تلقي ترشيحات وظيفية توضح لك أسباب المطابقة بالتفصيل." },
-      { name: "05. التتبع المباشر", desc: "متابعة مسار التقديم من القبول وحتى المقابلة دون انتظار مجهول." },
+      { name: "01. الملف المهني", desc: "اجمع خبراتك ومشاريعك في مكان واحد." },
+      { name: "02. فحص السيرة الذاتية", desc: "تأكد من توافق سيرتك مع أنظمة التوظيف." },
+      { name: "03. القيمة السوقية", desc: "عرف الراتب المناسب لخبرتك بالسوق." },
+      { name: "04. الفرص المناسبة", desc: "ترشيحات واضحة توضح لك سبب الاختيار." },
+      { name: "05. متابعة الطلب", desc: "تابع حالة طلبك أولاً بأول بدون انتظار." },
     ],
-    highlights: ["فحص فوري للسيرة الذاتية (ATS)", "تقدير النطاق الراتبي بالسوق", "تتبع شفاف لكل طلب"],
+    previewTitle: "معاينة واجهة المرشح والمحترف",
+    previewItems: [
+      { label: "درجة توافق سيرتك مع أنظمة التوظيف", tag: "88% جاهزية عالية" },
+      { label: "نطاق الراتب المستحق في السوق السعودي", tag: "22K – 28K SAR" },
+      { label: "سبب ترشيحك للفرصة", tag: "مطابقة مهارات React & TS" },
+    ],
+    highlights: ["فحص فوري للسيرة الذاتية", "تقدير الراتب المستحق بالسوق", "متابعة واضحة لكل طلب"],
   },
   company: {
     label: "الشركات وأصحاب العمل",
-    title: "استقطاب احترافي وإدارة توظيف شفافة",
-    subtitle: "توثيق حضور الشركة، نشر الوظائف، واكتشاف الكفاءات والفرق التخصصية",
+    title: "استقطاب أسرع وتوظيف موثوق",
+    subtitle: "وثّق حساب شركتك، انشر وظائفك، واستقطب الكفاءات والفرق المتميزة.",
     icon: Building2,
-    ctaText: "أنشئ بروفايل شركة",
+    ctaText: "سجل حساب شركة",
     ctaLink: `${ROUTES.AUTH.REGISTER}?role=company`,
     steps: [
-      { name: "01. الحضور المؤسسي", desc: "توثيق بروفايل الشركة وحساب درجة الموثوقية بالسوق." },
-      { name: "02. نشر الفرص والفرق", desc: "نشر إعلانات الوظائف الفردية أو طلب فرق تخصصية كاملة." },
-      { name: "03. اكتشاف المهارات", desc: "البحث في قاعدة الكفاءات المتاحة وتصفية المتقدمين." },
-      { name: "04. مسار الفرز والمقابلة", desc: "شاشات تقييم موحدة تتيح لفريق التوظيف اتخاذ قرارات مدروسة." },
-      { name: "05. القرار والتقرير المحترم", desc: "تقديم العروض أو مشاركة أسباب الاستبعاد بأسلوب محترف." },
+      { name: "01. توثيق الشركة", desc: "بروفايل معتمد يرفع موثوقية التوظيف." },
+      { name: "02. نشر الفرص", desc: "اعلن عن وظائف فردية أو فرق عمل كاملة." },
+      { name: "03. اكتشاف الكفاءات", desc: "تصفح وابحث بين أفضل المتقدمين." },
+      { name: "04. الفرز والتقييم", desc: "أدوات تقييم سهلة تساعدك تتخذ القرار." },
+      { name: "05. التوظيف المباشر", desc: "قدم العروض واختصر وقت التوظيف." },
     ],
-    highlights: ["توثيق معتمد للسجلات التجارية", "إمكانية توظيف فرق كاملة", "أدوات تقييم وفرز مسببة"],
+    previewTitle: "معاينة لوحة توظيف الشركات",
+    previewItems: [
+      { label: "حساب الشركة والتوثيق الرسمي", tag: "حساب معتمد" },
+      { label: "البحث المباشر في قاعدة الكفاءات", tag: "بحث مخصص" },
+      { label: "لوحة تقييم وفرز المتقدمين", tag: "فرز موحد" },
+    ],
+    highlights: ["حسابات شركات معتمدة", "إمكانية توظيف فرق كاملة", "أدوات فرز وتقييم سهلة"],
   },
   team: {
     label: "الفرق التخصصية",
-    title: "استعراض القدرات المركبة والتقدم الجماعي",
-    subtitle: "تجميع الكفاءات، تحديد تغطية المهارات، والتقدم للمشاريع ككتلة واحدة",
+    title: "التقدم كفريق واحد للمشاريع والفرص",
+    subtitle: "جمع كفاءات فريقك، حدد مهاراتكم المشتركة، وتقدموا ككتلة واحدة.",
     icon: Users,
-    ctaText: "أسس فريق عمل",
+    ctaText: "سجل فريق عمل",
     ctaLink: `${ROUTES.AUTH.REGISTER}?role=team`,
     steps: [
-      { name: "01. تشكيل الفريق", desc: "دعوة الأعضاء وتوزيع المسؤوليات والأدوار الفردية." },
-      { name: "02. خريطة المهارات", desc: "حساب نسبة تغطية الفريق لمتطلبات المشاريع المعقدة." },
-      { name: "03. الفرص الجماعية", desc: "استكشاف الوظائف والمشاريع المخصصة للفرق الجاهزة." },
-      { name: "04. التقديم كفريق", desc: "تقديم ملف الفريق بنقرة واحدة وحفظ حقوق كل عضو." },
-      { name: "05. التعاقد والاستقطاب", desc: "استلام عروض العمل والبدء في تنفيذ المشاريع." },
+      { name: "01. تشكيل الفريق", desc: "اجمع أعضاء فريقك وحدد أدوارهم." },
+      { name: "02. خريطة المهارات", desc: "احسب نسبة تغطية مهارات فريقك." },
+      { name: "03. فرص الفرق", desc: "استكشف مشاريع مخصصة للفرق الجاهزة." },
+      { name: "04. التقديم الجماعي", desc: "قدم ملف الفريق بنقرة واحدة." },
+      { name: "05. البدء بالعمل", desc: "استلم العروض وابدأ التنفيذ مباشرة." },
     ],
-    highlights: ["خريطة مهارات تجميعية", "عروض موجهة للفرق الجاهزة", "تعاقد جماعي حفظ للحقوق"],
+    previewTitle: "معاينة واجهة الفريق التخصصي",
+    previewItems: [
+      { label: "تغطية مهارات الفريق للمشروع", tag: "96% كفاءة مكتملة" },
+      { label: "توزيع الأدوار وحقوق الأعضاء", tag: "حقوق موثقة" },
+      { label: "عروض التوظيف الموجهة للفرق", tag: "تعاقد موحد" },
+    ],
+    highlights: ["خريطة مهارات تجميعية", "عروض موجهة للفرق الجاهزة", "تعاقد جماعي يحفظ الحقوق"],
   },
   university: {
-    label: "الجامعات والمؤسسات التعليمية",
-    title: "جسر بين المخرجات التعليمية واحتياجات التوظيف",
-    subtitle: "تتبع مؤشرات جاهزية الخريجين ومواءمة البرامج مع متطلبات السوق",
+    label: "الجامعات والتعليم",
+    title: "ربط المخرجات بمتطلبات سوق العمل",
+    subtitle: "تابِع جاهزية الخريجين وربط التخصصات التعليمية باحتياجات التوظيف.",
     icon: GraduationCap,
-    ctaText: "استكشف شراكات الجامعات",
+    ctaText: "تواصل مع المنظومة",
     ctaLink: ROUTES.PUBLIC.CONTACT,
     steps: [
-      { name: "01. بروفايل الجامعة", desc: "تمثيل المؤسسة التعليمية والكليات الأكاديمية." },
-      { name: "02. جاهزية الطلاب", desc: "قياس مؤشرات ملاءمة الخريجين للفرص المتاحة." },
-      { name: "03. مواءمة المهارات", desc: "تحديد المهارات الأكثر طلباً من أصحاب العمل." },
-      { name: "04. الشراكات المباشرة", desc: "ربط برامج التدريب والتأهيل ببيئات العمل." },
+      { name: "01. البروفايل الأكاديمي", desc: "عرض الكليات والبرامج التعليمية." },
+      { name: "02. جاهزية الطلاب", desc: "قياس تلاؤم مهارات الخريجين مع السوق." },
+      { name: "03. المهارات المطلوبة", desc: "معرفة أكثر المهارات طلباً لدى الشركات." },
+      { name: "04. الشراكات المباشرة", desc: "ربط الخريجين بفرص التوظيف والتدريب." },
     ],
-    highlights: ["مؤشرات جاهزية سوق العمل", "ربط مباشر مع أصحاب العمل", "رؤى توظيف مستقبلية"],
+    previewTitle: "معاينة لوحة التخصصات والجامعات",
+    previewItems: [
+      { label: "مؤشر جاهزية خريجي الكليات التقنية", tag: "ربط بسوق العمل" },
+      { label: "تقرير المهارات المطلوبة لدى الشركات", tag: "بيانات حية" },
+      { label: "برامج التدريب والتأهيل المباشر", tag: "شراكات معتمدة" },
+    ],
+    highlights: ["مؤشرات جاهزية سوق العمل", "ربط مباشر مع أصحاب العمل", "رؤى توظيف حديثة"],
   },
 }
 
@@ -102,18 +128,18 @@ export function InteractiveRoleExperienceSection() {
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary mb-4">
             <Layers className="w-3.5 h-3.5" />
-            <span>تجربة المنظومة من منظورك</span>
+            <span>تجربة المنظومة حسب دورك</span>
           </div>
 
-          <h2 className="text-3xl font-extrabold font-heading tracking-tight sm:text-4xl text-white mb-4">
-            منظومة واحدة، لكل طرف تجربة مخصصة
+          <h2 className="text-3xl font-extrabold font-heading tracking-tight sm:text-4xl text-white mb-3">
+            منظومة واحدة، تجربة مخصصة لكل طرف
           </h2>
-          <p className="text-base text-muted-foreground leading-relaxed">
-            اختر دورك لاستكشاف كيف تخدمك فائدة وتسهل مسارك المهني أو التوظيفي.
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            اختر دورك لاستكشاف كيف تسهل المنظومة مسارك العملي.
           </p>
 
-          {/* Perspective Role Tabs Selector */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-8 p-1.5 bg-card/60 border border-white/10 rounded-2xl w-fit mx-auto backdrop-blur-md">
+          {/* Perspective Role Selector — Single Row Grid on Desktop */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8 max-w-5xl mx-auto">
             {(Object.keys(perspectives) as PerspectiveRole[]).map((roleKey) => {
               const role = perspectives[roleKey]
               const Icon = role.icon
@@ -122,13 +148,14 @@ export function InteractiveRoleExperienceSection() {
                 <button
                   key={roleKey}
                   onClick={() => setActiveRole(roleKey)}
-                  className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 ${isActive
-                    ? "bg-primary text-white shadow-lg shadow-primary/25 scale-[1.02]"
-                    : "text-muted-foreground hover:text-white hover:bg-white/5"
-                    }`}
+                  className={`flex items-center justify-center gap-2.5 p-4 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-300 border text-center ${
+                    isActive
+                      ? "bg-primary text-white border-primary/50 shadow-lg shadow-primary/25 scale-[1.02]"
+                      : "bg-card/60 text-muted-foreground border-white/10 hover:text-white hover:bg-white/5"
+                  }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{role.label}</span>
+                  <Icon className="w-4.5 h-4.5 shrink-0" />
+                  <span className="truncate">{role.label}</span>
                 </button>
               )
             })}
@@ -165,23 +192,50 @@ export function InteractiveRoleExperienceSection() {
                   </Link>
                 </div>
 
-                {/* Steps Progression inside Box */}
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-                  {current.steps.map((st, idx) => (
-                    <div key={st.name} className="p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col justify-between">
-                      <div>
-                        <span className="text-xs font-bold text-primary block mb-1">{st.name}</span>
+                {/* Split View: Steps Progression & Large UI Mockup */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-8">
+                  
+                  {/* Left: Steps List */}
+                  <div className="lg:col-span-6 space-y-3">
+                    {current.steps.map((st) => (
+                      <div key={st.name} className="p-3.5 rounded-xl bg-white/5 border border-white/5 text-start">
+                        <span className="text-xs font-bold text-primary block mb-0.5">{st.name}</span>
                         <p className="text-xs text-muted-foreground leading-relaxed">{st.desc}</p>
                       </div>
+                    ))}
+                  </div>
+
+                  {/* Right: Large UI Product Mockup */}
+                  <div className="lg:col-span-6">
+                    <div className="p-5 rounded-2xl bg-black/40 border border-white/10 shadow-xl text-start">
+                      <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                          <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                          <span className="text-xs text-white/90 font-mono font-bold ms-2">{current.previewTitle}</span>
+                        </div>
+                        <span className="text-[10px] font-mono text-primary px-2 py-0.5 rounded bg-primary/10 border border-primary/20">مثال توضيحي</span>
+                      </div>
+
+                      <div className="space-y-3">
+                        {current.previewItems.map((item) => (
+                          <div key={item.label} className="p-3.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between text-xs">
+                            <span className="text-white font-medium">{item.label}</span>
+                            <span className="px-2.5 py-1 rounded bg-primary/10 border border-primary/20 text-primary font-bold text-[11px] shrink-0 font-mono">{item.tag}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
+                  </div>
+
                 </div>
 
                 {/* Role Highlights Footer */}
                 <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-white/10 text-xs text-muted-foreground">
                   <span className="font-bold text-white flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-primary" />
-                    المميزات الفنية لهذا المسار:
+                    مميزات هذا المسار:
                   </span>
                   <div className="flex flex-wrap gap-4">
                     {current.highlights.map((h) => (

@@ -85,10 +85,10 @@ export function AIExperienceSection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.3 }}
-            className="max-w-3xl mx-auto"
+            className="max-w-4xl mx-auto"
           >
             <TiltCard tiltEnabled={false} shineEnabled={true} shineOpacityMax={0.12} className="rounded-[2rem]">
-              <GlassCard className="p-6 bg-card/60 backdrop-blur-md border-white/10 shadow-2xl text-start">
+              <GlassCard className="p-6 sm:p-8 bg-card/60 backdrop-blur-md border-white/10 shadow-2xl text-start">
                 
                 {/* User Prompt Entry */}
                 <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between mb-4 text-xs text-white">

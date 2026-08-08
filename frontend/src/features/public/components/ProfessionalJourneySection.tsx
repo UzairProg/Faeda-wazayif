@@ -1,9 +1,9 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
-import { FileText, Target, Search, Clock, MessageSquare, TrendingUp, CheckCircle2, ArrowLeft } from "lucide-react"
+import { FileText, Target, Search, Clock, MessageSquare, TrendingUp, CheckCircle2, ArrowLeft, Play, Pause } from "lucide-react"
 import { Link } from "react-router-dom"
 import { ROUTES } from "@/config/routes"
 
@@ -12,7 +12,7 @@ const journeySteps = [
     step: "01",
     title: "بناء الهوية المهنية",
     subtitle: "إبراز مهاراتك وخبراتك الحقيقية",
-    description: "أنشئ بروفايلك الشامل مع حفظ المشاريع، المهارات، والشهادات بطريقة احترافية تعكس قيمتك الفعلية.",
+    description: "أنشئ بروفايلك الشامل مع حفظ المشاريع والمهارات بطريقة احترافية تعكس قيمتك الفعلية.",
     icon: FileText,
     badge: "الهوية",
     previewTitle: "واجهة الهوية المهنية",
@@ -22,7 +22,7 @@ const journeySteps = [
     step: "02",
     title: "فحص جاهزية ATS",
     subtitle: "تحليل ذكي للسيرة الذاتية",
-    description: "قيّم سيرتك الذاتية مقابل معايير تتبع المتقدمين العالمية، واكتشف الكلمات المفتاحية وفجوات التأثير لتطويرها.",
+    description: "قيّم سيرتك الذاتية مقابل معايير الفرز العالمية، واكتشف الكلمات المفتاحية وفجوات التأثير.",
     icon: Target,
     badge: "الجاهزية",
     previewTitle: "تقرير فحص جاهزية ATS",
@@ -72,28 +72,41 @@ const journeySteps = [
 
 export function ProfessionalJourneySection() {
   const [activeStepIndex, setActiveStepIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+
+  useEffect(() => {
+    if (isPaused) return
+    const timer = setInterval(() => {
+      setActiveStepIndex((prev) => (prev + 1) % journeySteps.length)
+    }, 2200)
+    return () => clearInterval(timer)
+  }, [isPaused])
 
   const activeStep = journeySteps[activeStepIndex]
 
   return (
-    <section className="py-20 bg-background border-t border-white/5 relative overflow-hidden">
+    <section
+      className="py-20 bg-background border-t border-white/5 relative overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       {/* Background Lighting */}
       <div className="absolute top-1/2 end-0 -translate-y-1/2 translate-x-1/4 w-[700px] h-[500px] bg-primary/10 rounded-full blur-[170px] pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
+
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary mb-4">
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary mb-3">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>مسار النمو المهني</span>
+            <span>مسار النمو المهني المتسلسل</span>
           </div>
 
-          <h2 className="text-3xl font-extrabold font-heading tracking-tight sm:text-4xl text-white mb-4">
-            رحلة متسلسلة تنقلك من فهم ذاتك إلى اقتناص الفرصة
+          <h2 className="text-3xl font-extrabold font-heading tracking-tight sm:text-4xl text-white mb-3">
+            رحلة متكاملة تنقلك من فهم ذاتك إلى اقتناص الفرصة
           </h2>
-          <p className="text-base text-muted-foreground leading-relaxed">
-            انقر على أي مرحلة لاستكشاف الواجهة والتفاصيل الخاصة بها.
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            خطوات متسلسلة تبدأ بتعريف هويتك وتحديد قيمتك، وصولاً للتقديم والتطور.
           </p>
         </div>
 
@@ -105,12 +118,14 @@ export function ProfessionalJourneySection() {
             return (
               <button
                 key={st.step}
-                onClick={() => setActiveStepIndex(idx)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs shrink-0 transition-all ${
-                  isActive
-                    ? "bg-primary text-white shadow-lg shadow-primary/20 border border-primary/40 scale-105"
-                    : "bg-card/50 text-muted-foreground border border-white/10 hover:text-white hover:bg-white/5"
-                }`}
+                onClick={() => {
+                  setActiveStepIndex(idx)
+                  setIsPaused(true)
+                }}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs shrink-0 transition-all ${isActive
+                  ? "bg-primary text-white shadow-lg shadow-primary/20 border border-primary/40 scale-105"
+                  : "bg-card/50 text-muted-foreground border border-white/10 hover:text-white hover:bg-white/5"
+                  }`}
               >
                 <span className="font-mono text-[11px] opacity-80">{st.step}</span>
                 <Icon className="w-4 h-4" />
@@ -133,7 +148,7 @@ export function ProfessionalJourneySection() {
             <TiltCard tiltEnabled={false} shineEnabled={true} shineOpacityMax={0.1} className="rounded-[2rem]">
               <GlassCard className="p-6 sm:p-8 bg-card/60 backdrop-blur-md border-white/10 shadow-2xl text-start">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-                  
+
                   {/* Step Description Column */}
                   <div className="md:col-span-6 flex flex-col justify-between">
                     <div>
@@ -146,7 +161,7 @@ export function ProfessionalJourneySection() {
                           <h3 className="text-2xl font-bold font-heading text-white">{activeStep.title}</h3>
                         </div>
                       </div>
-                      
+
                       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                         {activeStep.description}
                       </p>
