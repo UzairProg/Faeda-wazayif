@@ -1,19 +1,16 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-
-interface User {
-  id: string
-  email: string
-  role: "candidate" | "company" | "admin"
-  name: string
-}
+import { authService } from "@/features/auth/services/auth.service"
+import type { AuthUser } from "@/features/auth/types/auth.types"
 
 interface AuthStore {
-  user: User | null
+  user: AuthUser | null
   token: string | null
   isAuthenticated: boolean
-  login: (user: User, token: string) => void
-  logout: () => void
+  isCheckingSession: boolean
+  login: (user: AuthUser, token: string) => void
+  logout: () => Promise<void>
+  checkSession: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -22,8 +19,28 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       token: null,
       isAuthenticated: false,
+      isCheckingSession: false,
+
       login: (user, token) => set({ user, token, isAuthenticated: true }),
-      logout: () => set({ user: null, token: null, isAuthenticated: false }),
+
+      logout: async () => {
+        await authService.logout()
+        set({ user: null, token: null, isAuthenticated: false })
+      },
+
+      checkSession: async () => {
+        set({ isCheckingSession: true })
+        try {
+          const restoredUser = await authService.checkSession()
+          if (restoredUser) {
+            set({ user: restoredUser, token: "cookie-session-active", isAuthenticated: true })
+          } else {
+            // Keep local state if available or clear if invalid
+          }
+        } finally {
+          set({ isCheckingSession: false })
+        }
+      },
     }),
     {
       name: "auth-storage",

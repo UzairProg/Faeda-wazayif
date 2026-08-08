@@ -32,8 +32,19 @@ import { JobDetailPage } from "./features/public/pages/JobDetailPage"
 // Auth pages
 import { Login } from "./features/auth/pages/Login"
 import { Register } from "./features/auth/pages/Register"
+import { ForgotPassword } from "./features/auth/pages/ForgotPassword"
+import { ResetPassword } from "./features/auth/pages/ResetPassword"
+
+import { useEffect } from "react"
+import { useAuthStore } from "./store/auth.store"
 
 function App() {
+  const checkSession = useAuthStore((state) => state.checkSession)
+
+  useEffect(() => {
+    checkSession()
+  }, [checkSession])
+
   return (
     <Router>
       <Routes>
@@ -104,15 +115,8 @@ function App() {
         {/* ── Auth Routes (standalone — no Navbar/Footer) ───── */}
         <Route path={ROUTES.AUTH.LOGIN} element={<Login />} />
         <Route path={ROUTES.AUTH.REGISTER} element={<Register />} />
-        {/* Forgot password — stub */}
-        <Route
-          path={ROUTES.AUTH.FORGOT_PASSWORD}
-          element={
-            <div className="min-h-screen bg-background flex items-center justify-center">
-              <p className="text-white font-heading text-xl">استعادة كلمة المرور — قريباً</p>
-            </div>
-          }
-        />
+        <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPassword />} />
+        <Route path={ROUTES.AUTH.RESET_PASSWORD} element={<ResetPassword />} />
 
         {/* Redirect old paths to new /auth/* paths */}
         <Route path="/login" element={<Navigate to={ROUTES.AUTH.LOGIN} replace />} />

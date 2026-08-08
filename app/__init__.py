@@ -24,6 +24,20 @@ def create_app():
     
     db.init_app(app)
 
+    allowed_origins = [
+        os.environ.get('FRONTEND_ORIGIN', 'http://localhost:5173'),
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+    ]
+
+    CORS(
+        app,
+        resources={r"/*": {"origins": allowed_origins}},
+        supports_credentials=True,
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type", "Authorization", "Accept", "X-Requested-With"]
+    )
+
     with app.app_context():
         # استيراد النماذج (Models) ليتعرف عليها SQLAlchemy
         from services.customer import Customers
