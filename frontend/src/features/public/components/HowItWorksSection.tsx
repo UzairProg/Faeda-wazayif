@@ -1,6 +1,7 @@
 import { useRef } from "react"
 import { motion, useScroll } from "framer-motion"
 import { User, FileText, CheckCircle2 } from "lucide-react"
+import { TiltCard } from "@/components/ui/tilt-card"
 
 const steps = [
   {
@@ -79,7 +80,8 @@ export function HowItWorksSection() {
                 </div>
 
                 {/* Main Card */}
-                <div className="w-full md:w-[calc(100%-6rem)] flex flex-col sm:flex-row bg-card/40 backdrop-blur-md border border-white/5 rounded-[2rem] p-8 sm:p-14 group-hover:border-primary/40 group-hover:bg-card/80 transition-all duration-500 ease-out shadow-lg group-hover:shadow-2xl group-hover:shadow-primary/20 group-hover:-translate-y-2 group-hover:scale-[1.02]">
+                <TiltCard tiltEnabled={false} shineEnabled={true} shineOpacityMax={0.15} className="w-full md:w-[calc(100%-6rem)] rounded-[2rem]">
+                <div className="flex flex-col sm:flex-row bg-card/40 backdrop-blur-md border border-white/5 rounded-[2rem] p-8 sm:p-14 group-hover:border-primary/40 group-hover:bg-card/80 transition-all duration-500 ease-out shadow-lg group-hover:shadow-2xl group-hover:shadow-primary/20 group-hover:-translate-y-2 group-hover:scale-[1.02]">
 
                   {/* Right Content (Arabic Start) */}
                   <div className="flex-1 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
@@ -109,6 +111,7 @@ export function HowItWorksSection() {
                   </div>
 
                 </div>
+                </TiltCard>
               </motion.div>
             ))}
           </div>

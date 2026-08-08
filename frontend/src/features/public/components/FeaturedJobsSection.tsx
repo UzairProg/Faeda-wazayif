@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
+import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
 import { MapPin, DollarSign, Clock, Bookmark, Sparkles, ArrowLeft } from "lucide-react"
 
@@ -70,8 +71,9 @@ export function FeaturedJobsSection() {
               transition={{ duration: 0.6, delay: index * 0.2, ease: "easeOut" }}
               className={`relative z-10 ${index === 1 ? 'lg:-translate-y-12 lg:scale-105 z-20' : ''}`}
             >
-              <GlassCard interactive className={`p-6 md:p-8 flex flex-col h-full group bg-card/40 backdrop-blur-md border-white/5 shadow-xl hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 hover:border-white/10 transition-all duration-500 ease-out ${index === 1 ? 'border-primary/20 bg-card/60 shadow-primary/10 shadow-2xl' : ''}`}>
-                <div className="flex items-start justify-between mb-6">
+              <TiltCard className="h-full rounded-[1.5rem]" tiltMaxAngle={8} shineOpacityMax={0.15}>
+              <GlassCard interactive className={`p-6 md:p-8 flex flex-col h-full group bg-card/40 backdrop-blur-md border-white/5 shadow-xl transition-all duration-500 ease-out ${index === 1 ? 'border-primary/20 bg-card/60 shadow-primary/10 shadow-2xl' : ''}`}>
+                <div className="flex items-start justify-between mb-6" style={{ transform: "translateZ(30px)" }}>
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg ${job.color}`}>
                       {job.logo}
@@ -88,7 +90,7 @@ export function FeaturedJobsSection() {
                   </button>
                 </div>
 
-                <div className="flex flex-wrap gap-2 mb-6 text-start">
+                <div className="flex flex-wrap gap-2 mb-6 text-start" style={{ transform: "translateZ(20px)" }}>
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 text-xs font-medium text-muted-foreground border border-white/5">
                     <MapPin className="w-3.5 h-3.5" /> {job.location}
                   </div>
@@ -100,7 +102,7 @@ export function FeaturedJobsSection() {
                   </div>
                 </div>
 
-                <div className="mt-auto pt-6 border-t border-white/10 flex items-center justify-between">
+                <div className="mt-auto pt-6 border-t border-white/10 flex items-center justify-between" style={{ transform: "translateZ(10px)" }}>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 border border-primary/20">
                       <Sparkles className="w-5 h-5 text-primary" />
@@ -115,6 +117,7 @@ export function FeaturedJobsSection() {
                   </Button>
                 </div>
               </GlassCard>
+              </TiltCard>
             </motion.div>
           ))}
         </div>

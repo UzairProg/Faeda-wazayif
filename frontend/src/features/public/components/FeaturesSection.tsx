@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
+import { TiltCard } from "@/components/ui/tilt-card"
 import { Sparkles, FileText, LineChart, ShieldCheck, Users, Bot, TrendingUp } from "lucide-react"
 
 const features = [
@@ -73,16 +74,17 @@ export function FeaturesSection() {
               transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
               className={`h-full ${feature.colSpan}`}
             >
-              <GlassCard interactive className="h-full p-8 flex flex-col justify-between group overflow-hidden bg-card/40 backdrop-blur-md border-white/5 shadow-lg hover:shadow-2xl hover:shadow-[0_0_40px_-10px_rgba(18,75,201,0.4)] hover:-translate-y-2 hover:border-primary/50 transition-all duration-500 ease-out">
+              <TiltCard className="h-full rounded-[1.5rem]" tiltMaxAngle={10} shineOpacityMax={0.15}>
+              <GlassCard className="h-full p-8 flex flex-col justify-between group overflow-hidden bg-card/40 backdrop-blur-md border-white/5 shadow-lg transition-all duration-500 ease-out border">
                 
                 {/* Abstract light sweep on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-                <div className="relative z-10">
-                  <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 text-muted-foreground transition-all duration-500 group-hover:scale-125 group-hover:-rotate-6 group-hover:bg-primary group-hover:text-primary-foreground border border-white/10 group-hover:border-primary shadow-lg">
+                <div className="relative z-10" style={{ transform: "translateZ(30px)" }}>
+                  <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 text-muted-foreground transition-all duration-500 group-hover:bg-primary group-hover:text-primary-foreground border border-white/10 group-hover:border-primary shadow-lg">
                     <feature.icon className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold font-heading mb-3 text-white group-hover:text-primary transition-colors">
+                  <h3 className="text-xl sm:text-2xl font-bold font-heading mb-3 text-white transition-colors">
                     {feature.title}
                   </h3>
                   <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
@@ -91,8 +93,9 @@ export function FeaturesSection() {
                 </div>
 
                 {/* Decorative background glow */}
-                <div className="absolute -bottom-24 -end-24 h-48 w-48 rounded-full bg-primary/0 blur-3xl transition-all duration-700 group-hover:bg-primary/30 group-hover:scale-[2.5] pointer-events-none" />
+                <div className="absolute -bottom-24 -end-24 h-48 w-48 rounded-full bg-primary/0 blur-3xl transition-all duration-700 group-hover:bg-primary/20 pointer-events-none" />
               </GlassCard>
+              </TiltCard>
             </motion.div>
           ))}
         </div>
