@@ -1,9 +1,19 @@
+/**
+ * DEV_MOCK: The job cards below are marketing preview content on the landing page.
+ * They are illustrative only — not real job listings from the backend.
+ * Replace with API data from useJobs() when this section becomes a live preview.
+ * Reference: FAEDA_JOBS_FINAL_ROADMAP.md §27 — Do not create fake backend data.
+ * Note: match% shown here is a marketing illustration, not a real AI score.
+ */
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
 import { MapPin, DollarSign, Clock, Bookmark, Sparkles, ArrowLeft } from "lucide-react"
+import { Link } from "react-router-dom"
+import { ROUTES } from "@/config/routes"
 
+// DEV_MOCK: Replace with API data — see comment above
 const jobs = [
   {
     id: 1,
@@ -53,9 +63,11 @@ export function FeaturedJobsSection() {
               وظائف مختارة بعناية من أفضل الشركات، مرتبة حسب نسبة توافقك الذكي معها.
             </p>
           </div>
-          <Button variant="outline" className="hidden md:flex gap-2 rounded-full border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white">
-            عرض جميع الوظائف <ArrowLeft className="w-4 h-4" />
-          </Button>
+          <Link to={ROUTES.JOBS.LIST}>
+            <Button variant="outline" className="hidden md:flex gap-2 rounded-full border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white">
+              عرض جميع الوظائف <ArrowLeft className="w-4 h-4" />
+            </Button>
+          </Link>
         </div>
 
         {/* Ambient Azure Glow */}
@@ -122,9 +134,11 @@ export function FeaturedJobsSection() {
           ))}
         </div>
 
-        <Button variant="outline" className="w-full mt-8 md:hidden rounded-full border-white/10 bg-white/5 text-white">
-          عرض جميع الوظائف
-        </Button>
+        <Link to={ROUTES.JOBS.LIST} className="block mt-8 md:hidden">
+          <Button variant="outline" className="w-full rounded-full border-white/10 bg-white/5 text-white">
+            عرض جميع الوظائف
+          </Button>
+        </Link>
       </div>
     </section>
   )

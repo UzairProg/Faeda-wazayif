@@ -3,6 +3,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Globe, CheckCircle2, User, Briefcase, Rocket } from "lucide-react"
 import { Link } from "react-router-dom"
+import { ROUTES } from "@/config/routes"
 
 export function Register() {
   const [accountType, setAccountType] = useState<"seeker" | "provider" | null>(null)
@@ -100,7 +101,7 @@ export function Register() {
 
             <p className="text-center text-muted-foreground text-sm mt-4">
               هل لديك حساب بالفعل؟{" "}
-              <Link to="/login" className="text-primary hover:text-white font-bold transition-colors">
+              <Link to={ROUTES.AUTH.LOGIN} className="text-primary hover:text-white font-bold transition-colors">
                 تسجيل الدخول
               </Link>
             </p>

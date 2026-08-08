@@ -1,7 +1,15 @@
+/**
+ * DEV_MOCK: Platform stats below are aspirational marketing figures on the landing page.
+ * They are not sourced from the backend in real-time.
+ * Replace with API data from the analytics endpoint when it exists.
+ * Reference: FAEDA_JOBS_FINAL_ROADMAP.md §27
+ */
 import { motion } from "framer-motion"
 
 import { AnimatedCounter } from "@/components/ui/animated-counter"
 import { Briefcase, Building2, Users, Trophy } from "lucide-react"
+
+// DEV_MOCK: Replace with API data — see comment above
 
 const stats = [
   {
@@ -43,7 +51,7 @@ export function PlatformStatsSection() {
     <section className="py-24 relative z-10 bg-transparent">
       {/* Intense Ambient Primary Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[500px] bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20 rounded-[100%] blur-[120px] pointer-events-none" />
-      
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (

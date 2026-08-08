@@ -32,3 +32,6 @@ repo_context.txt
 *.link
 .vscode/
 .idea/
+
+# References
+References/

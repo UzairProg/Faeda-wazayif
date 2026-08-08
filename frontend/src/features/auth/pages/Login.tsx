@@ -2,6 +2,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Mail, Lock, ArrowLeft, Globe, CheckCircle2 } from "lucide-react"
 import { Link } from "react-router-dom"
+import { ROUTES } from "@/config/routes"
 
 export function Login() {
   return (
@@ -89,7 +90,7 @@ export function Login() {
 
             <p className="text-center text-muted-foreground text-sm mt-4">
               ليس لديك حساب بعد؟{" "}
-              <Link to="/register" className="text-primary hover:text-white font-bold transition-colors">
+              <Link to={ROUTES.AUTH.REGISTER} className="text-primary hover:text-white font-bold transition-colors">
                 إنشاء حساب جديد
               </Link>
             </p>

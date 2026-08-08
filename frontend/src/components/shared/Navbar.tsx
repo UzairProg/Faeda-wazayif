@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Menu, X, ChevronDown, Bell, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
+import { ROUTES } from "@/config/routes"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -73,7 +74,7 @@ export function Navbar() {
             <ChevronDown className="h-4 w-4 opacity-50" />
           </Button>
 
-          <Link to="/login">
+          <Link to={ROUTES.AUTH.LOGIN}>
             <Button className="rounded-full h-10 px-6 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
               تسجيل دخول
             </Button>
@@ -108,7 +109,7 @@ export function Navbar() {
               <Button variant="outline" className="w-full justify-center bg-white/5 border-white/10 text-white rounded-full">
                 English
               </Button>
-              <Link to="/login" onClick={() => setIsOpen(false)}>
+              <Link to={ROUTES.AUTH.LOGIN} onClick={() => setIsOpen(false)}>
                 <Button className="w-full justify-center rounded-full bg-primary text-primary-foreground">
                   تسجيل دخول
                 </Button>
