@@ -1,144 +1,179 @@
-/**
- * DEV_MOCK: The job cards below are marketing preview content on the landing page.
- * They are illustrative only — not real job listings from the backend.
- * Replace with API data from useJobs() when this section becomes a live preview.
- * Reference: FAEDA_JOBS_FINAL_ROADMAP.md §27 — Do not create fake backend data.
- * Note: match% shown here is a marketing illustration, not a real AI score.
- */
-import { motion } from "framer-motion"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
-import { MapPin, DollarSign, Clock, Bookmark, Sparkles, ArrowLeft } from "lucide-react"
+import { MapPin, Clock, Bookmark, Sparkles, ArrowLeft, ArrowRight, Building2, CheckCircle2, ChevronRight, ChevronLeft } from "lucide-react"
 import { Link } from "react-router-dom"
 import { ROUTES } from "@/config/routes"
 
-// DEV_MOCK: Replace with API data — see comment above
-const jobs = [
+const sampleOpportunities = [
   {
-    id: 1,
-    title: "مهندس برمجيات أول",
-    company: "أرامكو السعودية",
-    logo: "A",
+    id: "demo-1",
+    title: "مهندس واجهات أُمامية أول (Senior Frontend)",
+    company: "شركة طاقة وتقنية رائدة",
     location: "الظهران، السعودية",
-    salary: "35k - 45k ر.س",
+    salary: "28,000 – 35,000 ر.س",
     type: "دوام كامل",
-    match: 98,
-    color: "bg-blue-600",
+    fitReason: "يتوافق مع خبرتك المرتفعة في React و TypeScript وإدارة الأنظمة المعقدة.",
+    fitBadge: "مطابقة عالية للمهارات",
+    teamFriendly: true,
   },
   {
-    id: 2,
-    title: "مصمم تجربة المستخدم",
-    company: "علم",
-    logo: "E",
+    id: "demo-2",
+    title: "مصمم تجربة المستخدم (UI/UX Architect)",
+    company: "مجموعة حلول رقمية",
     location: "الرياض، السعودية",
-    salary: "20k - 28k ر.س",
+    salary: "20,000 – 26,000 ر.س",
     type: "دوام كامل",
-    match: 94,
-    color: "bg-cyan-600",
+    fitReason: "يتطلب خبرتك في تصميم الأنظمة الموحدة (Design Systems).",
+    fitBadge: "مناسب لمسارك المفضل",
+    teamFriendly: false,
   },
   {
-    id: 3,
-    title: "محلل بيانات الذكاء الاصطناعي",
-    company: "نيوم",
-    logo: "N",
+    id: "demo-3",
+    title: "محلل بيانات وذكاء اصطناعي",
+    company: "مؤسسة ابتكار مستقبلي",
     location: "عن بعد",
-    salary: "40k - 55k ر.س",
-    type: "عقد",
-    match: 89,
-    color: "bg-sky-600",
+    salary: "حسب المقابلة",
+    type: "عقد مرن",
+    fitReason: "تغطية مهارية ممتازة مع فرصة لتطوير مهارات التعلم العميق.",
+    fitBadge: "فرصة نمو مهارية",
+    teamFriendly: true,
   },
 ]
 
 export function FeaturedJobsSection() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  const nextJob = () => {
+    setCurrentIndex((prev) => (prev + 1) % sampleOpportunities.length)
+  }
+
+  const prevJob = () => {
+    setCurrentIndex((prev) => (prev - 1 + sampleOpportunities.length) % sampleOpportunities.length)
+  }
+
+  const currentOpp = sampleOpportunities[currentIndex]
+
   return (
-    <section className="py-24 relative overflow-hidden bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
-          <div className="max-w-2xl text-start">
-            <h2 className="text-3xl font-extrabold font-heading tracking-tight sm:text-4xl text-white mb-4">
-              فرص مهنية استثنائية
+    <section className="py-20 bg-background border-t border-white/5 relative overflow-hidden">
+      {/* Background Lighting */}
+      <div className="absolute top-1/2 start-0 -translate-y-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[160px] pointer-events-none" />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row items-end justify-between mb-8 gap-4">
+          <div className="text-start max-w-xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary mb-3">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>معاينة الترشيحات المفسرة</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold font-heading text-white">
+              فرص تناسب هويتك ومسارك المهني
             </h2>
-            <p className="text-lg text-muted-foreground">
-              وظائف مختارة بعناية من أفضل الشركات، مرتبة حسب نسبة توافقك الذكي معها.
-            </p>
           </div>
-          <Link to={ROUTES.JOBS.LIST}>
-            <Button variant="outline" className="hidden md:flex gap-2 rounded-full border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white">
-              عرض جميع الوظائف <ArrowLeft className="w-4 h-4" />
-            </Button>
-          </Link>
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-card/60 border border-white/10 text-xs font-mono text-muted-foreground">
+              <button
+                onClick={prevJob}
+                className="p-1.5 rounded-lg hover:bg-white/10 hover:text-white transition-colors"
+                aria-label="Previous job"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+              <span className="px-2 font-bold text-white">{currentIndex + 1} / {sampleOpportunities.length}</span>
+              <button
+                onClick={nextJob}
+                className="p-1.5 rounded-lg hover:bg-white/10 hover:text-white transition-colors"
+                aria-label="Next job"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+            </div>
+
+            <Link to={ROUTES.JOBS.LIST}>
+              <Button size="sm" variant="outline" className="rounded-xl border-white/10 bg-white/5 text-white text-xs gap-1.5 font-bold">
+                تصفح الكل <ArrowLeft className="w-3.5 h-3.5" />
+              </Button>
+            </Link>
+          </div>
         </div>
 
-        {/* Ambient Azure Glow */}
-        <div className="absolute top-1/2 start-0 -translate-y-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-[#124BC9]/10 rounded-full blur-[150px] pointer-events-none" />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 relative z-10 items-center pt-12">
-          {jobs.map((job, index) => (
-            <motion.div
-              key={job.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: index * 0.2, ease: "easeOut" }}
-              className={`relative z-10 ${index === 1 ? 'lg:-translate-y-12 lg:scale-105 z-20' : ''}`}
-            >
-              <TiltCard className="h-full rounded-[1.5rem]" tiltMaxAngle={8} shineOpacityMax={0.15}>
-              <GlassCard interactive className={`p-6 md:p-8 flex flex-col h-full group bg-card/40 backdrop-blur-md border-white/5 shadow-xl transition-all duration-500 ease-out ${index === 1 ? 'border-primary/20 bg-card/60 shadow-primary/10 shadow-2xl' : ''}`}>
-                <div className="flex items-start justify-between mb-6" style={{ transform: "translateZ(30px)" }}>
+        {/* Single Primary Interactive Job UI Mockup */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentOpp.id}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className="max-w-4xl mx-auto"
+          >
+            <TiltCard tiltEnabled={false} shineEnabled={true} shineOpacityMax={0.12} className="rounded-[2rem]">
+              <GlassCard className="p-6 sm:p-8 bg-card/60 backdrop-blur-md border-white/10 shadow-2xl text-start">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-white/10 mb-6">
+                  
                   <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg ${job.color}`}>
-                      {job.logo}
+                    <div className="w-14 h-14 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-bold text-xl font-heading shrink-0">
+                      <Building2 className="w-7 h-7" />
                     </div>
-                    <div className="text-start">
-                      <h3 className="font-bold font-heading text-white group-hover:text-primary transition-colors text-lg">
-                        {job.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">{job.company}</p>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="px-2.5 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-[11px] font-bold text-primary">
+                          {currentOpp.fitBadge}
+                        </span>
+                        {currentOpp.teamFriendly && (
+                          <span className="px-2.5 py-0.5 rounded-md bg-secondary/10 border border-secondary/20 text-[11px] font-bold text-secondary">
+                            مناسب للفرق
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-white">{currentOpp.title}</h3>
+                      <p className="text-xs text-muted-foreground">{currentOpp.company}</p>
                     </div>
                   </div>
-                  <button className="text-muted-foreground hover:text-white transition-colors bg-white/5 p-2 rounded-full">
-                    <Bookmark className="w-4 h-4" />
-                  </button>
+
+                  <div className="flex items-center gap-3 self-end md:self-auto">
+                    <span className="text-sm font-mono text-white font-bold px-3 py-1.5 rounded-xl bg-white/5 border border-white/10">
+                      {currentOpp.salary}
+                    </span>
+                    <Link to={ROUTES.JOBS.LIST}>
+                      <Button size="sm" className="rounded-xl px-6 bg-primary hover:bg-primary/90 text-white font-bold text-xs">
+                        تقدم للفرصة
+                      </Button>
+                    </Link>
+                  </div>
+
                 </div>
 
-                <div className="flex flex-wrap gap-2 mb-6 text-start" style={{ transform: "translateZ(20px)" }}>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 text-xs font-medium text-muted-foreground border border-white/5">
-                    <MapPin className="w-3.5 h-3.5" /> {job.location}
+                {/* Tags & Qualitative Reason */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                  <div className="md:col-span-8 p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-xs font-bold text-primary block mb-0.5">سبب التوصية الشفافة:</span>
+                      <p className="text-xs text-white/90 leading-relaxed">{currentOpp.fitReason}</p>
+                    </div>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 text-xs font-medium text-muted-foreground border border-white/5">
-                    <DollarSign className="w-3.5 h-3.5" /> {job.salary}
-                  </div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 text-xs font-medium text-muted-foreground border border-white/5">
-                    <Clock className="w-3.5 h-3.5" /> {job.type}
+
+                  <div className="md:col-span-4 flex flex-wrap gap-2 justify-start md:justify-end text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5">
+                      <MapPin className="w-3.5 h-3.5 text-primary" /> {currentOpp.location}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5">
+                      <Clock className="w-3.5 h-3.5 text-primary" /> {currentOpp.type}
+                    </span>
                   </div>
                 </div>
 
-                <div className="mt-auto pt-6 border-t border-white/10 flex items-center justify-between" style={{ transform: "translateZ(10px)" }}>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 border border-primary/20">
-                      <Sparkles className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="text-start">
-                      <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mb-0.5">نسبة التوافق</p>
-                      <p className="text-base font-extrabold text-primary font-mono">{job.match}%</p>
-                    </div>
-                  </div>
-                  <Button className="rounded-full px-6 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-transform bg-primary text-primary-foreground font-bold">
-                    قدم الآن
-                  </Button>
-                </div>
               </GlassCard>
-              </TiltCard>
-            </motion.div>
-          ))}
-        </div>
+            </TiltCard>
+          </motion.div>
+        </AnimatePresence>
 
-        <Link to={ROUTES.JOBS.LIST} className="block mt-8 md:hidden">
-          <Button variant="outline" className="w-full rounded-full border-white/10 bg-white/5 text-white">
-            عرض جميع الوظائف
-          </Button>
-        </Link>
       </div>
     </section>
   )

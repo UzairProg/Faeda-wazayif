@@ -7,22 +7,22 @@
 import { motion } from "framer-motion"
 
 import { AnimatedCounter } from "@/components/ui/animated-counter"
-import { Briefcase, Building2, Users, Trophy } from "lucide-react"
+import { Briefcase, Building2, Users, UsersRound } from "lucide-react"
 
 // DEV_MOCK: Replace with API data — see comment above
 
 const stats = [
   {
     id: 1,
-    name: "فرص وظيفية نشطة",
-    value: 12,
+    name: "كفاءات ومحترفين متميزين",
+    value: 450,
     suffix: " ألف+",
-    icon: Briefcase,
+    icon: Users,
     color: "text-white",
   },
   {
     id: 2,
-    name: "شركات معتمدة",
+    name: "شركات ومؤسسات معتمدة",
     value: 3400,
     suffix: "+",
     icon: Building2,
@@ -30,18 +30,18 @@ const stats = [
   },
   {
     id: 3,
-    name: "مرشحين متميزين",
-    value: 450,
-    suffix: " ألف",
-    icon: Users,
+    name: "فرق تخصصية جاهزة للعمل",
+    value: 1200,
+    suffix: "+",
+    icon: UsersRound,
     color: "text-white",
   },
   {
     id: 4,
-    name: "عمليات توظيف ناجحة",
-    value: 98,
-    suffix: "%",
-    icon: Trophy,
+    name: "فرص موثوقة ومطابقة ذكية",
+    value: 15,
+    suffix: " ألف+",
+    icon: Briefcase,
     color: "text-white",
   },
 ]

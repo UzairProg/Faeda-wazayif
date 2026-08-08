@@ -12,10 +12,9 @@ export function Navbar() {
 
   const links = [
     { label: "الرئيسية", href: "/" },
-    { label: "عن فائدة", href: "/about" },
     { label: "الوظائف", href: "/jobs" },
     { label: "الشركات", href: "/companies" },
-    { label: "الخدمات", href: "/services" },
+    { label: "الفرق", href: "/teams" },
     { label: "تواصل معنا", href: "/contact" },
   ]
 

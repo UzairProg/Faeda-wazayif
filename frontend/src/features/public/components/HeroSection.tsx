@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button"
 
 import { Search, MapPin, Sparkles, Play, Pause, Volume2, VolumeX } from "lucide-react"
 
+import { Link } from "react-router-dom"
+import { ROUTES } from "@/config/routes"
+
 // @ts-ignore
 import heroVideo from "../../../assets/video/Video_heroPage.webm"
 
@@ -91,76 +94,86 @@ export function HeroSection() {
               initial={{ opacity: 0, x: 50, scale: 0.9 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary shadow-sm w-fit mt-8 lg:mt-20"
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary shadow-sm w-fit mt-8 lg:mt-20"
             >
               <Sparkles className="h-4 w-4 animate-pulse" />
-              <span>ذكاء اصطناعي لمستقبلك المهني</span>
+              <span>منظومة مهنية متكاملة</span>
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-5xl font-extrabold font-heading tracking-tight sm:text-6xl lg:text-7xl mb-6 text-white leading-tight"
+              className="text-4xl font-extrabold font-heading tracking-tight sm:text-5xl lg:text-6xl mb-6 text-white leading-tight"
             >
-              اكتشف قيمتك <br />
-              <span className="text-primary bg-clip-text text-transparent bg-gradient-to-l from-primary to-accent">وضاعف فرصك</span>
+              منظومة واحدة لمسارك <br />
+              <span className="text-primary bg-clip-text text-transparent bg-gradient-to-l from-primary to-accent">المهني وفرصك القادمة</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-              className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed"
+              className="text-base sm:text-lg text-muted-foreground mb-8 max-w-xl leading-relaxed"
             >
-              انضم إلى المنصة التي تجمع نخبة الكفاءات مع أفضل الشركات، واعرف قيمتك السوقية الحقيقية بدقة متناهية.
+              ابنِ هويتك المهنية، افهم قيمتك السوقية، واكتشف الفرص التي تناسبك — في بيئة واحدة توحد الكفاءات، الشركات، والفرق التخصصية.
             </motion.p>
 
-            {/* Smart Search */}
+            {/* Primary & Secondary Hero CTAs */}
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+              className="flex flex-wrap items-center gap-4 mb-8"
+            >
+              <Link to={ROUTES.AUTH.REGISTER}>
+                <Button size="lg" className="rounded-xl px-8 shadow-lg shadow-primary/20 text-white font-bold text-sm bg-primary hover:bg-[#2D6BFF] h-12">
+                  ابدأ مسارك المهني
+                </Button>
+              </Link>
+              <Link to={ROUTES.JOBS.LIST}>
+                <Button size="lg" variant="outline" className="rounded-xl px-8 border-white/10 bg-white/5 text-white hover:bg-white/10 h-12 font-bold text-sm">
+                  استكشف المنظومة والفرص
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Lightweight Ecosystem Search Entry Bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-              className="w-full max-w-2xl mb-8"
+              className="w-full max-w-xl mb-6"
             >
-              <div className="flex flex-col sm:flex-row items-center gap-2 rounded-2xl bg-card p-2 shadow-2xl ring-1 ring-white/10 focus-within:ring-primary/50 transition-all">
-                <div className="flex flex-1 items-center gap-3 px-4 py-3 w-full border-b sm:border-b-0 sm:border-e border-white/10">
-                  <Search className="h-5 w-5 text-primary" />
-                  <input
-                    type="text"
-                    placeholder="المسمى الوظيفي أو المهارة..."
-                    className="w-full bg-transparent outline-none text-white placeholder:text-muted-foreground/60 focus:ring-0"
-                  />
+              <Link to={ROUTES.JOBS.LIST} className="block group">
+                <div className="flex items-center justify-between gap-3 rounded-2xl bg-card/50 backdrop-blur-md px-5 py-3 border border-white/10 group-hover:border-primary/40 group-hover:bg-card/70 transition-all shadow-xl">
+                  <div className="flex items-center gap-3 text-muted-foreground">
+                    <Search className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
+                    <span className="text-sm">ابحث عن فرصة، مهارة، شركة، أو فريق تخصصي...</span>
+                  </div>
+                  <span className="text-xs font-bold text-primary px-3 py-1 rounded-lg bg-primary/10 border border-primary/20 shrink-0">
+                    استكشاف ←
+                  </span>
                 </div>
-                <div className="flex flex-1 items-center gap-3 px-4 py-3 w-full">
-                  <MapPin className="h-5 w-5 text-primary" />
-                  <input
-                    type="text"
-                    placeholder="المدينة أو عن بعد..."
-                    className="w-full bg-transparent outline-none text-white placeholder:text-muted-foreground/60 focus:ring-0"
-                  />
-                </div>
-                <Button size="lg" className="w-full sm:w-auto rounded-xl px-8 shadow-lg shadow-primary/20 text-white font-bold text-base bg-primary hover:bg-[#2D6BFF]">
-                  ابحث
-                </Button>
-              </div>
+              </Link>
             </motion.div>
 
             {/* Popular Searches */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+              transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
               className="flex flex-wrap gap-2 text-sm text-muted-foreground items-center"
             >
               <span className="font-semibold ms-1 text-[#C8D2E4]">الأكثر بحثاً:</span>
-              {["مهندس برمجيات", "محلل بيانات", "مدير منتج", "عن بعد", "الرياض"].map((chip) => (
-                <button
+              {["القيمة السوقية", "تحليل ATS", "توظيف فرق", "مهندس برمجيات", "عن بعد", "الرياض"].map((chip) => (
+                <Link
                   key={chip}
+                  to={`${ROUTES.JOBS.LIST}?q=${encodeURIComponent(chip)}`}
                   className="px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/50 hover:text-white transition-colors text-xs text-muted-foreground"
                 >
                   {chip}
-                </button>
+                </Link>
               ))}
             </motion.div>
           </div>

@@ -1,217 +1,155 @@
-import { motion } from "framer-motion"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
+import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
-import { BrainCircuit, Target, MessageSquare, Briefcase, Sparkles } from "lucide-react"
+import { Sparkles, ShieldCheck, UserCheck, Check, Edit3, X, Bot, CornerDownLeft } from "lucide-react"
+
+const aiDemos = [
+  {
+    id: "ats",
+    prompt: "كيف أرفع توافق سيرتي الذاتية لفرص تطوير الواجهات؟",
+    badge: "مُحلل ATS الحكيم",
+    analysis: "تم العثور على 3 كلمات مفتاحية غائبة في قسم الخبرة (System Architecture, CI/CD, Performance Optimization).",
+    suggestion: "إضافة إنجاز رقمي يوضح تحسين أداء الواجهات بنسبة 30% مع توثيق مهارة TypeScript.",
+  },
+  {
+    id: "interview",
+    prompt: "ما هي أهم 3 أسئلة متوقعة لمقابلة Senior Frontend؟",
+    badge: "محاكي المقابلات",
+    analysis: "تحليل نمط مقابلات شركات التقنية بالرياض لعام 2026.",
+    suggestion: "السؤال 1: كيف تدير State Management في تطبيقات الضخمة؟ السؤال 2: شرح تحسين SSR والـ Hydration.",
+  },
+  {
+    id: "growth",
+    prompt: "ما هي الخطوة القادمة لزيادة القيمة السوقية لراتبي؟",
+    badge: "مستشار المسار",
+    analysis: "مقارنة مؤهلاتك بالطلب العالي على مهندسي Cloud & Fullstack.",
+    suggestion: "الحصول على شهادة AWS Cloud Practitioner يقفز بنطاق الراتب المستحق بمقدار 2,500 SAR شهرياً.",
+  },
+]
 
 export function AIExperienceSection() {
+  const [activeDemoId, setActiveDemoId] = useState("ats")
+  const [actionStatus, setActionStatus] = useState<string | null>(null)
+
+  const activeDemo = aiDemos.find((d) => d.id === activeDemoId) || aiDemos[0]
+
   return (
-    <section className="py-24 relative overflow-hidden bg-background">
-      {/* Abstract AI Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
+    <section className="py-20 bg-background border-t border-white/5 relative overflow-hidden">
+      {/* Soft Lighting */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-primary/5 rounded-full blur-[160px] pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center justify-center p-3 bg-white/5 border border-white/10 rounded-2xl mb-6 shadow-lg shadow-primary/10">
-            <BrainCircuit className="w-8 h-8 text-primary" />
+        
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary mb-3">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>"الذكاء يساعدك، والقرار لك"</span>
           </div>
-          <h2 className="text-3xl font-extrabold font-heading tracking-tight sm:text-4xl md:text-5xl text-white mb-6">
-            تعرف على <span className="text-primary">مرشدك المهني الذكي</span>
+
+          <h2 className="text-2xl sm:text-3xl font-extrabold font-heading text-white mb-2">
+            مساحة الذكاء المساعد الشفاف
           </h2>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            اختبر أكثر تقنيات الذكاء الاصطناعي تطوراً في مجال التوظيف. من تحليل نقاط الضعف في سيرتك الذاتية إلى إجراء مقابلات افتراضية واقعية.
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            توصيات مفيدة تمنحك التحليل الكامل وتترك لك التحكم والقرار النهائي.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Feature List (Right in RTL) */}
-          <div className="lg:col-span-5 flex flex-col justify-center space-y-10 order-last lg:order-first">
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+        {/* Demo Selection Tabs */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+          {aiDemos.map((d) => (
+            <button
+              key={d.id}
+              onClick={() => {
+                setActiveDemoId(d.id)
+                setActionStatus(null)
+              }}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                d.id === activeDemoId
+                  ? "bg-primary text-white shadow-md shadow-primary/20 scale-105"
+                  : "bg-card/50 text-muted-foreground border border-white/10 hover:text-white"
+              }`}
             >
-              <div className="flex items-start gap-4 group p-5 rounded-2xl hover:bg-card/40 hover:backdrop-blur-md border border-transparent hover:border-white/10 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300">
-                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-primary group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300 shadow-sm group-hover:shadow-lg">
-                  <Target className="h-6 w-6" />
-                </div>
-                <div className="text-start">
-                  <h3 className="text-xl font-bold font-heading text-white mb-2">تعديل جراحي للسيرة الذاتية</h3>
-                  <p className="text-muted-foreground leading-relaxed text-sm">
-                    يعمل الذكاء الاصطناعي كخبير توظيف، حيث يحلل سيرتك الذاتية بحثاً عن الكلمات المفتاحية المفقودة، والأفعال الضعيفة، وفجوات التأثير القابلة للقياس.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-            >
-              <div className="flex items-start gap-4 group p-5 rounded-2xl hover:bg-card/40 hover:backdrop-blur-md border border-transparent hover:border-white/10 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300">
-                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-primary group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300 shadow-sm group-hover:shadow-lg">
-                  <MessageSquare className="h-6 w-6" />
-                </div>
-                <div className="text-start">
-                  <h3 className="text-xl font-bold font-heading text-white mb-2">تدريب حي على المقابلات</h3>
-                  <p className="text-muted-foreground leading-relaxed text-sm">
-                    شارك في مقابلات افتراضية صوتية أو نصية مصممة خصيصاً للشركة والدور الذي تتقدم إليه لضمان أعلى مستويات الجاهزية.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-            >
-              <div className="flex items-start gap-4 group p-5 rounded-2xl hover:bg-card/40 hover:backdrop-blur-md border border-transparent hover:border-white/10 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300">
-                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-primary group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300 shadow-sm group-hover:shadow-lg">
-                  <Briefcase className="h-6 w-6" />
-                </div>
-                <div className="text-start">
-                  <h3 className="text-xl font-bold font-heading text-white mb-2">خريطة طريق مهنية ديناميكية</h3>
-                  <p className="text-muted-foreground leading-relaxed text-sm">
-                    حدد الفجوات في مهاراتك واحصل على مسار تعليمي خطوة بخطوة للوصول إلى شريحة الراتب المستهدفة بكل ثقة.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="pt-4 text-start"
-            >
-              <Button size="lg" className="rounded-full shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-transform bg-primary text-primary-foreground font-bold px-8">
-                استكشف ميزات الذكاء الاصطناعي
-              </Button>
-            </motion.div>
-          </div>
-
-          {/* Interactive Mockup (Left in RTL) */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7 }}
-            className="lg:col-span-7 relative"
-          >
-            <GlassCard className="h-[550px] p-0 bg-card border-white/10 flex flex-col relative overflow-hidden shadow-2xl">
-
-              {/* Dashboard Header */}
-              <div className="flex items-center justify-between border-b border-white/5 bg-background px-4 py-3">
-                <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-white/10" />
-                  <div className="w-3 h-3 rounded-full bg-white/10" />
-                  <div className="w-3 h-3 rounded-full bg-white/10" />
-                </div>
-                <div className="text-xs font-mono text-muted-foreground bg-white/5 px-3 py-1 rounded-md border border-white/5">
-                  Faeda Intelligence v2.0
-                </div>
-              </div>
-
-              {/* Main Content Area */}
-              <div className="flex-1 flex flex-col md:flex-row gap-0">
-                {/* Resume Analysis Mock (Right Side of Mockup) */}
-                <div className="flex-1 p-6 border-e border-white/5">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Target className="w-5 h-5 text-primary" />
-                    <h4 className="font-bold text-white font-heading">تحسين السيرة الذاتية</h4>
-                  </div>
-
-                  <div className="space-y-4 p-5 bg-card rounded-xl border border-white/5 text-sm text-muted-foreground relative text-start" dir="ltr">
-                    <motion.p 
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.5, duration: 0.5 }}
-                      className="font-mono opacity-70"
-                    >• Led team of 5 engineers to deliver project...</motion.p>
-                    
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 1, duration: 0.5 }}
-                      className="relative group p-2 -mx-2 rounded-lg hover:bg-white/5 transition-colors duration-300"
-                    >
-                      <p className="font-mono line-through decoration-red-500/70 decoration-2 text-white/80">
-                        • Responsible for improving backend performance
-                      </p>
-                      <div className="absolute -top-14 end-0 bg-primary text-primary-foreground text-xs p-3 rounded-xl shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-10 w-64 text-end" dir="rtl">
-                        <span className="font-bold block mb-1">اقتراح الذكاء الاصطناعي:</span>
-                        الرجاء تحديد الأثر بلغة الأرقام. "تم تحسين وقت استجابة الخادم بنسبة 40٪ باستخدام Redis".
-                      </div>
-                      <div className="absolute start-0 top-1/2 -translate-y-1/2">
-                        <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-                      </div>
-                    </motion.div>
-
-                    <motion.p 
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.7, duration: 0.5 }}
-                      className="font-mono opacity-70"
-                    >• Architected microservices infrastructure...</motion.p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mt-6">
-                    <div className="p-4 bg-primary/10 rounded-xl border border-primary/20 text-center">
-                      <p className="text-[10px] text-primary font-bold uppercase tracking-wider mb-1">درجة ATS</p>
-                      <p className="text-3xl font-extrabold text-primary font-mono">92</p>
-                    </div>
-                    <div className="p-4 bg-white/5 rounded-xl border border-white/10 text-center">
-                      <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider mb-1">تقييم التأثير</p>
-                      <p className="text-2xl font-extrabold text-white mt-1">مرتفع</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Chat Mock (Left Side of Mockup) */}
-                <div className="w-full md:w-72 bg-background p-4 flex flex-col gap-4">
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 1.2, duration: 0.5, type: "spring" }}
-                    className="p-4 bg-card border border-white/5 rounded-2xl rounded-tr-sm text-sm text-white text-start shadow-sm leading-relaxed"
-                  >
-                    لاحظت خبرتك في React. هل نبدأ بتوليد بعض أسئلة المقابلات الشائعة لدور مهندس واجهات أمامية في شركة Stripe؟
-                  </motion.div>
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 2.0, duration: 0.5, type: "spring" }}
-                    className="p-4 bg-primary text-primary-foreground rounded-2xl rounded-tl-sm text-sm self-end text-start shadow-md font-medium"
-                  >
-                    نعم، لنبدأ بتصميم الأنظمة (System Design).
-                  </motion.div>
-                  <motion.div 
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 2.5, duration: 0.3 }}
-                    className="p-4 bg-card/80 backdrop-blur-md border border-primary/30 rounded-2xl rounded-tr-sm text-sm flex items-center gap-2 w-fit shadow-lg shadow-primary/10"
-                  >
-                    <span className="flex w-2 h-2 bg-primary rounded-full animate-bounce" />
-                    <span className="flex w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-                    <span className="flex w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
-                  </motion.div>
-                </div>
-              </div>
-
-            </GlassCard>
-          </motion.div>
+              {d.badge}
+            </button>
+          ))}
         </div>
+
+        {/* Single Interactive AI Workspace Mockup */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeDemo.id}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3 }}
+            className="max-w-3xl mx-auto"
+          >
+            <TiltCard tiltEnabled={false} shineEnabled={true} shineOpacityMax={0.12} className="rounded-[2rem]">
+              <GlassCard className="p-6 bg-card/60 backdrop-blur-md border-white/10 shadow-2xl text-start">
+                
+                {/* User Prompt Entry */}
+                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between mb-4 text-xs text-white">
+                  <div className="flex items-center gap-2.5">
+                    <UserCheck className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold">{activeDemo.prompt}</span>
+                  </div>
+                  <CornerDownLeft className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                </div>
+
+                {/* AI Assistant Output */}
+                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 mb-6 space-y-2">
+                  <div className="flex items-center gap-2 text-primary font-bold text-xs">
+                    <Bot className="w-4 h-4" />
+                    <span>تحليل فائدة المساعد ({activeDemo.badge}):</span>
+                  </div>
+                  <p className="text-xs text-white/90 leading-relaxed">{activeDemo.suggestion}</p>
+                </div>
+
+                {/* Human Ownership Controls */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/10 text-xs">
+                  <span className="text-muted-foreground text-[11px]">القرار لك:</span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => setActionStatus("تم تطبيق التوصية بحسابك!")}
+                      className="rounded-lg px-4 bg-primary hover:bg-primary/90 text-white font-bold text-xs h-8 gap-1"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      تطبيق التوصية
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setActionStatus("فتح شاشة التعديل")}
+                      className="rounded-lg px-4 border-white/10 bg-white/5 text-white text-xs h-8 gap-1"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                      تعديل
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setActionStatus("تم تجاهل التوصية")}
+                      className="rounded-lg px-3 text-muted-foreground hover:text-white text-xs h-8 gap-1"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                      تجاهل
+                    </Button>
+                  </div>
+                </div>
+
+                {actionStatus && (
+                  <p className="text-center text-xs font-bold text-primary mt-3 font-mono">{actionStatus}</p>
+                )}
+
+              </GlassCard>
+            </TiltCard>
+          </motion.div>
+        </AnimatePresence>
+
       </div>
     </section>
   )
