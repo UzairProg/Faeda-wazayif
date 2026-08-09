@@ -1,23 +1,13 @@
 /**
  * features/public/pages/TeamDetailPage.tsx
  *
- * Public Team Profile & Detail Page.
- * Displays real team information: logo/avatar, track/field, capability breakdown ("ماذا يستطيع الفريق أن ينجز؟"),
- * public team members grid ("أعضاء الفريق"), and linked team-friendly opportunities ("فرص مناسبة للفريق").
+ * Public Team profile detail page.
+ * Displays capability breakdown, team members roster, opportunities suited for teams,
+ * and leadership specs. Fully localized for Arabic (RTL) and English (LTR).
  */
-import { useRef } from "react"
 import { useParams, Link } from "react-router-dom"
 import {
-  Users,
-  MapPin,
-  Layers,
-  Sparkles,
-  CheckCircle2,
-  Briefcase,
-  User,
-  ArrowLeft,
-  ChevronRight,
-  ShieldCheck,
+  Users, MapPin, Layers, Sparkles, CheckCircle2, ChevronRight, ChevronLeft, Briefcase, UserCheck
 } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
@@ -25,6 +15,9 @@ import { useTeamDetail } from "@/features/teams/hooks/useTeams"
 import { TeamDetailSkeleton } from "@/features/teams/components/TeamSkeleton"
 import { JobCard } from "@/features/public/components/JobCard"
 import { ROUTES } from "@/config/routes"
+import { useTranslation } from "@/i18n"
+import { formatLocalizedNumber } from "@/lib/localization.utils"
+import type { Job } from "@/features/jobs/types/job.types"
 
 function getAvatarGradient(idStr: string): string {
   const gradients = [
@@ -54,11 +47,9 @@ function getTeamInitials(name: string): string {
 export function TeamDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { team, isLoading, error } = useTeamDetail(id)
-  const jobsSectionRef = useRef<HTMLDivElement>(null)
+  const { t, language, isRTL } = useTranslation()
 
-  const scrollToJobs = () => {
-    jobsSectionRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+  const ChevronIcon = isRTL ? ChevronRight : ChevronLeft
 
   if (isLoading) {
     return (
@@ -75,14 +66,12 @@ export function TeamDetailPage() {
           <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground mx-auto">
             <Users className="w-8 h-8 opacity-60" />
           </div>
-          <h2 className="text-2xl font-extrabold font-heading text-white">الفريق غير موجود</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            قد يكون الرابط غير صحيح، أو لم يعد ملف هذا الفريق منشوراً بالمنظومة حالياً.
-          </p>
+          <h2 className="text-2xl font-extrabold font-heading text-white">{t("teams.states.notFoundTitle")}</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">{t("teams.states.notFoundSubtitle")}</p>
           <div className="pt-2 flex justify-center gap-3">
             <Link to={ROUTES.TEAMS.LIST}>
               <Button className="rounded-xl px-6 bg-primary text-white font-bold text-xs sm:text-sm">
-                العودة للفرق التخصصية
+                {t("teams.detail.backToList")}
               </Button>
             </Link>
           </div>
@@ -93,28 +82,25 @@ export function TeamDetailPage() {
 
   const gradientStyle = getAvatarGradient(team.id)
   const initials = getTeamInitials(team.name)
-  const memberCount = team.members?.length || team.memberCount || 0
-  const jobsCount = team.jobs?.length || 0
 
   return (
-    <div className="flex flex-col w-full bg-background min-h-screen relative overflow-x-hidden pt-24 pb-20">
-      {/* Background Radial Glow */}
+    <div className="flex flex-col w-full bg-background min-h-screen relative overflow-x-hidden pt-24 pb-20 text-start">
+      {/* Background Glow */}
       <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[180px] pointer-events-none -z-10" />
-      <div className="absolute top-1/3 left-[-10%] w-[500px] h-[500px] bg-accent/5 rounded-full blur-[160px] pointer-events-none -z-10" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-w-6xl space-y-8">
         
         {/* Breadcrumbs */}
         <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
           <Link to={ROUTES.TEAMS.LIST} className="hover:text-white transition-colors flex items-center gap-1">
-            <span>الفرق التخصصية</span>
+            <span>{t("teams.header.title")}</span>
           </Link>
-          <ChevronRight className="w-4 h-4 text-white/30 rotate-180" />
+          <ChevronIcon className="w-4 h-4 text-white/30" />
           <span className="text-white font-medium truncate">{team.name}</span>
         </div>
 
-        {/* 01. TEAM HEADER CARD */}
-        <GlassCard className="p-6 sm:p-10 bg-card/60 backdrop-blur-md border-white/10 shadow-2xl relative text-start overflow-hidden">
+        {/* Team Header Card */}
+        <GlassCard className="p-6 sm:p-10 bg-card/60 backdrop-blur-md border-white/10 shadow-2xl relative overflow-hidden">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-white/10">
             
             <div className="flex items-start gap-5 min-w-0">
@@ -139,7 +125,7 @@ export function TeamDetailPage() {
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold font-mono">
                     <Users className="w-3.5 h-3.5" />
-                    <span>{memberCount === 1 ? "عضو واحد" : `${memberCount} أعضاء`}</span>
+                    <span>{t("teams.list.memberCount", { count: formatLocalizedNumber(team.memberCount, language) })}</span>
                   </span>
 
                   {team.generalProgram && (
@@ -161,65 +147,36 @@ export function TeamDetailPage() {
                   </span>
 
                   {team.isRemote && (
-                    <span className="inline-flex items-center gap-1 before:content-['•'] before:me-2 before:text-white/20 text-cyan-400 font-semibold">
-                      متاح للعمل عن بعد
+                    <span className="before:content-['•'] before:me-2 before:text-white/20 text-cyan-400 font-semibold">
+                      {language === "en" ? "Remote Available" : "متاح للعمل عن بعد"}
                     </span>
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 self-stretch md:self-auto justify-end shrink-0">
-              <Button
-                onClick={scrollToJobs}
-                size="lg"
-                className="rounded-xl px-7 bg-primary hover:bg-primary/90 text-white font-bold text-xs sm:text-sm gap-2 shadow-lg shadow-primary/20"
-              >
-                <Briefcase className="w-4 h-4" />
-                <span>الفرص المناسبة ({jobsCount})</span>
-              </Button>
-            </div>
-
           </div>
 
-          {/* Quick Header Summary Strip */}
-          <div className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm">
-            <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-              <span className="text-muted-foreground block mb-0.5 text-[11px]">حجم الطاقم</span>
-              <span className="font-bold text-white">{memberCount} أعضاء متطابقين</span>
+          {/* Achievements Ribbon */}
+          {team.achievements && (
+            <div className="pt-4 text-xs sm:text-sm text-emerald-300 font-semibold flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>{team.achievements}</span>
             </div>
-
-            <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-              <span className="text-muted-foreground block mb-0.5 text-[11px]">نموذج التواجد</span>
-              <span className="font-bold text-cyan-400 flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5" /> {team.isRemote ? "عن بعد / هجين" : "حضوري"}
-              </span>
-            </div>
-
-            <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-              <span className="text-muted-foreground block mb-0.5 text-[11px]">المسار التخصصي</span>
-              <span className="font-bold text-white truncate block">{team.generalProgram || "غير محدد"}</span>
-            </div>
-
-            <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-              <span className="text-muted-foreground block mb-0.5 text-[11px]">الموقع</span>
-              <span className="font-bold text-white truncate block">{team.location}</span>
-            </div>
-          </div>
+          )}
         </GlassCard>
 
-        {/* MAIN BODY GRID: Left (Capabilities & Members & Jobs) | Right (Team Specs) */}
+        {/* Main Details Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* LEFT COLUMN (8 cols) */}
           <div className="lg:col-span-8 space-y-8">
             
-            {/* ABOUT TEAM */}
+            {/* About Team */}
             {team.about && (
               <GlassCard className="p-6 sm:p-8 bg-card/60 backdrop-blur-md border-white/10 text-start shadow-xl space-y-3">
                 <h2 className="text-xl font-extrabold font-heading text-white flex items-center gap-2">
                   <Users className="w-5 h-5 text-primary" />
-                  <span>عن الفريق</span>
+                  <span>{language === "en" ? "About Team" : "عن الفريق"}</span>
                 </h2>
                 <p className="text-sm sm:text-base text-white/90 leading-relaxed whitespace-pre-line">
                   {team.about}
@@ -227,123 +184,95 @@ export function TeamDetailPage() {
               </GlassCard>
             )}
 
-            {/* 02. TEAM CAPABILITIES */}
-            <GlassCard className="p-6 sm:p-8 bg-card/60 backdrop-blur-md border-white/10 text-start shadow-xl space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
+            {/* Capabilities */}
+            {team.capabilities && team.capabilities.length > 0 && (
+              <GlassCard className="p-6 sm:p-8 bg-card/60 backdrop-blur-md border-white/10 text-start shadow-xl space-y-4">
                 <h2 className="text-xl font-extrabold font-heading text-white flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-primary" />
-                  <span>ماذا يستطيع الفريق أن ينجز؟</span>
+                  <span>{t("teams.detail.capabilitiesTitle")}</span>
                 </h2>
-                <span className="text-xs font-mono text-primary font-bold px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20">
-                  {team.capabilities.length} قدرات
-                </span>
-              </div>
 
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                يغطي هذا الفريق المهارات والتخصصات التالية ضمن مظلة عمل واحدة:
-              </p>
-
-              <div className="flex flex-wrap gap-2 pt-2">
-                {team.capabilities.map((cap) => (
-                  <span
-                    key={cap}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold"
-                  >
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>{cap}</span>
-                  </span>
-                ))}
-              </div>
-            </GlassCard>
-
-            {/* 03. TEAM MEMBERS GRID */}
-            <GlassCard className="p-6 sm:p-8 bg-card/60 backdrop-blur-md border-white/10 text-start shadow-xl space-y-5">
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                <h2 className="text-xl font-extrabold font-heading text-white flex items-center gap-2">
-                  <Users className="w-5 h-5 text-primary" />
-                  <span>أعضاء الفريق</span>
-                </h2>
-                <span className="text-xs font-mono text-white/80 font-bold">
-                  {memberCount} أعضاء
-                </span>
-              </div>
-
-              {team.members && team.members.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {team.members.map((m) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  {team.capabilities.map((cap) => (
                     <div
-                      key={m.id}
-                      className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-4 hover:border-white/20 transition-all"
+                      key={cap}
+                      className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3 text-xs sm:text-sm font-semibold text-white"
                     >
-                      {m.avatarUrl ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>{cap}</span>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            )}
+
+            {/* Members Roster */}
+            <GlassCard className="p-6 sm:p-8 bg-card/60 backdrop-blur-md border-white/10 text-start shadow-xl space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-extrabold font-heading text-white flex items-center gap-2">
+                  <UserCheck className="w-5 h-5 text-primary" />
+                  <span>{t("teams.detail.membersTitle")}</span>
+                </h2>
+                <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary">
+                  {formatLocalizedNumber(team.members.length, language)}
+                </span>
+              </div>
+
+              {team.members.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                  {team.members.map((member) => (
+                    <div
+                      key={member.id}
+                      className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4 hover:border-white/10 transition-colors"
+                    >
+                      {member.avatarUrl ? (
                         <img
-                          src={m.avatarUrl}
-                          alt={m.name}
-                          className="w-12 h-12 rounded-xl object-cover border border-white/10 shrink-0 bg-black/30"
-                          onError={(e) => {
-                            ;(e.currentTarget as HTMLElement).style.display = "none"
-                          }}
+                          src={member.avatarUrl}
+                          alt={member.name}
+                          className="w-12 h-12 rounded-xl object-cover border border-white/10 shrink-0"
                         />
                       ) : (
-                        <div className="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center font-bold text-primary text-base shrink-0">
-                          <User className="w-6 h-6" />
+                        <div className="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center font-bold text-primary text-base font-heading shrink-0">
+                          {member.name.charAt(0)}
                         </div>
                       )}
 
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-base font-bold font-heading text-white truncate">{m.name}</h4>
-                        <p className="text-xs text-primary font-semibold truncate mb-1">{m.role}</p>
-
-                        {m.skills && m.skills.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-1.5">
-                            {m.skills.map((s) => (
-                              <span key={s} className="px-2 py-0.5 rounded-md bg-white/5 text-muted-foreground text-[10px]">
-                                {s}
-                              </span>
-                            ))}
-                          </div>
+                        <h4 className="font-bold text-white text-sm truncate">{member.name}</h4>
+                        <p className="text-xs text-primary font-medium truncate">{member.role}</p>
+                        {member.skills && member.skills.length > 0 && (
+                          <p className="text-[11px] text-muted-foreground truncate mt-1">
+                            {member.skills.slice(0, 2).join(" • ")}
+                          </p>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs sm:text-sm text-muted-foreground italic">
-                  لم يكتمل الملف العام لأعضاء الفريق بعد.
-                </p>
+                <p className="text-xs sm:text-sm text-muted-foreground py-4">{t("teams.detail.noMembers")}</p>
               )}
             </GlassCard>
 
-            {/* 04. TEAM OPPORTUNITIES */}
-            <div ref={jobsSectionRef} className="space-y-4 pt-2">
-              <div className="flex items-center justify-between px-1">
-                <h2 className="text-xl font-extrabold font-heading text-white flex items-center gap-2">
-                  <Briefcase className="w-5 h-5 text-primary" />
-                  <span>فرص مناسبة للفريق</span>
-                  <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary">
-                    {jobsCount}
-                  </span>
-                </h2>
-              </div>
+            {/* Suited Opportunities */}
+            <div className="space-y-4 pt-2">
+              <h2 className="text-xl font-extrabold font-heading text-white flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-primary" />
+                <span>{t("teams.detail.opportunitiesTitle")}</span>
+              </h2>
 
-              {jobsCount > 0 ? (
+              {team.jobs && team.jobs.length > 0 ? (
                 <div className="space-y-4">
-                  {team.jobs.map((j, idx) => (
-                    <JobCard key={j.id} job={j} index={idx} />
+                  {team.jobs.map((job: Job, idx: number) => (
+                    <JobCard key={job.id} job={job} index={idx} />
                   ))}
                 </div>
               ) : (
-                <GlassCard className="p-8 text-center bg-card/40 border-white/10 space-y-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground mx-auto">
-                    <Briefcase className="w-6 h-6 opacity-60" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white">لا توجد فرص مخصصة للفرق حالياً</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto">
-                    يمكن لأعضاء الفريق التصفح والتقديم المباشر على كافة الفرص الشاغرة بالمنظومة.
-                  </p>
+                <GlassCard className="p-8 text-center bg-card/40 border-white/10 space-y-3">
+                  <p className="text-sm font-bold text-white">{t("teams.detail.noOpportunities")}</p>
                   <Link to={ROUTES.JOBS.LIST}>
-                    <Button variant="outline" className="rounded-xl border-white/10 bg-white/5 text-white font-bold text-xs sm:text-sm">
-                      تصفح جميع الوظائف
+                    <Button variant="outline" size="sm" className="rounded-xl border-white/10 bg-white/5 text-white font-bold text-xs">
+                      {t("teams.detail.browseJobsCta")}
                     </Button>
                   </Link>
                 </GlassCard>
@@ -352,40 +281,17 @@ export function TeamDetailPage() {
 
           </div>
 
-          {/* RIGHT COLUMN (4 cols): Team Specs Card */}
+          {/* Sidebar */}
           <div className="lg:col-span-4 space-y-6">
             
-            <GlassCard className="p-6 bg-card/60 backdrop-blur-md border-white/10 text-start shadow-xl space-y-5">
+            <GlassCard className="p-6 bg-card/60 backdrop-blur-md border-white/10 text-start shadow-xl space-y-4">
               <h3 className="text-base font-bold font-heading text-white pb-3 border-b border-white/10">
-                مواصفات الفريق
+                {language === "en" ? "Team Overview" : "معلومات الفريق الأساسية"}
               </h3>
 
-              <div className="space-y-4 text-xs sm:text-sm">
+              <div className="space-y-3 text-xs sm:text-sm">
                 <div>
-                  <span className="text-muted-foreground text-[11px] block mb-0.5">المجال العام</span>
-                  <p className="font-bold text-white flex items-center gap-1.5">
-                    <Layers className="w-4 h-4 text-primary shrink-0" />
-                    {team.generalProgram || "تطوير المنتجات والبرمجيات"}
-                  </p>
-                </div>
-
-                {team.semiSpecialProgram && (
-                  <div>
-                    <span className="text-muted-foreground text-[11px] block mb-0.5">التخصص الدقيق</span>
-                    <p className="font-semibold text-white">{team.semiSpecialProgram}</p>
-                  </div>
-                )}
-
-                <div>
-                  <span className="text-muted-foreground text-[11px] block mb-0.5">إجمالي الأعضاء</span>
-                  <p className="font-bold text-white flex items-center gap-1.5">
-                    <Users className="w-4 h-4 text-primary shrink-0" />
-                    {memberCount} أعضاء
-                  </p>
-                </div>
-
-                <div>
-                  <span className="text-muted-foreground text-[11px] block mb-0.5">الموقع الجغرافي</span>
+                  <span className="text-muted-foreground text-[11px] block mb-0.5">{language === "en" ? "Location" : "المقر والجغرافيا"}</span>
                   <p className="font-bold text-white flex items-center gap-1.5">
                     <MapPin className="w-4 h-4 text-primary shrink-0" />
                     {team.location}
@@ -393,38 +299,19 @@ export function TeamDetailPage() {
                 </div>
 
                 <div>
-                  <span className="text-muted-foreground text-[11px] block mb-0.5">نموذج العمل</span>
-                  <p className="font-bold text-cyan-400 flex items-center gap-1">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    {team.isRemote ? "متاح للعمل عن بعد / هجين" : "حضوري"}
+                  <span className="text-muted-foreground text-[11px] block mb-0.5">{language === "en" ? "Team Members" : "عدد أعضاء الفريق"}</span>
+                  <p className="font-bold text-white font-mono">
+                    {t("teams.list.memberCount", { count: formatLocalizedNumber(team.memberCount, language) })}
                   </p>
                 </div>
 
-                {team.achievements && (
-                  <div className="pt-2 border-t border-white/10">
-                    <span className="text-muted-foreground text-[11px] block mb-1">الإنجازات</span>
-                    <p className="text-xs text-emerald-300 font-semibold">✨ {team.achievements}</p>
+                {team.generalProgram && (
+                  <div>
+                    <span className="text-muted-foreground text-[11px] block mb-0.5">{language === "en" ? "Track / Program" : "المسار التخصصي العام"}</span>
+                    <p className="font-semibold text-white">{team.generalProgram}</p>
                   </div>
                 )}
               </div>
-            </GlassCard>
-
-            {/* Compact Callout */}
-            <GlassCard className="p-6 bg-gradient-to-br from-primary/10 via-card to-card border border-primary/20 text-start space-y-3">
-              <h4 className="font-extrabold font-heading text-white text-base">
-                هل ترغب باستقطاب هذا الفريق لمشروعك؟
-              </h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                استعرض الفرص المتاحة لديهم أو انشر فرصة تخصصية مخصصة للفرق من حساب الشركة.
-              </p>
-              <Button
-                onClick={scrollToJobs}
-                size="sm"
-                className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs gap-1.5 mt-2"
-              >
-                <span>استعرض الفرص المناسبة</span>
-                <ArrowLeft className="w-3.5 h-3.5" />
-              </Button>
             </GlassCard>
 
           </div>

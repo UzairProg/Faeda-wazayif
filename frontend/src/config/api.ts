@@ -48,5 +48,6 @@ export const API_CONFIG = {
       APPLICATIONS: "/my-jobapplications",
       RECOMMENDATIONS: "/recommendations",
     },
+    CONTACT: "/api/v1/contact",
   },
 }

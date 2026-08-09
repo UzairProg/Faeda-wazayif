@@ -1,78 +1,148 @@
+/**
+ * features/public/components/ProfessionalJourneySection.tsx
+ *
+ * Sequential Professional Trajectory Section for Home page.
+ * Fully localized for Arabic (RTL) and English (LTR).
+ */
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
-import { FileText, Target, Search, Clock, MessageSquare, TrendingUp, CheckCircle2, ArrowLeft } from "lucide-react"
+import { FileText, Target, Search, Clock, MessageSquare, TrendingUp, CheckCircle2, ArrowLeft, ArrowRight } from "lucide-react"
 import { Link } from "react-router-dom"
 import { ROUTES } from "@/config/routes"
-
-const journeySteps = [
-  {
-    step: "01",
-    title: "بناء الهوية المهنية",
-    subtitle: "إبراز مهاراتك وخبراتك الحقيقية",
-    description: "أنشئ بروفايلك الشامل مع حفظ المشاريع والمهارات بطريقة احترافية تعكس قيمتك الفعلية.",
-    icon: FileText,
-    badge: "الهوية",
-    previewTitle: "واجهة الهوية المهنية",
-    previewDetails: ["سجل المشاريع المنجزة", "شهادات المهارات المعتمدة", "رابط ملف عام مشارك"],
-  },
-  {
-    step: "02",
-    title: "فحص جاهزية ATS",
-    subtitle: "تحليل ذكي للسيرة الذاتية",
-    description: "قيّم سيرتك الذاتية مقابل معايير الفرز العالمية، واكتشف الكلمات المفتاحية وفجوات التأثير.",
-    icon: Target,
-    badge: "الجاهزية",
-    previewTitle: "تقرير فحص جاهزية ATS",
-    previewDetails: ["درجة التوافق المعياري", "الكلمات المفتاحية المفقودة", "تحسينات الصياغة والتأثير"],
-  },
-  {
-    step: "03",
-    title: "تقدير القيمة السوقية",
-    subtitle: "فهم موضعك في السوق السعودي",
-    description: "اعرف نطاق الراتب المستحق لخبراتك وفق معطيات السوق الحية والمؤهلات الأكاديمية والمهارية.",
-    icon: TrendingUp,
-    badge: "الموقع السوقي",
-    previewTitle: "تقرير القيمة السوقية",
-    previewDetails: ["نطاق الراتب المستحق شهرياً", "مقارنة الطلب بالرياض والمدن", "قوائم تحسين الراتب (+15%)"],
-  },
-  {
-    step: "04",
-    title: "اكتشاف الفرص والمطابقة",
-    subtitle: "ترشيحات واضحة الأسباب",
-    description: "تصفح وظائف تناسب مؤهلاتك مع شرح شفاف لأسباب الملاءمة وعوامل القوة ونقاط النمو.",
-    icon: Search,
-    badge: "الفرص",
-    previewTitle: "شاشة الترشيحات المفسرة",
-    previewDetails: ["أسباب المطابقة الدقيقة", "تغطية مهارات الوظيفة", "إمكانية التقديم كفريق أو فرد"],
-  },
-  {
-    step: "05",
-    title: "التقديم وتتبع المسار",
-    subtitle: "شفافية كاملة في حالات الطلب",
-    description: "تابع حالة طلبك خطوة بخطوة من التقديم وحتى المقابلة والقرار النهائي دون انتظار مجهول.",
-    icon: Clock,
-    badge: "التتبع",
-    previewTitle: "لوحة تتبع طلبات التوظيف",
-    previewDetails: ["سجل وموعد كل مرحلة", "تنسيق المقابلات والاختبارات", "إشعار القرار النهائي المسبب"],
-  },
-  {
-    step: "06",
-    title: "المحاكاة والنمو المهني",
-    subtitle: "تجهيز للمقابلات وتحديد المسار",
-    description: "تدرب على مقابلات حية افتراضية واحصل على خطة تحسين مستمرة لرفع تنافسيتك المهنية.",
-    icon: MessageSquare,
-    badge: "النمو المستمر",
-    previewTitle: "بيئة التدريب والنمو المهني",
-    previewDetails: ["محاكاة أسئلة المقابلة", "خطة تطوير مهارية مخصصة", "توجيه مهني مستمر"],
-  },
-]
+import { useTranslation } from "@/i18n"
 
 export function ProfessionalJourneySection() {
   const [activeStepIndex, setActiveStepIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const { t, language, isRTL } = useTranslation()
+  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
+
+  const journeySteps = language === "en" ? [
+    {
+      step: "01",
+      title: "Build Professional Identity",
+      subtitle: "Highlight real skills and verified experience",
+      description: "Create your comprehensive profile preserving projects and achievements reflecting your actual market value.",
+      icon: FileText,
+      badge: "Identity",
+      previewTitle: "Professional Identity Workspace",
+      previewDetails: ["Completed projects record", "Verified skill credentials", "Shared public profile link"],
+    },
+    {
+      step: "02",
+      title: "ATS Readiness Audit",
+      subtitle: "Intelligent CV compatibility analysis",
+      description: "Evaluate your CV against international screening standards and discover missing impact keywords.",
+      icon: Target,
+      badge: "Readiness",
+      previewTitle: "ATS Audit Report",
+      previewDetails: ["Benchmark match score", "Missing keywords list", "Impact phrasing recommendations"],
+    },
+    {
+      step: "03",
+      title: "Market Value Estimation",
+      subtitle: "Understand your position in Saudi market",
+      description: "Know your expected salary range based on live market data, qualifications, and skill demand.",
+      icon: TrendingUp,
+      badge: "Market Position",
+      previewTitle: "Market Value Report",
+      previewDetails: ["Expected monthly salary range", "Demand comparison by city", "Value increase roadmap (+15%)"],
+    },
+    {
+      step: "04",
+      title: "Position Sourcing & Match",
+      subtitle: "Transparent explainable recommendations",
+      description: "Discover opportunities matching your profile with transparent reasoning behind each match.",
+      icon: Search,
+      badge: "Opportunities",
+      previewTitle: "Explainable Match Screen",
+      previewDetails: ["Exact match criteria", "Job skill coverage ratio", "Individual or team application option"],
+    },
+    {
+      step: "05",
+      title: "Application & Tracking",
+      subtitle: "Full progress pipeline transparency",
+      description: "Track application stage step-by-step from submission to interview without blackbox waiting.",
+      icon: Clock,
+      badge: "Tracking",
+      previewTitle: "Application Tracking Pipeline",
+      previewDetails: ["Stage timestamp log", "Interview & test coordination", "Reasoned final decision notification"],
+    },
+    {
+      step: "06",
+      title: "Simulation & Growth",
+      subtitle: "Interview prep & continuous learning",
+      description: "Practice mock interview scenarios and get a continuous growth plan to boost your competitiveness.",
+      icon: MessageSquare,
+      badge: "Continuous Growth",
+      previewTitle: "Prep & Growth Workspace",
+      previewDetails: ["Mock interview simulator", "Tailored skill development plan", "Ongoing career guidance"],
+    },
+  ] : [
+    {
+      step: "01",
+      title: "بناء الهوية المهنية",
+      subtitle: "إبراز مهاراتك وخبراتك الحقيقية",
+      description: "أنشئ بروفايلك الشامل مع حفظ المشاريع والمهارات بطريقة احترافية تعكس قيمتك الفعلية.",
+      icon: FileText,
+      badge: "الهوية",
+      previewTitle: "واجهة الهوية المهنية",
+      previewDetails: ["سجل المشاريع المنجزة", "شهادات المهارات المعتمدة", "رابط ملف عام مشارك"],
+    },
+    {
+      step: "02",
+      title: "فحص جاهزية ATS",
+      subtitle: "تحليل ذكي للسيرة الذاتية",
+      description: "قيّم سيرتك الذاتية مقابل معايير الفرز العالمية، واكتشف الكلمات المفتاحية وفجوات التأثير.",
+      icon: Target,
+      badge: "الجاهزية",
+      previewTitle: "تقرير فحص جاهزية ATS",
+      previewDetails: ["درجة التوافق المعياري", "الكلمات المفتاحية المفقودة", "تحسينات الصياغة والتأثير"],
+    },
+    {
+      step: "03",
+      title: "تقدير القيمة السوقية",
+      subtitle: "فهم موضعك في السوق السعودي",
+      description: "اعرف نطاق الراتب المستحق لخبراتك وفق معطيات السوق الحية والمؤهلات الأكاديمية والمهارية.",
+      icon: TrendingUp,
+      badge: "الموقع السوقي",
+      previewTitle: "تقرير القيمة السوقية",
+      previewDetails: ["نطاق الراتب المستحق شهرياً", "مقارنة الطلب بالرياض والمدن", "قوائم تحسين الراتب (+15%)"],
+    },
+    {
+      step: "04",
+      title: "اكتشاف الفرص والمطابقة",
+      subtitle: "ترشيحات واضحة الأسباب",
+      description: "تصفح وظائف تناسب مؤهلاتك مع شرح شفاف لأسباب الملاءمة وعوامل القوة ونقاط النمو.",
+      icon: Search,
+      badge: "الفرص",
+      previewTitle: "شاشة الترشيحات المفسرة",
+      previewDetails: ["أسباب المطابقة الدقيقة", "تغطية مهارات الوظيفة", "إمكانية التقديم كفريق أو فرد"],
+    },
+    {
+      step: "05",
+      title: "التقديم وتتبع المسار",
+      subtitle: "شفافية كاملة في حالات الطلب",
+      description: "تابع حالة طلبك خطوة بخطوة من التقديم وحتى المقابلة والقرار النهائي دون انتظار مجهول.",
+      icon: Clock,
+      badge: "التتبع",
+      previewTitle: "لوحة تتبع طلبات التوظيف",
+      previewDetails: ["سجل وموعد كل مرحلة", "تنسيق المقابلات والاختبارات", "إشعار القرار النهائي المسبب"],
+    },
+    {
+      step: "06",
+      title: "المحاكاة والنمو المهني",
+      subtitle: "تجهيز للمقابلات وتحديد المسار",
+      description: "تدرب على مقابلات حية افتراضية واحصل على خطة تحسين مستمرة لرفع تنافسيتك المهنية.",
+      icon: MessageSquare,
+      badge: "النمو المستمر",
+      previewTitle: "بيئة التدريب والنمو المهني",
+      previewDetails: ["محاكاة أسئلة المقابلة", "خطة تطوير مهارية مخصصة", "توجيه مهني مستمر"],
+    },
+  ]
 
   useEffect(() => {
     if (isPaused) return
@@ -80,17 +150,16 @@ export function ProfessionalJourneySection() {
       setActiveStepIndex((prev) => (prev + 1) % journeySteps.length)
     }, 2200)
     return () => clearInterval(timer)
-  }, [isPaused])
+  }, [isPaused, journeySteps.length])
 
   const activeStep = journeySteps[activeStepIndex]
 
   return (
     <section
-      className="py-20 bg-background border-t border-white/5 relative overflow-hidden"
+      className="py-20 bg-background border-t border-white/5 relative overflow-hidden text-start"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background Lighting */}
       <div className="absolute top-1/2 end-0 -translate-y-1/2 translate-x-1/4 w-[700px] h-[500px] bg-primary/10 rounded-full blur-[170px] pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -99,18 +168,18 @@ export function ProfessionalJourneySection() {
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary mb-3">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>مسار النمو المهني المتسلسل</span>
+            <span>{t("public.journey.badge")}</span>
           </div>
 
           <h2 className="text-3xl font-extrabold font-heading tracking-tight sm:text-4xl text-white mb-3">
-            رحلة متكاملة تنقلك من فهم ذاتك إلى اقتناص الفرصة
+            {t("public.journey.title")}
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            خطوات متسلسلة تبدأ بتعريف هويتك وتحديد قيمتك، وصولاً للتقديم والتطور.
+            {t("public.journey.subtitle")}
           </p>
         </div>
 
-        {/* Step Selector Horizontal Timeline Bar */}
+        {/* Timeline Tabs */}
         <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
           {journeySteps.map((st, idx) => {
             const isActive = idx === activeStepIndex
@@ -135,7 +204,7 @@ export function ProfessionalJourneySection() {
           })}
         </div>
 
-        {/* Dynamic Single Interface Preview Container */}
+        {/* Interactive Workspace Card */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeStep.step}
@@ -149,7 +218,6 @@ export function ProfessionalJourneySection() {
               <GlassCard className="p-6 sm:p-10 bg-card/60 backdrop-blur-md border-white/10 shadow-2xl text-start">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
 
-                  {/* Step Description Column */}
                   <div className="md:col-span-6 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-3 mb-4">
@@ -170,15 +238,16 @@ export function ProfessionalJourneySection() {
                     <div className="flex items-center gap-3">
                       <Link to={ROUTES.AUTH.REGISTER}>
                         <Button size="sm" className="rounded-xl px-6 py-2.5 bg-primary text-white font-bold text-xs sm:text-sm gap-1.5">
-                          <span>تجربة هذه الخطوة</span>
-                          <ArrowLeft className="w-4 h-4" />
+                          <span>{t("public.journey.tryStep")}</span>
+                          <ArrowIcon className="w-4 h-4" />
                         </Button>
                       </Link>
-                      <span className="text-xs sm:text-sm text-muted-foreground font-mono">الخطوة {activeStep.step} من 06</span>
+                      <span className="text-xs sm:text-sm text-muted-foreground font-mono">
+                        {t("public.journey.stepCounter", { step: activeStep.step })}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Single Interactive Interface Preview Mockup */}
                   <div className="md:col-span-6">
                     <div className="p-6 sm:p-7 rounded-2xl bg-black/40 border border-white/10 shadow-xl">
                       <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/10">
@@ -188,7 +257,9 @@ export function ProfessionalJourneySection() {
                           <div className="w-3 h-3 rounded-full bg-green-500/80" />
                           <span className="text-xs sm:text-sm text-white/90 font-mono font-bold ms-2">{activeStep.previewTitle}</span>
                         </div>
-                        <span className="text-xs font-mono text-primary px-2.5 py-0.5 rounded bg-primary/10 border border-primary/20">مثال توضيحي</span>
+                        <span className="text-xs font-mono text-primary px-2.5 py-0.5 rounded bg-primary/10 border border-primary/20">
+                          {language === "en" ? "Live Demo" : "مثال توضيحي"}
+                        </span>
                       </div>
 
                       <div className="space-y-3">

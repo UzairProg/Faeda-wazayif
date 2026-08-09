@@ -2,24 +2,13 @@
  * features/public/pages/JobDetailPage.tsx
  *
  * Public job detail view.
- *
- * Information hierarchy (per roadmap §15):
- *   1. Job identity (title, company, location, type)
- *   2. Salary if disclosed (labeled as range, never fabricated)
- *   3. Description
- *   4. Responsibilities
- *   5. Requirements + Skills
- *   6. Company information
- *   7. Apply CTA (with auth gate for guests)
- *
- * Apply flow for guest:
- *   View Job → Apply → Auth Gate → Sign Up / Login → Candidate flow
+ * Fully localized for Arabic (RTL) and English (LTR).
  */
 import { useParams, Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import {
-  MapPin, Clock, Calendar, Users, ChevronRight,
-  Building2, Briefcase, CheckCircle2, ArrowLeft, Share2
+  MapPin, Clock, Calendar, Users, ChevronRight, ChevronLeft,
+  Building2, Briefcase, CheckCircle2, ArrowLeft, ArrowRight, Share2
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { LoadingState } from "@/shared/components/states/LoadingState"
@@ -28,96 +17,66 @@ import { EmptyState } from "@/shared/components/states/EmptyState"
 import { useJobDetail } from "@/features/jobs/hooks/useJobDetail"
 import { useAuthStore } from "@/store/auth.store"
 import { ROUTES } from "@/config/routes"
+import { useTranslation } from "@/i18n"
+import {
+  getLocalizedWorkType,
+  getLocalizedExperienceLevel,
+  getLocalizedCompanyName,
+  formatLocalizedSalary,
+  formatLocalizedDate,
+} from "@/lib/localization.utils"
 import type { JobDetail } from "@/features/jobs/types/job.types"
 import { cn } from "@/lib/utils"
-
-/* ─── Helpers ───────────────────────────────────────────── */
-
-const WORK_TYPE_LABELS: Record<JobDetail["workType"], string> = {
-  full_time: "دوام كامل",
-  part_time: "دوام جزئي",
-  contract: "عقد",
-  remote: "عن بعد",
-  hybrid: "هجين",
-}
-
-const EXPERIENCE_LABELS: Record<JobDetail["experienceLevel"], string> = {
-  entry: "مبتدئ",
-  mid: "متوسط",
-  senior: "أول",
-  lead: "قيادي",
-  executive: "تنفيذي",
-}
-
-function formatSalary(job: JobDetail): string | null {
-  if (!job.salary || !job.salary.isDisclosed) return null
-  const { min, max, currency, period } = job.salary
-  const fmt = new Intl.NumberFormat("ar-SA")
-  const periodLabel = period === "monthly" ? "شهرياً" : "سنوياً"
-  return `${fmt.format(min)} – ${fmt.format(max)} ${currency} ${periodLabel}`
-}
-
-function formatDate(isoDate: string): string {
-  return new Intl.DateTimeFormat("ar-SA", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(isoDate))
-}
 
 /* ─── Apply Gate ────────────────────────────────────────── */
 
 function ApplyGate({ jobId }: { jobId: string }) {
   const { isAuthenticated } = useAuthStore()
+  const { t, language } = useTranslation()
 
   if (isAuthenticated) {
-    // Authenticated: show direct apply (will be wired to API when ready)
     return (
       <Button
         size="lg"
         className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white font-bold shadow-lg shadow-primary/20 h-12"
-        // onClick={handleApply} — wired when /api/v1/jobs/:id/apply is ready
         onClick={() => {
-          // API dependency: POST /api/v1/jobs/:id/apply
-          // Not yet implemented in backend — see FAEDA_JOBS_FINAL_ROADMAP.md §3.3
-          alert("خاصية التقديم قيد الإعداد. سيتم تفعيلها قريباً.")
+          alert(language === "en" ? "Application feature is being prepared. It will be enabled soon." : "خاصية التقديم قيد الإعداد. سيتم تفعيلها قريباً.")
         }}
       >
-        تقديم الآن
+        {t("jobs.detail.applyNow")}
       </Button>
     )
   }
 
-  // Guest: show auth gate
   return (
     <div className="bg-card/60 border border-white/10 rounded-2xl p-6 text-center">
-      <h3 className="font-bold font-heading text-white mb-2">للتقديم على هذه الوظيفة</h3>
+      <h3 className="font-bold font-heading text-white mb-2">{t("jobs.detail.applyGate.title")}</h3>
       <p className="text-muted-foreground text-sm mb-6">
-        يرجى تسجيل الدخول أو إنشاء حساب مرشح للتقديم على هذه الفرصة.
+        {t("jobs.detail.applyGate.subtitle")}
       </p>
       <div className="flex flex-col gap-3">
         <Button
           asChild
           size="lg"
-          className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white font-bold"
+          className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs sm:text-sm"
         >
           <Link
             to={ROUTES.AUTH.REGISTER}
             state={{ from: `/jobs/${jobId}`, intent: "apply" }}
           >
-            إنشاء حساب مجاناً
+            {t("jobs.detail.applyGate.registerCta")}
           </Link>
         </Button>
         <Button
           asChild
           variant="outline"
-          className="w-full rounded-xl border-white/10 bg-white/5 text-white hover:bg-white/10"
+          className="w-full rounded-xl border-white/10 bg-white/5 text-white hover:bg-white/10 text-xs sm:text-sm"
         >
           <Link
             to={ROUTES.AUTH.LOGIN}
             state={{ from: `/jobs/${jobId}`, intent: "apply" }}
           >
-            تسجيل الدخول
+            {t("jobs.detail.applyGate.loginCta")}
           </Link>
         </Button>
       </div>
@@ -128,16 +87,27 @@ function ApplyGate({ jobId }: { jobId: string }) {
 /* ─── Detail Content ────────────────────────────────────── */
 
 function JobDetailContent({ job }: { job: JobDetail }) {
-  const salaryText = formatSalary(job)
+  const { t, language, isRTL } = useTranslation()
+
+  const companyName = getLocalizedCompanyName(job.company, language)
+  const workTypeLabel = getLocalizedWorkType(job.workType, language)
+  const expLabel = getLocalizedExperienceLevel(job.experienceLevel, language)
+  const salaryText = job.salary?.isDisclosed
+    ? formatLocalizedSalary(job.salary.min, job.salary.max, language)
+    : null
+  const postedDate = formatLocalizedDate(job.postedAt, language)
+
+  const ChevronIcon = isRTL ? ChevronRight : ChevronLeft
+  const BackArrowIcon = isRTL ? ArrowLeft : ArrowRight
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Breadcrumb */}
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 text-start">
+      {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
-        <Link to={ROUTES.PUBLIC.HOME} className="hover:text-white transition-colors">الرئيسية</Link>
-        <ChevronRight className="w-3 h-3" />
-        <Link to={ROUTES.JOBS.LIST} className="hover:text-white transition-colors">الوظائف</Link>
-        <ChevronRight className="w-3 h-3" />
+        <Link to={ROUTES.PUBLIC.HOME} className="hover:text-white transition-colors">{t("common.nav.home")}</Link>
+        <ChevronIcon className="w-3 h-3 text-white/30" />
+        <Link to={ROUTES.JOBS.LIST} className="hover:text-white transition-colors">{t("common.nav.jobs")}</Link>
+        <ChevronIcon className="w-3 h-3 text-white/30" />
         <span className="text-white truncate max-w-xs">{job.title}</span>
       </nav>
 
@@ -152,23 +122,22 @@ function JobDetailContent({ job }: { job: JobDetail }) {
           {/* Job Header Card */}
           <div className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
             <div className="flex items-start gap-4 mb-6">
-              {/* Company avatar */}
               {job.company.logoUrl ? (
                 <img
                   src={job.company.logoUrl}
-                  alt={job.company.name}
+                  alt={companyName}
                   className="w-14 h-14 rounded-xl object-contain bg-white p-1 shrink-0"
                 />
               ) : (
                 <div className="w-14 h-14 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-bold text-2xl font-heading shrink-0">
-                  {job.company.name.charAt(0)}
+                  {companyName.charAt(0).toUpperCase()}
                 </div>
               )}
               <div>
                 <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-white mb-1 leading-tight">
                   {job.title}
                 </h1>
-                <p className="text-lg text-muted-foreground">{job.company.name}</p>
+                <p className="text-lg text-muted-foreground">{companyName}</p>
               </div>
             </div>
 
@@ -177,45 +146,44 @@ function JobDetailContent({ job }: { job: JobDetail }) {
               {job.location && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-sm text-muted-foreground">
                   <MapPin className="w-4 h-4 shrink-0" />
-                  {job.isRemote ? `عن بعد (${job.location})` : job.location}
+                  {job.isRemote ? (language === "en" ? `Remote (${job.location})` : `عن بعد (${job.location})`) : job.location}
                 </span>
               )}
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-sm text-muted-foreground">
                 <Clock className="w-4 h-4 shrink-0" />
-                {WORK_TYPE_LABELS[job.workType]}
+                {workTypeLabel}
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-sm text-muted-foreground">
                 <Briefcase className="w-4 h-4 shrink-0" />
-                {EXPERIENCE_LABELS[job.experienceLevel]}
+                {expLabel}
               </span>
               {job.isTeamFriendly && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/10 border border-secondary/20 text-sm text-secondary">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/10 border border-secondary/20 text-sm text-secondary font-semibold">
                   <Users className="w-4 h-4 shrink-0" />
-                  مناسب للفرق
+                  {t("jobs.filters.teamFriendly")}
                 </span>
               )}
             </div>
 
-            {/* Salary — only if disclosed */}
+            {/* Salary */}
             {salaryText && (
               <div className="bg-primary/10 border border-primary/20 rounded-xl px-5 py-4 mb-6">
-                <p className="text-xs text-primary font-bold uppercase tracking-wider mb-1">الراتب المتوقع</p>
+                <p className="text-xs text-primary font-bold uppercase tracking-wider mb-1">{t("jobs.filters.salary")}</p>
                 <p className="text-xl font-extrabold text-white font-mono">{salaryText}</p>
-                <p className="text-xs text-muted-foreground mt-1">* قد تختلف القيمة الفعلية حسب الخبرة والمؤهلات</p>
               </div>
             )}
 
             {/* Posted date */}
             <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
               <Calendar className="w-3.5 h-3.5" />
-              نُشر في {formatDate(job.postedAt)}
+              {t("jobs.card.postedOn")} {postedDate}
             </div>
           </div>
 
           {/* Description */}
           {job.description && (
             <section className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
-              <h2 className="text-xl font-bold font-heading text-white mb-4">عن الوظيفة</h2>
+              <h2 className="text-xl font-bold font-heading text-white mb-4">{t("jobs.detail.about")}</h2>
               <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{job.description}</p>
             </section>
           )}
@@ -223,7 +191,7 @@ function JobDetailContent({ job }: { job: JobDetail }) {
           {/* Responsibilities */}
           {job.responsibilities.length > 0 && (
             <section className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
-              <h2 className="text-xl font-bold font-heading text-white mb-5">المهام والمسؤوليات</h2>
+              <h2 className="text-xl font-bold font-heading text-white mb-5">{t("jobs.detail.responsibilities")}</h2>
               <ul className="space-y-3">
                 {job.responsibilities.map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
@@ -238,7 +206,7 @@ function JobDetailContent({ job }: { job: JobDetail }) {
           {/* Requirements */}
           {job.requirements.length > 0 && (
             <section className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
-              <h2 className="text-xl font-bold font-heading text-white mb-5">المتطلبات والمؤهلات</h2>
+              <h2 className="text-xl font-bold font-heading text-white mb-5">{t("jobs.detail.requirements")}</h2>
               <ul className="space-y-3">
                 {job.requirements.map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
@@ -253,7 +221,7 @@ function JobDetailContent({ job }: { job: JobDetail }) {
           {/* Skills */}
           {job.skills.length > 0 && (
             <section className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
-              <h2 className="text-xl font-bold font-heading text-white mb-4">المهارات المطلوبة</h2>
+              <h2 className="text-xl font-bold font-heading text-white mb-4">{t("jobs.detail.skills")}</h2>
               <div className="flex flex-wrap gap-2">
                 {job.skills.map((skill) => (
                   <span
@@ -267,22 +235,22 @@ function JobDetailContent({ job }: { job: JobDetail }) {
             </section>
           )}
 
-          {/* Company summary */}
+          {/* Company Summary */}
           <section className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8">
-            <h2 className="text-xl font-bold font-heading text-white mb-4">عن الشركة</h2>
+            <h2 className="text-xl font-bold font-heading text-white mb-4">{t("jobs.detail.aboutCompany")}</h2>
             <div className="flex items-center gap-3 mb-3">
               <Building2 className="w-5 h-5 text-muted-foreground" />
-              <span className="text-white font-semibold">{job.company.name}</span>
+              <span className="text-white font-semibold">{companyName}</span>
               {job.company.isVerified && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success/10 border border-success/20 text-success text-xs font-semibold">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
                   <CheckCircle2 className="w-3 h-3" />
-                  موثق
+                  {t("companies.detail.verified")}
                 </span>
               )}
             </div>
             {job.company.location && (
               <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5" />
+                <MapPin className="w-3.5 h-3.5 text-primary" />
                 {job.company.location}
               </p>
             )}
@@ -296,25 +264,22 @@ function JobDetailContent({ job }: { job: JobDetail }) {
           transition={{ duration: 0.5, delay: 0.1 }}
           className={cn("w-full lg:w-80 shrink-0 lg:sticky lg:top-24 space-y-4")}
         >
-          {/* Apply Gate */}
           <ApplyGate jobId={job.id} />
 
-          {/* Share */}
           <button
             onClick={() => navigator.share?.({ title: job.title, url: window.location.href })}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-white/10 bg-white/5 text-muted-foreground hover:text-white hover:bg-white/10 transition-all text-sm"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-white/10 bg-white/5 text-muted-foreground hover:text-white hover:bg-white/10 transition-all text-sm font-semibold"
           >
             <Share2 className="w-4 h-4" />
-            مشاركة الوظيفة
+            {language === "en" ? "Share Job" : "مشاركة الوظيفة"}
           </button>
 
-          {/* Back to jobs */}
           <Link
             to={ROUTES.JOBS.LIST}
-            className="flex items-center justify-center gap-2 py-3 text-sm text-muted-foreground hover:text-white transition-colors"
+            className="flex items-center justify-center gap-2 py-3 text-sm text-muted-foreground hover:text-white transition-colors font-semibold"
           >
-            <ArrowLeft className="w-4 h-4" />
-            العودة لقائمة الوظائف
+            <BackArrowIcon className="w-4 h-4" />
+            {language === "en" ? "Back to Jobs List" : "العودة لقائمة الوظائف"}
           </Link>
         </motion.aside>
       </div>
@@ -327,6 +292,7 @@ function JobDetailContent({ job }: { job: JobDetail }) {
 export function JobDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { job, isLoading, isError, isNotFound } = useJobDetail(id ?? "")
+  const { t } = useTranslation()
 
   if (isLoading) {
     return (
@@ -339,11 +305,11 @@ export function JobDetailPage() {
   if (isNotFound) {
     return (
       <EmptyState
-        title="الوظيفة غير موجودة"
-        description="لم يتم العثور على هذه الوظيفة أو ربما انتهت صلاحيتها."
+        title={t("jobs.detail.notFound")}
+        description={t("jobs.detail.expired")}
         action={
           <Button asChild className="rounded-full mt-2">
-            <Link to={ROUTES.JOBS.LIST}>تصفح الوظائف</Link>
+            <Link to={ROUTES.JOBS.LIST}>{t("common.nav.jobs")}</Link>
           </Button>
         }
       />
@@ -353,7 +319,7 @@ export function JobDetailPage() {
   if (isError || !job) {
     return (
       <ErrorState
-        description="تعذر تحميل تفاصيل الوظيفة."
+        description={t("jobs.search.error")}
       />
     )
   }

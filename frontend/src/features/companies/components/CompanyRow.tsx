@@ -2,24 +2,21 @@
  * features/companies/components/CompanyRow.tsx
  *
  * Information-dense directory row/card component for public company discovery.
- * Displays real company data: logo/avatar, name, location, field, verification badge,
- * open jobs count, description excerpt, and navigation CTA.
+ * Fully localized for Arabic (RTL) and English (LTR).
  */
 import { Link } from "react-router-dom"
-import { Building2, MapPin, CheckCircle2, Briefcase, ExternalLink, ArrowLeft } from "lucide-react"
+import { Building2, MapPin, CheckCircle2, Briefcase, ExternalLink, ArrowLeft, ArrowRight } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/config/routes"
+import { useTranslation } from "@/i18n"
+import { getLocalizedCompanyName } from "@/lib/localization.utils"
 import type { Company } from "../types/company.types"
 
 interface CompanyRowProps {
   company: Company
 }
 
-/**
- * Generate a deterministic gradient class from company ID/name
- * for clean visual avatars when logoUrl is absent.
- */
 function getAvatarGradient(idStr: string): string {
   const gradients = [
     "from-primary/30 to-blue-600/20 border-primary/40 text-primary",
@@ -36,9 +33,6 @@ function getAvatarGradient(idStr: string): string {
   return gradients[idx]
 }
 
-/**
- * Extract 1-2 initial letters from company name for avatar.
- */
 function getCompanyInitials(name: string): string {
   const clean = name.trim().replace(/^(شركة|مركز|مؤسسة|مجموعة)\s+/, "")
   const parts = clean.split(/\s+/).filter(Boolean)
@@ -49,8 +43,12 @@ function getCompanyInitials(name: string): string {
 }
 
 export function CompanyRow({ company }: CompanyRowProps) {
+  const { t, language, isRTL } = useTranslation()
+
+  const companyName = getLocalizedCompanyName(company, language)
   const gradientStyle = getAvatarGradient(company.id)
-  const initials = getCompanyInitials(company.name)
+  const initials = getCompanyInitials(companyName)
+  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
 
   return (
     <GlassCard className="p-5 sm:p-6 bg-card/60 backdrop-blur-md border-white/10 hover:border-primary/40 transition-all text-start shadow-xl relative overflow-hidden group">
@@ -58,14 +56,12 @@ export function CompanyRow({ company }: CompanyRowProps) {
         
         {/* Left Info: Avatar + Details */}
         <div className="flex items-start gap-4 sm:gap-5 min-w-0 w-full md:w-auto flex-1">
-          {/* Logo / Deterministic Avatar */}
           {company.logoUrl ? (
             <img
               src={company.logoUrl}
-              alt={company.name}
+              alt={companyName}
               className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border border-white/10 shrink-0 bg-black/30"
               onError={(e) => {
-                // Fallback to initial avatar if image fails to load
                 ;(e.currentTarget as HTMLElement).style.display = "none"
               }}
             />
@@ -84,7 +80,7 @@ export function CompanyRow({ company }: CompanyRowProps) {
               {company.isVerified && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold">
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>حساب موثق</span>
+                  <span>{t("companies.list.verifiedBadge")}</span>
                 </span>
               )}
 
@@ -98,11 +94,11 @@ export function CompanyRow({ company }: CompanyRowProps) {
               {company.openJobsCount > 0 ? (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-bold font-mono">
                   <Briefcase className="w-3 h-3 text-cyan-400" />
-                  <span>{company.openJobsCount === 1 ? "فرصة واحدة متاحة" : `${company.openJobsCount} فرص متاحة`}</span>
+                  <span>{t("companies.list.openJobsCount", { count: company.openJobsCount })}</span>
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-muted-foreground text-xs">
-                  <span>لا توجد وظائف حالياً</span>
+                  <span>{t("companies.list.openJobsCount", { count: 0 })}</span>
                 </span>
               )}
             </div>
@@ -110,7 +106,7 @@ export function CompanyRow({ company }: CompanyRowProps) {
             {/* Company Name */}
             <Link to={ROUTES.COMPANIES.DETAIL(company.id)} className="block group/link">
               <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-white group-hover/link:text-primary transition-colors truncate">
-                {company.name}
+                {companyName}
               </h3>
             </Link>
 
@@ -118,7 +114,7 @@ export function CompanyRow({ company }: CompanyRowProps) {
             <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-muted-foreground mt-1 mb-2">
               <span className="inline-flex items-center gap-1 text-white/80">
                 <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span>{company.location || company.country || "المملكة العربية السعودية"}</span>
+                <span>{company.location || company.country || (language === "en" ? "Saudi Arabia" : "المملكة العربية السعودية")}</span>
               </span>
 
               {company.companySize && (
@@ -156,8 +152,8 @@ export function CompanyRow({ company }: CompanyRowProps) {
               size="sm"
               className="w-full md:w-auto rounded-xl px-6 py-2.5 bg-primary/20 hover:bg-primary border border-primary/30 text-white font-bold text-xs sm:text-sm gap-2 transition-all shadow-md group-hover:bg-primary"
             >
-              <span>استكشف الشركة</span>
-              <ArrowLeft className="w-4 h-4" />
+              <span>{t("companies.list.exploreCta")}</span>
+              <ArrowIcon className="w-4 h-4" />
             </Button>
           </Link>
         </div>

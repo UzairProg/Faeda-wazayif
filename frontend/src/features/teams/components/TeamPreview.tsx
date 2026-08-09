@@ -2,13 +2,15 @@
  * features/teams/components/TeamPreview.tsx
  *
  * Sticky Desktop Preview panel for the selected team in the two-pane layout.
- * Visualizes capability coverage, track/specialization, member count, and direct link to team profile.
+ * Fully localized for Arabic (RTL) and English (LTR).
  */
 import { Link } from "react-router-dom"
-import { Users, Layers, MapPin, Sparkles, CheckCircle2, ArrowLeft } from "lucide-react"
+import { Users, Layers, MapPin, Sparkles, CheckCircle2, ArrowLeft, ArrowRight } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/config/routes"
+import { useTranslation } from "@/i18n"
+import { formatLocalizedNumber } from "@/lib/localization.utils"
 import type { Team } from "../types/team.types"
 
 interface TeamPreviewProps {
@@ -41,15 +43,18 @@ function getTeamInitials(name: string): string {
 }
 
 export function TeamPreview({ team }: TeamPreviewProps) {
+  const { t, language, isRTL } = useTranslation()
+  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
+
   if (!team) {
     return (
       <GlassCard className="p-8 bg-card/40 border-white/10 text-center space-y-4">
         <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground mx-auto">
           <Users className="w-7 h-7 opacity-50" />
         </div>
-        <p className="text-base font-bold text-white">معاينة الفريق السريعة</p>
+        <p className="text-base font-bold text-white">{t("teams.preview.title")}</p>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          اختر فريقاً من القائمة لمشاهدة قدراته ومكونات طاقمه مباشرة.
+          {t("teams.preview.selectPrompt")}
         </p>
       </GlassCard>
     )
@@ -83,7 +88,7 @@ export function TeamPreview({ team }: TeamPreviewProps) {
         <div className="min-w-0 flex-1">
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold font-mono mb-1">
             <Users className="w-3 h-3" />
-            <span>{team.memberCount === 1 ? "عضو واحد" : `${team.memberCount} أعضاء`}</span>
+            <span>{t("teams.list.memberCount", { count: formatLocalizedNumber(team.memberCount, language) })}</span>
           </span>
 
           <h3 className="text-xl font-extrabold font-heading text-white truncate mb-1">
@@ -97,7 +102,7 @@ export function TeamPreview({ team }: TeamPreviewProps) {
             </span>
             {team.isRemote && (
               <span className="before:content-['•'] before:me-2 before:text-white/20 text-cyan-400 font-semibold">
-                عن بعد
+                {language === "en" ? "Remote" : "عن بعد"}
               </span>
             )}
           </div>
@@ -108,7 +113,7 @@ export function TeamPreview({ team }: TeamPreviewProps) {
       {team.about && (
         <div className="space-y-1">
           <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider block">
-            نبذة عن الفريق
+            {language === "en" ? "About Team" : "نبذة عن الفريق"}
           </span>
           <p className="text-xs sm:text-sm text-white/90 leading-relaxed line-clamp-4">
             {team.about}
@@ -121,7 +126,7 @@ export function TeamPreview({ team }: TeamPreviewProps) {
         <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-2">
           <div className="flex items-center gap-1.5 text-xs font-bold text-white">
             <Layers className="w-4 h-4 text-primary" />
-            <span>المسار التخصصي للفريق</span>
+            <span>{t("teams.preview.trackTitle")}</span>
           </div>
           <p className="text-xs text-muted-foreground leading-snug">
             {[team.generalProgram, team.semiSpecialProgram].filter(Boolean).join(" — ")}
@@ -135,10 +140,10 @@ export function TeamPreview({ team }: TeamPreviewProps) {
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-primary" />
-              <span>القدرات والمهارات التخصصية</span>
+              <span>{t("teams.preview.capabilitiesTitle")}</span>
             </span>
             <span className="text-[11px] font-mono text-primary font-bold">
-              {team.capabilities.length} مهارات
+              {formatLocalizedNumber(team.capabilities.length, language)}
             </span>
           </div>
 
@@ -170,8 +175,8 @@ export function TeamPreview({ team }: TeamPreviewProps) {
             size="lg"
             className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs sm:text-sm gap-2 shadow-lg shadow-primary/20"
           >
-            <span>عرض ملف الفريق الكامل</span>
-            <ArrowLeft className="w-4 h-4" />
+            <span>{t("teams.preview.viewFullProfile")}</span>
+            <ArrowIcon className="w-4 h-4" />
           </Button>
         </Link>
       </div>

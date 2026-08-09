@@ -3,11 +3,13 @@
  *
  * Prominent search bar component for discovering companies.
  * Combines company query autocomplete input, location input, and submit button.
+ * Fully localized for Arabic (RTL) and English (LTR).
  */
 import React from "react"
 import { MapPin, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CompanyAutocompleteInput } from "./CompanyAutocompleteInput"
+import { useTranslation } from "@/i18n"
 
 interface CompanySearchProps {
   query: string
@@ -24,6 +26,8 @@ export function CompanySearch({
   onLocationChange,
   onSearch,
 }: CompanySearchProps) {
+  const { t } = useTranslation()
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSearch()
@@ -38,7 +42,7 @@ export function CompanySearch({
             value={query}
             onChange={onQueryChange}
             onSubmitSearch={onSearch}
-            placeholder="ابحث عن شركة، مهارة، أو مجال عمل..."
+            placeholder={t("companies.search.placeholder")}
             className="w-full"
           />
         </div>
@@ -50,8 +54,8 @@ export function CompanySearch({
             type="text"
             value={location}
             onChange={(e) => onLocationChange(e.target.value)}
-            placeholder="المدينة..."
-            className="w-full h-12 ps-12 pe-4 bg-card/60 border border-white/10 rounded-2xl text-white text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all"
+            placeholder={t("companies.search.locationPlaceholder")}
+            className="w-full h-12 ps-12 pe-4 bg-card/60 border border-white/10 rounded-2xl text-white text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all text-start"
           />
         </div>
 
@@ -62,7 +66,7 @@ export function CompanySearch({
           className="h-12 rounded-2xl sm:rounded-full px-8 bg-primary hover:bg-primary/90 text-white font-bold text-sm gap-2 shadow-lg shadow-primary/20 shrink-0"
         >
           <Search className="w-4 h-4" />
-          <span>بحث</span>
+          <span>{t("common.actions.search")}</span>
         </Button>
       </div>
     </form>

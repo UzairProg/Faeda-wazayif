@@ -1,52 +1,91 @@
 /**
  * i18n/index.ts
  *
- * Central i18n entry point for Faeda Jobs.
- *
- * CURRENT STATE: Lightweight translation object — all strings in Arabic.
- * This provides a centralized key structure so text is never scattered
- * through components as raw strings.
- *
- * FUTURE: Replace with react-i18next when multilingual support (AR/EN/Hindi)
- * is activated (Roadmap Phase 0 — see FAEDA_JOBS_FINAL_ROADMAP.md §10).
- *
- * Usage:
- *   import { t } from "@/i18n"
- *   t("jobs.search.placeholder")      // "المسمى الوظيفي أو المهارة..."
- *   t("common.actions.save")           // "حفظ"
+ * Production-grade bilingual (Arabic ↔ English) translation engine for Faeda Jobs.
+ * Exports:
+ *   - `t(key, params?, lang?)`: Pure translation lookup function
+ *   - `useTranslation()`: Reactive React hook that re-renders components on language switch
  */
-import { common } from "./namespaces/common"
-import { jobs } from "./namespaces/jobs"
-import { auth } from "./namespaces/auth"
-import { publicNs } from "./namespaces/public"
+import { useLanguageStore, type Language } from "@/store/language.store"
+import { arLocale } from "./locales/ar"
+import { enLocale } from "./locales/en"
 
-export const translations = {
-  common,
-  jobs,
-  auth,
-  public: publicNs,
+export const locales = {
+  ar: arLocale,
+  en: enLocale,
 } as const
 
-type TranslationsType = typeof translations
+export type LocaleType = typeof arLocale
 
 /**
- * Simple dot-notation path resolver.
- * Supports up to 3 levels deep: "namespace.group.key"
+ * Dot-notation translation key resolver with language fallback and parameters interpolation.
  *
- * @example t("jobs.search.placeholder") → "المسمى الوظيفي..."
+ * @example t("jobs.search.button") → "بحث" / "Search"
+ * @example t("jobs.search.resultsCount", { count: 5 }) → "5 وظائف متاحة" / "5 jobs available"
  */
-export function t(key: string): string {
-  const parts = key.split(".")
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let current: any = translations
-  for (const part of parts) {
-    if (current == null || typeof current !== "object") return key
-    current = current[part]
+export function t(
+  key: string,
+  params?: Record<string, string | number>,
+  targetLang?: Language
+): string {
+  const lang: Language = targetLang || useLanguageStore.getState().language
+
+  const resolve = (l: Language): unknown => {
+    const parts = key.split(".")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let current: any = locales[l]
+    for (const part of parts) {
+      if (current == null || typeof current !== "object") return undefined
+      current = current[part]
+    }
+    return current
   }
-  if (typeof current === "string") return current
-  // Return key as fallback if value is not a string (e.g., nested object or function)
+
+  let value = resolve(lang)
+  if (value == null && lang !== "ar") {
+    value = resolve("ar")
+  }
+
+  if (typeof value === "function") {
+    try {
+      const countVal = params?.count != null ? Number(params.count) : 0
+      return String(value(countVal))
+    } catch {
+      return key
+    }
+  }
+
+  if (typeof value === "string") {
+    if (params) {
+      let interpolated = value
+      Object.entries(params).forEach(([pK, pV]) => {
+        interpolated = interpolated.replace(new RegExp(`{${pK}}`, "g"), String(pV))
+      })
+      return interpolated
+    }
+    return value
+  }
+
   return key
 }
 
-export type { TranslationsType }
-export { common, jobs, auth, publicNs as public }
+/**
+ * Reactive hook for React components.
+ * Automatically triggers component re-render when language changes in useLanguageStore.
+ */
+export function useTranslation() {
+  const { language, direction, setLanguage, toggleLanguage } = useLanguageStore()
+
+  const translate = (key: string, params?: Record<string, string | number>): string => {
+    return t(key, params, language)
+  }
+
+  return {
+    t: translate,
+    language,
+    direction,
+    isRTL: direction === "rtl",
+    setLanguage,
+    toggleLanguage,
+  }
+}

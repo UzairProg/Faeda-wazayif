@@ -33,6 +33,7 @@ import { CompanyDetailPage } from "./features/public/pages/CompanyDetailPage"
 import { TeamsPage } from "./features/public/pages/TeamsPage"
 import { TeamDetailPage } from "./features/public/pages/TeamDetailPage"
 import { AboutPage } from "./features/public/pages/AboutPage"
+import { ContactPage } from "./features/public/pages/ContactPage"
 
 // Auth pages
 import { Login } from "./features/auth/pages/Login"
@@ -42,13 +43,20 @@ import { ResetPassword } from "./features/auth/pages/ResetPassword"
 
 import { useEffect } from "react"
 import { useAuthStore } from "./store/auth.store"
+import { useLanguageStore } from "./store/language.store"
 
 function App() {
   const checkSession = useAuthStore((state) => state.checkSession)
+  const language = useLanguageStore((state) => state.language)
 
   useEffect(() => {
     checkSession()
   }, [checkSession])
+
+  useEffect(() => {
+    document.documentElement.lang = language
+    document.documentElement.dir = language === "ar" ? "rtl" : "ltr"
+  }, [language])
 
   return (
     <Router>
@@ -64,6 +72,7 @@ function App() {
           <Route path="teams" element={<TeamsPage />} />
           <Route path="teams/:id" element={<TeamDetailPage />} />
           <Route path="about" element={<AboutPage />} />
+          <Route path="contact" element={<ContactPage />} />
           <Route
             path="portfolio/:username"
             element={

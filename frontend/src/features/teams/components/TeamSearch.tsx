@@ -2,11 +2,13 @@
  * features/teams/components/TeamSearch.tsx
  *
  * Search bar component for discovering specialized teams.
+ * Fully localized for Arabic (RTL) and English (LTR).
  */
 import React from "react"
 import { MapPin, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { TeamAutocompleteInput } from "./TeamAutocompleteInput"
+import { useTranslation } from "@/i18n"
 
 interface TeamSearchProps {
   query: string
@@ -23,6 +25,8 @@ export function TeamSearch({
   onLocationChange,
   onSearch,
 }: TeamSearchProps) {
+  const { t } = useTranslation()
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSearch()
@@ -36,7 +40,7 @@ export function TeamSearch({
             value={query}
             onChange={onQueryChange}
             onSubmitSearch={onSearch}
-            placeholder="ابحث عن فريق، مهارة، أو تخصص..."
+            placeholder={t("teams.search.placeholder")}
             className="w-full"
           />
         </div>
@@ -47,8 +51,8 @@ export function TeamSearch({
             type="text"
             value={location}
             onChange={(e) => onLocationChange(e.target.value)}
-            placeholder="المدينة أو عن بعد..."
-            className="w-full h-12 ps-12 pe-4 bg-card/60 border border-white/10 rounded-2xl text-white text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all"
+            placeholder={t("teams.search.locationPlaceholder")}
+            className="w-full h-12 ps-12 pe-4 bg-card/60 border border-white/10 rounded-2xl text-white text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all text-start"
           />
         </div>
 
@@ -58,7 +62,7 @@ export function TeamSearch({
           className="h-12 rounded-2xl sm:rounded-full px-8 bg-primary hover:bg-primary/90 text-white font-bold text-sm gap-2 shadow-lg shadow-primary/20 shrink-0"
         >
           <Search className="w-4 h-4" />
-          <span>بحث</span>
+          <span>{t("common.actions.search")}</span>
         </Button>
       </div>
     </form>

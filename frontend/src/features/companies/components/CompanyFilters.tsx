@@ -2,9 +2,10 @@
  * features/companies/components/CompanyFilters.tsx
  *
  * Discovery filter controls for public companies.
- * Displays compact filter pills backed strictly by supported database fields.
+ * Fully localized for Arabic (RTL) and English (LTR).
  */
 import { CheckCircle2, Briefcase, Filter, X } from "lucide-react"
+import { useTranslation } from "@/i18n"
 
 interface CompanyFiltersProps {
   verified: boolean
@@ -16,8 +17,6 @@ interface CompanyFiltersProps {
   onReset: () => void
 }
 
-const POPULAR_CITIES = ["الرياض", "جدة", "الدمام", "الظهران", "الخبر"]
-
 export function CompanyFilters({
   verified,
   hasJobs,
@@ -27,14 +26,19 @@ export function CompanyFilters({
   onLocationChange,
   onReset,
 }: CompanyFiltersProps) {
+  const { t, language } = useTranslation()
   const hasActiveFilters = verified || hasJobs || Boolean(location)
 
+  const popularCities = language === "en"
+    ? ["Riyadh", "Jeddah", "Dammam", "Dhahran", "Khobar"]
+    : ["الرياض", "جدة", "الدمام", "الظهران", "الخبر"]
+
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 bg-card/40 backdrop-blur-md border border-white/10 rounded-2xl">
+    <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 bg-card/40 backdrop-blur-md border border-white/10 rounded-2xl text-start">
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-white me-2">
           <Filter className="w-4 h-4 text-primary" />
-          <span>تصفية النتائج:</span>
+          <span>{t("companies.filters.title")}</span>
         </div>
 
         {/* Verified Only Pill */}
@@ -48,7 +52,7 @@ export function CompanyFilters({
           }`}
         >
           <CheckCircle2 className="w-3.5 h-3.5" />
-          <span>حسابات موثقة فقط</span>
+          <span>{t("companies.filters.verifiedOnly")}</span>
         </button>
 
         {/* Has Open Jobs Pill */}
@@ -62,12 +66,12 @@ export function CompanyFilters({
           }`}
         >
           <Briefcase className="w-3.5 h-3.5" />
-          <span>لديها وظائف شاغرة</span>
+          <span>{t("companies.filters.hasJobsOnly")}</span>
         </button>
 
         {/* City Quick Pills */}
         <div className="hidden md:flex items-center gap-1.5 ms-2 border-s border-white/10 ps-3">
-          {POPULAR_CITIES.map((c) => {
+          {popularCities.map((c) => {
             const isSelected = location === c
             return (
               <button
@@ -95,7 +99,7 @@ export function CompanyFilters({
           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-muted-foreground hover:text-white text-xs font-semibold transition-colors ms-auto"
         >
           <X className="w-3.5 h-3.5" />
-          <span>مسح التصفية</span>
+          <span>{t("companies.filters.clearAll")}</span>
         </button>
       )}
     </div>

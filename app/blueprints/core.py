@@ -269,4 +269,27 @@ def api_get_team_detail(team_id):
     if not t:
         return jsonify({"message": "الفريق غير موجود"}), 404
 
-    return jsonify(serialize_team_detail(t))
+    return jsonify(serialize_team_detail(t))
+
+
+@core_bp.route('/api/v1/contact', methods=['POST'])
+def api_submit_contact():
+    data = request.get_json() or request.form
+    name = (data.get('name') or '').strip()
+    email = (data.get('email') or '').strip()
+    reason = (data.get('reason') or '').strip()
+    message = (data.get('message') or data.get('description') or '').strip()
+
+    if not email or not message:
+        return jsonify({"success": False, "message": "يرجى ملء جميع الحقول المطلوبة (البريد والرسالة)"}), 400
+
+    subject_text = f"[{reason}] {name}" if (reason and name) else (reason or name or "استفسار جديد عبر الموقع")
+
+    try:
+        new_ticket = Ticket(email=email, subject=subject_text, description=message)
+        db.session.add(new_ticket)
+        db.session.commit()
+        return jsonify({"success": True, "message": "تم استلام رسالتك بنجاح. شكرًا لتواصلك معنا."})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "message": "تعذر إرسال الرسالة حالياً. حاول مرة أخرى."}), 500

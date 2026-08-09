@@ -1,16 +1,24 @@
+/**
+ * features/auth/pages/ResetPassword.tsx
+ *
+ * Password reset submission page.
+ * Fully localized for Arabic (RTL) and English (LTR).
+ */
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Lock, ArrowLeft, Globe, Eye, EyeOff, AlertCircle, Loader2, CheckCircle2, KeyRound } from "lucide-react"
+import { Lock, ArrowLeft, ArrowRight, Globe, Eye, EyeOff, AlertCircle, Loader2, CheckCircle2, KeyRound } from "lucide-react"
 import { Link, useSearchParams, useNavigate } from "react-router-dom"
 import { ROUTES } from "@/config/routes"
 import { authService } from "../services/auth.service"
-import { auth } from "@/i18n/namespaces/auth"
+import { useTranslation } from "@/i18n"
+import type { Language } from "@/store/language.store"
 
 export function ResetPassword() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const token = searchParams.get("token") || ""
+  const { t, language, setLanguage, isRTL } = useTranslation()
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -20,27 +28,29 @@ export function ResetPassword() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
 
+  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
+
+  const toggleLang = () => {
+    const nextLang: Language = language === "ar" ? "en" : "ar"
+    setLanguage(nextLang)
+  }
+
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrorMessage(null)
 
     if (!token) {
-      setErrorMessage("رابط استعادة كلمة المرور غير صالح أو مفقود.")
+      setErrorMessage(language === "en" ? "Invalid or missing password reset token." : "رابط استعادة كلمة المرور غير صالح أو مفقود.")
       return
     }
 
     if (!password || password.length < 8) {
-      setErrorMessage(auth.errors.shortPassword)
-      return
-    }
-
-    if (!/[!@#$&*]/.test(password)) {
-      setErrorMessage("يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل مثل (!@#$&*).")
+      setErrorMessage(t("auth.errors.shortPassword"))
       return
     }
 
     if (password !== confirmPassword) {
-      setErrorMessage(auth.errors.passwordMismatch)
+      setErrorMessage(t("auth.errors.passwordMismatch"))
       return
     }
 
@@ -49,27 +59,34 @@ export function ResetPassword() {
       await authService.resetPassword({ token, password })
       setIsSuccess(true)
     } catch (err: any) {
-      setErrorMessage(err.message || auth.errors.generic)
+      setErrorMessage(err.message || t("auth.errors.generic"))
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen w-full bg-background flex flex-col lg:flex-row text-start" dir="rtl">
+    <div className="min-h-screen w-full bg-background flex flex-col lg:flex-row text-start">
       
       {/* Form Panel */}
       <div className="w-full lg:w-1/2 flex flex-col justify-between p-6 sm:p-12 min-h-screen">
         
         {/* Top Header */}
         <div className="flex justify-between items-center w-full mb-6">
-          <Button variant="outline" size="sm" className="rounded-full bg-white/5 border-white/10 text-white hover:bg-white/10 px-4 text-xs gap-1.5">
-            <Globe className="w-3.5 h-3.5" />
-            <span>العربية</span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={toggleLang}
+            className="rounded-full bg-white/5 border-white/10 text-white hover:bg-white/10 px-4 text-xs gap-1.5"
+          >
+            <Globe className="w-3.5 h-3.5 text-primary" />
+            <span>{language === "ar" ? "English" : "العربية"}</span>
           </Button>
+
           <Link to="/" className="text-xs font-semibold text-muted-foreground hover:text-white transition-colors flex items-center gap-1.5">
-            <span>العودة للرئيسية</span>
-            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>{t("auth.login.backToHome")}</span>
+            <ArrowIcon className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -80,8 +97,12 @@ export function ResetPassword() {
             <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mx-auto mb-4">
               <KeyRound className="w-6 h-6" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-white mb-2">تعيين كلمة المرور الجديدة</h1>
-            <p className="text-muted-foreground text-xs sm:text-sm">أدخل كلمة المرور الجديدة لحسابك وقم بتأكيدها.</p>
+            <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-white mb-2">
+              {language === "en" ? "Set New Password" : "تعيين كلمة المرور الجديدة"}
+            </h1>
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              {language === "en" ? "Enter and confirm your new password." : "أدخل كلمة المرور الجديدة لحسابك وقم بتأكيدها."}
+            </p>
           </div>
 
           {errorMessage && (
@@ -108,43 +129,44 @@ export function ResetPassword() {
               >
                 {/* New Password */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-xs font-bold text-white">كلمة المرور الجديدة</label>
+                  <label className="text-xs font-bold text-white">
+                    {language === "en" ? "New Password" : "كلمة المرور الجديدة"}
+                  </label>
                   <div className="relative group">
-                    <div className="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
-                      <Lock className="w-4 h-4" />
-                    </div>
                     <input 
                       type={showPassword ? "text" : "password"} 
+                      required
+                      minLength={8}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full bg-card/50 border border-white/10 rounded-xl py-3 ps-11 pe-10 text-xs text-white placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all dir-ltr"
+                      className="w-full bg-card/50 border border-white/10 rounded-xl py-3 px-4 text-xs text-white placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-start"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 end-0 flex items-center pe-3.5 text-muted-foreground hover:text-white transition-colors"
+                      className="absolute end-3.5 top-3.5 text-muted-foreground hover:text-white"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
-                  <span className="text-[10px] text-muted-foreground">تنبيه: يجب أن تحتوي كلمة المرور على 8 أحرف ورمز مثل (!@#$&*)</span>
                 </div>
 
                 {/* Confirm New Password */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-xs font-bold text-white">تأكيد كلمة المرور الجديدة</label>
+                  <label className="text-xs font-bold text-white">
+                    {t("auth.form.confirmPassword")}
+                  </label>
                   <div className="relative group">
-                    <div className="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
-                      <Lock className="w-4 h-4" />
-                    </div>
                     <input 
                       type={showPassword ? "text" : "password"} 
+                      required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full bg-card/50 border border-white/10 rounded-xl py-3 ps-11 pe-4 text-xs text-white placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all dir-ltr"
+                      className="w-full bg-card/50 border border-white/10 rounded-xl py-3 px-4 text-xs text-white placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-start"
                     />
+                    <Lock className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
                   </div>
                 </div>
 
@@ -156,16 +178,16 @@ export function ResetPassword() {
                   {isLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>جاري حفظ كلمة المرور...</span>
+                      <span>{t("auth.register.submitting")}</span>
                     </>
                   ) : (
-                    <span>حفظ كلمة المرور الجديدة</span>
+                    <span>{language === "en" ? "Save New Password" : "حفظ كلمة المرور الجديدة"}</span>
                   )}
                 </Button>
 
                 <p className="text-center text-muted-foreground text-xs mt-3">
                   <Link to={ROUTES.AUTH.LOGIN} className="text-primary hover:text-white font-bold transition-colors">
-                    {auth.forgotPassword.backToLogin}
+                    {t("auth.forgotPassword.backToLogin")}
                   </Link>
                 </p>
               </motion.form>
@@ -181,11 +203,15 @@ export function ResetPassword() {
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-base mb-1 font-heading">تم تغيير كلمة المرور بنجاح 🎉</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">يمكنك الآن استخدام كلمة المرور الجديدة لتسجيل الدخول إلى حسابك.</p>
+                  <h3 className="font-bold text-white text-base mb-1 font-heading">
+                    {language === "en" ? "Password changed successfully 🎉" : "تم تغيير كلمة المرور بنجاح 🎉"}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {language === "en" ? "You can now sign in using your new password." : "يمكنك الآن استخدام كلمة المرور الجديدة لتسجيل الدخول إلى حسابك."}
+                  </p>
                 </div>
                 <Button onClick={() => navigate(ROUTES.AUTH.LOGIN)} className="w-full h-10 text-xs font-bold rounded-xl bg-primary text-white mt-2">
-                  تسجيل الدخول الآن
+                  {t("auth.login.submit")}
                 </Button>
               </motion.div>
             )}
@@ -193,39 +219,30 @@ export function ResetPassword() {
         </div>
 
         {/* Footer */}
-        <div className="text-center">
-          <p className="text-[11px] text-muted-foreground/50">منظومة فائدة المهنية © 2026</p>
+        <div className="text-center py-4">
+          <p className="text-[11px] text-muted-foreground/50">&copy; {new Date().getFullYear()} Faeda Jobs. All rights reserved.</p>
         </div>
       </div>
 
       {/* Brand Hero Panel */}
       <div className="hidden lg:flex w-1/2 relative bg-[#091122] overflow-hidden flex-col justify-between p-12">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/3 pointer-events-none" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03] pointer-events-none" />
-
+        
         <div className="relative z-10 flex justify-end">
           <div className="flex items-center gap-3">
-            <span className="text-2xl font-black font-heading text-white tracking-tight">منظومة <span className="text-primary">فائدة</span></span>
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <div className="w-4 h-4 bg-white rounded-sm" />
-            </div>
+            <span className="text-2xl font-black font-heading text-white tracking-tight">Faeda Jobs</span>
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center font-bold text-white">ف</div>
           </div>
         </div>
 
         <div className="relative z-10 flex flex-col items-start justify-center h-full max-w-lg mx-auto text-start">
-          <motion.h2 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-4xl font-extrabold font-heading text-white leading-[1.3] mb-4"
-          >
-            تأمين حسابك بكلمة مرور جديدة وقوية.
-          </motion.h2>
+          <h2 className="text-4xl font-extrabold font-heading text-white leading-[1.3] mb-4">
+            {language === "en" ? "Secure & seamless access to your account." : "تأمين حسابك بكلمة مرور جديدة وقوية."}
+          </h2>
         </div>
 
         <div className="relative z-10 flex justify-end gap-8 pt-8 border-t border-white/5">
-          <span className="text-xs text-white/80">أمان عالي ووصول محمي</span>
+          <span className="text-xs text-white/80">{language === "en" ? "Protected Account Access" : "أمان عالي ووصول محمي"}</span>
         </div>
       </div>
 

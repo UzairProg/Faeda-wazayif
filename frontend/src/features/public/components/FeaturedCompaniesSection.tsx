@@ -1,43 +1,76 @@
+/**
+ * features/public/components/FeaturedCompaniesSection.tsx
+ *
+ * Featured companies section for public home page.
+ * Fully localized for Arabic (RTL) and English (LTR).
+ */
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
-import { Building2, ShieldCheck, Search, ArrowLeft, CheckCircle2 } from "lucide-react"
+import { Building2, ShieldCheck, Search, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react"
 import { Link } from "react-router-dom"
 import { ROUTES } from "@/config/routes"
-
-const employerPipelineSteps = [
-  {
-    step: "01",
-    title: "حضور مؤسسي موثق",
-    desc: "إعداد بروفايل الشركة وتأكيد التوثيق بناءً على السجلات الرسمية لحماية سمعة التوظيف.",
-    icon: ShieldCheck,
-  },
-  {
-    step: "02",
-    title: "نشر الفرص أو طلب فرق",
-    desc: "نشر وظائف فردية مخصصة أو استقطاب فرق عمل كاملة لتغطية قدرات مشاريع معقدة.",
-    icon: Building2,
-    iconColor: "text-primary",
-  },
-  {
-    step: "03",
-    title: "ترشيح ذكي وتقييم مسبب",
-    desc: "ترتيب طلبات المتقدمين حسب الملاءمة مع شاشات تقييم موحدة تدعم قرارات مسؤولي التوظيف.",
-    icon: Search,
-  },
-  {
-    step: "04",
-    title: "إغلاق التوظيف باحترافية",
-    desc: "تقديم عروض التوظيف ومشاركة أسباب القرارات المحترمة مع كافة المتقدمين.",
-    icon: CheckCircle2,
-  },
-]
+import { useTranslation } from "@/i18n"
 
 export function FeaturedCompaniesSection() {
+  const { t, language, isRTL } = useTranslation()
+  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
+
+  const employerPipelineSteps = language === "en" ? [
+    {
+      step: "01",
+      title: "Verified Employer Presence",
+      desc: "Set up company profile and official verification to protect your recruitment reputation.",
+      icon: ShieldCheck,
+    },
+    {
+      step: "02",
+      title: "Post Jobs or Recruit Teams",
+      desc: "Post individual vacancies or contract ready-to-execute multi-disciplinary teams.",
+      icon: Building2,
+    },
+    {
+      step: "03",
+      title: "Explainable Candidate Matching",
+      desc: "Rank applications based on skills and experience with transparent evaluation screens.",
+      icon: Search,
+    },
+    {
+      step: "04",
+      title: "Professional Hiring Cycle",
+      desc: "Issue offers and share respectful feedback with all applicants seamlessly.",
+      icon: CheckCircle2,
+    },
+  ] : [
+    {
+      step: "01",
+      title: "حضور مؤسسي موثق",
+      desc: "إعداد بروفايل الشركة وتأكيد التوثيق بناءً على السجلات الرسمية لحماية سمعة التوظيف.",
+      icon: ShieldCheck,
+    },
+    {
+      step: "02",
+      title: "نشر الفرص أو طلب فرق",
+      desc: "نشر وظائف فردية مخصصة أو استقطاب فرق عمل كاملة لتغطية قدرات مشاريع معقدة.",
+      icon: Building2,
+    },
+    {
+      step: "03",
+      title: "ترشيح ذكي وتقييم مسبب",
+      desc: "ترتيب طلبات المتقدمين حسب الملاءمة مع شاشات تقييم موحدة تدعم قرارات مسؤولي التوظيف.",
+      icon: Search,
+    },
+    {
+      step: "04",
+      title: "إغلاق التوظيف باحترافية",
+      desc: "تقديم عروض التوظيف ومشاركة أسباب القرارات المحترمة مع كافة المتقدمين.",
+      icon: CheckCircle2,
+    },
+  ]
+
   return (
-    <section className="py-24 bg-background border-t border-white/5 relative overflow-hidden">
-      {/* Background Lighting */}
+    <section className="py-24 bg-background border-t border-white/5 relative overflow-hidden text-start">
       <div className="absolute top-1/2 end-0 -translate-y-1/2 translate-x-1/4 w-[700px] h-[700px] bg-primary/5 rounded-full blur-[170px] pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -47,18 +80,21 @@ export function FeaturedCompaniesSection() {
           <div className="max-w-2xl text-start">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary mb-4">
               <Building2 className="w-3.5 h-3.5" />
-              <span>منظومة التوظيف لأصحاب العمل</span>
+              <span>{t("public.companies.sectionTitle")}</span>
             </div>
             <h2 className="text-3xl font-extrabold font-heading tracking-tight sm:text-4xl text-white mb-4">
-              بيئة استقطاب احترافية للشركات والمؤسسات
+              {t("public.companies.sectionSubtitle")}
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              توفر فائدة لأصحاب العمل أدوات متكاملة لبناء سجل موثوق، نشر الفرص، تقييم المرشحين، وإدارة دورة التوظيف بسلاسة واقتدار.
+              {language === "en"
+                ? "Faeda provides employers with tools to build a verified presence, publish opportunities, evaluate candidates, and manage hiring cycles smoothly."
+                : "توفر فائدة لأصحاب العمل أدوات متكاملة لبناء سجل موثوق، نشر الفرص، تقييم المرشحين، وإدارة دورة التوظيف بسلاسة واقتدار."}
             </p>
           </div>
           <Link to={ROUTES.COMPANIES.LIST}>
             <Button variant="outline" className="hidden md:flex gap-2 rounded-full border-white/10 bg-white/5 text-white hover:bg-white/10">
-              تصفح دليل الشركات <ArrowLeft className="w-4 h-4" />
+              <span>{t("public.companies.viewAll")}</span>
+              <ArrowIcon className="w-4 h-4" />
             </Button>
           </Link>
         </div>
@@ -79,7 +115,9 @@ export function FeaturedCompaniesSection() {
                     <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary mb-6">
                       <item.icon className="w-6 h-6" />
                     </div>
-                    <span className="text-xs font-mono text-primary font-bold block mb-1">الخطوة {item.step}</span>
+                    <span className="text-xs font-mono text-primary font-bold block mb-1">
+                      {language === "en" ? `Step ${item.step}` : `الخطوة ${item.step}`}
+                    </span>
                     <h3 className="text-lg font-bold font-heading text-white mb-2">
                       {item.title}
                     </h3>
@@ -89,7 +127,7 @@ export function FeaturedCompaniesSection() {
                   </div>
 
                   <div className="pt-4 mt-6 border-t border-white/5 text-[11px] text-muted-foreground/60 flex items-center justify-between">
-                    <span>بيئة عمل معتمدة</span>
+                    <span>{t("companies.detail.verified")}</span>
                     <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
                   </div>
                 </GlassCard>
@@ -101,12 +139,16 @@ export function FeaturedCompaniesSection() {
         {/* Employer CTA Box */}
         <div className="p-8 rounded-3xl bg-card/60 border border-white/10 backdrop-blur-md max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-start shadow-2xl">
           <div className="space-y-1">
-            <h3 className="text-xl font-bold font-heading text-white">هل تبحث عن استقطاب كفاءات أفراد أو فرق كاملة؟</h3>
-            <p className="text-xs text-muted-foreground">أنشئ بروفايل الشركة وابدأ بنشر الوظائف واستكشاف الكفاءات المتاحة فوراً.</p>
+            <h3 className="text-xl font-bold font-heading text-white">
+              {t("companies.detail.joinCtaTitle")}
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              {t("companies.detail.joinCtaSubtitle")}
+            </p>
           </div>
           <Link to={`${ROUTES.AUTH.REGISTER}?role=company`} className="shrink-0">
             <Button size="lg" className="rounded-xl px-8 bg-primary hover:bg-primary/90 text-white font-bold text-sm shadow-md shadow-primary/20">
-              تسجيل حساب شركة
+              {t("public.cta.companyCta")}
             </Button>
           </Link>
         </div>

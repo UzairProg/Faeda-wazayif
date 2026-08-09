@@ -3,12 +3,13 @@
  *
  * Accessible autocomplete search input for company names/keywords.
  * Supports debounced backend suggestions, keyboard navigation (ArrowUp/ArrowDown/Enter/Escape),
- * and ARIA combobox semantics.
+ * and ARIA combobox semantics. Fully localized.
  */
 import React, { useState, useRef, useEffect, useId } from "react"
 import { Search, Building2, MapPin, Loader2, X } from "lucide-react"
 import { useCompanyAutocomplete } from "../hooks/useCompanies"
 import type { CompanySuggestion } from "../types/company.types"
+import { useTranslation } from "@/i18n"
 
 interface CompanyAutocompleteInputProps {
   value: string
@@ -24,9 +25,10 @@ export function CompanyAutocompleteInput({
   onChange,
   onSelectSuggestion,
   onSubmitSearch,
-  placeholder = "ابحث عن شركة أو مجال عمل...",
+  placeholder,
   className = "",
 }: CompanyAutocompleteInputProps) {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const { suggestions, isLoading } = useCompanyAutocomplete(value, 250)
@@ -36,6 +38,7 @@ export function CompanyAutocompleteInput({
   const listboxId = useId()
 
   const hasSuggestions = suggestions.length > 0 && isOpen
+  const resolvedPlaceholder = placeholder || t("companies.search.placeholder")
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -107,12 +110,12 @@ export function CompanyAutocompleteInput({
             if (suggestions.length > 0) setIsOpen(true)
           }}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           role="combobox"
           aria-expanded={isOpen}
           aria-autocomplete="list"
           aria-controls={listboxId}
-          className="w-full h-12 ps-12 pe-10 bg-card/60 border border-white/10 rounded-2xl text-white text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:bg-card/80 transition-all"
+          className="w-full h-12 ps-12 pe-10 bg-card/60 border border-white/10 rounded-2xl text-white text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:bg-card/80 transition-all text-start"
         />
 
         {isLoading ? (
@@ -126,7 +129,7 @@ export function CompanyAutocompleteInput({
               inputRef.current?.focus()
             }}
             className="absolute end-4 p-1 rounded-lg text-muted-foreground hover:text-white transition-colors"
-            aria-label="مسح البحث"
+            aria-label={t("companies.search.clear")}
           >
             <X className="w-4 h-4" />
           </button>
@@ -140,8 +143,8 @@ export function CompanyAutocompleteInput({
           role="listbox"
           className="absolute start-0 end-0 top-full mt-2 z-50 bg-card/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-72 overflow-y-auto divide-y divide-white/5 py-1"
         >
-          <li className="px-4 py-2 text-[11px] font-bold text-muted-foreground font-mono uppercase tracking-wider bg-white/5">
-            الشركات والمجالات
+          <li className="px-4 py-2 text-[11px] font-bold text-muted-foreground font-mono uppercase tracking-wider bg-white/5 text-start">
+            {t("companies.search.suggestionsHeader")}
           </li>
           {suggestions.map((sug, index) => {
             const isHighlighted = index === highlightedIndex
