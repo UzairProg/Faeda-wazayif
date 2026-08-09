@@ -8,6 +8,7 @@ export function Footer() {
     { label: "الوظائف والفرص", href: ROUTES.JOBS.LIST },
     { label: "الشركات وبيئات العمل", href: ROUTES.COMPANIES.LIST },
     { label: "سوق الفرق التخصصية", href: ROUTES.TEAMS.LIST },
+    { label: "عن المنظومة (من نحن)", href: ROUTES.PUBLIC.ABOUT },
   ]
 
   const accountLinks = [

@@ -32,6 +32,7 @@ import { CompaniesPage } from "./features/public/pages/CompaniesPage"
 import { CompanyDetailPage } from "./features/public/pages/CompanyDetailPage"
 import { TeamsPage } from "./features/public/pages/TeamsPage"
 import { TeamDetailPage } from "./features/public/pages/TeamDetailPage"
+import { AboutPage } from "./features/public/pages/AboutPage"
 
 // Auth pages
 import { Login } from "./features/auth/pages/Login"
@@ -62,6 +63,7 @@ function App() {
           <Route path="companies/:id" element={<CompanyDetailPage />} />
           <Route path="teams" element={<TeamsPage />} />
           <Route path="teams/:id" element={<TeamDetailPage />} />
+          <Route path="about" element={<AboutPage />} />
           <Route
             path="portfolio/:username"
             element={

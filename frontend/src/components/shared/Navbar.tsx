@@ -15,6 +15,7 @@ export function Navbar() {
     { label: "الوظائف", href: "/jobs" },
     { label: "الشركات", href: "/companies" },
     { label: "الفرق", href: "/teams" },
+    { label: "من نحن", href: "/about" },
     { label: "تواصل معنا", href: "/contact" },
   ]
 
