@@ -424,6 +424,8 @@
 
     {% block extra_js %}{% endblock %}
 
+    {% if system_settings.get('ai_assistant_active', 'true') == 'true' %}
     {% include 'new_design/chat_widget.html' %}
+    {% endif %}
 </body>
 </html>

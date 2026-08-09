@@ -40,6 +40,11 @@ def chat():
     Expects JSON body: { "message": "<user text>" }
     Returns JSON:      { "reply": "<AI response text>" }
     """
+    from services.system_settings import SystemSetting
+
+    if SystemSetting.get_value('ai_assistant_active', 'true') != 'true':
+        return jsonify({'error': 'المساعد الذكي معطل حالياً من قبل الإدارة.'}), 403
+
     api_key = os.environ.get('GROQ_API_KEY')
     if not api_key:
         return jsonify({'error': 'GROQ_API_KEY environment variable is not set.'}), 500

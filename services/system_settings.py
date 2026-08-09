@@ -44,6 +44,11 @@ SETTING_KEYS = {
         'type': 'number',
         'default': '50',
     },
+    'ai_assistant_active': {
+        'label': 'تفعيل المساعد الذكي (AI Assistant)',
+        'type': 'boolean',
+        'default': 'true',
+    },
 }
 
 
