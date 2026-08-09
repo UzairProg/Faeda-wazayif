@@ -13,7 +13,7 @@
  */
 import axios from "axios"
 import { API_CONFIG } from "@/config/api"
-import type { Job, JobDetail, JobFilter, JobListResponse } from "../types/job.types"
+import type { Job, JobDetail, JobFilter, JobListResponse, JobSuggestion } from "../types/job.types"
 
 const api = axios.create({
   baseURL: API_CONFIG.BASE_URL,

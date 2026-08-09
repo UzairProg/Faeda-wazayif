@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TiltCard } from "@/components/ui/tilt-card"
-import { Sparkles, FileText, ShieldCheck, Users, BrainCircuit, Building2, TrendingUp } from "lucide-react"
+import { Sparkles, FileText, Users, BrainCircuit, Building2 } from "lucide-react"
 
 const features = [
   {

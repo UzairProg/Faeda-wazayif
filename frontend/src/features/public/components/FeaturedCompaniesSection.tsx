@@ -2,7 +2,7 @@ import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
-import { Building2, ShieldCheck, Search, Users, ArrowLeft, CheckCircle2, Layers } from "lucide-react"
+import { Building2, ShieldCheck, Search, ArrowLeft, CheckCircle2 } from "lucide-react"
 import { Link } from "react-router-dom"
 import { ROUTES } from "@/config/routes"
 

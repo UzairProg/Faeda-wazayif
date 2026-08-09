@@ -28,6 +28,8 @@ import { RoleGuard } from "./shared/components/guards/RoleGuard"
 import { Home } from "./features/public/pages/Home"
 import { JobsPage } from "./features/public/pages/JobsPage"
 import { JobDetailPage } from "./features/public/pages/JobDetailPage"
+import { CompaniesPage } from "./features/public/pages/CompaniesPage"
+import { CompanyDetailPage } from "./features/public/pages/CompanyDetailPage"
 
 // Auth pages
 import { Login } from "./features/auth/pages/Login"
@@ -54,26 +56,8 @@ function App() {
           <Route index element={<Home />} />
           <Route path="jobs" element={<JobsPage />} />
           <Route path="jobs/:id" element={<JobDetailPage />} />
-
-          {/* Discovery pages — placeholders wired for Phase 2 */}
-          <Route
-            path="companies"
-            element={
-              <div className="container mx-auto px-4 py-20 text-center">
-                <p className="text-2xl font-bold font-heading text-white mb-3">الشركات</p>
-                <p className="text-muted-foreground">قريباً — قائمة الشركات</p>
-              </div>
-            }
-          />
-          <Route
-            path="companies/:id"
-            element={
-              <div className="container mx-auto px-4 py-20 text-center">
-                <p className="text-2xl font-bold font-heading text-white mb-3">تفاصيل الشركة</p>
-                <p className="text-muted-foreground">قريباً</p>
-              </div>
-            }
-          />
+          <Route path="companies" element={<CompaniesPage />} />
+          <Route path="companies/:id" element={<CompanyDetailPage />} />
           <Route
             path="teams"
             element={

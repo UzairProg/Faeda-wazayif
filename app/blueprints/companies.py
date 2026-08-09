@@ -4,7 +4,7 @@
 # المتطلبات الخاصة: يعتمد على نماذج الشركة والعملاء (services.company, services.customer) وجلسات فلاسك.
 # ==============================================================================
 #### companies.py############
-from flask import Blueprint, render_template, redirect, request, session, flash, current_app, url_for, send_from_directory, abort
+from flask import Blueprint, render_template, redirect, request, session, flash, current_app, url_for, send_from_directory, abort, jsonify
 from services.company import *
 from services.customer import *
 from services.job import *
@@ -587,3 +587,144 @@ def company_editprofile_commercial_data():
     session.clear()
     flash('يجب تسجيل الدخول اولا لتتمكن من تعديل البيانات', 'warning')
     return redirect('/login')
+
+
+# ==============================================================================
+# JSON REST API ENDPOINTS FOR FRONTEND PUBLIC COMPANIES MODULE
+# ==============================================================================
+
+def serialize_company_summary(c):
+    open_jobs_count = Jobs.query.filter_by(company_id=c.id, status='approved').count()
+
+    name = c.company_arabic_name or c.company_english_name or c.company_name_on_faeda or f"شركة #{c.id}"
+    desc = c.about_company_arabic or c.about_company_english or ""
+    location = c.state or c.country or c.english_adress or "السعودية"
+
+    return {
+        "id": str(c.id),
+        "name": name,
+        "arabicName": c.company_arabic_name,
+        "englishName": c.company_english_name,
+        "faedaName": c.company_name_on_faeda,
+        "logoUrl": c.company_logo if c.company_logo else None,
+        "description": desc,
+        "location": location,
+        "country": c.country or "المملكة العربية السعودية",
+        "companyType": c.company_type,
+        "companySize": c.company_size,
+        "companyField": c.company_field,
+        "website": c.company_website,
+        "twitter": c.twitter_email,
+        "instagram": c.instagram_email,
+        "isVerified": bool(c.is_verified),
+        "verifiedAt": c.verified_at.isoformat() if c.verified_at else None,
+        "openJobsCount": open_jobs_count,
+        "createdAt": c.timestamp.isoformat() if c.timestamp else None,
+    }
+
+
+def serialize_company_detail(c):
+    from app.blueprints.jobs import serialize_job_summary
+    base = serialize_company_summary(c)
+    approved_jobs = Jobs.query.filter_by(company_id=c.id, status='approved').order_by(Jobs.date_posted.desc()).all()
+    serialized_jobs = [serialize_job_summary(j) for j in approved_jobs]
+
+    return {
+        **base,
+        "jobs": serialized_jobs,
+    }
+
+
+@company.route('/api/v1/companies/suggestions')
+def api_get_company_suggestions():
+    q = request.args.get('q', '').strip()
+
+    if not q or len(q) < 2:
+        return jsonify({"suggestions": []})
+
+    companies = Company.query.filter(
+        db.or_(Company.status == 'active', Company.status.is_(None)),
+        db.or_(
+            Company.company_arabic_name.ilike(f"%{q}%"),
+            Company.company_english_name.ilike(f"%{q}%"),
+            Company.company_name_on_faeda.ilike(f"%{q}%"),
+            Company.company_field.ilike(f"%{q}%")
+        )
+    ).limit(8).all()
+
+    suggestions = []
+    for comp in companies:
+        name = comp.company_arabic_name or comp.company_english_name or comp.company_name_on_faeda
+        location = comp.state or comp.country or "السعودية"
+        suggestions.append({
+            "id": str(comp.id),
+            "label": name,
+            "subLabel": comp.company_field or location,
+            "category": "شركة",
+            "value": name,
+            "location": location,
+        })
+
+    return jsonify({"suggestions": suggestions})
+
+
+@company.route('/api/v1/companies')
+def api_get_companies():
+    q = request.args.get('q', '').strip()
+    location = request.args.get('location', '').strip()
+    verified_param = request.args.get('verified', '').strip().lower()
+    has_jobs_param = request.args.get('has_jobs', '').strip().lower()
+    page = int(request.args.get('page', 1))
+    page_size = int(request.args.get('page_size', 12))
+
+    query = Company.query.filter(
+        db.or_(Company.status == 'active', Company.status.is_(None))
+    )
+
+    if q:
+        query = query.filter(
+            db.or_(
+                Company.company_arabic_name.ilike(f"%{q}%"),
+                Company.company_english_name.ilike(f"%{q}%"),
+                Company.company_name_on_faeda.ilike(f"%{q}%"),
+                Company.company_field.ilike(f"%{q}%"),
+                Company.about_company_arabic.ilike(f"%{q}%"),
+                Company.about_company_english.ilike(f"%{q}%")
+            )
+        )
+
+    if location:
+        query = query.filter(
+            db.or_(
+                Company.state.ilike(f"%{location}%"),
+                Company.country.ilike(f"%{location}%"),
+                Company.english_adress.ilike(f"%{location}%")
+            )
+        )
+
+    if verified_param == 'true':
+        query = query.filter(Company.is_verified == True)
+
+    if has_jobs_param == 'true':
+        # Subquery for companies with at least one approved job
+        subq = db.session.query(Jobs.company_id).filter(Jobs.status == 'approved').subquery()
+        query = query.filter(Company.id.in_(subq))
+
+    paginated = query.order_by(Company.is_verified.desc(), Company.id.desc()).paginate(page=page, per_page=page_size, error_out=False)
+
+    return jsonify({
+        "companies": [serialize_company_summary(c) for c in paginated.items],
+        "total": paginated.total,
+        "page": paginated.page,
+        "pageSize": paginated.per_page,
+        "totalPages": paginated.pages,
+    })
+
+
+@company.route('/api/v1/companies/<int:company_id>')
+def api_get_company_detail(company_id):
+    comp = Company.query.get(company_id)
+    if not comp or (comp.status and comp.status != 'active'):
+        return jsonify({"message": "الشركة غير موجودة"}), 404
+
+    return jsonify(serialize_company_detail(comp))

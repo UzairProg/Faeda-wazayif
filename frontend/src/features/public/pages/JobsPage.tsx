@@ -7,10 +7,8 @@
  */
 import { useState, useCallback, useEffect } from "react"
 import { useSearchParams, Link } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
 import {
-  Search, MapPin, SlidersHorizontal, X, Loader2, RotateCcw,
-  Clock, Briefcase, ChevronRight, Share2, CheckCircle2, Building2, Calendar, Bookmark, ArrowLeft
+  Search, MapPin, SlidersHorizontal, Loader2, RotateCcw, ChevronRight, Clock
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { EmptyState } from "@/shared/components/states/EmptyState"
@@ -31,14 +29,6 @@ const WORK_TYPE_OPTIONS: { value: WorkType; label: string }[] = [
   { value: "contract", label: "عقد" },
   { value: "remote", label: "عن بعد" },
   { value: "hybrid", label: "هجين" },
-]
-
-const EXPERIENCE_OPTIONS: { value: ExperienceLevel; label: string }[] = [
-  { value: "entry", label: "مبتدئ" },
-  { value: "mid", label: "متوسط" },
-  { value: "senior", label: "أول" },
-  { value: "lead", label: "قيادي" },
-  { value: "executive", label: "تنفيذي" },
 ]
 
 function buildFilterFromParams(params: URLSearchParams): JobFilter {
@@ -159,10 +149,6 @@ export function JobsPage() {
     next.delete("page")
     setSearchParams(next)
   }, [searchInput, locationInput, searchParams, setSearchParams])
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleSearch()
-  }
 
   // Active Filter Helpers
   const activeWorkTypes = (searchParams.get("work_type")?.split(",") ?? []) as WorkType[]
@@ -309,8 +295,11 @@ export function JobsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="lg:hidden gap-1.5 rounded-full border-white/10 bg-white/5 text-white text-xs h-8"
-                onClick={() => setShowFiltersDrawer(true)}
+                className={cn(
+                  "lg:hidden gap-1.5 rounded-full border-white/10 bg-white/5 text-white text-xs h-8",
+                  showFiltersDrawer && "border-primary/50 text-primary"
+                )}
+                onClick={() => setShowFiltersDrawer((prev) => !prev)}
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
                 <span>خيارات التصفية</span>
