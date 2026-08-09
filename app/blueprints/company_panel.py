@@ -13,6 +13,7 @@ from services.customer import Customers, customer_jobs
 from services.job import Jobs
 from services.teams import Teams
 from services.team_offer import TeamOffer
+from ai_engine.market_value_calculator import get_market_value_for_customer
 
 company_panel_bp = Blueprint('company_panel', __name__)
 
@@ -369,7 +370,7 @@ def company_applicants_list():
     comp_id = session['company_id']
     
     # Query all applicants for jobs posted by this company
-    applicants = db.session.query(
+    raw_applicants = db.session.query(
         customer_jobs.c.id.label('app_id'),
         customer_jobs.c.status.label('app_status'),
         customer_jobs.c.timestamp.label('applied_at'),
@@ -381,9 +382,22 @@ def company_applicants_list():
         Jobs, Jobs.id == customer_jobs.c.job_id
     ).filter(
         Jobs.company_id == comp_id
-    ).order_by(customer_jobs.c.timestamp.desc()).all()
+    ).all()
     
-    return render_template('company/applicants.html', applicants=applicants)
+    # Process market value and sort
+    processed_applicants = []
+    for row in raw_applicants:
+        app_id, app_status, applied_at, customer_obj, job_obj = row
+        mv_data = get_market_value_for_customer(customer_obj)
+        # Store data dynamically on the customer object for template access
+        customer_obj.market_value_data = mv_data
+        customer_obj.market_value_score = mv_data.get('total_score', 0)
+        processed_applicants.append((app_id, app_status, applied_at, customer_obj, job_obj))
+        
+    # Sort descending by market_value_score
+    processed_applicants.sort(key=lambda x: x[3].market_value_score, reverse=True)
+    
+    return render_template('company/applicants.html', applicants=processed_applicants)
 
 @company_panel_bp.route('/company/update_applicant_status/<int:app_id>', methods=['POST'])
 @company_required
