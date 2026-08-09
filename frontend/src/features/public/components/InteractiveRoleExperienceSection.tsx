@@ -139,7 +139,7 @@ export function InteractiveRoleExperienceSection() {
           </p>
 
           {/* Perspective Role Selector — Single Row Grid on Desktop */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8 max-w-6xl mx-auto">
             {(Object.keys(perspectives) as PerspectiveRole[]).map((roleKey) => {
               const role = perspectives[roleKey]
               const Icon = role.icon
@@ -148,13 +148,12 @@ export function InteractiveRoleExperienceSection() {
                 <button
                   key={roleKey}
                   onClick={() => setActiveRole(roleKey)}
-                  className={`flex items-center justify-center gap-2.5 p-4 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-300 border text-center ${
-                    isActive
-                      ? "bg-primary text-white border-primary/50 shadow-lg shadow-primary/25 scale-[1.02]"
-                      : "bg-card/60 text-muted-foreground border-white/10 hover:text-white hover:bg-white/5"
-                  }`}
+                  className={`flex items-center justify-center gap-2.5 p-4 sm:p-5 rounded-2xl font-bold text-xs sm:text-base transition-all duration-300 border text-center ${isActive
+                    ? "bg-primary text-white border-primary/50 shadow-lg shadow-primary/25 scale-[1.02]"
+                    : "bg-card/60 text-muted-foreground border-white/10 hover:text-white hover:bg-white/5"
+                    }`}
                 >
-                  <Icon className="w-4.5 h-4.5 shrink-0" />
+                  <Icon className="w-5 h-5 shrink-0" />
                   <span className="truncate">{role.label}</span>
                 </button>
               )
@@ -170,59 +169,59 @@ export function InteractiveRoleExperienceSection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.4 }}
-            className="max-w-5xl mx-auto"
+            className="max-w-6xl mx-auto"
           >
             <TiltCard tiltEnabled={false} shineEnabled={true} shineOpacityMax={0.1} className="rounded-[2rem]">
-              <GlassCard className="p-6 sm:p-10 bg-card/50 backdrop-blur-md border-white/10 shadow-2xl relative text-start">
+              <GlassCard className="p-6 sm:p-12 bg-card/50 backdrop-blur-md border-white/10 shadow-2xl relative text-start">
 
                 {/* Header inside Transforming Box */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10 mb-8">
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <current.icon className="w-5 h-5 text-primary" />
-                      <h3 className="text-2xl font-extrabold font-heading text-white">{current.title}</h3>
+                    <div className="flex items-center gap-2.5 mb-1.5">
+                      <current.icon className="w-6 h-6 text-primary" />
+                      <h3 className="text-2xl sm:text-3xl font-extrabold font-heading text-white">{current.title}</h3>
                     </div>
-                    <p className="text-xs text-muted-foreground">{current.subtitle}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{current.subtitle}</p>
                   </div>
                   <Link to={current.ctaLink} className="shrink-0">
-                    <Button size="sm" className="rounded-xl px-6 bg-primary hover:bg-primary/90 text-white font-bold text-xs gap-1.5">
+                    <Button size="sm" className="rounded-xl px-6 py-2.5 bg-primary hover:bg-primary/90 text-white font-bold text-xs sm:text-sm gap-1.5">
                       <span>{current.ctaText}</span>
-                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <ArrowLeft className="w-4 h-4" />
                     </Button>
                   </Link>
                 </div>
 
                 {/* Split View: Steps Progression & Large UI Mockup */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-8">
-                  
+
                   {/* Left: Steps List */}
-                  <div className="lg:col-span-6 space-y-3">
+                  <div className="lg:col-span-6 space-y-3.5">
                     {current.steps.map((st) => (
-                      <div key={st.name} className="p-3.5 rounded-xl bg-white/5 border border-white/5 text-start">
-                        <span className="text-xs font-bold text-primary block mb-0.5">{st.name}</span>
-                        <p className="text-xs text-muted-foreground leading-relaxed">{st.desc}</p>
+                      <div key={st.name} className="p-4 sm:p-4.5 rounded-xl bg-white/5 border border-white/5 text-start">
+                        <span className="text-xs sm:text-sm font-bold text-primary block mb-0.5">{st.name}</span>
+                        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{st.desc}</p>
                       </div>
                     ))}
                   </div>
 
                   {/* Right: Large UI Product Mockup */}
                   <div className="lg:col-span-6">
-                    <div className="p-5 rounded-2xl bg-black/40 border border-white/10 shadow-xl text-start">
-                      <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+                    <div className="p-6 sm:p-7 rounded-2xl bg-black/40 border border-white/10 shadow-xl text-start">
+                      <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/10">
                         <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded-full bg-red-500/80" />
                           <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
                           <div className="w-3 h-3 rounded-full bg-green-500/80" />
-                          <span className="text-xs text-white/90 font-mono font-bold ms-2">{current.previewTitle}</span>
+                          <span className="text-xs sm:text-sm text-white/90 font-mono font-bold ms-2">{current.previewTitle}</span>
                         </div>
-                        <span className="text-[10px] font-mono text-primary px-2 py-0.5 rounded bg-primary/10 border border-primary/20">مثال توضيحي</span>
+                        <span className="text-xs font-mono text-primary px-2.5 py-0.5 rounded bg-primary/10 border border-primary/20">مثال توضيحي</span>
                       </div>
 
-                      <div className="space-y-3">
+                      <div className="space-y-3.5">
                         {current.previewItems.map((item) => (
-                          <div key={item.label} className="p-3.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between text-xs">
+                          <div key={item.label} className="p-4 sm:p-4.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between gap-3 text-xs sm:text-sm">
                             <span className="text-white font-medium">{item.label}</span>
-                            <span className="px-2.5 py-1 rounded bg-primary/10 border border-primary/20 text-primary font-bold text-[11px] shrink-0 font-mono">{item.tag}</span>
+                            <span className="px-3 py-1 rounded bg-primary/10 border border-primary/20 text-primary font-bold text-xs shrink-0 font-mono">{item.tag}</span>
                           </div>
                         ))}
                       </div>
@@ -232,15 +231,15 @@ export function InteractiveRoleExperienceSection() {
                 </div>
 
                 {/* Role Highlights Footer */}
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-white/10 text-xs text-muted-foreground">
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-white/10 text-xs sm:text-sm text-muted-foreground">
                   <span className="font-bold text-white flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-primary" />
                     مميزات هذا المسار:
                   </span>
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap gap-4 sm:gap-6">
                     {current.highlights.map((h) => (
-                      <span key={h} className="flex items-center gap-1 text-white/90">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                      <span key={h} className="flex items-center gap-1.5 text-white/90">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
                         {h}
                       </span>
                     ))}

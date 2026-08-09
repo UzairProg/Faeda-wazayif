@@ -34,30 +34,30 @@ export function EcosystemOverviewSection() {
         </div>
 
         {/* Visual Contrast: Disconnected Tools vs Faeda */}
-        <div className="max-w-4xl mx-auto mb-10 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-2xl bg-card/30 border border-white/5 text-start">
-            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground mb-3">
-              <XCircle className="w-4 h-4 text-destructive/80" />
+        <div className="max-w-6xl mx-auto mb-10 grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="p-5 sm:p-6 rounded-2xl bg-card/30 border border-white/5 text-start">
+            <div className="flex items-center gap-2.5 text-sm font-bold text-muted-foreground mb-3">
+              <XCircle className="w-5 h-5 text-destructive/80 shrink-0" />
               <span>الأدوات المشتتة التقليدية</span>
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               سيرة ذاتية ملغية • منصات إعلانات عشوائية • حساب راتب تقديري مجهول • تقديم وتتبع بدون نتائج مسببة.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-primary/10 border border-primary/30 text-start">
-            <div className="flex items-center gap-2 text-xs font-bold text-primary mb-3">
-              <CheckCircle2 className="w-4 h-4 text-primary" />
+          <div className="p-5 sm:p-6 rounded-2xl bg-primary/10 border border-primary/30 text-start">
+            <div className="flex items-center gap-2.5 text-sm font-bold text-primary mb-3">
+              <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
               <span>منظومة فائدة الموحدة</span>
             </div>
-            <p className="text-xs text-white/90 leading-relaxed">
+            <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
               هوية موثقة • جاهزية ATS • قيمة سوقية مفسرة • ترشيحات شفافة • تتبع مباشر • توظيف أفراد وفرق.
             </p>
           </div>
         </div>
 
         {/* Visual Connected Ecosystem Diagram */}
-        <div className="max-w-4xl mx-auto relative p-6 sm:p-8 rounded-3xl bg-card/30 border border-white/5 backdrop-blur-md shadow-2xl">
+        <div className="max-w-6xl mx-auto relative p-6 sm:p-10 rounded-3xl bg-card/30 border border-white/5 backdrop-blur-md shadow-2xl">
           
           {/* Center Hub Indicator */}
           <div className="hidden sm:flex items-center justify-center my-4">
@@ -68,7 +68,7 @@ export function EcosystemOverviewSection() {
           </div>
 
           {/* Connected Nodes Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 relative z-10">
             {nodes.map((node, idx) => (
               <motion.div
                 key={node.id}
@@ -77,13 +77,13 @@ export function EcosystemOverviewSection() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
               >
-                <GlassCard className="p-4 flex items-center gap-4 bg-card/60 border-white/10 hover:border-primary/40 transition-colors text-start">
-                  <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
-                    <node.icon className="w-5 h-5" />
+                <GlassCard className="p-5 sm:p-6 flex items-center gap-5 bg-card/60 border-white/10 hover:border-primary/40 transition-colors text-start">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                    <node.icon className="w-6 h-6" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-bold text-white text-sm mb-0.5 truncate">{node.title}</h3>
-                    <p className="text-[11px] text-muted-foreground truncate">{node.sub}</p>
+                    <h3 className="font-bold text-white text-base sm:text-lg mb-1 truncate">{node.title}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground truncate">{node.sub}</p>
                   </div>
                 </GlassCard>
               </motion.div>

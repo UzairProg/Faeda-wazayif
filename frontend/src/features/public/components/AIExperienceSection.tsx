@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
-import { Sparkles, ShieldCheck, UserCheck, Check, Edit3, X, Bot, CornerDownLeft } from "lucide-react"
+import { Sparkles, UserCheck, Check, Edit3, X, Bot, CornerDownLeft } from "lucide-react"
 
 const aiDemos = [
   {
@@ -85,64 +85,64 @@ export function AIExperienceSection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.3 }}
-            className="max-w-4xl mx-auto"
+            className="max-w-6xl mx-auto"
           >
             <TiltCard tiltEnabled={false} shineEnabled={true} shineOpacityMax={0.12} className="rounded-[2rem]">
-              <GlassCard className="p-6 sm:p-8 bg-card/60 backdrop-blur-md border-white/10 shadow-2xl text-start">
+              <GlassCard className="p-6 sm:p-10 bg-card/60 backdrop-blur-md border-white/10 shadow-2xl text-start">
                 
                 {/* User Prompt Entry */}
-                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between mb-4 text-xs text-white">
-                  <div className="flex items-center gap-2.5">
-                    <UserCheck className="w-4 h-4 text-primary shrink-0" />
+                <div className="p-4 sm:p-5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between mb-5 text-xs sm:text-base text-white">
+                  <div className="flex items-center gap-3">
+                    <UserCheck className="w-5 h-5 text-primary shrink-0" />
                     <span className="font-semibold">{activeDemo.prompt}</span>
                   </div>
-                  <CornerDownLeft className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                  <CornerDownLeft className="w-4 h-4 text-muted-foreground shrink-0" />
                 </div>
 
                 {/* AI Assistant Output */}
-                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 mb-6 space-y-2">
-                  <div className="flex items-center gap-2 text-primary font-bold text-xs">
-                    <Bot className="w-4 h-4" />
+                <div className="p-5 sm:p-6 rounded-xl bg-primary/10 border border-primary/20 mb-6 space-y-2.5">
+                  <div className="flex items-center gap-2 text-primary font-bold text-xs sm:text-sm">
+                    <Bot className="w-5 h-5" />
                     <span>تحليل فائدة المساعد ({activeDemo.badge}):</span>
                   </div>
-                  <p className="text-xs text-white/90 leading-relaxed">{activeDemo.suggestion}</p>
+                  <p className="text-xs sm:text-base text-white/90 leading-relaxed">{activeDemo.suggestion}</p>
                 </div>
 
                 {/* Human Ownership Controls */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/10 text-xs">
-                  <span className="text-muted-foreground text-[11px]">القرار لك:</span>
-                  <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-5 border-t border-white/10 text-xs sm:text-sm">
+                  <span className="text-muted-foreground text-xs sm:text-sm">القرار لك:</span>
+                  <div className="flex flex-wrap items-center gap-3">
                     <Button
                       size="sm"
                       onClick={() => setActionStatus("تم تطبيق التوصية بحسابك!")}
-                      className="rounded-lg px-4 bg-primary hover:bg-primary/90 text-white font-bold text-xs h-8 gap-1"
+                      className="rounded-lg px-5 bg-primary hover:bg-primary/90 text-white font-bold text-xs sm:text-sm h-10 gap-1.5"
                     >
-                      <Check className="w-3.5 h-3.5" />
+                      <Check className="w-4 h-4" />
                       تطبيق التوصية
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => setActionStatus("فتح شاشة التعديل")}
-                      className="rounded-lg px-4 border-white/10 bg-white/5 text-white text-xs h-8 gap-1"
+                      className="rounded-lg px-5 border-white/10 bg-white/5 text-white text-xs sm:text-sm h-10 gap-1.5"
                     >
-                      <Edit3 className="w-3.5 h-3.5" />
+                      <Edit3 className="w-4 h-4" />
                       تعديل
                     </Button>
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => setActionStatus("تم تجاهل التوصية")}
-                      className="rounded-lg px-3 text-muted-foreground hover:text-white text-xs h-8 gap-1"
+                      className="rounded-lg px-4 text-muted-foreground hover:text-white text-xs sm:text-sm h-10 gap-1.5"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-4 h-4" />
                       تجاهل
                     </Button>
                   </div>
                 </div>
 
                 {actionStatus && (
-                  <p className="text-center text-xs font-bold text-primary mt-3 font-mono">{actionStatus}</p>
+                  <p className="text-center text-xs sm:text-sm font-bold text-primary mt-4 font-mono">{actionStatus}</p>
                 )}
 
               </GlassCard>

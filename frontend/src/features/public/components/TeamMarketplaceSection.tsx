@@ -2,7 +2,7 @@ import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { TiltCard } from "@/components/ui/tilt-card"
 import { Button } from "@/components/ui/button"
-import { Users, Layers, ShieldCheck, ArrowLeft, Code, Palette, Cpu, Sparkles, CheckCircle2 } from "lucide-react"
+import { Users, Layers, ArrowLeft, Code, Palette, Cpu, Sparkles, CheckCircle2 } from "lucide-react"
 import { Link } from "react-router-dom"
 import { ROUTES } from "@/config/routes"
 
@@ -56,29 +56,29 @@ export function TeamMarketplaceSection() {
             className="lg:col-span-7"
           >
             <TiltCard tiltEnabled={false} shineEnabled={true} shineOpacityMax={0.12} className="rounded-[2rem]">
-              <GlassCard className="p-6 bg-card/60 border-white/10 shadow-2xl relative text-start">
+              <GlassCard className="p-7 sm:p-10 bg-card/60 border-white/10 shadow-2xl relative text-start">
                 
                 <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
                   <div>
-                    <h3 className="font-bold font-heading text-white text-base">وحدة قدرات تخصصية كاملة</h3>
-                    <p className="text-xs text-muted-foreground">تغطية مهارية شاملة لبناء وتطوير المنتجات الرقمية</p>
+                    <h3 className="font-bold font-heading text-white text-lg sm:text-xl">وحدة قدرات تخصصية كاملة</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground">تغطية مهارية شاملة لبناء وتطوير المنتجات الرقمية</p>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs font-bold font-mono">
+                  <span className="px-3.5 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs sm:text-sm font-bold font-mono">
                     تغطية مهارات 96%
                   </span>
                 </div>
 
                 {/* Team Capability Rows */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   {teamCapabilities.map((cap) => (
-                    <div key={cap.role} className="p-3.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-secondary/10 border border-secondary/20 flex items-center justify-center text-secondary shrink-0">
-                          <cap.icon className="w-4.5 h-4.5" />
+                    <div key={cap.role} className="p-4 sm:p-5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-11 h-11 rounded-lg bg-secondary/10 border border-secondary/20 flex items-center justify-center text-secondary shrink-0">
+                          <cap.icon className="w-5 h-5" />
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-white mb-0.5">{cap.role}</p>
-                          <p className="text-[10px] text-muted-foreground">{cap.skill}</p>
+                          <p className="text-xs sm:text-sm font-bold text-white mb-0.5">{cap.role}</p>
+                          <p className="text-xs text-muted-foreground">{cap.skill}</p>
                         </div>
                       </div>
                     </div>
@@ -86,12 +86,12 @@ export function TeamMarketplaceSection() {
                 </div>
 
                 {/* Single Combined Output Banner */}
-                <div className="p-4 rounded-xl bg-gradient-to-r from-secondary/20 via-card to-card border border-secondary/30 flex items-center justify-between text-xs text-white">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-secondary shrink-0" />
+                <div className="p-5 rounded-xl bg-gradient-to-r from-secondary/20 via-card to-card border border-secondary/30 flex items-center justify-between text-xs sm:text-sm text-white">
+                  <div className="flex items-center gap-2.5">
+                    <Sparkles className="w-5 h-5 text-secondary shrink-0" />
                     <span>جاهزية التعاقد والتسليم الجماعي المباشر للشركات</span>
                   </div>
-                  <CheckCircle2 className="w-4 h-4 text-secondary shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" />
                 </div>
 
               </GlassCard>

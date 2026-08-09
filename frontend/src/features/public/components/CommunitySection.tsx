@@ -25,18 +25,18 @@ export function CommunitySection() {
     <section className="py-16 bg-background border-t border-white/5 relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        <div className="flex items-center justify-between mb-8 max-w-5xl mx-auto">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-              <BookOpen className="w-4 h-4" />
+        <div className="flex items-center justify-between mb-8 max-w-6xl mx-auto">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+              <BookOpen className="w-5 h-5" />
             </div>
-            <h2 className="text-xl font-bold font-heading text-white">رؤى ومقالات المسار المهني</h2>
+            <h2 className="text-xl sm:text-2xl font-bold font-heading text-white">رؤى ومقالات المسار المهني</h2>
           </div>
-          <span className="text-xs text-muted-foreground">معرفة مهنية متجددة</span>
+          <span className="text-xs sm:text-sm text-muted-foreground">معرفة مهنية متجددة</span>
         </div>
 
         {/* Compact Knowledge Strip */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {insightsArticles.map((art, idx) => (
             <motion.div
               key={art.title}
@@ -45,22 +45,22 @@ export function CommunitySection() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.1 }}
             >
-              <GlassCard className="p-4 flex flex-col justify-between bg-card/40 border-white/5 hover:border-primary/30 transition-all text-start h-full">
+              <GlassCard className="p-6 sm:p-7 flex flex-col justify-between bg-card/40 border-white/5 hover:border-primary/30 transition-all text-start h-full">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 border border-primary/20 text-primary">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="px-2.5 py-1 rounded text-xs font-bold bg-primary/10 border border-primary/20 text-primary">
                       {art.category}
                     </span>
-                    <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                      <Calendar className="w-3 h-3" /> {art.date}
+                    <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5" /> {art.date}
                     </span>
                   </div>
-                  <h3 className="text-xs font-bold text-white line-clamp-2 leading-relaxed mb-4">{art.title}</h3>
+                  <h3 className="text-sm sm:text-base font-bold text-white line-clamp-2 leading-relaxed mb-4">{art.title}</h3>
                 </div>
 
-                <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-primary font-bold">
+                <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs sm:text-sm text-primary font-bold">
                   <span>اقرأ المقال</span>
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <ArrowLeft className="w-4 h-4" />
                 </div>
               </GlassCard>
             </motion.div>

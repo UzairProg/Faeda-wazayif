@@ -67,7 +67,7 @@ export function WhyFaedaSection() {
         </div>
 
         {/* 4 Connected Advantage Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-10">
           {advantages.map((adv, idx) => (
             <motion.div
               key={adv.num}
@@ -76,25 +76,25 @@ export function WhyFaedaSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.1 }}
             >
-              <GlassCard className="p-6 flex flex-col justify-between h-full bg-card/50 backdrop-blur-md border-white/10 hover:border-primary/40 transition-all text-start shadow-xl relative overflow-hidden group">
+              <GlassCard className="p-7 sm:p-8 flex flex-col justify-between h-full bg-card/50 backdrop-blur-md border-white/10 hover:border-primary/40 transition-all text-start shadow-xl relative overflow-hidden group">
                 {/* Subtle Hover Glow Line */}
                 <div className="absolute top-0 start-0 end-0 h-1 bg-gradient-to-r from-primary/0 via-primary/50 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity" />
                 
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                      <adv.icon className="w-5 h-5" />
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                      <adv.icon className="w-6 h-6" />
                     </div>
-                    <span className="font-mono text-xs font-bold text-muted-foreground">{adv.num}</span>
+                    <span className="font-mono text-sm font-bold text-muted-foreground">{adv.num}</span>
                   </div>
 
-                  <h3 className="text-lg font-bold font-heading text-white mb-2">{adv.title}</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{adv.desc}</p>
+                  <h3 className="text-xl font-bold font-heading text-white mb-2.5">{adv.title}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{adv.desc}</p>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-primary font-bold">
+                <div className="pt-4 mt-5 border-t border-white/5 flex items-center justify-between text-xs sm:text-sm text-primary font-bold">
                   <span>{adv.tag}</span>
-                  <ArrowLeft className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />
+                  <ArrowLeft className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity" />
                 </div>
               </GlassCard>
             </motion.div>

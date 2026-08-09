@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 
-import { Search, MapPin, Sparkles, Play, Pause, Volume2, VolumeX } from "lucide-react"
+import { Search, Sparkles, Play, Pause, Volume2, VolumeX } from "lucide-react"
 
 import { Link } from "react-router-dom"
 import { ROUTES } from "@/config/routes"

@@ -10,7 +10,7 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-interface TiltCardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface TiltCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart"> {
   children: React.ReactNode;
   tiltEnabled?: boolean;
   shineEnabled?: boolean;

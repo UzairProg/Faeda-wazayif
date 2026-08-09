@@ -83,8 +83,8 @@ export function ApplicationJourneySection() {
         </div>
 
         {/* Visual Pipeline Bar */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-2 bg-card/60 border border-white/10 rounded-2xl backdrop-blur-md">
+        <div className="max-w-6xl mx-auto mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-3 bg-card/60 border border-white/10 rounded-2xl backdrop-blur-md">
             {appPipeline.map((st, idx) => {
               const isActive = idx === activeIndex
               const Icon = st.icon
@@ -95,16 +95,16 @@ export function ApplicationJourneySection() {
                     setActiveIndex(idx)
                     setIsPaused(true)
                   }}
-                  className={`flex flex-col items-start p-3.5 rounded-xl transition-all text-start ${isActive
+                  className={`flex flex-col items-start p-4 sm:p-5 rounded-xl transition-all text-start ${isActive
                     ? "bg-primary text-white shadow-lg shadow-primary/20 border border-primary/40 scale-[1.02]"
                     : "hover:bg-white/5 text-muted-foreground hover:text-white"
                     }`}
                 >
-                  <div className="flex items-center justify-between w-full mb-2">
-                    <Icon className="w-4 h-4" />
-                    <span className="text-[10px] font-mono opacity-80">{st.step}</span>
+                  <div className="flex items-center justify-between w-full mb-2.5">
+                    <Icon className="w-5 h-5" />
+                    <span className="text-xs font-mono opacity-80">{st.step}</span>
                   </div>
-                  <span className="text-xs font-bold font-heading line-clamp-1">{st.title}</span>
+                  <span className="text-xs sm:text-sm font-bold font-heading line-clamp-1">{st.title}</span>
                 </button>
               )
             })}
@@ -119,24 +119,24 @@ export function ApplicationJourneySection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="max-w-3xl mx-auto"
+            className="max-w-6xl mx-auto"
           >
-            <GlassCard className="p-6 bg-card/40 backdrop-blur-md border-white/10 text-start flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary shrink-0 mt-1">
-                  <activeStage.icon className="w-5 h-5" />
+            <GlassCard className="p-7 sm:p-8 bg-card/40 backdrop-blur-md border-white/10 text-start flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xl">
+              <div className="flex items-start gap-4 sm:gap-5">
+                <div className="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary shrink-0 mt-0.5">
+                  <activeStage.icon className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-bold text-white font-heading">{activeStage.title}</span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 border border-primary/20 text-primary">{activeStage.badge}</span>
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <span className="text-base sm:text-lg font-bold text-white font-heading">{activeStage.title}</span>
+                    <span className="px-2.5 py-0.5 rounded text-xs font-bold bg-primary/10 border border-primary/20 text-primary">{activeStage.badge}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{activeStage.details}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{activeStage.details}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5 text-xs text-primary font-bold shrink-0 self-end sm:self-auto">
-                <ShieldCheck className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-primary font-bold shrink-0 self-end sm:self-auto">
+                <ShieldCheck className="w-4.5 h-4.5" />
                 <span>متابعة فورية</span>
               </div>
             </GlassCard>
