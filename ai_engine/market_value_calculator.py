@@ -15,6 +15,7 @@ from typing import Dict, Optional, Any, List, Tuple
 
 import pandas as pd
 from thefuzz import fuzz, process
+from deep_translator import GoogleTranslator
 
 _qs_df: pd.DataFrame | None = None
 
@@ -420,72 +421,125 @@ def _map_experience_to_tier(years_of_skills: Optional[str]) -> str:
     return "0-2"
 
 
+def sanitize_input(text: Optional[str]) -> str:
+    """Sanitize user input to prevent XSS and limit length."""
+    if not text:
+        return ""
+    # Strip HTML tags
+    clean_text = re.sub(r'<[^>]*>', '', str(text))
+    # Remove unwanted special characters, allow Arabic/English/digits and spaces
+    clean_text = re.sub(r'[^\w\s\u0600-\u06FF-]', '', clean_text)
+    # Limit length
+    return clean_text[:100].strip().lower()
+
+SDAIA_INDUSTRY_KEYWORDS = {
+    # IT keywords
+    "IT": ["تقنية", "بيانات", "ذكاء", "برمجيات", "سيبراني", "شبكات", "تطوير", "حاسب", "معلومات", "data", "ai", "software", "cyber", "network", "developer", "engineer", "machine learning"],
+    # Engineering
+    "Engineering": ["هندسة", "مهندس", "مدني", "ميكانيكا", "كهرباء", "engineer", "civil", "mechanical"],
+    # Finance
+    "Finance": ["مالية", "محاسب", "تدقيق", "اقتصاد", "finance", "accounting", "auditor", "economist", "bank"],
+    # Medical
+    "Healthcare": ["صحة", "طب", "ممرض", "صيدلي", "health", "doctor", "nurse", "pharmacist", "medical"],
+    # Legal
+    "Legal": ["قانون", "محامي", "مستشار", "legal", "lawyer", "counsel"],
+    # Marketing
+    "Marketing": ["تسويق", "إعلان", "مبيعات", "marketing", "sales", "advertising"],
+    # HR
+    "HR": ["بشرية", "توظيف", "موظف", "hr", "human resources", "recruitment"],
+}
+
+def categorize_sdaia_title(title: str) -> str:
+    """Categorize an SDAIA job title into a broad industry based on keywords."""
+    title_lower = title.lower()
+    for industry, keywords in SDAIA_INDUSTRY_KEYWORDS.items():
+        for kw in keywords:
+            if kw in title_lower:
+                return industry
+    return "General Administration"
+
+
 def _map_field_to_specialization(preferred_field: Optional[str]) -> Optional[str]:
-    """Map the user's preferred field of work to a benchmark specialization.
+    """Map the user's preferred field of work using fuzzy matching against benchmarks and SDAIA titles.
 
     Args:
         preferred_field: User's preferred field (Arabic or English).
 
     Returns:
-        Optional[str]: Matched specialization or None.
+        Optional[str]: Matched specialization category or "General Administration".
     """
-    if not preferred_field:
+    cleaned = sanitize_input(preferred_field)
+    if not cleaned:
         return None
 
-    cleaned = re.sub(r"\s+", " ", preferred_field.strip().lower())
+    # Translation for English input
+    if re.search(r'[a-zA-Z]', cleaned):
+        try:
+            logger.info("Translating '%s' to Arabic...", cleaned)
+            translated = GoogleTranslator(source='auto', target='ar').translate(cleaned)
+            if translated:
+                cleaned = translated
+                logger.info("Translated result: '%s'", cleaned)
+        except Exception as e:
+            logger.warning("Translation failed: %s", e)
 
-    field_mapping: Dict[str, str] = {
-        "تقنية المعلومات": "IT",
-        "it": "IT",
-        "information technology": "IT",
-        "برمجة": "IT",
-        "software": "IT",
-        "computer": "IT",
-        "حاسب": "IT",
-        "الموارد البشرية": "HR",
-        "human resources": "HR",
-        "hr": "HR",
-        "التسويق": "Marketing",
-        "marketing": "Marketing",
-        "تسويق": "Marketing",
-        "الهندسة": "Engineering",
-        "engineering": "Engineering",
-        "هندسة": "Engineering",
-        "المالية": "Finance",
-        "finance": "Finance",
-        "مالية": "Finance",
-        "المحاسبة": "Finance",
-        "accounting": "Finance",
-        "الرعاية الصحية": "Healthcare",
-        "healthcare": "Healthcare",
-        "صحة": "Healthcare",
-        "طب": "Healthcare",
-        "medical": "Healthcare",
-        "التعليم": "Education",
-        "education": "Education",
-        "تعليم": "Education",
-        "القانون": "Legal",
-        "legal": "Legal",
-        "قانون": "Legal",
-        "المبيعات": "Sales",
-        "sales": "Sales",
-        "مبيعات": "Sales",
-        "الإدارة": "Administration",
-        "administration": "Administration",
-        "إدارة": "Administration",
-        "management": "Administration",
-    }
+    # Data Minimization: only log the sanitized raw job title
+    logger.info("[*] Attempting fuzzy mapping for job title: '%s'", cleaned)
 
-    # Direct match
-    if cleaned in field_mapping:
-        return field_mapping[cleaned]
+    # 1. Fetch available specializations from salary_benchmark
+    conn: Optional[sqlite3.Connection] = None
+    available_specs: List[str] = []
+    sdaia_titles: List[str] = []
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Load unique specializations from fallback/benchmarks
+        cursor.execute("SELECT DISTINCT specialization FROM salary_benchmark")
+        available_specs = [row[0] for row in cursor.fetchall()]
+        
+        # Load SDAIA job titles
+        try:
+            cursor.execute("SELECT job_title FROM sdaia_job_titles")
+            sdaia_titles = [row[0] for row in cursor.fetchall()]
+        except sqlite3.OperationalError:
+            # Table might not exist yet
+            pass
+    except sqlite3.Error as e:
+        logger.error("[-] DB error fetching specializations for mapping: %s", e)
+    finally:
+        if conn:
+            conn.close()
 
-    # Substring match
-    for keyword, spec in field_mapping.items():
-        if keyword in cleaned or cleaned in keyword:
-            return spec
+    # 2. Fuzzy match against fallback specializations
+    if available_specs:
+        spec_match, spec_score = process.extractOne(cleaned, available_specs, scorer=fuzz.ratio) or (None, 0)
+        if spec_score >= 75 and spec_match:
+            logger.info("[+] High confidence match in benchmarks: %s (score: %s)", spec_match, spec_score)
+            return spec_match
+            
+        spec_match_token, spec_score_token = process.extractOne(cleaned, available_specs, scorer=fuzz.token_set_ratio) or (None, 0)
+        if spec_score_token >= 75 and spec_match_token:
+            logger.info("[+] High confidence token match in benchmarks: %s (score: %s)", spec_match_token, spec_score_token)
+            return spec_match_token
 
-    return None
+    # 3. Fuzzy match against SDAIA job titles
+    if sdaia_titles:
+        sdaia_match, sdaia_score = process.extractOne(cleaned, sdaia_titles, scorer=fuzz.ratio) or (None, 0)
+        if sdaia_score >= 75 and sdaia_match:
+            industry = categorize_sdaia_title(sdaia_match)
+            logger.info("[+] Matched SDAIA title '%s' (score: %s), mapped to industry: %s", sdaia_match, sdaia_score, industry)
+            return industry
+
+        sdaia_match_token, sdaia_score_token = process.extractOne(cleaned, sdaia_titles, scorer=fuzz.token_set_ratio) or (None, 0)
+        if sdaia_score_token >= 75 and sdaia_match_token:
+            industry = categorize_sdaia_title(sdaia_match_token)
+            logger.info("[+] Token matched SDAIA title '%s' (score: %s), mapped to industry: %s", sdaia_match_token, sdaia_score_token, industry)
+            return industry
+
+    # 4. Fallback if no confident match
+    logger.info("[-] No confident match found. Falling back to Custom job.")
+    return f"Custom: {preferred_field}"
 
 
 # ---------------------------------------------------------------------------
@@ -543,7 +597,23 @@ def calculate_market_value(user_profile: Dict[str, Any]) -> Dict[str, Any]:
     )
 
     # --- Look up salary benchmarks ---
-    salary_range = get_salary_benchmark(specialization, exp_tier)
+    if specialization and specialization.startswith("Custom: "):
+        # Baseline average from 2024 CSV (General average: ~10,000 SAR)
+        base_avg = 10000
+        if exp_tier == "0-2":
+            avg = base_avg
+        elif exp_tier == "3-5":
+            avg = base_avg * 1.45 # ~14,500
+        else:
+            avg = base_avg * 2.2 # ~22,000
+            
+        salary_range = {
+            "min_salary": int(avg * 0.75),
+            "avg_salary": int(avg),
+            "max_salary": int(avg * 1.35)
+        }
+    else:
+        salary_range = get_salary_benchmark(specialization, exp_tier)
 
     # --- Determine percentile label ---
     if total_score >= 80:
