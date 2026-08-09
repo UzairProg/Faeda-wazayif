@@ -2,7 +2,7 @@
  * features/public/components/EcosystemOverviewSection.tsx
  *
  * Visual Overview Section for Faeda Ecosystem vs Fragmented Tools.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
@@ -17,6 +17,11 @@ export function EcosystemOverviewSection() {
     { id: "company", title: "Companies & Employers", sub: "Official Presence • Post Opportunities • Hiring Management", icon: Building2 },
     { id: "team", title: "Specialized Teams", sub: "Capability Clusters • Direct Offers • Group Hiring", icon: Users },
     { id: "education", title: "Education Institutions", sub: "Skill Alignment • Graduate Readiness • Industry Partnerships", icon: GraduationCap },
+  ] : language === "hi" ? [
+    { id: "candidate", title: "प्रतिभा और पेशेवर", sub: "सत्यापित पहचान • एटीएस तत्परता • बाजार मूल्य", icon: User },
+    { id: "company", title: "कंपनियां और नियोक्ता", sub: "आधिकारिक उपस्थिति • अवसर पोस्ट करें • भर्ती प्रबंधन", icon: Building2 },
+    { id: "team", title: "विशेषज्ञ टीमें", sub: "क्षमता समूह • प्रत्यक्ष प्रस्ताव • समूह भर्ती", icon: Users },
+    { id: "education", title: "शैक्षणिक संस्थान", sub: "कौशल संरेखण • स्नातक तत्परता • उद्योग साझेदारी", icon: GraduationCap },
   ] : [
     { id: "candidate", title: "الكفاءات والباحثين", sub: "هوية مهنية • جاهزية ATS • قيمة سوقية", icon: User },
     { id: "company", title: "الشركات وأصحاب العمل", sub: "حضور موثق • نشر فرص • إدارة توظيف", icon: Building2 },
@@ -76,7 +81,13 @@ export function EcosystemOverviewSection() {
           <div className="hidden sm:flex items-center justify-center my-4">
             <div className="px-6 py-2.5 rounded-full bg-primary/20 border border-primary/40 text-white font-heading font-extrabold text-sm flex items-center gap-2 shadow-lg shadow-primary/20">
               <RefreshCw className="w-4 h-4 text-primary animate-spin" style={{ animationDuration: "12s" }} />
-              <span>{language === "en" ? "Faeda Central Ecosystem Hub" : "مركز منظومة فائدة (Faeda Hub)"}</span>
+              <span>
+                {language === "en"
+                  ? "Faeda Central Ecosystem Hub"
+                  : language === "hi"
+                  ? "फ़ायदा केंद्रीय पारिस्थितिकी तंत्र हब"
+                  : "مركز منظومة فائدة (Faeda Hub)"}
+              </span>
             </div>
           </div>
 

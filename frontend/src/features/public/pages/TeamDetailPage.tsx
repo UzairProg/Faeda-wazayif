@@ -3,7 +3,7 @@
  *
  * Public Team profile detail page.
  * Displays capability breakdown, team members roster, opportunities suited for teams,
- * and leadership specs. Fully localized for Arabic (RTL) and English (LTR).
+ * and leadership specs. Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useParams, Link } from "react-router-dom"
 import {
@@ -148,7 +148,7 @@ export function TeamDetailPage() {
 
                   {team.isRemote && (
                     <span className="before:content-['•'] before:me-2 before:text-white/20 text-cyan-400 font-semibold">
-                      {language === "en" ? "Remote Available" : "متاح للعمل عن بعد"}
+                      {language === "en" ? "Remote Available" : language === "hi" ? "रिमोट उपलब्ध" : "متاح للعمل عن بعد"}
                     </span>
                   )}
                 </div>
@@ -176,7 +176,7 @@ export function TeamDetailPage() {
               <GlassCard className="p-6 sm:p-8 bg-card/60 backdrop-blur-md border-white/10 text-start shadow-xl space-y-3">
                 <h2 className="text-xl font-extrabold font-heading text-white flex items-center gap-2">
                   <Users className="w-5 h-5 text-primary" />
-                  <span>{language === "en" ? "About Team" : "عن الفريق"}</span>
+                  <span>{language === "en" ? "About Team" : language === "hi" ? "टीम के बारे में" : "عن الفريق"}</span>
                 </h2>
                 <p className="text-sm sm:text-base text-white/90 leading-relaxed whitespace-pre-line">
                   {team.about}
@@ -286,12 +286,12 @@ export function TeamDetailPage() {
             
             <GlassCard className="p-6 bg-card/60 backdrop-blur-md border-white/10 text-start shadow-xl space-y-4">
               <h3 className="text-base font-bold font-heading text-white pb-3 border-b border-white/10">
-                {language === "en" ? "Team Overview" : "معلومات الفريق الأساسية"}
+                {language === "en" ? "Team Overview" : language === "hi" ? "टीम अवलोकन" : "معلومات الفريق الأساسية"}
               </h3>
 
               <div className="space-y-3 text-xs sm:text-sm">
                 <div>
-                  <span className="text-muted-foreground text-[11px] block mb-0.5">{language === "en" ? "Location" : "المقر والجغرافيا"}</span>
+                  <span className="text-muted-foreground text-[11px] block mb-0.5">{language === "en" ? "Location" : language === "hi" ? "स्थान" : "المقر والجغرافيا"}</span>
                   <p className="font-bold text-white flex items-center gap-1.5">
                     <MapPin className="w-4 h-4 text-primary shrink-0" />
                     {team.location}
@@ -299,7 +299,7 @@ export function TeamDetailPage() {
                 </div>
 
                 <div>
-                  <span className="text-muted-foreground text-[11px] block mb-0.5">{language === "en" ? "Team Members" : "عدد أعضاء الفريق"}</span>
+                  <span className="text-muted-foreground text-[11px] block mb-0.5">{language === "en" ? "Team Members" : language === "hi" ? "टीम के सदस्य" : "عدد أعضاء الفريق"}</span>
                   <p className="font-bold text-white font-mono">
                     {t("teams.list.memberCount", { count: formatLocalizedNumber(team.memberCount, language) })}
                   </p>
@@ -307,7 +307,7 @@ export function TeamDetailPage() {
 
                 {team.generalProgram && (
                   <div>
-                    <span className="text-muted-foreground text-[11px] block mb-0.5">{language === "en" ? "Track / Program" : "المسار التخصصي العام"}</span>
+                    <span className="text-muted-foreground text-[11px] block mb-0.5">{language === "en" ? "Track / Program" : language === "hi" ? "ट्रैक / कार्यक्रम" : "المسار التخصصي العام"}</span>
                     <p className="font-semibold text-white">{team.generalProgram}</p>
                   </div>
                 )}

@@ -1,12 +1,12 @@
 /**
  * store/language.store.ts
  *
- * Global Zustand store for persistent language selection (ar ↔ en)
+ * Global Zustand store for persistent language selection (ar ↔ en ↔ hi)
  * and document direction (rtl ↔ ltr).
  */
 import { create } from "zustand"
 
-export type Language = "ar" | "en"
+export type Language = "ar" | "en" | "hi"
 export type Direction = "rtl" | "ltr"
 
 const STORAGE_KEY = "faeda-language"
@@ -14,7 +14,7 @@ const STORAGE_KEY = "faeda-language"
 function getInitialLanguage(): Language {
   if (typeof window === "undefined") return "ar"
   const stored = localStorage.getItem(STORAGE_KEY)
-  if (stored === "ar" || stored === "en") {
+  if (stored === "ar" || stored === "en" || stored === "hi") {
     return stored
   }
   return "ar"
@@ -53,7 +53,8 @@ export const useLanguageStore = create<LanguageState>((set, get) => ({
   },
 
   toggleLanguage: () => {
-    const nextLang: Language = get().language === "ar" ? "en" : "ar"
+    const current = get().language
+    const nextLang: Language = current === "ar" ? "en" : current === "en" ? "hi" : "ar"
     get().setLanguage(nextLang)
   },
 }))

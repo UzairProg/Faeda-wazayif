@@ -2,7 +2,7 @@
  * features/teams/components/TeamRow.tsx
  *
  * Information-dense directory row card component for the public Team Marketplace.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { Link } from "react-router-dom"
 import { Users, Layers, MapPin, ArrowLeft, ArrowRight } from "lucide-react"
@@ -115,7 +115,7 @@ export function TeamRow({ team, isSelected = false, onSelect }: TeamRowProps) {
               </span>
               {team.isRemote && (
                 <span className="before:content-['•'] before:me-2 before:text-white/20 text-cyan-400 font-semibold">
-                  {language === "en" ? "Remote Available" : "م متاح للعمل عن بعد"}
+                  {language === "en" ? "Remote Available" : language === "hi" ? "रिमोट उपलब्ध" : "متاح للعمل عن بعد"}
                 </span>
               )}
             </div>

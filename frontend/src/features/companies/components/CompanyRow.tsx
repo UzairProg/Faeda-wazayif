@@ -2,7 +2,7 @@
  * features/companies/components/CompanyRow.tsx
  *
  * Information-dense directory row/card component for public company discovery.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { Link } from "react-router-dom"
 import { Building2, MapPin, CheckCircle2, Briefcase, ExternalLink, ArrowLeft, ArrowRight } from "lucide-react"
@@ -114,7 +114,7 @@ export function CompanyRow({ company }: CompanyRowProps) {
             <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-muted-foreground mt-1 mb-2">
               <span className="inline-flex items-center gap-1 text-white/80">
                 <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span>{company.location || company.country || (language === "en" ? "Saudi Arabia" : "المملكة العربية السعودية")}</span>
+                <span>{company.location || company.country || (language === "en" ? "Saudi Arabia" : language === "hi" ? "सऊदी अरब" : "المملكة العربية السعودية")}</span>
               </span>
 
               {company.companySize && (

@@ -2,7 +2,7 @@
  * features/public/components/AIExperienceSection.tsx
  *
  * Public AI Experience section for Home page ("الذكاء يساعدك، والقرار لك").
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -38,6 +38,28 @@ export function AIExperienceSection() {
       badge: "Trajectory Coach",
       analysis: "Compared your skills against high market demand for Cloud & Fullstack.",
       suggestion: "Obtaining AWS Cloud Practitioner certification increases expected monthly salary range by SAR 2,500.",
+    },
+  ] : language === "hi" ? [
+    {
+      id: "ats",
+      prompt: "मैं फ़्रंटएंड अवसरों के लिए अपने सीवी संरेखण में कैसे सुधार कर सकता हूं?",
+      badge: "स्मार्ट एटीएस सलाहकार",
+      analysis: "अनुभव अनुभाग में 3 लापता कीवर्ड मिले (सिस्टम आर्किटेक्चर, सीआई/सीडी, प्रदर्शन अनुकूलन)।",
+      suggestion: "TypeScript दस्तावेज़ीकरण के साथ 30% UI प्रदर्शन वृद्धि का प्रदर्शन करने वाली एक मात्रात्मक उपलब्धि जोड़ें।",
+    },
+    {
+      id: "interview",
+      prompt: "वरिष्ठ फ़्रंटएंड साक्षात्कार में अपेक्षित शीर्ष 3 प्रश्न क्या हैं?",
+      badge: "साक्षात्कार सिम्युलेटर",
+      analysis: "2026 के लिए टेक नियोक्ताओं से भर्ती रुझानों का विश्लेषण किया गया।",
+      suggestion: "प्रश्न 1: आप एंटरप्राइज स्केल पर स्टेट मैनेजमेंट को कैसे संभालते हैं? प्रश्न 2: SSR प्रदर्शन अनुकूलन समझाएं।",
+    },
+    {
+      id: "growth",
+      prompt: "मेरे वेतन बाजार मूल्य को बढ़ाने के लिए मेरा अगला सबसे अच्छा कदम क्या है?",
+      badge: "प्रक्षेपवक्र कोच",
+      analysis: "क्लाउड और फुलस्टैक की उच्च बाजार मांग के खिलाफ आपके कौशलों की तुलना की गई।",
+      suggestion: "AWS क्लाउड प्रैक्टिशनर प्रमाणन प्राप्त करने से अपेक्षित मासिक वेतन सीमा में 2,500 SAR की वृद्धि होती है।",
     },
   ] : [
     {
@@ -143,16 +165,16 @@ export function AIExperienceSection() {
                   <div className="flex flex-wrap items-center gap-3">
                     <Button
                       size="sm"
-                      onClick={() => setActionStatus(language === "en" ? "Recommendation applied!" : "تم تطبيق التوصية بحسابك!")}
+                      onClick={() => setActionStatus(language === "en" ? "Recommendation applied!" : language === "hi" ? "सिफारिश लागू की गई!" : "تم تطبيق التوصية بحسابك!")}
                       className="rounded-lg px-5 bg-primary hover:bg-primary/90 text-white font-bold text-xs sm:text-sm h-10 gap-1.5"
                     >
                       <Check className="w-4 h-4" />
-                      {language === "en" ? "Apply Recommendation" : "تطبيق التوصية"}
+                      {language === "en" ? "Apply Recommendation" : language === "hi" ? "सिफारिश लागू करें" : "تطبيق التوصية"}
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setActionStatus(language === "en" ? "Editing screen opened" : "فتح شاشة التعديل")}
+                      onClick={() => setActionStatus(language === "en" ? "Editing screen opened" : language === "hi" ? "संपादन स्क्रीन खोली गई" : "فتح شاشة التعديل")}
                       className="rounded-lg px-5 border-white/10 bg-white/5 text-white text-xs sm:text-sm h-10 gap-1.5"
                     >
                       <Edit3 className="w-4 h-4" />
@@ -161,11 +183,11 @@ export function AIExperienceSection() {
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => setActionStatus(language === "en" ? "Recommendation dismissed" : "تم تجاهل التوصية")}
+                      onClick={() => setActionStatus(language === "en" ? "Recommendation dismissed" : language === "hi" ? "सिफारिश खारिज की गई" : "تم تجاهل التوصية")}
                       className="rounded-lg px-4 text-muted-foreground hover:text-white text-xs sm:text-sm h-10 gap-1.5"
                     >
                       <X className="w-4 h-4" />
-                      {language === "en" ? "Dismiss" : "تجاهل"}
+                      {language === "en" ? "Dismiss" : language === "hi" ? "खारिज करें" : "تجاهل"}
                     </Button>
                   </div>
                 </div>

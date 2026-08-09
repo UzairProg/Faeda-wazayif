@@ -3,7 +3,7 @@
  *
  * Editorial hero section for the About page.
  * Displays Faeda's core purpose statement alongside an animated connected ecosystem node diagram.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
@@ -66,6 +66,8 @@ export function AboutHero() {
             >
               {language === "en"
                 ? "Faeda connects your professional identity, career guidance, open positions, verified work environments, and specialized teams in a single transparent ecosystem."
+                : language === "hi"
+                ? "फ़ायदा आपकी पेशेवर पहचान, करियर मार्गदर्शन, रिक्त पदों, सत्यापित कार्य वातावरण और विशेषज्ञ टीमों को एक ही पारदर्शी पारिस्थितिकी तंत्र में जोड़ता है।"
                 : "تصل فائدة بين هويتك المهنية، ذكاء المسار، الفرص الشاغرة، بيئات العمل الموثوقة والفرق التخصصية في مساحة موحدة تمتاز بالشفافية الكاملة."}
             </motion.p>
 
@@ -96,16 +98,16 @@ export function AboutHero() {
               
               <div className="text-center mb-6">
                 <span className="text-xs font-mono font-bold text-primary uppercase tracking-wider block mb-1">
-                  {language === "en" ? "Connected Architecture" : "الهيكلية المترابطة"}
+                  {language === "en" ? "Connected Architecture" : language === "hi" ? "जुड़ी हुई वास्तुकला" : "الهيكلية المترابطة"}
                 </span>
                 <h3 className="text-lg font-extrabold font-heading text-white">
-                  {language === "en" ? "Faeda Professional Ecosystem" : "منظومة فائدة المهنية"}
+                  {language === "en" ? "Faeda Professional Ecosystem" : language === "hi" ? "फ़ायदा पेशेवर पारिस्थितिकी तंत्र" : "منظومة فائدة المهنية"}
                 </h3>
               </div>
 
               <div className="relative py-4 space-y-3">
                 <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary via-blue-600 to-accent text-white flex items-center justify-center font-extrabold font-heading text-2xl mx-auto shadow-xl shadow-primary/30 border border-white/20 mb-6">
-                  {language === "en" ? "Faeda" : "فائدة"}
+                  {language === "en" ? "Faeda" : language === "hi" ? "फ़ायदा" : "فائدة"}
                 </div>
 
                 <div className="space-y-2.5">

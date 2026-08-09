@@ -2,9 +2,9 @@
  * components/shared/Navbar.tsx
  *
  * Sticky top navigation bar for Faeda Jobs.
- * Features an interactive language dropdown switcher (العربية ↔ English),
+ * Features an interactive trilingual language dropdown switcher (العربية ↔ English ↔ हिन्दी),
  * RTL/LTR mirroring, accessible ARIA semantics, keyboard controls,
- * and localized navigation links.
+ * official white Faeda logo, and localized navigation links.
  */
 import { useState, useRef, useEffect } from "react"
 import { Link, useLocation } from "react-router-dom"
@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { ROUTES } from "@/config/routes"
 import { useTranslation } from "@/i18n"
 import type { Language } from "@/store/language.store"
+import faedaWhiteLogo from "@/assets/logos/faeda_white_logo.png"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -48,18 +49,23 @@ export function Navbar() {
     setLangMenuOpen(false)
   }
 
+  const getLangLabel = (lang: Language) => {
+    if (lang === "ar") return "العربية"
+    if (lang === "hi") return "हिन्दी"
+    return "English"
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/[0.04] bg-gradient-to-r from-background/95 via-[#0A2D8F]/15 to-background/95 backdrop-blur-xl transition-all duration-300">
       <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         
-        {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
-            <span className="font-heading text-2xl font-bold">ف</span>
-          </div>
-          <span className="font-heading text-2xl font-bold tracking-tight text-white hidden sm:block">
-            {language === "ar" ? "منصة فائدة" : "Faeda Jobs"}
-          </span>
+        {/* Official Faeda White Brand Logo */}
+        <Link to="/" className="flex items-center gap-3 group">
+          <img
+            src={faedaWhiteLogo}
+            alt="Faeda Jobs Logo"
+            className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+          />
         </Link>
 
         {/* Desktop Navigation */}
@@ -92,49 +98,36 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Right Side Actions */}
+        {/* Actions & Trilingual Selector */}
         <div className="hidden lg:flex items-center gap-3">
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-white hover:bg-white/5 rounded-full" aria-label="Notifications">
-            <Bell className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-white hover:bg-white/5 rounded-full" aria-label="User profile">
-            <User className="h-5 w-5" />
-          </Button>
-
-          {/* Interactive Language Dropdown */}
-          <div ref={langContainerRef} className="relative">
-            <Button
-              variant="outline"
-              size="sm"
+          
+          {/* Trilingual Language Selector Dropdown */}
+          <div className="relative" ref={langContainerRef}>
+            <button
               onClick={() => setLangMenuOpen(!langMenuOpen)}
-              aria-expanded={langMenuOpen}
-              aria-haspopup="listbox"
+              className="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-3.5 py-2 text-xs font-semibold text-white hover:bg-white/10 transition-all focus:outline-none focus:ring-2 focus:ring-primary/50"
               aria-label="Select language"
-              className="gap-2 bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-full h-10 px-4"
+              aria-expanded={langMenuOpen}
             >
-              <Globe className="h-4 w-4 text-primary" />
-              <span className="font-semibold text-xs">{language === "ar" ? "العربية" : "English"}</span>
-              <ChevronDown className={cn("h-4 w-4 opacity-50 transition-transform", langMenuOpen && "rotate-180")} />
-            </Button>
+              <Globe className="h-4 w-4 text-primary shrink-0" />
+              <span>{getLangLabel(language)}</span>
+              <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground transition-transform duration-200", langMenuOpen && "rotate-180")} />
+            </button>
 
             <AnimatePresence>
               {langMenuOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
                   transition={{ duration: 0.15 }}
-                  role="listbox"
-                  className="absolute end-0 top-full mt-2 w-36 py-1 z-50 bg-card/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden divide-y divide-white/5"
+                  className="absolute end-0 mt-2 w-40 rounded-2xl bg-card/95 border border-white/10 p-1.5 shadow-2xl backdrop-blur-xl z-50 text-start"
                 >
                   <button
-                    type="button"
-                    role="option"
-                    aria-selected={language === "ar"}
                     onClick={() => handleSelectLanguage("ar")}
                     className={cn(
-                      "w-full px-4 py-2.5 text-xs font-semibold flex items-center justify-between transition-colors text-start",
-                      language === "ar" ? "bg-primary/20 text-primary font-bold" : "text-white/90 hover:bg-white/5"
+                      "w-full flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-xl transition-colors",
+                      language === "ar" ? "bg-primary/20 text-primary font-bold" : "text-white/80 hover:bg-white/5 hover:text-white"
                     )}
                   >
                     <span>العربية</span>
@@ -142,92 +135,129 @@ export function Navbar() {
                   </button>
 
                   <button
-                    type="button"
-                    role="option"
-                    aria-selected={language === "en"}
                     onClick={() => handleSelectLanguage("en")}
                     className={cn(
-                      "w-full px-4 py-2.5 text-xs font-semibold flex items-center justify-between transition-colors text-start",
-                      language === "en" ? "bg-primary/20 text-primary font-bold" : "text-white/90 hover:bg-white/5"
+                      "w-full flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-xl transition-colors mt-0.5",
+                      language === "en" ? "bg-primary/20 text-primary font-bold" : "text-white/80 hover:bg-white/5 hover:text-white"
                     )}
                   >
                     <span>English</span>
                     {language === "en" && <Check className="h-3.5 w-3.5 text-primary" />}
+                  </button>
+
+                  <button
+                    onClick={() => handleSelectLanguage("hi")}
+                    className={cn(
+                      "w-full flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-xl transition-colors mt-0.5",
+                      language === "hi" ? "bg-primary/20 text-primary font-bold" : "text-white/80 hover:bg-white/5 hover:text-white"
+                    )}
+                  >
+                    <span>हिन्दी</span>
+                    {language === "hi" && <Check className="h-3.5 w-3.5 text-primary" />}
                   </button>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Login Button */}
-          <Link to={ROUTES.AUTH.LOGIN}>
-            <Button className="rounded-full h-10 px-6 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 text-xs sm:text-sm">
-              {t("common.nav.login")}
-            </Button>
-          </Link>
+          <Button variant="ghost" size="icon" className="rounded-xl text-muted-foreground hover:text-white">
+            <Bell className="h-4 w-4" />
+          </Button>
+
+          <Button asChild variant="outline" size="sm" className="rounded-xl border-white/10 bg-white/5 text-xs text-white hover:bg-white/10">
+            <Link to={ROUTES.AUTH.LOGIN}>{t("common.nav.login")}</Link>
+          </Button>
+
+          <Button asChild size="sm" className="rounded-xl bg-primary text-xs font-semibold text-primary-foreground shadow-md shadow-primary/20 hover:bg-primary/90">
+            <Link to={ROUTES.AUTH.REGISTER}>{t("common.nav.register")}</Link>
+          </Button>
         </div>
 
-        {/* Mobile Menu Toggle Button */}
-        <button
-          className="lg:hidden p-2 text-muted-foreground hover:text-white"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle mobile menu"
-        >
-          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        {/* Mobile Menu Button */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-white"
+          >
+            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </Button>
+        </div>
 
       </div>
 
-      {/* Mobile Navigation Dropdown */}
+      {/* Mobile Drawer Navigation */}
       {isOpen && (
-        <div className="lg:hidden border-t border-white/5 bg-background">
-          <div className="container mx-auto flex flex-col p-4 gap-2 text-start">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                onClick={() => setIsOpen(false)}
-                className="p-3 rounded-lg text-base font-medium text-muted-foreground hover:text-white hover:bg-white/5"
-              >
-                {link.label}
-              </Link>
-            ))}
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="border-b border-white/10 bg-background/95 backdrop-blur-xl lg:hidden"
+        >
+          <div className="container mx-auto px-4 py-6 space-y-4">
+            <div className="flex flex-col space-y-2">
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-white rounded-lg hover:bg-white/5"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
 
-            <div className="h-px w-full bg-white/5 my-2" />
-
-            <div className="flex flex-col gap-3 pt-2">
-              {/* Mobile Language Toggle */}
-              <div className="grid grid-cols-2 gap-2 bg-white/5 p-1 rounded-2xl border border-white/10">
+            {/* Mobile Language Switcher (AR / EN / HI) */}
+            <div className="pt-4 border-t border-white/10 space-y-3">
+              <span className="text-xs text-muted-foreground px-1 font-semibold">{t("common.nav.language")}:</span>
+              <div className="grid grid-cols-3 gap-2">
                 <button
-                  type="button"
                   onClick={() => handleSelectLanguage("ar")}
                   className={cn(
-                    "py-2 rounded-xl text-xs font-bold transition-all",
-                    language === "ar" ? "bg-primary text-white shadow-md" : "text-muted-foreground hover:text-white"
+                    "py-2 rounded-xl text-xs font-bold transition-all border text-center",
+                    language === "ar" ? "bg-primary text-white border-primary" : "bg-white/5 border-white/10 text-muted-foreground"
                   )}
                 >
                   العربية
                 </button>
                 <button
-                  type="button"
                   onClick={() => handleSelectLanguage("en")}
                   className={cn(
-                    "py-2 rounded-xl text-xs font-bold transition-all",
-                    language === "en" ? "bg-primary text-white shadow-md" : "text-muted-foreground hover:text-white"
+                    "py-2 rounded-xl text-xs font-bold transition-all border text-center",
+                    language === "en" ? "bg-primary text-white border-primary" : "bg-white/5 border-white/10 text-muted-foreground"
                   )}
                 >
                   English
                 </button>
+                <button
+                  onClick={() => handleSelectLanguage("hi")}
+                  className={cn(
+                    "py-2 rounded-xl text-xs font-bold transition-all border text-center",
+                    language === "hi" ? "bg-primary text-white border-primary" : "bg-white/5 border-white/10 text-muted-foreground"
+                  )}
+                >
+                  हिन्दी
+                </button>
               </div>
+            </div>
 
-              <Link to={ROUTES.AUTH.LOGIN} onClick={() => setIsOpen(false)}>
-                <Button className="w-full justify-center rounded-full bg-primary text-primary-foreground font-bold">
+            <div className="pt-2 flex flex-col gap-2">
+              <Button asChild variant="outline" className="w-full justify-center rounded-xl border-white/10 bg-white/5 text-white">
+                <Link to={ROUTES.AUTH.LOGIN} onClick={() => setIsOpen(false)}>
+                  <User className="h-4 w-4 me-2" />
                   {t("common.nav.login")}
-                </Button>
-              </Link>
+                </Link>
+              </Button>
+              <Button asChild className="w-full justify-center rounded-xl bg-primary text-primary-foreground font-semibold">
+                <Link to={ROUTES.AUTH.REGISTER} onClick={() => setIsOpen(false)}>
+                  {t("common.nav.register")}
+                </Link>
+              </Button>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
     </header>
   )

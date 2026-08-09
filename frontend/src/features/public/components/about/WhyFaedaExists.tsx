@@ -2,7 +2,7 @@
  * features/public/components/about/WhyFaedaExists.tsx
  *
  * Visual transformation flow comparing today's fragmented hiring tools with Faeda's unified ecosystem.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { Layers, ArrowLeft, ArrowRight, CheckCircle2, AlertCircle, FileText, Briefcase, Bot } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
@@ -46,7 +46,7 @@ export function WhyFaedaExists() {
                   <div>
                     <h3 className="font-extrabold text-white text-base">{t("about.why.todayHeader")}</h3>
                     <span className="text-[11px] text-rose-300 font-mono">
-                      {language === "en" ? "Isolated Tools & Silos" : "أدوات مبعثرة ومعزولة"}
+                      {language === "en" ? "Isolated Tools & Silos" : language === "hi" ? "अलग-थलग उपकरण और साइलो" : "أدوات مبعثرة ومعزولة"}
                     </span>
                   </div>
                 </div>
@@ -59,15 +59,33 @@ export function WhyFaedaExists() {
               <div className="space-y-3 pt-2">
                 <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex items-center gap-3 text-xs text-rose-200">
                   <FileText className="w-4 h-4 text-rose-400 shrink-0" />
-                  <span>{language === "en" ? "CV stored isolated on hard drive or PDF" : "السيرة الذاتية مجرد ملف PDF منفصل في جهازك"}</span>
+                  <span>
+                    {language === "en"
+                      ? "CV stored isolated on hard drive or PDF"
+                      : language === "hi"
+                      ? "सीवी हार्ड ड्राइव या पीडीएफ पर अलग-थलग संग्रहीत"
+                      : "السيرة الذاتية مجرد ملف PDF منفصل في جهازك"}
+                  </span>
                 </div>
                 <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex items-center gap-3 text-xs text-rose-200">
                   <Briefcase className="w-4 h-4 text-rose-400 shrink-0" />
-                  <span>{language === "en" ? "Jobs posted on generic job boards" : "إعلانات الوظائف تائهة في مواقع الإعلانات العامة"}</span>
+                  <span>
+                    {language === "en"
+                      ? "Jobs posted on generic job boards"
+                      : language === "hi"
+                      ? "सामान्य नौकरी बोर्डों पर पोस्ट की गई नौकरियां"
+                      : "إعلانات الوظائف تائهة في مواقع الإعلانات العامة"}
+                  </span>
                 </div>
                 <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex items-center gap-3 text-xs text-rose-200">
                   <Bot className="w-4 h-4 text-rose-400 shrink-0" />
-                  <span>{language === "en" ? "Blackbox AI tools rating applicants without explanation" : "أدوات الفرز الآلي تحرم الباحث دون إبداء أسباب"}</span>
+                  <span>
+                    {language === "en"
+                      ? "Blackbox AI tools rating applicants without explanation"
+                      : language === "hi"
+                      ? "ब्लैकबॉक्स एआई उपकरण बिना किसी स्पष्टीकरण के आवेदकों को रेटिंग देते हैं"
+                      : "أدوات الفرز الآلي تحرم الباحث دون إبداء أسباب"}
+                  </span>
                 </div>
               </div>
             </GlassCard>
@@ -91,7 +109,7 @@ export function WhyFaedaExists() {
                   <div>
                     <h3 className="font-extrabold text-white text-base">{t("about.why.faedaHeader")}</h3>
                     <span className="text-[11px] text-primary font-mono font-bold">
-                      {language === "en" ? "One Connected Ecosystem" : "منظومة مترابطة شفافة"}
+                      {language === "en" ? "One Connected Ecosystem" : language === "hi" ? "एक जुड़ा हुआ पारिस्थितिकी तंत्र" : "منظومة مترابطة شفافة"}
                     </span>
                   </div>
                 </div>
@@ -104,15 +122,33 @@ export function WhyFaedaExists() {
               <div className="space-y-3 pt-2">
                 <div className="p-3 rounded-xl bg-black/40 border border-primary/20 flex items-center gap-3 text-xs text-emerald-300 font-semibold">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>{language === "en" ? "Dynamic verified identity driving opportunities" : "هوية مهنية ديناميكية تقودك للفرص المناسبة"}</span>
+                  <span>
+                    {language === "en"
+                      ? "Dynamic verified identity driving opportunities"
+                      : language === "hi"
+                      ? "गतिशील सत्यापित पहचान अवसरों को संचालित करती है"
+                      : "هوية مهنية ديناميكية تقودك للفرص المناسبة"}
+                  </span>
                 </div>
                 <div className="p-3 rounded-xl bg-black/40 border border-primary/20 flex items-center gap-3 text-xs text-emerald-300 font-semibold">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>{language === "en" ? "Explainable AI matching with real recommendations" : "ذكاء اصطناعي مفسر يوضح سبب التوافق بدقة"}</span>
+                  <span>
+                    {language === "en"
+                      ? "Explainable AI matching with real recommendations"
+                      : language === "hi"
+                      ? "वास्तविक सिफारिशों के साथ स्पष्टीकरण योग्य एआई मिलान"
+                      : "ذكاء اصطناعي مفسر يوضح سبب التوافق بدقة"}
+                  </span>
                 </div>
                 <div className="p-3 rounded-xl bg-black/40 border border-primary/20 flex items-center gap-3 text-xs text-emerald-300 font-semibold">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>{language === "en" ? "Integrated capabilities & team discovery" : "استقطاب قدرات تخصصية وفرق عمل متكاملة"}</span>
+                  <span>
+                    {language === "en"
+                      ? "Integrated capabilities & team discovery"
+                      : language === "hi"
+                      ? "एकीकृत क्षमताएं और टीम खोज"
+                      : "استقطاب قدرات تخصصية وفرق عمل متكاملة"}
+                  </span>
                 </div>
               </div>
             </GlassCard>

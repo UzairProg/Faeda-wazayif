@@ -2,7 +2,7 @@
  * features/auth/pages/Login.tsx
  *
  * Authentication login page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useState } from "react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
@@ -61,7 +61,7 @@ export function Login() {
   }
 
   const toggleLang = () => {
-    const nextLang: Language = language === "ar" ? "en" : "ar"
+    const nextLang: Language = language === "ar" ? "en" : language === "en" ? "hi" : "ar"
     setLanguage(nextLang)
   }
 
@@ -81,7 +81,7 @@ export function Login() {
             className="rounded-full bg-white/5 border-white/10 text-white hover:bg-white/10 px-4 text-xs gap-1.5"
           >
             <Globe className="w-3.5 h-3.5 text-primary" />
-            <span>{language === "ar" ? "English" : "العربية"}</span>
+            <span>{language === "ar" ? "English" : language === "en" ? "हिन्दी" : "العربية"}</span>
           </Button>
 
           <Link to="/" className="text-xs font-semibold text-muted-foreground hover:text-white transition-colors flex items-center gap-1.5">
@@ -231,13 +231,15 @@ export function Login() {
             <p className="text-sm font-semibold text-white leading-relaxed">
               {language === "en"
                 ? "Faeda unites professional identity, explainable AI, opportunities, companies, and teams."
+                : language === "hi"
+                ? "फ़ायदा पेशेवर पहचान, अवसरों, कंपनियों और टीमों को एक स्थान पर जोड़ता है।"
                 : "توحد فائدة الهوية المهنية، والفرص والفرق في منصة عمل احترافية واحدة."}
             </p>
           </GlassCard>
         </div>
 
         <div className="text-xs text-muted-foreground/60 relative z-10">
-          {language === "en" ? "Production-grade Recruitment Platform" : "منظومة التوظيف والهوية المهنية المتقدمة"}
+          {language === "en" ? "Production-grade Recruitment Platform" : language === "hi" ? "उन्नत पेशेवर भर्ती मंच" : "منظومة التوظيف والهوية المهنية المتقدمة"}
         </div>
       </div>
 

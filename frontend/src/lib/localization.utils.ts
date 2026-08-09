@@ -3,7 +3,7 @@
  *
  * Reusable localization mappers and formatting utilities.
  * Ensures dynamic database content, enums, dates, numbers, and currencies
- * render properly according to the selected language (ar | en).
+ * render properly according to the selected language (ar | en | hi).
  */
 import type { Language } from "@/store/language.store"
 
@@ -14,7 +14,7 @@ export function getLocalizedCompanyName(
   company: { company_arabic_name?: string; company_english_name?: string; name?: string },
   lang: Language
 ): string {
-  if (lang === "en" && company.company_english_name?.trim()) {
+  if ((lang === "en" || lang === "hi") && company.company_english_name?.trim()) {
     return company.company_english_name.trim()
   }
   if (company.company_arabic_name?.trim()) {
@@ -23,30 +23,46 @@ export function getLocalizedCompanyName(
   if (company.name?.trim()) {
     return company.name.trim()
   }
-  return lang === "en" ? "Company" : "شركة"
+  if (lang === "en") return "Company"
+  if (lang === "hi") return "कंपनी"
+  return "شركة"
 }
 
 /**
  * Maps database work_type / job_type enums to localized strings.
  */
 export function getLocalizedWorkType(workType: string | null | undefined, lang: Language): string {
-  if (!workType) return lang === "en" ? "Full-time" : "دوام كامل"
+  if (!workType) {
+    if (lang === "en") return "Full-time"
+    if (lang === "hi") return "पूर्णकालिक"
+    return "دوام كامل"
+  }
   const clean = workType.trim().toLowerCase()
 
   if (clean.includes("كامل") || clean.includes("full")) {
-    return lang === "en" ? "Full-time" : "دوام كامل"
+    if (lang === "en") return "Full-time"
+    if (lang === "hi") return "पूर्णकालिक"
+    return "دوام كامل"
   }
   if (clean.includes("جزئي") || clean.includes("part")) {
-    return lang === "en" ? "Part-time" : "دوام جزئي"
+    if (lang === "en") return "Part-time"
+    if (lang === "hi") return "अंशकालिक"
+    return "دوام جزئي"
   }
   if (clean.includes("عن بعد") || clean.includes("remote")) {
-    return lang === "en" ? "Remote" : "عن بعد"
+    if (lang === "en") return "Remote"
+    if (lang === "hi") return "रिमोट"
+    return "عن بعد"
   }
   if (clean.includes("هجين") || clean.includes("hybrid")) {
-    return lang === "en" ? "Hybrid" : "هجين"
+    if (lang === "en") return "Hybrid"
+    if (lang === "hi") return "हाइब्रिड"
+    return "هجين"
   }
   if (clean.includes("عقد") || clean.includes("contract")) {
-    return lang === "en" ? "Contract" : "عقد"
+    if (lang === "en") return "Contract"
+    if (lang === "hi") return "अनुबंध"
+    return "عقد"
   }
 
   return workType
@@ -56,23 +72,37 @@ export function getLocalizedWorkType(workType: string | null | undefined, lang: 
  * Maps experience levels to localized strings.
  */
 export function getLocalizedExperienceLevel(level: string | null | undefined, lang: Language): string {
-  if (!level) return lang === "en" ? "Mid level" : "مستوى متوسط"
+  if (!level) {
+    if (lang === "en") return "Mid level"
+    if (lang === "hi") return "मध्यम स्तर"
+    return "مستوى متوسط"
+  }
   const clean = level.trim().toLowerCase()
 
   if (clean.includes("مبتدئ") || clean.includes("entry")) {
-    return lang === "en" ? "Entry level" : "مبتدئ"
+    if (lang === "en") return "Entry level"
+    if (lang === "hi") return "प्रारंभिक स्तर"
+    return "مبتدئ"
   }
   if (clean.includes("متوسط") || clean.includes("mid")) {
-    return lang === "en" ? "Mid level" : "متوسط"
+    if (lang === "en") return "Mid level"
+    if (lang === "hi") return "मध्यम स्तर"
+    return "متوسط"
   }
   if (clean.includes("أول") || clean.includes("senior")) {
-    return lang === "en" ? "Senior" : "أول"
+    if (lang === "en") return "Senior"
+    if (lang === "hi") return "वरिष्ठ"
+    return "أول"
   }
   if (clean.includes("قيادي") || clean.includes("lead")) {
-    return lang === "en" ? "Lead" : "قيادي"
+    if (lang === "en") return "Lead"
+    if (lang === "hi") return "नेतृत्व"
+    return "قيادي"
   }
   if (clean.includes("تنفيذي") || clean.includes("executive")) {
-    return lang === "en" ? "Executive" : "تنفيذي"
+    if (lang === "en") return "Executive"
+    if (lang === "hi") return "कार्यकारी"
+    return "تنفيذي"
   }
 
   return level
@@ -83,7 +113,8 @@ export function getLocalizedExperienceLevel(level: string | null | undefined, la
  */
 export function formatLocalizedNumber(num: number, lang: Language): string {
   try {
-    return new Intl.NumberFormat(lang === "ar" ? "ar-SA" : "en-US").format(num)
+    const localeCode = lang === "ar" ? "ar-SA" : lang === "hi" ? "hi-IN" : "en-US"
+    return new Intl.NumberFormat(localeCode).format(num)
   } catch {
     return String(num)
   }
@@ -98,20 +129,26 @@ export function formatLocalizedSalary(
   lang: Language
 ): string {
   if (!min && !max) {
-    return lang === "en" ? "Salary undisclosed" : "الراتب غير محدد"
+    if (lang === "en") return "Salary undisclosed"
+    if (lang === "hi") return "वेतन का खुलासा नहीं किया गया"
+    return "الراتب غير محدد"
   }
 
   const minFormatted = min ? formatLocalizedNumber(min, lang) : null
   const maxFormatted = max ? formatLocalizedNumber(max, lang) : null
 
   if (minFormatted && maxFormatted) {
-    return lang === "en"
-      ? `SAR ${minFormatted} - ${maxFormatted}`
-      : `${minFormatted} - ${maxFormatted} ر.س`
+    if (lang === "en" || lang === "hi") {
+      return `SAR ${minFormatted} - ${maxFormatted}`
+    }
+    return `${minFormatted} - ${maxFormatted} ر.س`
   }
 
   const single = minFormatted || maxFormatted
-  return lang === "en" ? `SAR ${single}` : `${single} ر.س`
+  if (lang === "en" || lang === "hi") {
+    return `SAR ${single}`
+  }
+  return `${single} ر.س`
 }
 
 /**
@@ -122,7 +159,8 @@ export function formatLocalizedDate(dateString: string | null | undefined, lang:
   try {
     const d = new Date(dateString)
     if (isNaN(d.getTime())) return dateString
-    return new Intl.DateTimeFormat(lang === "ar" ? "ar-SA" : "en-US", {
+    const localeCode = lang === "ar" ? "ar-SA" : lang === "hi" ? "hi-IN" : "en-US"
+    return new Intl.DateTimeFormat(localeCode, {
       year: "numeric",
       month: "short",
       day: "numeric",

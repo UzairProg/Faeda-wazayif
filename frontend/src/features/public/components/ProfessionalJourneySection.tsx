@@ -2,7 +2,7 @@
  * features/public/components/ProfessionalJourneySection.tsx
  *
  * Sequential Professional Trajectory Section for Home page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -80,6 +80,67 @@ export function ProfessionalJourneySection() {
       badge: "Continuous Growth",
       previewTitle: "Prep & Growth Workspace",
       previewDetails: ["Mock interview simulator", "Tailored skill development plan", "Ongoing career guidance"],
+    },
+  ] : language === "hi" ? [
+    {
+      step: "01",
+      title: "पेशेवर पहचान बनाएं",
+      subtitle: "वास्तविक कौशल और सत्यापित अनुभव को उजागर करें",
+      description: "अपने वास्तविक बाजार मूल्य को दर्शाने वाली परियोजनाओं और उपलब्धियों को सहेजते हुए अपनी व्यापक प्रोफ़ाइल बनाएं।",
+      icon: FileText,
+      badge: "पहचान",
+      previewTitle: "पेशेवर पहचान कार्यक्षेत्र",
+      previewDetails: ["पूरी की गई परियोजनाओं का रिकॉर्ड", "सत्यापित कौशल साख", "साझा सार्वजनिक प्रोफ़ाइल लिंक"],
+    },
+    {
+      step: "02",
+      title: "एटीएस तत्परता ऑडिट",
+      subtitle: "बुद्धिमान सीवी अनुकूलता विश्लेषण",
+      description: "अंतर्राष्ट्रीय स्क्रीनिंग मानकों के खिलाफ अपने सीवी का मूल्यांकन करें और लापता प्रभाव कीवर्ड की खोज करें।",
+      icon: Target,
+      badge: "तत्परता",
+      previewTitle: "एटीएस ऑडिट रिपोर्ट",
+      previewDetails: ["बेंचमार्क मिलान स्कोर", "लापता कीवर्ड सूची", "प्रभाव वाक्यांश सिफारिशें"],
+    },
+    {
+      step: "03",
+      title: "बाजार मूल्य अनुमान",
+      subtitle: "सऊदी बाजार में अपनी स्थिति समझें",
+      description: "लाइव मार्केट डेटा, योग्यताओं और कौशल मांग के आधार पर अपनी अपेक्षित वेतन सीमा जानें।",
+      icon: TrendingUp,
+      badge: "बाजार स्थिति",
+      previewTitle: "बाजार मूल्य रिपोर्ट",
+      previewDetails: ["अपेक्षित मासिक वेतन सीमा", "शहर के अनुसार मांग तुलना", "मूल्य वृद्धि रोडमैप (+15%)"],
+    },
+    {
+      step: "04",
+      title: "अवसर खोज और मिलान",
+      subtitle: "पारदर्शी स्पष्टीकरण योग्य सिफारिशें",
+      description: "प्रत्येक मिलान के पीछे पारदर्शी तर्क के साथ अपनी प्रोफ़ाइल से मेल खाने वाले अवसरों की खोज करें।",
+      icon: Search,
+      badge: "अवसर",
+      previewTitle: "स्पष्टीकरण योग्य मिलान स्क्रीन",
+      previewDetails: ["सटीक मिलान मानदंड", "नौकरी कौशल कवरेज अनुपात", "व्यक्तिगत या टीम आवेदन विकल्प"],
+    },
+    {
+      step: "05",
+      title: "आवेदन और ट्रैकिंग",
+      subtitle: "पूर्ण प्रगति पाइपलाइन पारदर्शिता",
+      description: "बिना किसी अज्ञात प्रतीक्षा के सबमिशन से लेकर साक्षात्कार तक चरण-दर-चरण आवेदन चरण को ट्रैक करें।",
+      icon: Clock,
+      badge: "ट्रैकिंग",
+      previewTitle: "आवेदन ट्रैकिंग पाइपलाइन",
+      previewDetails: ["चरण समय-स्टाम्प लॉग", "साक्षात्कार और परीक्षण समन्वय", "कारण सहित अंतिम निर्णय अधिसूचना"],
+    },
+    {
+      step: "06",
+      title: "सिमुलेशन और विकास",
+      subtitle: "साक्षात्कार की तैयारी और निरंतर सीखना",
+      description: "मॉक साक्षात्कार परिदृश्यों का अभ्यास करें और अपनी प्रतिस्पर्धात्मकता बढ़ाने के लिए निरंतर विकास योजना प्राप्त करें।",
+      icon: MessageSquare,
+      badge: "निरंतर विकास",
+      previewTitle: "तैयारी और विकास कार्यक्षेत्र",
+      previewDetails: ["मॉक साक्षात्कार सिम्युलेटर", "अनुकूलित कौशल विकास योजना", "चल रहा करियर मार्गदर्शन"],
     },
   ] : [
     {
@@ -258,7 +319,7 @@ export function ProfessionalJourneySection() {
                           <span className="text-xs sm:text-sm text-white/90 font-mono font-bold ms-2">{activeStep.previewTitle}</span>
                         </div>
                         <span className="text-xs font-mono text-primary px-2.5 py-0.5 rounded bg-primary/10 border border-primary/20">
-                          {language === "en" ? "Live Demo" : "مثال توضيحي"}
+                          {language === "en" ? "Live Demo" : language === "hi" ? "लाइव नमूना" : "مثال توضيحي"}
                         </span>
                       </div>
 

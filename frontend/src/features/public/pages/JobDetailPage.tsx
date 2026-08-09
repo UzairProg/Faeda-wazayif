@@ -2,7 +2,7 @@
  * features/public/pages/JobDetailPage.tsx
  *
  * Public job detail view.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useParams, Link } from "react-router-dom"
 import { motion } from "framer-motion"
@@ -40,7 +40,13 @@ function ApplyGate({ jobId }: { jobId: string }) {
         size="lg"
         className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white font-bold shadow-lg shadow-primary/20 h-12"
         onClick={() => {
-          alert(language === "en" ? "Application feature is being prepared. It will be enabled soon." : "خاصية التقديم قيد الإعداد. سيتم تفعيلها قريباً.")
+          alert(
+            language === "en"
+              ? "Application feature is being prepared. It will be enabled soon."
+              : language === "hi"
+              ? "आवेदन सुविधा तैयार की जा रही है। इसे जल्द ही सक्षम किया जाएगा।"
+              : "خاصية التقديم قيد الإعداد. سيتم تفعيلها قريباً."
+          )
         }}
       >
         {t("jobs.detail.applyNow")}
@@ -146,7 +152,9 @@ function JobDetailContent({ job }: { job: JobDetail }) {
               {job.location && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-sm text-muted-foreground">
                   <MapPin className="w-4 h-4 shrink-0" />
-                  {job.isRemote ? (language === "en" ? `Remote (${job.location})` : `عن بعد (${job.location})`) : job.location}
+                  {job.isRemote
+                    ? (language === "en" ? `Remote (${job.location})` : language === "hi" ? `रिमोट (${job.location})` : `عن بعد (${job.location})`)
+                    : job.location}
                 </span>
               )}
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-sm text-muted-foreground">
@@ -271,7 +279,7 @@ function JobDetailContent({ job }: { job: JobDetail }) {
             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-white/10 bg-white/5 text-muted-foreground hover:text-white hover:bg-white/10 transition-all text-sm font-semibold"
           >
             <Share2 className="w-4 h-4" />
-            {language === "en" ? "Share Job" : "مشاركة الوظيفة"}
+            {language === "en" ? "Share Job" : language === "hi" ? "नौकरी साझा करें" : "مشاركة الوظيفة"}
           </button>
 
           <Link
@@ -279,7 +287,7 @@ function JobDetailContent({ job }: { job: JobDetail }) {
             className="flex items-center justify-center gap-2 py-3 text-sm text-muted-foreground hover:text-white transition-colors font-semibold"
           >
             <BackArrowIcon className="w-4 h-4" />
-            {language === "en" ? "Back to Jobs List" : "العودة لقائمة الوظائف"}
+            {language === "en" ? "Back to Jobs List" : language === "hi" ? "नौकरी सूची पर वापस जाएं" : "العودة لقائمة الوظائف"}
           </Link>
         </motion.aside>
       </div>

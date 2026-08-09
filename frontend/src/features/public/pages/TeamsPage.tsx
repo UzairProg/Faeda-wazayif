@@ -3,7 +3,7 @@
  *
  * Public Team Marketplace directory page.
  * Two-Pane Split Layout (Directory list + Sticky capability preview).
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useMemo, useState, useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
@@ -112,7 +112,11 @@ export function TeamsPage() {
                 {t("teams.header.valueComparisonTitle")}
               </span>
               <h2 className="text-lg font-bold text-white">
-                {language === "en" ? "Hire capabilities, not just individuals." : "وظّف القدرات، لا الأفراد فقط."}
+                {language === "en"
+                  ? "Hire capabilities, not just individuals."
+                  : language === "hi"
+                  ? "केवल व्यक्तियों को ही नहीं, क्षमताओं को भर्ती करें।"
+                  : "وظّف القدرات، لا الأفراد فقط."}
               </h2>
             </div>
             <div className="flex items-center gap-2 shrink-0">
@@ -224,7 +228,7 @@ export function TeamsPage() {
                           : "bg-white/5 text-muted-foreground hover:text-white"
                       }`}
                     >
-                      {p}
+                      {formatLocalizedNumber(p, language)}
                     </button>
                   ))}
                 </div>

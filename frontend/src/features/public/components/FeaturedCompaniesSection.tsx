@@ -2,7 +2,7 @@
  * features/public/components/FeaturedCompaniesSection.tsx
  *
  * Featured companies section for public home page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
@@ -40,6 +40,31 @@ export function FeaturedCompaniesSection() {
       step: "04",
       title: "Professional Hiring Cycle",
       desc: "Issue offers and share respectful feedback with all applicants seamlessly.",
+      icon: CheckCircle2,
+    },
+  ] : language === "hi" ? [
+    {
+      step: "01",
+      title: "सत्यापित नियोक्ता उपस्थिति",
+      desc: "अपनी भर्ती प्रतिष्ठा की सुरक्षा के लिए कंपनी प्रोफ़ाइल और आधिकारिक सत्यापन सेट करें।",
+      icon: ShieldCheck,
+    },
+    {
+      step: "02",
+      title: "नौकरियां पोस्ट करें या टीमों की भर्ती करें",
+      desc: "व्यक्तिगत रिक्तियां पोस्ट करें या निष्पादित करने के लिए तैयार बहु-विषयक टीमों का अनुबंध करें।",
+      icon: Building2,
+    },
+    {
+      step: "03",
+      title: "स्पष्टीकरण योग्य उम्मीदवार मिलान",
+      desc: "पारदर्शी मूल्यांकन स्क्रीन के साथ कौशल और अनुभव के आधार पर आवेदनों को रैंक करें।",
+      icon: Search,
+    },
+    {
+      step: "04",
+      title: "पेशेवर भर्ती चक्र",
+      desc: "प्रस्ताव जारी करें और सभी आवेदकों के साथ निर्बाध रूप से सम्मानजनक प्रतिक्रिया साझा करें।",
       icon: CheckCircle2,
     },
   ] : [
@@ -88,6 +113,8 @@ export function FeaturedCompaniesSection() {
             <p className="text-lg text-muted-foreground leading-relaxed">
               {language === "en"
                 ? "Faeda provides employers with tools to build a verified presence, publish opportunities, evaluate candidates, and manage hiring cycles smoothly."
+                : language === "hi"
+                ? "फ़ायदा नियोक्ताओं को एक सत्यापित उपस्थिति बनाने, अवसरों को प्रकाशित करने, उम्मीदवारों का मूल्यांकन करने और भर्ती चक्रों को सुचारू रूप से प्रबंधित करने के लिए उपकरण प्रदान करता है।"
                 : "توفر فائدة لأصحاب العمل أدوات متكاملة لبناء سجل موثوق، نشر الفرص، تقييم المرشحين، وإدارة دورة التوظيف بسلاسة واقتدار."}
             </p>
           </div>
@@ -116,7 +143,7 @@ export function FeaturedCompaniesSection() {
                       <item.icon className="w-6 h-6" />
                     </div>
                     <span className="text-xs font-mono text-primary font-bold block mb-1">
-                      {language === "en" ? `Step ${item.step}` : `الخطوة ${item.step}`}
+                      {language === "en" ? `Step ${item.step}` : language === "hi" ? `चरण ${item.step}` : `الخطوة ${item.step}`}
                     </span>
                     <h3 className="text-lg font-bold font-heading text-white mb-2">
                       {item.title}

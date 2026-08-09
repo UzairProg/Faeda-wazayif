@@ -2,7 +2,7 @@
  * features/public/components/WhyFaedaSection.tsx
  *
  * Why Faeda section for public home page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
@@ -43,6 +43,35 @@ export function WhyFaedaSection() {
       desc: "Transparent tracking and reasoning behind recruitment decisions.",
       icon: ShieldCheck,
       tag: "High Integrity",
+    },
+  ] : language === "hi" ? [
+    {
+      num: "01",
+      title: "एकीकृत पेशेवर पहचान",
+      desc: "एक ही स्थान पर आपके अनुभव और परियोजनाओं को रखने वाली एक सत्यापित पेशेवर पहचान।",
+      icon: UserCheck,
+      tag: "स्थायी पहचान",
+    },
+    {
+      num: "02",
+      title: "स्पष्टीकरण योग्य एआई मार्गदर्शन",
+      desc: "ब्लैकबॉक्स एल्गोरिदम के बिना स्पष्ट सिफारिशें और वेतन सीमाएँ।",
+      icon: Sparkles,
+      tag: "पारदर्शी एआई",
+    },
+    {
+      num: "03",
+      title: "आपस में जुड़ा पारिस्थितिकी तंत्र",
+      desc: "पेशेवरों, नियोक्ताओं, टीमों और शिक्षा को जोड़ने वाला सीधा एकीकरण।",
+      icon: Layers,
+      tag: "एकल मंच",
+    },
+    {
+      num: "04",
+      title: "सम्मानजनक भर्ती अनुभव",
+      desc: "भर्ती निर्णयों के पीछे पारदर्शी ट्रैकिंग और तर्क।",
+      icon: ShieldCheck,
+      tag: "उच्च सत्यनिष्ठा",
     },
   ] : [
     {
@@ -97,7 +126,9 @@ export function WhyFaedaSection() {
         <div className="hidden lg:flex items-center justify-center mb-8">
           <div className="px-8 py-3 rounded-full bg-primary/20 border border-primary/40 text-white font-heading font-extrabold text-sm flex items-center gap-3 shadow-xl shadow-primary/20 backdrop-blur-md">
             <RefreshCw className="w-4 h-4 text-primary animate-spin" style={{ animationDuration: "14s" }} />
-            <span>Faeda Hub Architecture</span>
+            <span>
+              {language === "en" ? "Faeda Hub Architecture" : language === "hi" ? "फ़ायदा हब वास्तुकला" : "Faeda Hub Architecture"}
+            </span>
           </div>
         </div>
 

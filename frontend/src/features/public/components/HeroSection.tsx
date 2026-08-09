@@ -2,7 +2,7 @@
  * features/public/components/HeroSection.tsx
  *
  * Hero section for Faeda Jobs landing page.
- * Video presenter touches bottom edge with original scale, and balanced text styling for AR & EN.
+ * Compact height, balanced video scale, clean text badge, and full AR/EN/HI localization.
  */
 import { useRef, useState, useEffect } from "react"
 import { motion } from "framer-motion"
@@ -75,6 +75,8 @@ export function HeroSection() {
 
   const popularChips = language === "en"
     ? ["Market Value", "ATS Analysis", "Team Hiring", "Software Engineer", "Remote", "Riyadh"]
+    : language === "hi"
+    ? ["बाजार मूल्य", "एटीएस विश्लेषण", "टीम भर्ती", "सॉफ्टवेयर इंजीनियर", "रिमोट", "रियाध"]
     : ["القيمة السوقية", "تحليل ATS", "توظيف فرق", "مهندس برمجيات", "عن بعد", "الرياض"]
 
   return (
@@ -127,55 +129,47 @@ export function HeroSection() {
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-              className="flex flex-wrap items-center gap-4 mb-6"
+              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+              className="flex flex-wrap items-center gap-3 mb-6"
             >
-              <Link to={ROUTES.AUTH.REGISTER}>
-                <Button size="lg" className="rounded-xl px-7 shadow-lg shadow-primary/20 text-white font-bold text-xs sm:text-sm bg-primary hover:bg-[#2D6BFF] h-11">
-                  {t("public.cta.candidateCta")}
-                </Button>
-              </Link>
-              <Link to={ROUTES.JOBS.LIST}>
-                <Button size="lg" variant="outline" className="rounded-xl px-7 border-white/10 bg-white/5 text-white hover:bg-white/10 h-11 font-bold text-xs sm:text-sm">
-                  {t("public.jobs.viewAll")}
-                </Button>
-              </Link>
+              <Button
+                asChild
+                size="lg"
+                className="h-11 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 shadow-lg shadow-primary/25 group/btn"
+              >
+                <Link to={ROUTES.JOBS.LIST} className="flex items-center gap-2">
+                  <Search className="h-4 w-4" />
+                  <span>{t("public.hero.exploreJobsCta")}</span>
+                  <ArrowIcon className="h-4 w-4 transition-transform group-hover/btn:-translate-x-1" />
+                </Link>
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="h-11 rounded-full border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 text-white font-medium px-6"
+              >
+                <Link to={ROUTES.TEAMS.LIST} className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-accent" />
+                  <span>{t("public.hero.exploreTeamsCta")}</span>
+                </Link>
+              </Button>
             </motion.div>
 
-            {/* Search Bar Entry */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.5, ease: "easeOut" }}
-              className="w-full max-w-xl mb-4"
-            >
-              <Link to={ROUTES.JOBS.LIST} className="block group">
-                <div className="flex items-center justify-between gap-3 rounded-2xl bg-card/50 backdrop-blur-md px-4 py-2.5 border border-white/10 group-hover:border-primary/40 group-hover:bg-card/70 transition-all shadow-xl">
-                  <div className="flex items-center gap-2.5 text-muted-foreground min-w-0">
-                    <Search className="h-4.5 w-4.5 text-primary group-hover:scale-110 transition-transform shrink-0" />
-                    <span className="text-xs sm:text-sm truncate">{t("public.hero.searchPlaceholder")}</span>
-                  </div>
-                  <span className="text-xs font-bold text-primary px-3 py-1 rounded-lg bg-primary/10 border border-primary/20 shrink-0 flex items-center gap-1">
-                    <span>{t("common.actions.search")}</span>
-                    <ArrowIcon className="w-3.5 h-3.5" />
-                  </span>
-                </div>
-              </Link>
-            </motion.div>
-
-            {/* Popular Searches */}
+            {/* Popular Search Chips */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
-              className="flex flex-wrap gap-1.5 text-xs text-muted-foreground items-center"
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex items-center gap-2 flex-wrap text-xs text-muted-foreground"
             >
-              <span className="font-semibold me-1 text-[#C8D2E4]">{t("public.hero.popularSearches")}</span>
+              <span className="font-semibold text-white/70 me-1">{t("public.hero.popularSearches")}</span>
               {popularChips.map((chip) => (
                 <Link
                   key={chip}
                   to={`${ROUTES.JOBS.LIST}?q=${encodeURIComponent(chip)}`}
-                  className="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/50 hover:text-white transition-colors text-[11px] text-muted-foreground"
+                  className="px-2.5 py-1 rounded-full bg-white/5 border border-white/5 hover:border-primary/30 hover:text-white transition-all text-[11px]"
                 >
                   {chip}
                 </Link>
@@ -183,42 +177,53 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Presenter Video (Restored exact original bottom alignment & scaling) */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="relative w-full h-full lg:min-h-[500px] mx-auto lg:mx-0 flex justify-center items-end pointer-events-auto"
-          >
-            <video
-              ref={videoRef}
-              src={heroVideo}
-              autoPlay
-              muted
-              playsInline
-              loop
-              preload="auto"
-              className="w-full h-auto max-h-[85vh] object-contain object-bottom scale-[1.20] lg:scale-[1.30] origin-bottom translate-y-[2%]"
-            />
+          {/* Right Video Container */}
+          <div className="relative flex items-end justify-center w-full h-full pt-4 lg:pt-0">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              className="relative w-full max-w-[500px] sm:max-w-[560px] lg:max-w-none flex justify-center items-end"
+            >
+              <div className="relative w-full rounded-t-[2.5rem] overflow-hidden border-t border-x border-white/15 bg-card/60 backdrop-blur-xl shadow-2xl shadow-primary/10 group">
+                <video
+                  ref={videoRef}
+                  src={heroVideo}
+                  muted={isMuted}
+                  loop
+                  playsInline
+                  autoPlay
+                  className="w-full h-auto max-h-[380px] sm:max-h-[440px] lg:max-h-[480px] object-cover object-bottom transition-transform duration-700 group-hover:scale-[1.01]"
+                />
 
-            <div className="absolute bottom-8 start-8 flex items-center gap-3 z-30">
-              <button
-                onClick={togglePlay}
-                className="w-12 h-12 rounded-full bg-primary/80 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-primary transition-all shadow-lg hover:scale-105"
-                aria-label={isPlaying ? "Pause" : "Play"}
-              >
-                {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
-              </button>
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80 pointer-events-none" />
 
-              <button
-                onClick={toggleMute}
-                className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all shadow-lg hover:scale-105"
-                aria-label={isMuted ? "Unmute" : "Mute"}
-              >
-                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-              </button>
-            </div>
-          </motion.div>
+                {/* Video Controls Overlay */}
+                <div className="absolute bottom-4 start-4 end-4 flex items-center justify-between z-10">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={togglePlay}
+                      className="h-9 w-9 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-black/80 transition-all shadow-lg"
+                      aria-label={isPlaying ? "Pause video" : "Play video"}
+                    >
+                      {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 ms-0.5" />}
+                    </button>
+                    <button
+                      onClick={toggleMute}
+                      className="h-9 w-9 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-black/80 transition-all shadow-lg"
+                      aria-label={isMuted ? "Unmute video" : "Mute video"}
+                    >
+                      {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                    </button>
+                  </div>
+
+                  <div className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[11px] font-semibold text-white/90 shadow-lg">
+                    {t("public.hero.videoBadge")}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
 
         </div>
       </div>

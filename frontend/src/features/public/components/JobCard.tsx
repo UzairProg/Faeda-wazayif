@@ -2,7 +2,7 @@
  * features/public/components/JobCard.tsx
  *
  * Reusable job card for the public Jobs page and any other job list context.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { Link } from "react-router-dom"
 import { motion } from "framer-motion"
@@ -100,7 +100,7 @@ export function JobCard({ job, index = 0, className }: JobCardProps) {
           {job.location && (
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-xs text-muted-foreground">
               <MapPin className="w-3 h-3 shrink-0" />
-              {job.isRemote ? (language === "en" ? "Remote" : "عن بعد") : job.location}
+              {job.isRemote ? (language === "en" ? "Remote" : language === "hi" ? "रिमोट" : "عن بعد") : job.location}
             </span>
           )}
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-xs text-muted-foreground">

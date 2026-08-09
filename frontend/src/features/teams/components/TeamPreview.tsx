@@ -2,7 +2,7 @@
  * features/teams/components/TeamPreview.tsx
  *
  * Sticky Desktop Preview panel for the selected team in the two-pane layout.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { Link } from "react-router-dom"
 import { Users, Layers, MapPin, Sparkles, CheckCircle2, ArrowLeft, ArrowRight } from "lucide-react"
@@ -102,7 +102,7 @@ export function TeamPreview({ team }: TeamPreviewProps) {
             </span>
             {team.isRemote && (
               <span className="before:content-['•'] before:me-2 before:text-white/20 text-cyan-400 font-semibold">
-                {language === "en" ? "Remote" : "عن بعد"}
+                {language === "en" ? "Remote" : language === "hi" ? "रिमोट" : "عن بعد"}
               </span>
             )}
           </div>
@@ -113,7 +113,7 @@ export function TeamPreview({ team }: TeamPreviewProps) {
       {team.about && (
         <div className="space-y-1">
           <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider block">
-            {language === "en" ? "About Team" : "نبذة عن الفريق"}
+            {language === "en" ? "About Team" : language === "hi" ? "टीम के बारे में" : "نبذة عن الفريق"}
           </span>
           <p className="text-xs sm:text-sm text-white/90 leading-relaxed line-clamp-4">
             {team.about}

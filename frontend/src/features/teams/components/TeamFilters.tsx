@@ -2,7 +2,7 @@
  * features/teams/components/TeamFilters.tsx
  *
  * Discovery filter controls for public team marketplace.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { Filter, X } from "lucide-react"
 import { useTranslation } from "@/i18n"
@@ -23,6 +23,8 @@ export function TeamFilters({
 
   const popularPills = language === "en"
     ? ["React", "Python", "Node.js", "Figma", "AI", "Riyadh", "Jeddah"]
+    : language === "hi"
+    ? ["React", "Python", "Node.js", "Figma", "AI", "रियाध", "जिद्दा"]
     : ["React", "Python", "Node.js", "Figma", "AI", "الرياض", "جدة"]
 
   return (

@@ -2,7 +2,7 @@
  * features/auth/pages/ResetPassword.tsx
  *
  * Password reset submission page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -31,7 +31,7 @@ export function ResetPassword() {
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
 
   const toggleLang = () => {
-    const nextLang: Language = language === "ar" ? "en" : "ar"
+    const nextLang: Language = language === "ar" ? "en" : language === "en" ? "hi" : "ar"
     setLanguage(nextLang)
   }
 
@@ -40,7 +40,13 @@ export function ResetPassword() {
     setErrorMessage(null)
 
     if (!token) {
-      setErrorMessage(language === "en" ? "Invalid or missing password reset token." : "رابط استعادة كلمة المرور غير صالح أو مفقود.")
+      setErrorMessage(
+        language === "en"
+          ? "Invalid or missing password reset token."
+          : language === "hi"
+          ? "अमान्य या गायब पासवर्ड रीसेट टोकन।"
+          : "رابط استعادة كلمة المرور غير صالح أو مفقود."
+      )
       return
     }
 
@@ -81,7 +87,7 @@ export function ResetPassword() {
             className="rounded-full bg-white/5 border-white/10 text-white hover:bg-white/10 px-4 text-xs gap-1.5"
           >
             <Globe className="w-3.5 h-3.5 text-primary" />
-            <span>{language === "ar" ? "English" : "العربية"}</span>
+            <span>{language === "ar" ? "English" : language === "en" ? "हिन्दी" : "العربية"}</span>
           </Button>
 
           <Link to="/" className="text-xs font-semibold text-muted-foreground hover:text-white transition-colors flex items-center gap-1.5">
@@ -98,10 +104,14 @@ export function ResetPassword() {
               <KeyRound className="w-6 h-6" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-white mb-2">
-              {language === "en" ? "Set New Password" : "تعيين كلمة المرور الجديدة"}
+              {language === "en" ? "Set New Password" : language === "hi" ? "नया पासवर्ड सेट करें" : "تعيين كلمة المرور الجديدة"}
             </h1>
             <p className="text-muted-foreground text-xs sm:text-sm">
-              {language === "en" ? "Enter and confirm your new password." : "أدخل كلمة المرور الجديدة لحسابك وقم بتأكيدها."}
+              {language === "en"
+                ? "Enter and confirm your new password."
+                : language === "hi"
+                ? "अपना नया पासवर्ड दर्ज करें और पुष्टि करें।"
+                : "أدخل كلمة المرور الجديدة لحسابك وقم بتأكيدها."}
             </p>
           </div>
 
@@ -130,7 +140,7 @@ export function ResetPassword() {
                 {/* New Password */}
                 <div className="flex flex-col gap-2">
                   <label className="text-xs font-bold text-white">
-                    {language === "en" ? "New Password" : "كلمة المرور الجديدة"}
+                    {language === "en" ? "New Password" : language === "hi" ? "नया पासवर्ड" : "كلمة المرور الجديدة"}
                   </label>
                   <div className="relative group">
                     <input 
@@ -181,7 +191,9 @@ export function ResetPassword() {
                       <span>{t("auth.register.submitting")}</span>
                     </>
                   ) : (
-                    <span>{language === "en" ? "Save New Password" : "حفظ كلمة المرور الجديدة"}</span>
+                    <span>
+                      {language === "en" ? "Save New Password" : language === "hi" ? "नया पासवर्ड सहेजें" : "حفظ كلمة المرور الجديدة"}
+                    </span>
                   )}
                 </Button>
 
@@ -204,10 +216,18 @@ export function ResetPassword() {
                 </div>
                 <div>
                   <h3 className="font-bold text-white text-base mb-1 font-heading">
-                    {language === "en" ? "Password changed successfully 🎉" : "تم تغيير كلمة المرور بنجاح 🎉"}
+                    {language === "en"
+                      ? "Password changed successfully 🎉"
+                      : language === "hi"
+                      ? "पासवर्ड सफलतापूर्वक बदला गया 🎉"
+                      : "تم تغيير كلمة المرور بنجاح 🎉"}
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    {language === "en" ? "You can now sign in using your new password." : "يمكنك الآن استخدام كلمة المرور الجديدة لتسجيل الدخول إلى حسابك."}
+                    {language === "en"
+                      ? "You can now sign in using your new password."
+                      : language === "hi"
+                      ? "अब आप अपने नए पासवर्ड का उपयोग करके साइन इन कर सकते हैं।"
+                      : "يمكنك الآن استخدام كلمة المرور الجديدة لتسجيل الدخول إلى حسابك."}
                   </p>
                 </div>
                 <Button onClick={() => navigate(ROUTES.AUTH.LOGIN)} className="w-full h-10 text-xs font-bold rounded-xl bg-primary text-white mt-2">
@@ -237,12 +257,18 @@ export function ResetPassword() {
 
         <div className="relative z-10 flex flex-col items-start justify-center h-full max-w-lg mx-auto text-start">
           <h2 className="text-4xl font-extrabold font-heading text-white leading-[1.3] mb-4">
-            {language === "en" ? "Secure & seamless access to your account." : "تأمين حسابك بكلمة مرور جديدة وقوية."}
+            {language === "en"
+              ? "Secure & seamless access to your account."
+              : language === "hi"
+              ? "आपके खाते तक सुरक्षित और निर्बाध पहुँच।"
+              : "تأمين حسابك بكلمة مرور جديدة وقوية."}
           </h2>
         </div>
 
         <div className="relative z-10 flex justify-end gap-8 pt-8 border-t border-white/5">
-          <span className="text-xs text-white/80">{language === "en" ? "Protected Account Access" : "أمان عالي ووصول محمي"}</span>
+          <span className="text-xs text-white/80">
+            {language === "en" ? "Protected Account Access" : language === "hi" ? "संरक्षित खाता पहुँच" : "أمان عالي ووصول محمي"}
+          </span>
         </div>
       </div>
 

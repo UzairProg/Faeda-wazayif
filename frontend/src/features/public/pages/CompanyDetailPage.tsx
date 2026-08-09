@@ -2,12 +2,12 @@
  * features/public/pages/CompanyDetailPage.tsx
  *
  * Public company profile detail page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useRef } from "react"
 import { useParams, Link } from "react-router-dom"
 import {
-  Building2, MapPin, CheckCircle2, Briefcase, ExternalLink, ArrowLeft, ChevronRight, ChevronLeft, ShieldCheck
+  Building2, MapPin, CheckCircle2, Briefcase, ExternalLink, ArrowLeft, ArrowRight, ChevronRight, ChevronLeft, ShieldCheck
 } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
@@ -54,6 +54,7 @@ export function CompanyDetailPage() {
   }
 
   const ChevronIcon = isRTL ? ChevronRight : ChevronLeft
+  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
 
   if (isLoading) {
     return (
@@ -87,6 +88,9 @@ export function CompanyDetailPage() {
   const companyName = getLocalizedCompanyName(company, language)
   const gradientStyle = getAvatarGradient(company.id)
   const initials = getCompanyInitials(companyName)
+
+  const unspecLabel = language === "en" ? "Not specified" : language === "hi" ? "निर्दिष्ट नहीं" : "غير محدد"
+  const saudiLabel = language === "en" ? "Saudi Arabia" : language === "hi" ? "सऊदी अरब" : "المملكة العربية السعودية"
 
   return (
     <div className="flex flex-col w-full bg-background min-h-screen relative overflow-x-hidden pt-24 pb-20 text-start">
@@ -150,7 +154,7 @@ export function CompanyDetailPage() {
                 <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-muted-foreground">
                   <span className="inline-flex items-center gap-1 text-white/90 font-medium">
                     <MapPin className="w-4 h-4 text-primary shrink-0" />
-                    <span>{company.location || company.country || (language === "en" ? "Saudi Arabia" : "المملكة العربية السعودية")}</span>
+                    <span>{company.location || company.country || saudiLabel}</span>
                   </span>
 
                   {company.companySize && (
@@ -203,12 +207,12 @@ export function CompanyDetailPage() {
 
             <div className="p-3 rounded-xl bg-white/5 border border-white/5">
               <span className="text-muted-foreground block mb-0.5 text-[11px]">{t("companies.detail.field")}</span>
-              <span className="font-bold text-white truncate block">{company.companyField || "غير محدد"}</span>
+              <span className="font-bold text-white truncate block">{company.companyField || unspecLabel}</span>
             </div>
 
             <div className="p-3 rounded-xl bg-white/5 border border-white/5">
               <span className="text-muted-foreground block mb-0.5 text-[11px]">{t("companies.detail.size")}</span>
-              <span className="font-bold text-white truncate block">{company.companySize || "غير محدد"}</span>
+              <span className="font-bold text-white truncate block">{company.companySize || unspecLabel}</span>
             </div>
           </div>
         </GlassCard>
@@ -279,7 +283,7 @@ export function CompanyDetailPage() {
                   <span className="text-muted-foreground text-[11px] block mb-0.5">{t("companies.detail.field")}</span>
                   <p className="font-bold text-white flex items-center gap-1.5">
                     <Building2 className="w-4 h-4 text-primary shrink-0" />
-                    {company.companyField || "غير محدد"}
+                    {company.companyField || unspecLabel}
                   </p>
                 </div>
 
@@ -301,7 +305,7 @@ export function CompanyDetailPage() {
                   <span className="text-muted-foreground text-[11px] block mb-0.5">{t("companies.detail.location")}</span>
                   <p className="font-bold text-white flex items-center gap-1.5">
                     <MapPin className="w-4 h-4 text-primary shrink-0" />
-                    {company.location || company.country || "السعودية"}
+                    {company.location || company.country || saudiLabel}
                   </p>
                 </div>
 
@@ -334,7 +338,7 @@ export function CompanyDetailPage() {
                 className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs gap-1.5 mt-2"
               >
                 <span>{t("companies.detail.viewJobsCta")}</span>
-                <ArrowLeft className="w-3.5 h-3.5" />
+                <ArrowIcon className="w-3.5 h-3.5" />
               </Button>
             </GlassCard>
 

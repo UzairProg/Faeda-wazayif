@@ -2,7 +2,7 @@
  * features/public/components/ApplicationJourneySection.tsx
  *
  * Transparent Application Journey Section for Home page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -51,6 +51,43 @@ export function ApplicationJourneySection() {
       icon: CheckCircle2,
       badge: "Guaranteed",
       details: "Final status report detailing acceptance terms or constructive notes for future growth.",
+    },
+  ] : language === "hi" ? [
+    {
+      id: "submit",
+      step: "01",
+      title: "आवेदन जमा किया गया",
+      desc: "आवेदन के समय आपके सीवी संस्करण को सहेजता है।",
+      icon: Send,
+      badge: "पूरा हुआ",
+      details: "आपके आधिकारिक सीवी की समय-स्टैम्प वाली प्रति रखते हुए तत्काल सबमिशन पुष्टि।",
+    },
+    {
+      id: "review",
+      step: "02",
+      title: "समीक्षा और स्क्रीनिंग जारी",
+      desc: "पद विनिर्देशों के साथ प्रोफ़ाइल का मिलान करता है।",
+      icon: FileSearch,
+      badge: "अब सक्रिय",
+      details: "बिना किसी स्वचालित अस्वीकृति के नौकरी की आवश्यकताओं और बेंचमार्क मिलान स्थिति की जाँच करता है।",
+    },
+    {
+      id: "interview",
+      step: "03",
+      title: "साक्षात्कार और मूल्यांकन",
+      desc: "तकनीकी साक्षात्कार या परीक्षण निर्धारित करता है।",
+      icon: Calendar,
+      badge: "निर्धारित",
+      details: "स्लॉट अनुस्मारक, साक्षात्कार लिंक, और भर्ती कंपनी के लिए अनुकूलित तैयारी गाइड।",
+    },
+    {
+      id: "decision",
+      step: "04",
+      title: "पारदर्शी निर्णय",
+      desc: "स्पष्टीकरण योग्य प्रस्ताव या सम्मानजनक प्रतिक्रिया रिपोर्ट।",
+      icon: CheckCircle2,
+      badge: "गारंटीकृत",
+      details: "स्वीकृति शर्तों या भविष्य के विकास के लिए रचनात्मक नोट्स का विवरण देने वाली अंतिम स्थिति रिपोर्ट।",
     },
   ] : [
     {

@@ -2,7 +2,7 @@
  * features/public/components/about/AiPhilosophyVisualizer.tsx
  *
  * Interactive visualizer illustrating Faeda's AI agency philosophy ("الذكاء يساعدك، والقرار لك").
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { Bot, UserCheck, ShieldCheck, Sparkles, ArrowLeft, ArrowRight } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
@@ -16,21 +16,33 @@ export function AiPhilosophyVisualizer() {
     {
       num: "01",
       title: t("about.ai.suggest"),
-      desc: language === "en" ? "Analyzes ATS readiness, skill coverage & job alignment." : "تحليل التوافق والمهارات وإبراز نقاط القوة والفجوات الفرعية.",
+      desc: language === "en"
+        ? "Analyzes ATS readiness, skill coverage & job alignment."
+        : language === "hi"
+        ? "एटीएस तत्परता, कौशल कवरेज और नौकरी संरेखण का विश्लेषण करता है।"
+        : "تحليل التوافق والمهارات وإبراز نقاط القوة والفجوات الفرعية.",
       icon: Bot,
       color: "from-blue-500/20 to-primary/20 border-primary/30 text-primary",
     },
     {
       num: "02",
       title: t("about.ai.review"),
-      desc: language === "en" ? "User and employer inspect transparent reasoning." : "مراجعة شفافة للدلائل والتوصيات وإلغاء أي تحيز غير مبرر.",
+      desc: language === "en"
+        ? "User and employer inspect transparent reasoning."
+        : language === "hi"
+        ? "उपयोगकर्ता और नियोक्ता पारदर्शी तर्क का निरीक्षण करते हैं।"
+        : "مراجعة شفافة للدلائل والتوصيات وإلغاء أي تحيز غير مبرر.",
       icon: UserCheck,
       color: "from-purple-500/20 to-indigo-500/20 border-indigo-500/30 text-indigo-400",
     },
     {
       num: "03",
       title: t("about.ai.decide"),
-      desc: language === "en" ? "Final hiring and career decisions remain 100% human." : "القرار النهائي بالتقديم أو الاستقطاب يظل حراً بيد الإنسان.",
+      desc: language === "en"
+        ? "Final hiring and career decisions remain 100% human."
+        : language === "hi"
+        ? "अंतिम भर्ती और करियर के निर्णय 100% मानवीय रहते हैं।"
+        : "القرار النهائي بالتقديم أو الاستقطاب يظل حراً بيد الإنسان.",
       icon: ShieldCheck,
       color: "from-emerald-500/20 to-teal-500/20 border-emerald-500/30 text-emerald-400",
     },

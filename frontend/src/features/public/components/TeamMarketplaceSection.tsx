@@ -2,7 +2,7 @@
  * features/public/components/TeamMarketplaceSection.tsx
  *
  * Public team marketplace section for Home page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
@@ -22,6 +22,11 @@ export function TeamMarketplaceSection() {
     { role: "Backend Engineering", skill: "Node.js, Python, PostgreSQL", icon: Layers },
     { role: "UX/UI Design", skill: "Figma, System Architecture", icon: Palette },
     { role: "AI & ML Integration", skill: "PyTorch, LLMs Integration", icon: Cpu },
+  ] : language === "hi" ? [
+    { role: "फ़्रंटएंड डेवलपमेंट", skill: "React, TypeScript", icon: Code },
+    { role: "बैकएंड इंजीनियरिंग", skill: "Node.js, Python, PostgreSQL", icon: Layers },
+    { role: "यूएक्स/यूआई डिजाइन", skill: "Figma, System Architecture", icon: Palette },
+    { role: "एआई और एमएल एकीकरण", skill: "PyTorch, LLMs Integration", icon: Cpu },
   ] : [
     { role: "تطوير واجهات (Frontend)", skill: "React, TypeScript", icon: Code },
     { role: "أنظمة خلفية (Backend)", skill: "Node.js, Python, PostgreSQL", icon: Layers },
@@ -46,7 +51,7 @@ export function TeamMarketplaceSection() {
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-heading text-white mb-4 leading-tight">
               {t("teams.header.title")}: <br />
               <span className="text-secondary bg-clip-text text-transparent bg-gradient-to-l from-secondary to-accent">
-                {language === "en" ? "Hire capabilities, not just individuals." : "توظيف كتلة كفاءات متكاملة"}
+                {language === "en" ? "Hire capabilities, not just individuals." : language === "hi" ? "केवल व्यक्तियों को ही नहीं, क्षमताओं को भर्ती करें।" : "توظيف كتلة كفاءات متكاملة"}
               </span>
             </h2>
 
@@ -76,14 +81,18 @@ export function TeamMarketplaceSection() {
                 <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
                   <div>
                     <h3 className="font-bold font-heading text-white text-lg sm:text-xl">
-                      {language === "en" ? "Full Capability Unit" : "وحدة قدرات تخصصية كاملة"}
+                      {language === "en" ? "Full Capability Unit" : language === "hi" ? "पूर्ण क्षमता इकाई" : "وحدة قدرات تخصصية كاملة"}
                     </h3>
                     <p className="text-xs sm:text-sm text-muted-foreground">
-                      {language === "en" ? "Multi-domain skills for building digital products" : "تغطية مهارية شاملة لبناء وتطوير المنتجات الرقمية"}
+                      {language === "en"
+                        ? "Multi-domain skills for building digital products"
+                        : language === "hi"
+                        ? "डिजिटल उत्पाद बनाने के लिए बहु-डोमेन कौशल"
+                        : "تغطية مهارية شاملة لبناء وتطوير المنتجات الرقمية"}
                     </p>
                   </div>
                   <span className="px-3.5 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs sm:text-sm font-bold font-mono">
-                    {language === "en" ? "96% Skill Coverage" : "تغطية مهارات 96%"}
+                    {language === "en" ? "96% Skill Coverage" : language === "hi" ? "96% कौशल कवरेज" : "تغطية مهارات 96%"}
                   </span>
                 </div>
 
@@ -106,7 +115,13 @@ export function TeamMarketplaceSection() {
                 <div className="p-5 rounded-xl bg-gradient-to-r from-secondary/20 via-card to-card border border-secondary/30 flex items-center justify-between text-xs sm:text-sm text-white">
                   <div className="flex items-center gap-2.5">
                     <Sparkles className="w-5 h-5 text-secondary shrink-0" />
-                    <span>{language === "en" ? "Ready for direct team contracting & execution" : "جاهزية التعاقد والتسليم الجماعي المباشر للشركات"}</span>
+                    <span>
+                      {language === "en"
+                        ? "Ready for direct team contracting & execution"
+                        : language === "hi"
+                        ? "प्रत्यक्ष टीम अनुबंध और निष्पादन के लिए तैयार"
+                        : "جاهزية التعاقد والتسليم الجماعي المباشر للشركات"}
+                    </span>
                   </div>
                   <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" />
                 </div>

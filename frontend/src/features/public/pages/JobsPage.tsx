@@ -3,7 +3,7 @@
  *
  * Public jobs search + filter + discovery page.
  * Two-Pane Split Discovery Layout on Desktop (Scrollable List + Sticky Opportunity Preview).
- * Single Column List on Mobile. Fully localized AR/EN & RTL/LTR.
+ * Single Column List on Mobile. Fully localized AR/EN/HI & RTL/LTR.
  */
 import { useState, useCallback, useEffect } from "react"
 import { useSearchParams, Link } from "react-router-dom"
@@ -51,8 +51,9 @@ function buildFilterFromParams(params: URLSearchParams): JobFilter {
 /* ─── Apply Gate Panel ─────────────────────────────────── */
 
 function ApplyGatePanel({ job }: { job: Job }) {
-  const { t, language } = useTranslation()
+  const { t, language, isRTL } = useTranslation()
   const companyName = getLocalizedCompanyName(job.company, language)
+  const arrowChar = isRTL ? "←" : "→"
 
   return (
     <div className="p-4 rounded-xl bg-card/80 border border-primary/20 backdrop-blur-md text-start space-y-3 shadow-lg">
@@ -73,7 +74,7 @@ function ApplyGatePanel({ job }: { job: Job }) {
       <div className="pt-2 border-t border-white/5 text-[11px] text-muted-foreground flex items-center justify-between">
         <span>{companyName}</span>
         <Link to={ROUTES.JOBS.DETAIL(job.id)} className="text-primary hover:underline font-semibold">
-          {t("jobs.card.viewDetails")} →
+          {t("jobs.card.viewDetails")} {arrowChar}
         </Link>
       </div>
     </div>
@@ -136,7 +137,7 @@ function OpportunityPreview({ job }: { job: Job | undefined }) {
             {job.location && (
               <span className="inline-flex items-center gap-1 text-white/80">
                 <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span>{job.isRemote ? (language === "en" ? "Remote" : "عن بعد") : job.location}</span>
+                <span>{job.isRemote ? (language === "en" ? "Remote" : language === "hi" ? "रिमोट" : "عن بعد") : job.location}</span>
               </span>
             )}
             <span className="inline-flex items-center gap-1">
@@ -478,7 +479,7 @@ export function JobsPage() {
                 </Button>
 
                 <span className="text-xs text-muted-foreground px-3 font-mono">
-                  {filter.page} {t("common.pagination.of")} {jobs.totalPages}
+                  {formatLocalizedNumber(filter.page || 1, language)} {t("common.pagination.of")} {formatLocalizedNumber(jobs.totalPages, language)}
                 </span>
 
                 <Button

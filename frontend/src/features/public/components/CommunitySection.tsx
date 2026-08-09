@@ -2,7 +2,7 @@
  * features/public/components/CommunitySection.tsx
  *
  * Public community insights section for Home page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
@@ -28,6 +28,22 @@ export function CommunitySection() {
       title: "Integrated Team Hiring: Why leading employers contract whole teams",
       category: "Hiring Trends",
       date: "August 2026",
+    },
+  ] : language === "hi" ? [
+    {
+      title: "स्वचालित एटीएस स्क्रीनिंग सिस्टम को पास करने के लिए अपना सीवी कैसे तैयार करें?",
+      category: "करियर विकास",
+      date: "अगस्त 2026",
+    },
+    {
+      title: "बाजार मूल्य को समझना और वास्तविक डेटा के आधार पर वेतन पर बातचीत करना",
+      category: "करियर विकास",
+      date: "अगस्त 2026",
+    },
+    {
+      title: "एकीकृत टीम भर्ती: प्रमुख नियोक्ता पूरी टीमों का अनुबंध क्यों करते हैं",
+      category: "भर्ती के रुझान",
+      date: "अगस्त 2026",
     },
   ] : [
     {

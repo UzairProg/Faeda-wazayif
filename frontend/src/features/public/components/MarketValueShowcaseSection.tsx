@@ -2,7 +2,7 @@
  * features/public/components/MarketValueShowcaseSection.tsx
  *
  * Market value estimation showcase section for Home page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -24,6 +24,11 @@ export function MarketValueShowcaseSection() {
     { label: "Verified Skills", val: "React, TypeScript, Node.js, Python", status: "High Demand" },
     { label: "Academic Degree", val: "B.Sc. Computer Science", status: "Completed" },
     { label: "Market Demand", val: "Saudi Market (Riyadh / Remote)", status: "Very High" },
+  ] : language === "hi" ? [
+    { label: "कार्य अनुभव", val: "5 वर्ष (सॉफ्टवेयर इंजीनियरिंग)", status: "मजबूत" },
+    { label: "सत्यापित कौशल", val: "React, TypeScript, Node.js, Python", status: "उच्च मांग" },
+    { label: "शैक्षणिक डिग्री", val: "बी.एससी. कंप्यूटर साइंस", status: "पूर्ण" },
+    { label: "बाजार मांग", val: "सऊदी बाजार (रियाध / रिमोट)", status: "बहुत उच्च" },
   ] : [
     { label: "الخبرة العملية", val: "5 سنوات (تطوير برمجيات)", status: "قوي" },
     { label: "المهارات المحققة", val: "React, TypeScript, Node.js, Python", status: "مطلوب جداً" },
@@ -58,10 +63,14 @@ export function MarketValueShowcaseSection() {
                 <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-white text-sm">
-                    {language === "en" ? "Real Data Benchmark" : "تقدير مبني على البيانات الحقيقية"}
+                    {language === "en" ? "Real Data Benchmark" : language === "hi" ? "वास्तविक डेटा बेंचमार्क" : "تقدير مبني على البيانات الحقيقية"}
                   </h4>
                   <p className="text-xs text-muted-foreground">
-                    {language === "en" ? "Matches qualifications with real market standards without opaque algorithms." : "ربط مؤهلاتك ومعايير سوق العمل الإقليمي دون خوارزميات مجهولة."}
+                    {language === "en"
+                      ? "Matches qualifications with real market standards without opaque algorithms."
+                      : language === "hi"
+                      ? "गुप्त एल्गोरिदम के बिना वास्तविक बाजार मानकों के साथ योग्यताओं का मिलान करता है।"
+                      : "ربط مؤهلاتك ومعايير سوق العمل الإقليمي دون خوارزميات مجهولة."}
                   </p>
                 </div>
               </div>
@@ -69,10 +78,14 @@ export function MarketValueShowcaseSection() {
                 <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-white text-sm">
-                    {language === "en" ? "'Why This Score?' Section" : "قسم 'لماذا هذه النتيجة؟'"}
+                    {language === "en" ? "'Why This Score?' Section" : language === "hi" ? "'यह स्कोर क्यों?' अनुभाग" : "قسم 'لماذا هذه النتيجة؟'"}
                   </h4>
                   <p className="text-xs text-muted-foreground">
-                    {language === "en" ? "Transparent explanation of strengths and growth points impacting salary." : "شرح شفاف لنقاط القوة ونقاط النمو التي تؤثر مباشرة على راتبك."}
+                    {language === "en"
+                      ? "Transparent explanation of strengths and growth points impacting salary."
+                      : language === "hi"
+                      ? "वेतन को प्रभावित करने वाली ताकतों और विकास बिंदुओं का पारदर्शी स्पष्टीकरण।"
+                      : "شرح شفاف لنقاط القوة ونقاط النمو التي تؤثر مباشرة على راتبك."}
                   </p>
                 </div>
               </div>
@@ -104,15 +117,15 @@ export function MarketValueShowcaseSection() {
                     </div>
                     <div>
                       <h3 className="font-bold font-heading text-white text-lg sm:text-xl">
-                        {language === "en" ? "Market Value Report" : "تقرير القيمة السوقية"}
+                        {language === "en" ? "Market Value Report" : language === "hi" ? "बाजार मूल्य रिपोर्ट" : "تقرير القيمة السوقية"}
                       </h3>
                       <p className="text-xs sm:text-sm text-muted-foreground">
-                        {language === "en" ? "Senior Frontend Engineer • Riyadh" : "مهندس برمجيات واجهات قدير • الرياض"}
+                        {language === "en" ? "Senior Frontend Engineer • Riyadh" : language === "hi" ? "वरिष्ठ फ़्रंटएंड इंजीनियर • रियाध" : "مهندس برمجيات واجهات قدير • الرياض"}
                       </p>
                     </div>
                   </div>
                   <span className="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-muted-foreground font-mono">
-                    {language === "en" ? "Live Sample" : "مثال توضيحي"}
+                    {language === "en" ? "Live Sample" : language === "hi" ? "लाइव नमूना" : "مثال توضيحي"}
                   </span>
                 </div>
 
@@ -120,14 +133,14 @@ export function MarketValueShowcaseSection() {
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                       <span className="text-xs sm:text-sm text-primary font-bold tracking-wider uppercase block mb-1">
-                        {language === "en" ? "Expected Monthly Salary (SAR / Month)" : "نطاق الراتب المتوقع بالسوق (SAR / شهرياً)"}
+                        {language === "en" ? "Expected Monthly Salary (SAR / Month)" : language === "hi" ? "अपेक्षित मासिक वेतन (SAR / माह)" : "نطاق الراتب المتوقع بالسوق (SAR / شهرياً)"}
                       </span>
                       <p className="text-3xl sm:text-5xl font-extrabold text-white font-mono tracking-tight">
-                        22,000 – 28,000 <span className="text-base font-sans font-normal text-muted-foreground">{language === "en" ? "SAR" : "ر.س"}</span>
+                        22,000 – 28,000 <span className="text-base font-sans font-normal text-muted-foreground">{language === "en" || language === "hi" ? "SAR" : "ر.س"}</span>
                       </p>
                     </div>
                     <div className="px-3.5 py-2 rounded-lg bg-primary/20 border border-primary/30 text-primary text-xs sm:text-sm font-bold shrink-0">
-                      {language === "en" ? "High Market Competitiveness" : "مستوى تنافسي مرتفع"}
+                      {language === "en" ? "High Market Competitiveness" : language === "hi" ? "उच्च बाजार प्रतिस्पर्धात्मकता" : "مستوى تنافسي مرتفع"}
                     </div>
                   </div>
                 </div>
@@ -140,7 +153,7 @@ export function MarketValueShowcaseSection() {
                       activeTab === "overview" ? "bg-primary text-white" : "text-muted-foreground hover:text-white"
                     }`}
                   >
-                    {language === "en" ? "Evaluation Inputs" : "مدخلات التقييم"}
+                    {language === "en" ? "Evaluation Inputs" : language === "hi" ? "मूल्यांकन इनपुट" : "مدخلات التقييم"}
                   </button>
                   <button
                     onClick={() => setActiveTab("why")}
@@ -148,7 +161,7 @@ export function MarketValueShowcaseSection() {
                       activeTab === "why" ? "bg-primary text-white" : "text-muted-foreground hover:text-white"
                     }`}
                   >
-                    {language === "en" ? "Why this score?" : "لماذا هذه النتيجة؟"}
+                    {language === "en" ? "Why this score?" : language === "hi" ? "यह स्कोर क्यों?" : "لماذا هذه النتيجة؟"}
                   </button>
                   <button
                     onClick={() => setActiveTab("actions")}
@@ -156,7 +169,7 @@ export function MarketValueShowcaseSection() {
                       activeTab === "actions" ? "bg-primary text-white" : "text-muted-foreground hover:text-white"
                     }`}
                   >
-                    {language === "en" ? "Growth Actions (+15%)" : "فرص زيادة القيمة (+15%)"}
+                    {language === "en" ? "Growth Actions (+15%)" : language === "hi" ? "विकास कार्य (+15%)" : "فرص زيادة القيمة (+15%)"}
                   </button>
                 </div>
 
@@ -193,6 +206,8 @@ export function MarketValueShowcaseSection() {
                         <span>
                           {language === "en"
                             ? "High proficiency in React & TypeScript matching in-demand Tech specs in Riyadh."
+                            : language === "hi"
+                            ? "रियाध में मांग वाली टेक विशिष्टताओं से मेल खाते हुए React और TypeScript में उच्च दक्षता।"
                             : "امتلاك مهارات React و TypeScript المطلوبة بشدة في مشاريع النواحي التقنية بالرياض."}
                         </span>
                       </div>
@@ -201,6 +216,8 @@ export function MarketValueShowcaseSection() {
                         <span>
                           {language === "en"
                             ? "Missing documented System Architecture leadership experience limits upper ceiling."
+                            : language === "hi"
+                            ? "दस्तावेजीकृत सिस्टम आर्किटेक्चर नेतृत्व अनुभव की कमी ऊपरी सीमा को सीमित करती है।"
                             : "عدم توثيق مشاريع سابقة في إدارة تصميم الأنظمة (System Architecture) يقلل السقف الأعلى."}
                         </span>
                       </div>
@@ -218,14 +235,26 @@ export function MarketValueShowcaseSection() {
                       <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 text-white flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5">
                           <Sparkles className="w-5 h-5 text-primary shrink-0" />
-                          <span>{language === "en" ? "Add certified Cloud Architecture credential (AWS/Azure)" : "إضافة شهادة معتمدة في Cloud Architecture (AWS/Azure)"}</span>
+                          <span>
+                            {language === "en"
+                              ? "Add certified Cloud Architecture credential (AWS/Azure)"
+                              : language === "hi"
+                              ? "प्रमाणित क्लाउड आर्किटेक्चर क्रेडेंशियल जोड़ें (AWS/Azure)"
+                              : "إضافة شهادة معتمدة في Cloud Architecture (AWS/Azure)"}
+                          </span>
                         </div>
                         <span className="text-primary font-mono font-bold shrink-0">+2,500 SAR</span>
                       </div>
                       <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 text-white flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5">
                           <Sparkles className="w-5 h-5 text-primary shrink-0" />
-                          <span>{language === "en" ? "Highlight team lead experience in past roles" : "إبراز قيادة فرق برمجية صغيرة في خانة الخبرات"}</span>
+                          <span>
+                            {language === "en"
+                              ? "Highlight team lead experience in past roles"
+                              : language === "hi"
+                              ? "पिछली भूमिकाओं में टीम लीड अनुभव को उजागर करें"
+                              : "إبراز قيادة فرق برمجية صغيرة في خانة الخبرات"}
+                          </span>
                         </div>
                         <span className="text-primary font-mono font-bold shrink-0">+1,800 SAR</span>
                       </div>

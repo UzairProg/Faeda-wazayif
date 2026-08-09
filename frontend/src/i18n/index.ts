@@ -1,7 +1,7 @@
 /**
  * i18n/index.ts
  *
- * Production-grade bilingual (Arabic ↔ English) translation engine for Faeda Jobs.
+ * Production-grade trilingual (Arabic ↔ English ↔ Hindi) translation engine for Faeda Jobs.
  * Exports:
  *   - `t(key, params?, lang?)`: Pure translation lookup function
  *   - `useTranslation()`: Reactive React hook that re-renders components on language switch
@@ -9,10 +9,12 @@
 import { useLanguageStore, type Language } from "@/store/language.store"
 import { arLocale } from "./locales/ar"
 import { enLocale } from "./locales/en"
+import { hiLocale } from "./locales/hi"
 
 export const locales = {
   ar: arLocale,
   en: enLocale,
+  hi: hiLocale,
 } as const
 
 export type LocaleType = typeof arLocale
@@ -20,8 +22,8 @@ export type LocaleType = typeof arLocale
 /**
  * Dot-notation translation key resolver with language fallback and parameters interpolation.
  *
- * @example t("jobs.search.button") → "بحث" / "Search"
- * @example t("jobs.search.resultsCount", { count: 5 }) → "5 وظائف متاحة" / "5 jobs available"
+ * @example t("jobs.search.button") → "بحث" / "Search" / "खोजें"
+ * @example t("jobs.search.resultsCount", { count: 5 }) → "5 وظائف متاحة" / "5 jobs available" / "5 नौकरियां उपलब्ध हैं"
  */
 export function t(
   key: string,

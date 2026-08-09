@@ -2,7 +2,7 @@
  * features/companies/components/CompanyFilters.tsx
  *
  * Discovery filter controls for public companies.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { CheckCircle2, Briefcase, Filter, X } from "lucide-react"
 import { useTranslation } from "@/i18n"
@@ -31,6 +31,8 @@ export function CompanyFilters({
 
   const popularCities = language === "en"
     ? ["Riyadh", "Jeddah", "Dammam", "Dhahran", "Khobar"]
+    : language === "hi"
+    ? ["रियाध", "जिद्दा", "दम्माम", "धाहरान", "अल खोबार"]
     : ["الرياض", "جدة", "الدمام", "الظهران", "الخبر"]
 
   return (

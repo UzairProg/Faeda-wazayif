@@ -2,7 +2,7 @@
  * features/auth/pages/ForgotPassword.tsx
  *
  * Password reset request page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -25,7 +25,7 @@ export function ForgotPassword() {
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
 
   const toggleLang = () => {
-    const nextLang: Language = language === "ar" ? "en" : "ar"
+    const nextLang: Language = language === "ar" ? "en" : language === "en" ? "hi" : "ar"
     setLanguage(nextLang)
   }
 
@@ -65,7 +65,7 @@ export function ForgotPassword() {
             className="rounded-full bg-white/5 border-white/10 text-white hover:bg-white/10 px-4 text-xs gap-1.5"
           >
             <Globe className="w-3.5 h-3.5 text-primary" />
-            <span>{language === "ar" ? "English" : "العربية"}</span>
+            <span>{language === "ar" ? "English" : language === "en" ? "हिन्दी" : "العربية"}</span>
           </Button>
 
           <Link to="/" className="text-xs font-semibold text-muted-foreground hover:text-white transition-colors flex items-center gap-1.5">
@@ -188,12 +188,18 @@ export function ForgotPassword() {
 
         <div className="relative z-10 flex flex-col items-start justify-center h-full max-w-lg mx-auto text-start">
           <h2 className="text-4xl font-extrabold font-heading text-white leading-[1.3] mb-4">
-            {language === "en" ? "Secure & seamless access to your account." : "استعادة الأمان وسهولة الوصول لحسابك."}
+            {language === "en"
+              ? "Secure & seamless access to your account."
+              : language === "hi"
+              ? "आपके खाते तक सुरक्षित और निर्बाध पहुँच।"
+              : "استعادة الأمان وسهولة الوصول لحسابك."}
           </h2>
         </div>
 
         <div className="relative z-10 flex justify-end gap-8 pt-8 border-t border-white/5">
-          <span className="text-xs text-white/80">{language === "en" ? "Protected Account Access" : "أمان عالي ووصول محمي"}</span>
+          <span className="text-xs text-white/80">
+            {language === "en" ? "Protected Account Access" : language === "hi" ? "संरक्षित खाता पहुँच" : "أمان عالي ووصول محمي"}
+          </span>
         </div>
       </div>
 

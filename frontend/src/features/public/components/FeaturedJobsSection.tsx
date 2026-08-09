@@ -2,7 +2,7 @@
  * features/public/components/FeaturedJobsSection.tsx
  *
  * Featured jobs interactive section for public home page.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -26,35 +26,119 @@ export function FeaturedJobsSection() {
   const sampleOpportunities = [
     {
       id: "demo-1",
-      title: language === "en" ? "Senior Frontend Engineer" : "مهندس واجهات أُمامية أول (Senior Frontend)",
-      company: language === "en" ? "Leading Tech & Energy Co." : "شركة طاقة وتقنية رائدة",
-      location: language === "en" ? "Dhahran, Saudi Arabia" : "الظهران، السعودية",
-      salary: language === "en" ? "SAR 28,000 – 35,000" : "28,000 – 35,000 ر.س",
-      type: language === "en" ? "Full-time" : "دوام كامل",
-      fitReason: language === "en" ? "Great match with your React, TypeScript, and complex systems experience." : "تطابق ممتاز مع مهاراتك في React و TypeScript والأنظمة المعقدة.",
-      fitBadge: language === "en" ? "High Skill Match" : "مطابقة عالية للمهارات",
+      title: language === "en"
+        ? "Senior Frontend Engineer"
+        : language === "hi"
+        ? "वरिष्ठ फ़्रंटएंड इंजीनियर (Senior Frontend)"
+        : "مهندس واجهات أُمامية أول (Senior Frontend)",
+      company: language === "en"
+        ? "Leading Tech & Energy Co."
+        : language === "hi"
+        ? "प्रमुख टेक और ऊर्जा कंपनी"
+        : "شركة طاقة وتقنية رائدة",
+      location: language === "en"
+        ? "Dhahran, Saudi Arabia"
+        : language === "hi"
+        ? "धाहरान, सऊदी अरब"
+        : "الظهران، السعودية",
+      salary: language === "en"
+        ? "SAR 28,000 – 35,000"
+        : language === "hi"
+        ? "SAR 28,000 – 35,000"
+        : "28,000 – 35,000 ر.س",
+      type: language === "en"
+        ? "Full-time"
+        : language === "hi"
+        ? "पूर्णकालिक"
+        : "دوام كامل",
+      fitReason: language === "en"
+        ? "Great match with your React, TypeScript, and complex systems experience."
+        : language === "hi"
+        ? "आपके React, TypeScript और जटिल प्रणालियों के अनुभव के साथ शानदार मेल।"
+        : "تطابق ممتاز مع مهاراتك في React و TypeScript والأنظمة المعقدة.",
+      fitBadge: language === "en"
+        ? "High Skill Match"
+        : language === "hi"
+        ? "उच्च कौशल मिलान"
+        : "مطابقة عالية للمهارات",
       teamFriendly: true,
     },
     {
       id: "demo-2",
-      title: language === "en" ? "UI/UX Architect" : "مصمم تجربة المستخدم (UI/UX Architect)",
-      company: language === "en" ? "Digital Solutions Group" : "مجموعة حلول رقمية",
-      location: language === "en" ? "Riyadh, Saudi Arabia" : "الرياض، السعودية",
-      salary: language === "en" ? "SAR 20,000 – 26,000" : "20,000 – 26,000 ر.س",
-      type: language === "en" ? "Full-time" : "دوام كامل",
-      fitReason: language === "en" ? "Fits your expertise in Design Systems and unified architecture." : "مناسب لخبرتك وتخصصك في تصميم الأنظمة الموحدة (Design Systems).",
-      fitBadge: language === "en" ? "Trajectory Fit" : "مناسب لمسارك المفضل",
+      title: language === "en"
+        ? "UI/UX Architect"
+        : language === "hi"
+        ? "यूआई/यूएक्स आर्किटेक्ट (UI/UX Architect)"
+        : "مصمم تجربة المستخدم (UI/UX Architect)",
+      company: language === "en"
+        ? "Digital Solutions Group"
+        : language === "hi"
+        ? "डिजिटल सॉल्यूशंस ग्रुप"
+        : "مجموعة حلول رقمية",
+      location: language === "en"
+        ? "Riyadh, Saudi Arabia"
+        : language === "hi"
+        ? "रियाध, सऊदी अरब"
+        : "الرياض، السعودية",
+      salary: language === "en"
+        ? "SAR 20,000 – 26,000"
+        : language === "hi"
+        ? "SAR 20,000 – 26,000"
+        : "20,000 – 26,000 ر.س",
+      type: language === "en"
+        ? "Full-time"
+        : language === "hi"
+        ? "पूर्णकालिक"
+        : "دوام كامل",
+      fitReason: language === "en"
+        ? "Fits your expertise in Design Systems and unified architecture."
+        : language === "hi"
+        ? "डिजाइन सिस्टम और एकीकृत वास्तुकला में आपकी विशेषज्ञता के अनुकूल।"
+        : "مناسب لخبرتك وتخصصك في تصميم الأنظمة الموحدة (Design Systems).",
+      fitBadge: language === "en"
+        ? "Trajectory Fit"
+        : language === "hi"
+        ? "करियर मार्ग अनुकूल"
+        : "مناسب لمسارك المفضل",
       teamFriendly: false,
     },
     {
       id: "demo-3",
-      title: language === "en" ? "Data & AI Analyst" : "محلل بيانات وذكاء اصطناعي",
-      company: language === "en" ? "Future Innovation Inst." : "مؤسسة ابتكار مستقبلي",
-      location: language === "en" ? "Remote" : "عن بعد",
-      salary: language === "en" ? "Upon Interview" : "حسب المقابلة",
-      type: language === "en" ? "Flexible Contract" : "عقد مرن",
-      fitReason: language === "en" ? "Great growth opportunity to develop deep learning models." : "فرصة ممتازة لتطوير مهارات التعلم العميق في بيئة عمل مرنة.",
-      fitBadge: language === "en" ? "Growth Opportunity" : "فرصة نمو مهارية",
+      title: language === "en"
+        ? "Data & AI Analyst"
+        : language === "hi"
+        ? "डेटा और एआई विश्लेषक"
+        : "محلل بيانات وذكاء اصطناعي",
+      company: language === "en"
+        ? "Future Innovation Inst."
+        : language === "hi"
+        ? "फ्यूचर इनोवेशन संस्थान"
+        : "مؤسسة ابتكار مستقبلي",
+      location: language === "en"
+        ? "Remote"
+        : language === "hi"
+        ? "रिमोट"
+        : "عن بعد",
+      salary: language === "en"
+        ? "Upon Interview"
+        : language === "hi"
+        ? "साक्षात्कार पर निर्भर"
+        : "حسب المقابلة",
+      type: language === "en"
+        ? "Flexible Contract"
+        : language === "hi"
+        ? "लचीला अनुबंध"
+        : "عقد مرن",
+      fitReason: language === "en"
+        ? "Great growth opportunity to develop deep learning models."
+        : language === "hi"
+        ? "डीप लर्निंग मॉडल विकसित करने का शानदार विकास अवसर।"
+        : "فرصة ممتازة لتطوير مهارات التعلم العميق في بيئة عمل مرنة.",
+      fitBadge: language === "en"
+        ? "Growth Opportunity"
+        : language === "hi"
+        ? "विकास का अवसर"
+        : "فرصة نمو مهارية",
       teamFriendly: true,
     },
   ]
@@ -162,7 +246,7 @@ export function FeaturedJobsSection() {
                     <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                     <div>
                       <span className="text-xs sm:text-sm font-bold text-primary block mb-0.5">
-                        {language === "en" ? "Recommendation Reasoning:" : "سبب الترشيح:"}
+                        {language === "en" ? "Recommendation Reasoning:" : language === "hi" ? "सिफारिश का कारण:" : "سبب الترشيح:"}
                       </span>
                       <p className="text-xs sm:text-sm text-white/90 leading-relaxed">{currentOpp.fitReason}</p>
                     </div>

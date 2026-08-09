@@ -2,7 +2,7 @@
  * features/public/components/about/ProductDirection.tsx
  *
  * Roadmap section showing what is live today vs future expansion direction.
- * Fully localized for Arabic (RTL) and English (LTR).
+ * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
 import { CheckCircle2, Sparkles, Compass } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
@@ -16,6 +16,11 @@ export function ProductDirection() {
     "Jobs Discovery & Explainable Match",
     "Verified Companies Directory & Culture Profiles",
     "Team Capability Marketplace"
+  ] : language === "hi" ? [
+    "पेशेवर पहचान और एटीएस तत्परता विश्लेषण",
+    "नौकरी की खोज और स्पष्टीकरण योग्य मिलान",
+    "सत्यापित कंपनी निर्देशिका और संस्कृति प्रोफ़ाइल",
+    "टीम क्षमता बाजार"
   ] : [
     "الهوية المهنية وفحص جاهزية السيرة الذاتية (ATS)",
     "استكشاف الفرص مع إبراز أسباب التوافق المفسر",
@@ -27,6 +32,10 @@ export function ProductDirection() {
     "Deeper Career Intelligence & Mentorship Simulations",
     "Education ↔ Market Demand Direct Integration",
     "Advanced Project Capability Matching for Enterprise"
+  ] : language === "hi" ? [
+    "गहरी करियर बुद्धिमत्ता और मेंटरशिप सिमुलेशन",
+    "शिक्षा ↔ बाजार मांग प्रत्यक्ष एकीकरण",
+    "एंटरप्राइज के लिए उन्नत परियोजना क्षमता मिलान"
   ] : [
     "ذكاء توجيهي أعمق ومحاكاة المقابلات التفاعلية",
     "ربط أعمق بين مخرجات الجامعات واحتياجات السوق الحية",
@@ -61,7 +70,7 @@ export function ProductDirection() {
               <div>
                 <h3 className="font-extrabold font-heading text-white text-lg">{t("about.direction.todayTitle")}</h3>
                 <span className="text-xs text-emerald-300 font-mono font-bold">
-                  {language === "en" ? "Phase 1 Launched & Active" : "المرحلة الحالية المتاحة"}
+                  {language === "en" ? "Phase 1 Launched & Active" : language === "hi" ? "चरण 1 लॉन्च और सक्रिय" : "المرحلة الحالية المتاحة"}
                 </span>
               </div>
             </div>
@@ -85,7 +94,7 @@ export function ProductDirection() {
               <div>
                 <h3 className="font-extrabold font-heading text-white text-lg">{t("about.direction.nextTitle")}</h3>
                 <span className="text-xs text-primary font-mono font-bold">
-                  {language === "en" ? "Future Expansion Roadmap" : "التوسع المستقبلي في المنظومة"}
+                  {language === "en" ? "Future Expansion Roadmap" : language === "hi" ? "भविष्य विस्तार रोडमैप" : "التوسع المستقبلي في المنظومة"}
                 </span>
               </div>
             </div>
