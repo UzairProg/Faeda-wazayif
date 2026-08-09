@@ -132,4 +132,145 @@ with app.app_context():
 
         db.session.commit()
 
+    # 4. Sample Candidates & Teams
+    from services.teams import team_members_association
+
+    sample_candidates = [
+        {
+            "user_id": "cand-101",
+            "fullname": "أحمد المنصور",
+            "email": "ahmed.almansour@example.com",
+            "mobile": "0501112233",
+            "password": "Password123!",
+            "about": "مطور فرونت إند وتطبيقات ويب محترف بخبرة 5 سنوات في بناء واجهات المستخدم الحديثة.",
+            "preferred_field_of_work": "تطوير البرمجيات والويب",
+            "years_of_skills": "5 سنوات",
+            "government": "الرياض",
+            "country": "المملكة العربية السعودية",
+            "activated": True,
+            "status": "active"
+        },
+        {
+            "user_id": "cand-102",
+            "fullname": "سارة العتيبي",
+            "email": "sara.otaibi@example.com",
+            "mobile": "0502223344",
+            "password": "Password123!",
+            "about": "مصممة تجربة وواجهات مستخدم UI/UX متخصصة في أنظمة التصميم والتفاعلات البرمجية.",
+            "preferred_field_of_work": "التصميم والفنون الرقمية",
+            "years_of_skills": "4 سنوات",
+            "government": "الرياض",
+            "country": "المملكة العربية السعودية",
+            "activated": True,
+            "status": "active"
+        },
+        {
+            "user_id": "cand-103",
+            "fullname": "عمر الشمري",
+            "email": "omar.shammari@example.com",
+            "mobile": "0503334455",
+            "password": "Password123!",
+            "about": "مهندس أنظمة خلفية وحلول سحابية متخصص في Python, Node.js و Microservices.",
+            "preferred_field_of_work": "هندسة البرمجيات والنظم",
+            "years_of_skills": "6 سنوات",
+            "government": "الرياض",
+            "country": "المملكة العربية السعودية",
+            "activated": True,
+            "status": "active"
+        },
+        {
+            "user_id": "cand-104",
+            "fullname": "ريم الحارثي",
+            "email": "reem.harthi@example.com",
+            "mobile": "0504445566",
+            "password": "Password123!",
+            "about": "مهندسة ذكاء اصطناعي ومعالجة لغات طبيعية متخصصة في نماذج اللغات الضخمة LLMs.",
+            "preferred_field_of_work": "الذكاء الاصطناعي وعلم البيانات",
+            "years_of_skills": "4 سنوات",
+            "government": "جدة",
+            "country": "المملكة العربية السعودية",
+            "activated": True,
+            "status": "active"
+        },
+        {
+            "user_id": "cand-105",
+            "fullname": "فيصل القحطاني",
+            "email": "faisal.qahtani@example.com",
+            "mobile": "0505556677",
+            "password": "Password123!",
+            "about": "مهندس بيانات وبنية تحتية متمرس في بناء أنابيب البيانات وتحليل البيانات الضخمة.",
+            "preferred_field_of_work": "هندسة البيانات",
+            "years_of_skills": "3 سنوات",
+            "government": "الظهران",
+            "country": "المملكة العربية السعودية",
+            "activated": True,
+            "status": "active"
+        }
+    ]
+
+    seeded_candidates = {}
+    for c_data in sample_candidates:
+        c = Customers.query.filter_by(user_id=c_data["user_id"]).first()
+        if not c:
+            c = Customers(**c_data)
+            db.session.add(c)
+            db.session.flush()
+        seeded_candidates[c_data["user_id"]] = c
+
+    db.session.commit()
+
+    sample_teams = [
+        {
+            "team_name": "فريق المنتجات الرقمية (Digital Product Team)",
+            "about": "فريق متكامل لبناء وتطوير المنتجات الرقمية وتطبيقات الويب والموبايل من الفكرة وحتى الإطلاق والتشغيل.",
+            "general_program": "تطوير البرمجيات والمنتجات الرقمية",
+            "semi_special_program": "تطبيقات الويب والموبايل السحابية",
+            "special_program": "React, TypeScript, Node.js, Python, Figma, Cloud AWS",
+            "achievements": "تطوير وإطلاق 8 منتجات رقمية عالية الجودة بنجاح",
+            "admin_id": "cand-101",
+            "members": ["cand-101", "cand-102", "cand-103"]
+        },
+        {
+            "team_name": "مختبر الذكاء الاصطناعي والبيانات (AI & Data Science Lab)",
+            "about": "تطوير نماذج الذكاء الاصطناعي، معالجة النصوص العربية، وبناء أنظمة التوصية وأنابيب البيانات الضخمة.",
+            "general_program": "الذكاء الاصطناعي وعلم البيانات",
+            "semi_special_program": "معالجة اللغات الطبيعية وتعلم الآلة",
+            "special_program": "Python, PyTorch, Transformers, LLMs, LangChain, Big Data",
+            "achievements": "تطوير نماذج ذكية معالجة للغة العربية وتحليلات سريعة",
+            "admin_id": "cand-104",
+            "members": ["cand-104", "cand-105"]
+        },
+        {
+            "team_name": "استوديو تصميم تجربة المستخدم (UI/UX Design Studio)",
+            "about": "نبتكر تجارب مستخدم فريدة، نصمم أنظمة التصميم الموحدة، ونقود أبحاث المستخدم للمنتجات الرقمية.",
+            "general_program": "تصميم واجهات وتجربة المستخدم",
+            "semi_special_program": "أنظمة التصميم وأبحاث المستخدم",
+            "special_program": "Figma, User Research, Design Systems, Prototyping, Wireframing",
+            "achievements": "بناء 5 أنظمة تصميم موحدة لمؤسسات تقنية رائدة",
+            "admin_id": "cand-102",
+            "members": ["cand-102"]
+        }
+    ]
+
+    for t_data in sample_teams:
+        existing_team = Teams.query.filter_by(team_name=t_data["team_name"]).first()
+        if not existing_team:
+            member_uids = t_data.pop("members")
+            team = Teams(**t_data)
+            db.session.add(team)
+            db.session.flush()
+
+            for uid in member_uids:
+                cand = seeded_candidates.get(uid)
+                if cand:
+                    db.session.execute(team_members_association.insert().values(
+                        team_id=team.id,
+                        member_id=cand.user_id,
+                        status='منضم',
+                        general_program=t_data.get("general_program"),
+                        special_program=t_data.get("special_program")
+                    ))
+
+    db.session.commit()
+
     print("Development data seeding complete successfully!")

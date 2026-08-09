@@ -30,6 +30,8 @@ import { JobsPage } from "./features/public/pages/JobsPage"
 import { JobDetailPage } from "./features/public/pages/JobDetailPage"
 import { CompaniesPage } from "./features/public/pages/CompaniesPage"
 import { CompanyDetailPage } from "./features/public/pages/CompanyDetailPage"
+import { TeamsPage } from "./features/public/pages/TeamsPage"
+import { TeamDetailPage } from "./features/public/pages/TeamDetailPage"
 
 // Auth pages
 import { Login } from "./features/auth/pages/Login"
@@ -58,24 +60,8 @@ function App() {
           <Route path="jobs/:id" element={<JobDetailPage />} />
           <Route path="companies" element={<CompaniesPage />} />
           <Route path="companies/:id" element={<CompanyDetailPage />} />
-          <Route
-            path="teams"
-            element={
-              <div className="container mx-auto px-4 py-20 text-center">
-                <p className="text-2xl font-bold font-heading text-white mb-3">الفرق</p>
-                <p className="text-muted-foreground">قريباً — قائمة الفرق</p>
-              </div>
-            }
-          />
-          <Route
-            path="teams/:id"
-            element={
-              <div className="container mx-auto px-4 py-20 text-center">
-                <p className="text-2xl font-bold font-heading text-white mb-3">تفاصيل الفريق</p>
-                <p className="text-muted-foreground">قريباً</p>
-              </div>
-            }
-          />
+          <Route path="teams" element={<TeamsPage />} />
+          <Route path="teams/:id" element={<TeamDetailPage />} />
           <Route
             path="portfolio/:username"
             element={

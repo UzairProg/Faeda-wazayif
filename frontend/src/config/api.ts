@@ -35,9 +35,10 @@ export const API_CONFIG = {
       SUGGESTIONS: "/api/v1/companies/suggestions",
     },
     TEAMS: {
-      LIST: "/controlled_teams",
+      LIST: "/api/v1/teams",
+      DETAIL: (id: string) => `/api/v1/teams/${id}`,
+      SUGGESTIONS: "/api/v1/teams/suggestions",
       CREATE: "/create_team",
-      DETAIL: (id: string) => `/profile_team/${id}`,
     },
     CANDIDATES: {
       PROFILE: "/my_profile",

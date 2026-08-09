@@ -129,4 +129,144 @@ def api_cities(country):
         cities = cities_data.get(country, [])
         return jsonify(cities)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)}), 500
+
+
+# ==============================================================================
+# JSON REST API ENDPOINTS FOR FRONTEND PUBLIC TEAMS MARKETPLACE
+# ==============================================================================
+
+def extract_team_capabilities(t):
+    caps = []
+    if t.special_program:
+        parts = [p.strip() for p in t.special_program.replace('،', ',').split(',') if p.strip()]
+        caps.extend(parts)
+    if t.semi_special_program and t.semi_special_program not in caps:
+        caps.append(t.semi_special_program)
+    if t.general_program and t.general_program not in caps:
+        caps.append(t.general_program)
+    return caps[:8]
+
+
+def serialize_team_summary(t):
+    from services.teams import Teams
+    capabilities = extract_team_capabilities(t)
+    member_count = len(t.members) if t.members else 0
+
+    return {
+        "id": str(t.id),
+        "name": t.team_name,
+        "about": t.about or "",
+        "achievements": t.achievements or "",
+        "generalProgram": t.general_program,
+        "semiSpecialProgram": t.semi_special_program,
+        "specialProgram": t.special_program,
+        "logoUrl": t.img if t.img else None,
+        "memberCount": member_count,
+        "capabilities": capabilities,
+        "location": "الرياض" if not t.members else (t.members[0].government or "السعودية"),
+        "isRemote": True,
+        "creationDate": t.creation_date.isoformat() if t.creation_date else None,
+    }
+
+
+def serialize_team_detail(t):
+    from app.blueprints.jobs import serialize_job_summary
+    base = serialize_team_summary(t)
+
+    public_members = []
+    if t.members:
+        for m in t.members:
+            public_members.append({
+                "id": str(m.id),
+                "name": m.fullname,
+                "role": m.preferred_field_of_work or m.about or "عضو فريق",
+                "avatarUrl": m.img if m.img else None,
+                "skills": [m.preferred_field_of_work] if m.preferred_field_of_work else [],
+            })
+
+    associated_jobs = []
+    if t.jobs:
+        associated_jobs = [serialize_job_summary(j) for j in t.jobs if j.status == 'approved']
+
+    return {
+        **base,
+        "members": public_members,
+        "jobs": associated_jobs,
+    }
+
+
+@core_bp.route('/api/v1/teams/suggestions')
+def api_get_team_suggestions():
+    from services.teams import Teams
+    q = request.args.get('q', '').strip()
+
+    if not q or len(q) < 2:
+        return jsonify({"suggestions": []})
+
+    teams = Teams.query.filter(
+        db.or_(
+            Teams.team_name.ilike(f"%{q}%"),
+            Teams.about.ilike(f"%{q}%"),
+            Teams.general_program.ilike(f"%{q}%"),
+            Teams.special_program.ilike(f"%{q}%")
+        )
+    ).limit(8).all()
+
+    suggestions = []
+    for t in teams:
+        caps = extract_team_capabilities(t)
+        sub = caps[0] if caps else "فريق تخصصي"
+        suggestions.append({
+            "id": str(t.id),
+            "label": t.team_name,
+            "subLabel": sub,
+            "category": "فريق",
+            "value": t.team_name,
+            "location": "السعودية",
+        })
+
+    return jsonify({"suggestions": suggestions})
+
+
+@core_bp.route('/api/v1/teams')
+def api_get_teams():
+    from services.teams import Teams
+    q = request.args.get('q', '').strip()
+    location = request.args.get('location', '').strip()
+    page = int(request.args.get('page', 1))
+    page_size = int(request.args.get('page_size', 10))
+
+    query = Teams.query
+
+    if q:
+        query = query.filter(
+            db.or_(
+                Teams.team_name.ilike(f"%{q}%"),
+                Teams.about.ilike(f"%{q}%"),
+                Teams.general_program.ilike(f"%{q}%"),
+                Teams.semi_special_program.ilike(f"%{q}%"),
+                Teams.special_program.ilike(f"%{q}%"),
+                Teams.achievements.ilike(f"%{q}%")
+            )
+        )
+
+    paginated = query.order_by(Teams.id.desc()).paginate(page=page, per_page=page_size, error_out=False)
+
+    return jsonify({
+        "teams": [serialize_team_summary(t) for t in paginated.items],
+        "total": paginated.total,
+        "page": paginated.page,
+        "pageSize": paginated.per_page,
+        "totalPages": paginated.pages,
+    })
+
+
+@core_bp.route('/api/v1/teams/<int:team_id>')
+def api_get_team_detail(team_id):
+    from services.teams import Teams
+    t = Teams.query.get(team_id)
+    if not t:
+        return jsonify({"message": "الفريق غير موجود"}), 404
+
+    return jsonify(serialize_team_detail(t))
