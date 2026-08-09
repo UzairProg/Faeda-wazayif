@@ -1214,19 +1214,30 @@ def redirects():
     """Dashboard router: redirects customer or company to their panel."""
     if 'session_customer' in session:
         user_id = session.get('user_id')
-        customer_obj = Customers.query.get(user_id)  # noqa: F405
+        customer_obj = Customers.query.get(user_id) if user_id else None  # noqa: F405
+        if not customer_obj:
+            session.pop('session_customer', None)
+            session.pop('user_id', None)
+            flash('لم يتم العثور على حسابك، يرجى تسجيل الدخول مرة أخرى.')
+            return redirect('/login')
         
         # Calculate market value for the dashboard
         market_data = get_market_value_for_customer(customer_obj)
         
         # Get history (last 6 events)
         history_records = CustomerProfileHistory.query.filter_by(customer_id=customer_obj.id).order_by(CustomerProfileHistory.created_at.desc()).limit(6).all()
-        history_records.reverse()  # chronological order for chart
+        if history_records:
+            history_records.reverse()  # chronological order for chart
         
         return render_template('panel/customer_panel.html', customer=customer_obj, market_data=market_data, history=history_records)
     elif 'session_company' in session:
         company_id = session.get('company_id')
-        company_obj = Company.query.get(company_id)  # noqa: F405
+        company_obj = Company.query.get(company_id) if company_id else None  # noqa: F405
+        if not company_obj:
+            session.pop('session_company', None)
+            session.pop('company_id', None)
+            flash('لم يتم العثور على حساب الشركة، يرجى تسجيل الدخول مرة أخرى.')
+            return redirect('/login')
         return render_template('panel/company_panel/company_panel.html', company=company_obj)
     else:
         flash('يجب تسجيل الدخول أولاً')

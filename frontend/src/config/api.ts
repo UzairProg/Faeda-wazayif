@@ -22,10 +22,12 @@ export const API_CONFIG = {
       MY_PROFILE: "/my_profile",
     },
     JOBS: {
-      LIST: "/job-list",
-      DETAIL: (id: string) => `/read_job/${id}`,
+      LIST: "/api/v1/jobs",
+      DETAIL: (id: string) => `/api/v1/jobs/${id}`,
       APPLY: (id: string) => `/applyjob/${id}`,
-      SEARCH: "/searchjobb",
+      SAVE: (id: string) => `/api/v1/jobs/${id}/save`,
+      SEARCH: "/api/v1/jobs",
+      SUGGESTIONS: "/api/v1/jobs/suggestions",
     },
     COMPANIES: {
       LIST: "/companies",

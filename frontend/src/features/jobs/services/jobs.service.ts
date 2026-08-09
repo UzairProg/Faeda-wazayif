@@ -75,4 +75,24 @@ export async function toggleSaveJob(id: string): Promise<{ saved: boolean }> {
   return data
 }
 
-export type { Job, JobDetail, JobFilter, JobListResponse }
+/**
+ * Fetch autocomplete suggestions for search inputs.
+ */
+export async function getJobSuggestions(
+  query: string,
+  type: "all" | "location" | "keyword" = "all"
+): Promise<JobSuggestion[]> {
+  if (!query || query.trim().length < 2) return []
+  try {
+    const { data } = await api.get<{ suggestions: JobSuggestion[] }>(
+      API_CONFIG.ENDPOINTS.JOBS.SUGGESTIONS,
+      { params: { q: query.trim(), type } }
+    )
+    return data.suggestions || []
+  } catch {
+    return []
+  }
+}
+
+export type { Job, JobDetail, JobFilter, JobListResponse, JobSuggestion }
+

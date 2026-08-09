@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Mail, Lock, User, Building2, Globe, ArrowLeft, Eye, EyeOff, AlertCircle, Loader2, ArrowRight } from "lucide-react"
-import { Link, useNavigate, useSearchParams } from "react-router-dom"
+import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom"
 import { ROUTES } from "@/config/routes"
 import { useAuthStore } from "@/store/auth.store"
 import { authService } from "../services/auth.service"
@@ -12,6 +12,7 @@ import type { RegisterRole } from "../types/auth.types"
 
 export function Register() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams] = useSearchParams()
   const { login, isAuthenticated, user } = useAuthStore()
 
@@ -120,6 +121,19 @@ export function Register() {
 
       const res = await authService.register(registerPayload)
       login(res.user, res.token)
+
+      // Role-aware destination validation
+      const fromPath = (location.state as { from?: string })?.from
+      const isFromAuthorized =
+        fromPath &&
+        ((res.user.role === "candidate" && (fromPath.startsWith("/candidate") || fromPath.startsWith("/jobs"))) ||
+          (res.user.role === "company" && fromPath.startsWith("/company")) ||
+          (res.user.role === "admin" && fromPath.startsWith("/admin")))
+
+      if (isFromAuthorized && fromPath) {
+        navigate(fromPath, { replace: true })
+        return
+      }
 
       // Role-aware route redirection
       switch (res.user.role) {

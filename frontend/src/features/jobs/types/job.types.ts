@@ -120,3 +120,14 @@ export type JobsQueryState =
   | { status: "empty" }
   | { status: "unavailable" }  // Backend not yet returning JSON
   | { status: "success"; data: JobListResponse }
+
+export interface JobSuggestion {
+  id: string
+  type: "city" | "company" | "job" | "skill"
+  label: string
+  subLabel?: string
+  category: "مدينة" | "شركة" | "وظيفة" | "مهارة"
+  filterType: "location" | "keyword"
+  value: string
+}
+

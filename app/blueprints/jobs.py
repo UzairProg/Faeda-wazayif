@@ -5,7 +5,7 @@
 # ==============================================================================
 #### jobs.py############
 
-from flask import Blueprint  , render_template , redirect , request , session , flash, abort, url_for
+from flask import Blueprint, render_template, redirect, request, session, flash, abort, url_for, jsonify
 from services.job import *# noqa: F403
 from services.customer import *
 from services.skills import *# noqa: F403
@@ -456,3 +456,286 @@ def update_list(page):
                            job_types=job_types, 
                            categories=categories, 
                            specialties=specialties)
+
+
+# ==============================================================================
+# JSON REST API ENDPOINTS FOR FRONTEND JOBS MODULE
+# ==============================================================================
+
+def serialize_job_summary(j):
+    company = j.company
+    company_name = (company.company_arabic_name or company.company_english_name) if company else "جهة توظيف"
+    company_logo = company.company_logo if company else None
+    
+    skills_list = []
+    if j.required_skills:
+        skills_list = [s.strip() for s in j.required_skills.split(",") if s.strip()]
+    elif j.specialization:
+        skills_list = [j.specialization]
+
+    excerpt = j.job_description[:160] + "..." if j.job_description and len(j.job_description) > 160 else j.job_description
+
+    work_type = "full_time"
+    if j.job_type:
+        jt_lower = j.job_type.lower()
+        if "جزئي" in jt_lower or "part" in jt_lower:
+            work_type = "part_time"
+        elif "عن بعد" in jt_lower or "remote" in jt_lower:
+            work_type = "remote"
+        elif "هجين" in jt_lower or "hybrid" in jt_lower:
+            work_type = "hybrid"
+        elif "عقد" in jt_lower or "contract" in jt_lower:
+            work_type = "contract"
+
+    exp_level = "mid"
+    if j.skills_years:
+        if "1" in j.skills_years or "مبتدئ" in j.skills_years:
+            exp_level = "entry"
+        elif "5" in j.skills_years or "خبير" in j.skills_years or "Senior" in j.title:
+            exp_level = "senior"
+
+    return {
+        "id": str(j.id),
+        "title": j.title,
+        "company": {
+            "id": str(j.company_id),
+            "name": company_name,
+            "logoUrl": company_logo,
+            "location": company.state if company else j.town,
+            "isVerified": company.is_verified if company else False,
+        },
+        "location": j.town,
+        "isRemote": "عن بعد" in (j.workplace or "") or "remote" in (j.workplace or "").lower(),
+        "workType": work_type,
+        "experienceLevel": exp_level,
+        "skills": skills_list,
+        "salary": {
+            "min": j.salary_min or 0,
+            "max": j.salary_max or 0,
+            "currency": "SAR",
+            "period": "monthly",
+            "isDisclosed": bool(j.salary_min or j.salary_max)
+        } if (j.salary_min or j.salary_max) else None,
+        "postedAt": j.date_posted.isoformat() if j.date_posted else datetime.utcnow().isoformat(),
+        "updatedAt": j.date_posted.isoformat() if j.date_posted else datetime.utcnow().isoformat(),
+        "status": "published" if j.status == "approved" else j.status,
+        "isTeamFriendly": True,
+        "excerpt": excerpt,
+    }
+
+
+def serialize_job_detail(j):
+    base = serialize_job_summary(j)
+
+    requirements = []
+    if j.educational_qualification:
+        requirements.append(f"المؤهل التعليمي: {j.educational_qualification}")
+    if j.skills_years:
+        requirements.append(f"خبرة مطلوبة: {j.skills_years}")
+    if j.languages:
+        requirements.append(f"اللغات: {j.languages}")
+
+    responsibilities = [
+        "إدارة وتنفيذ المهمة اليومية المطلوبة بكفاءة عالية وبما يضمن تحقيق الجودة.",
+        "التنسيق مع أعضاء الفريق وأصحاب المصلحة وتحديث التقارير الدورية.",
+    ]
+
+    return {
+        **base,
+        "description": j.job_description or "",
+        "responsibilities": responsibilities,
+        "requirements": requirements if requirements else ["إتقان المهارات التقنية الواردة في تفاصيل الوظيفة."],
+        "applicationDeadline": None,
+        "applicationCount": None,
+    }
+
+
+@job.route('/api/v1/jobs')
+def api_get_jobs():
+    q = request.args.get('q', '').strip()
+    location = request.args.get('location', '').strip()
+    work_type_param = request.args.get('work_type', '').strip()
+    experience_param = request.args.get('experience', '').strip()
+    salary_disclosed = request.args.get('salary_disclosed', '').strip()
+    category_param = request.args.get('category', '').strip()
+    page = int(request.args.get('page', 1))
+    page_size = int(request.args.get('page_size', 10))
+
+    query = Jobs.query.filter_by(status='approved')
+
+    if q:
+        query = query.filter(
+            db.or_(
+                Jobs.title.ilike(f"%{q}%"),
+                Jobs.job_description.ilike(f"%{q}%"),
+                Jobs.specialization.ilike(f"%{q}%"),
+                Jobs.required_skills.ilike(f"%{q}%")
+            )
+        )
+
+    if location:
+        query = query.filter(
+            db.or_(
+                Jobs.town.ilike(f"%{location}%"),
+                Jobs.workplace.ilike(f"%{location}%")
+            )
+        )
+
+    if category_param:
+        query = query.filter(Jobs.category.ilike(f"%{category_param}%"))
+
+    if work_type_param:
+        types = [t.strip().lower() for t in work_type_param.split(',') if t.strip()]
+        type_clauses = []
+        for t in types:
+            if t == "full_time":
+                type_clauses.append(Jobs.job_type.ilike("%كامل%") | Jobs.job_type.ilike("%full%"))
+            elif t == "part_time":
+                type_clauses.append(Jobs.job_type.ilike("%جزئي%") | Jobs.job_type.ilike("%part%"))
+            elif t == "remote":
+                type_clauses.append(Jobs.job_type.ilike("%عن بعد%") | Jobs.job_type.ilike("%remote%") | Jobs.workplace.ilike("%عن بعد%"))
+            elif t == "hybrid":
+                type_clauses.append(Jobs.job_type.ilike("%هجين%") | Jobs.job_type.ilike("%hybrid%"))
+            elif t == "contract":
+                type_clauses.append(Jobs.job_type.ilike("%عقد%") | Jobs.job_type.ilike("%contract%"))
+            else:
+                type_clauses.append(Jobs.job_type.ilike(f"%{t}%"))
+        if type_clauses:
+            query = query.filter(db.or_(*type_clauses))
+
+    if experience_param:
+        exps = [e.strip().lower() for e in experience_param.split(',') if e.strip()]
+        exp_clauses = []
+        for e in exps:
+            if e == "entry":
+                exp_clauses.append(Jobs.skills_years.ilike("%1%") | Jobs.skills_years.ilike("%مبتدئ%") | Jobs.title.ilike("%junior%"))
+            elif e == "senior":
+                exp_clauses.append(Jobs.skills_years.ilike("%5%") | Jobs.skills_years.ilike("%خبير%") | Jobs.title.ilike("%senior%"))
+            elif e == "mid":
+                exp_clauses.append(Jobs.skills_years.ilike("%2%") | Jobs.skills_years.ilike("%3%") | Jobs.skills_years.ilike("%4%") | Jobs.skills_years.ilike("%متوسط%"))
+        if exp_clauses:
+            query = query.filter(db.or_(*exp_clauses))
+
+    if salary_disclosed.lower() == "true":
+        query = query.filter(db.or_(Jobs.salary_min > 0, Jobs.salary_max > 0))
+
+    paginated = query.order_by(Jobs.date_posted.desc()).paginate(page=page, per_page=page_size, error_out=False)
+
+    return jsonify({
+        "jobs": [serialize_job_summary(j) for j in paginated.items],
+        "total": paginated.total,
+        "page": paginated.page,
+        "pageSize": paginated.per_page,
+        "totalPages": paginated.pages,
+    })
+
+
+@job.route('/api/v1/jobs/<int:job_id>')
+def api_get_job_detail(job_id):
+    job_obj = Jobs.query.get(job_id)
+    if not job_obj or job_obj.status != 'approved':
+        return jsonify({"message": "الوظيفة غير متاحة حالياً"}), 404
+
+    return jsonify(serialize_job_detail(job_obj))
+
+
+@job.route('/api/v1/jobs/suggestions')
+def api_get_job_suggestions():
+    q = request.args.get('q', '').strip()
+    sug_type = request.args.get('type', 'all').strip().lower()
+
+    if not q or len(q) < 2:
+        return jsonify({"suggestions": []})
+
+    suggestions = []
+
+    # 1. Location / City Suggestions
+    if sug_type in ['all', 'location']:
+        cities = City.query.filter(
+            City.is_active == True,
+            db.or_(
+                City.name_ar.ilike(f"%{q}%"),
+                City.name_en.ilike(f"%{q}%")
+            )
+        ).limit(5).all()
+
+        for c in cities:
+            suggestions.append({
+                "type": "city",
+                "id": f"city-{c.id}",
+                "label": c.name_ar,
+                "category": "مدينة",
+                "filterType": "location",
+                "value": c.name_ar
+            })
+
+    # 2. Keyword / Company / Job / Skill Suggestions
+    if sug_type in ['all', 'keyword']:
+        # Companies
+        companies = Company.query.filter(
+            db.or_(
+                Company.company_arabic_name.ilike(f"%{q}%"),
+                Company.company_english_name.ilike(f"%{q}%")
+            )
+        ).limit(4).all()
+
+        for comp in companies:
+            c_name = comp.company_arabic_name or comp.company_english_name
+            suggestions.append({
+                "type": "company",
+                "id": f"comp-{comp.id}",
+                "label": c_name,
+                "subLabel": comp.state or "السعودية",
+                "category": "شركة",
+                "filterType": "keyword",
+                "value": c_name
+            })
+
+        # Jobs
+        job_records = Jobs.query.filter(
+            Jobs.status == 'approved',
+            db.or_(
+                Jobs.title.ilike(f"%{q}%"),
+                Jobs.specialization.ilike(f"%{q}%")
+            )
+        ).limit(5).all()
+
+        for j in job_records:
+            comp_name = (j.company.company_arabic_name or j.company.company_english_name) if j.company else None
+            suggestions.append({
+                "type": "job",
+                "id": f"job-{j.id}",
+                "label": j.title,
+                "subLabel": comp_name,
+                "category": "وظيفة",
+                "filterType": "keyword",
+                "value": j.title
+            })
+
+        # Unique skills matching from Jobs
+        all_jobs_with_skills = Jobs.query.filter(
+            Jobs.status == 'approved',
+            Jobs.required_skills.ilike(f"%{q}%")
+        ).limit(10).all()
+
+        seen_skills = set()
+        for j in all_jobs_with_skills:
+            if j.required_skills:
+                for s in j.required_skills.split(','):
+                    s_clean = s.strip()
+                    if s_clean and q.lower() in s_clean.lower() and s_clean.lower() not in seen_skills:
+                        seen_skills.add(s_clean.lower())
+                        suggestions.append({
+                            "type": "skill",
+                            "id": f"skill-{s_clean}",
+                            "label": s_clean,
+                            "category": "مهارة",
+                            "filterType": "keyword",
+                            "value": s_clean
+                        })
+                        if len(seen_skills) >= 3:
+                            break
+
+    return jsonify({"suggestions": suggestions})
+
+

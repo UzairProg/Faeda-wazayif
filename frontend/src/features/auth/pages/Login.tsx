@@ -64,7 +64,7 @@ export function Login() {
       const fromPath = (location.state as { from?: string })?.from
       const isFromAuthorized =
         fromPath &&
-        ((res.user.role === "candidate" && fromPath.startsWith("/candidate")) ||
+        ((res.user.role === "candidate" && (fromPath.startsWith("/candidate") || fromPath.startsWith("/jobs"))) ||
           (res.user.role === "company" && fromPath.startsWith("/company")) ||
           (res.user.role === "admin" && fromPath.startsWith("/admin")))
 

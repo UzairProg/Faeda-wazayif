@@ -102,4 +102,18 @@ def create_app():
             except Exception:
                 return dict(system_settings={})
 
+        @app.errorhandler(500)
+        @app.errorhandler(Exception)
+        def handle_internal_error(error):
+            from flask import jsonify
+            origin = os.environ.get('FRONTEND_ORIGIN', 'http://localhost:5173')
+            response = jsonify({
+                "error": "Internal Server Error",
+                "message": str(error) if app.debug else "An unexpected error occurred."
+            })
+            response.status_code = 500
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            return response
+
     return app
