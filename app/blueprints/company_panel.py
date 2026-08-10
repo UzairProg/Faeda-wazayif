@@ -435,3 +435,9 @@ def update_applicant_status_api(app_id):
 def download_cv(cv_filename):
     cv_dir = current_app.config.get('UPLOAD_CUSTOMERS_CV', 'static/uploads/customers/cv')
     return send_from_directory(cv_dir, cv_filename, as_attachment=True)
+
+@company_panel_bp.route('/company/view_cv/<string:cv_filename>')
+@company_required
+def view_cv(cv_filename):
+    cv_dir = current_app.config.get('UPLOAD_CUSTOMERS_CV', 'static/uploads/customers/cv')
+    return send_from_directory(cv_dir, cv_filename, as_attachment=False)

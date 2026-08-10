@@ -167,7 +167,7 @@
                                 <td class="text-center">
                                     <div class="d-flex gap-2 justify-content-center">
                                         {% if applicant.cv %}
-                                        <button onclick="window.open('{{ url_for('company_panel.download_cv', cv_filename=applicant.cv) }}', '_blank')" class="action-btn view-cv shadow-sm" title="عرض السيرة الذاتية" style="color: var(--accent-red);">
+                                        <button type="button" class="action-btn view-cv shadow-sm" title="عرض السيرة الذاتية" style="color: var(--accent-red);" data-bs-toggle="modal" data-bs-target="#cvModal" onclick="document.getElementById('cvIframe').src='{{ url_for('company_panel.view_cv', cv_filename=applicant.cv) }}';">
                                             <i class="fas fa-file-pdf"></i>
                                         </button>
                                         {% endif %}
@@ -257,5 +257,20 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- CV Viewer Modal -->
+<div class="modal fade" id="cvModal" tabindex="-1" aria-labelledby="cvModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title almarai-bold" id="cvModalLabel" style="color: var(--primary-dark);">عرض السيرة الذاتية</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0" style="height: 85vh;">
+        <iframe id="cvIframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
