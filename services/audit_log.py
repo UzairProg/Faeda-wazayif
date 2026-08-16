@@ -48,6 +48,8 @@ ACTION_LABELS = {
     'create_category': 'إنشاء تصنيف',
     'edit_category': 'تعديل تصنيف',
     'delete_category': 'حذف تصنيف',
+    # System actions
+    'backup_database': 'نسخ احتياطي لقاعدة البيانات',
 }
 
 TARGET_TYPE_LABELS = {
@@ -60,6 +62,7 @@ TARGET_TYPE_LABELS = {
     'category': 'تصنيف',
     'admin': 'مدير',
     'settings': 'إعدادات',
+    'database': 'قاعدة بيانات',
 }
 
 
