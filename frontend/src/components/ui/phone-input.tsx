@@ -494,7 +494,7 @@ const validatePhoneNumber = (
   if (!country) return false;
 
   // Remove spaces, dashes, parentheses for validation
-  const cleanNumber = phoneNumber.replace(/[\s\-\(\)]/g, "");
+  const cleanNumber = phoneNumber.replace(/[\s\-(\)]/g, "");
   return country.pattern.test(cleanNumber);
 };
 
@@ -604,7 +604,7 @@ export function PhoneInput({
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let newValue = e.target.value.replace(/[^\d\s\-\(\)]/g, "");
+    let newValue = e.target.value.replace(/[^\d\s\-(\)]/g, "");
 
     // Apply max length limit based on country
     if (
