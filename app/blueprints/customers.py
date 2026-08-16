@@ -13,6 +13,7 @@ from services.company import *  # noqa: F403
 from services.job import * # noqa: F403
 from services.skills import * # noqa: F403
 import os
+import csv
 from werkzeug.utils import secure_filename
 import random
 import secrets
@@ -32,6 +33,22 @@ from datetime import datetime
 
 from ai_engine.market_value_calculator import get_market_value_for_customer
 from services.customer import CustomerProfileHistory
+
+QS_UNIVERSITIES = []
+
+def get_qs_universities():
+    global QS_UNIVERSITIES
+    if not QS_UNIVERSITIES:
+        # current_app.root_path is typically app folder, so we go up to find ai_engine
+        csv_path = os.path.join(current_app.root_path, '..', 'ai_engine', 'Data', 'qs_rankings_2025.csv')
+        try:
+            with open(csv_path, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                QS_UNIVERSITIES = [row['Institution Name'] for row in reader if row.get('Institution Name')]
+        except Exception as e:
+            print(f"Error loading QS dataset: {e}")
+            QS_UNIVERSITIES = []
+    return QS_UNIVERSITIES
 
 def log_profile_update(customer_obj, event_desc):
     """Recalculates market value and logs it to history."""
@@ -858,7 +875,8 @@ def get_edit_profile_educational_data():
                            educational_qualification=user.educational_qualification,
                            university=user.university,
                            department_university=user.department_university,
-                           gpa=user.gpa)
+                           gpa=user.gpa,
+                           universities=get_qs_universities())
 
 
 @customer.route('/edit-profile/personal_data', methods=['POST'])

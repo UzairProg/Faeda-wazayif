@@ -32,11 +32,16 @@ CKAN_API_URL: str = (
     "https://data.gov.sa/api/3/action/datastore_search"
 )
 CKAN_RESOURCE_ID: str = "CURRENT_YEAR_WAGES"
+SDAIA_CKAN_RESOURCE_ID: str = "36bc6b58-f871-4621-8d6f-ee0ccdde8f14"
 
 # API configuration
 API_TIMEOUT_SECONDS: int = 30
 API_MAX_RETRIES: int = 3
 API_PAGE_SIZE: int = 100
+API_HEADERS: Dict[str, str] = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "application/json, text/plain, */*"
+}
 
 # Scheduler interval (days)
 SCHEDULE_INTERVAL_DAYS: int = 30
@@ -206,13 +211,21 @@ def ensure_table_exists(conn: sqlite3.Connection) -> None:
     CREATE INDEX IF NOT EXISTS idx_salary_benchmark_exp_range
         ON salary_benchmark(exp_years_range);
     """
+    create_sdaia_sql = """
+    CREATE TABLE IF NOT EXISTS sdaia_job_titles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        job_title TEXT NOT NULL UNIQUE,
+        last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    """
     try:
         cursor = conn.cursor()
         cursor.execute(create_sql)
         cursor.execute(index_spec_sql)
         cursor.execute(index_exp_sql)
+        cursor.execute(create_sdaia_sql)
         conn.commit()
-        logger.info("[+] salary_benchmark table verified/created successfully")
+        logger.info("[+] salary_benchmark and sdaia_job_titles tables verified/created successfully")
     except sqlite3.Error as e:
         logger.error("[-] Failed to create salary_benchmark table: %s", e)
         raise
@@ -514,46 +527,162 @@ def get_fallback_data() -> pd.DataFrame:
     # Salary ranges in SAR (Saudi Riyal) per month
     # Format: (specialization, exp_tier, min, avg, max)
     fallback_rows = [
-        # IT / Technology
+        # --- IT & Software (Granular Tech Roles) ---
+        ("Artificial Intelligence", "0-2", 8000, 12000, 16000),
+        ("Artificial Intelligence", "3-5", 14000, 19000, 25000),
+        ("Artificial Intelligence", "5+", 22000, 30000, 45000),
+        ("Machine Learning", "0-2", 8000, 12000, 16000),
+        ("Machine Learning", "3-5", 14000, 19000, 25000),
+        ("Machine Learning", "5+", 22000, 30000, 45000),
+        ("Data Science", "0-2", 7500, 11000, 15000),
+        ("Data Science", "3-5", 13000, 18000, 24000),
+        ("Data Science", "5+", 20000, 28000, 40000),
+        ("Data Engineering", "0-2", 7000, 10500, 14000),
+        ("Data Engineering", "3-5", 12000, 17000, 23000),
+        ("Data Engineering", "5+", 19000, 26000, 38000),
+        ("DevOps", "0-2", 7000, 10000, 14000),
+        ("DevOps", "3-5", 12000, 16000, 22000),
+        ("DevOps", "5+", 18000, 25000, 35000),
+        ("Cybersecurity", "0-2", 8000, 11500, 15000),
+        ("Cybersecurity", "3-5", 13000, 18000, 24000),
+        ("Cybersecurity", "5+", 20000, 28000, 42000),
+        ("Cloud Architecture", "0-2", 7500, 11000, 15000),
+        ("Cloud Architecture", "3-5", 13000, 18000, 25000),
+        ("Cloud Architecture", "5+", 21000, 29000, 42000),
+        ("UI/UX Design", "0-2", 6000, 9000, 12000),
+        ("UI/UX Design", "3-5", 10000, 14000, 18000),
+        ("UI/UX Design", "5+", 16000, 22000, 30000),
+        ("Product Management", "0-2", 7000, 10000, 14000),
+        ("Product Management", "3-5", 12000, 16000, 22000),
+        ("Product Management", "5+", 18000, 26000, 38000),
+        ("Software Engineering", "0-2", 6500, 9500, 13000),
+        ("Software Engineering", "3-5", 11000, 15000, 20000),
+        ("Software Engineering", "5+", 17000, 24000, 35000),
+        ("Full Stack Developer", "0-2", 6500, 9000, 13000),
+        ("Full Stack Developer", "3-5", 11000, 15000, 20000),
+        ("Full Stack Developer", "5+", 17000, 24000, 35000),
+        ("Backend Developer", "0-2", 6000, 8500, 12000),
+        ("Backend Developer", "3-5", 10000, 14000, 19000),
+        ("Backend Developer", "5+", 16000, 22000, 33000),
+        ("Frontend Developer", "0-2", 5500, 8000, 11000),
+        ("Frontend Developer", "3-5", 9500, 13000, 17000),
+        ("Frontend Developer", "5+", 15000, 20000, 30000),
+        ("Mobile Developer", "0-2", 6000, 8500, 12000),
+        ("Mobile Developer", "3-5", 10000, 14000, 19000),
+        ("Mobile Developer", "5+", 16000, 22000, 32000),
+        ("Systems Analyst", "0-2", 6000, 8500, 12000),
+        ("Systems Analyst", "3-5", 10000, 14000, 18000),
+        ("Systems Analyst", "5+", 15000, 21000, 30000),
+        ("Database Administrator", "0-2", 6500, 9000, 13000),
+        ("Database Administrator", "3-5", 11000, 15000, 20000),
+        ("Database Administrator", "5+", 17000, 23000, 34000),
+        ("Network Engineer", "0-2", 6000, 8500, 12000),
+        ("Network Engineer", "3-5", 10000, 14000, 19000),
+        ("Network Engineer", "5+", 16000, 22000, 32000),
+        ("IT Support Specialist", "0-2", 4500, 6000, 8000),
+        ("IT Support Specialist", "3-5", 7000, 9500, 12000),
+        ("IT Support Specialist", "5+", 10000, 14000, 18000),
+        ("QA Engineer", "0-2", 5500, 8000, 11000),
+        ("QA Engineer", "3-5", 9500, 13000, 17000),
+        ("QA Engineer", "5+", 15000, 20000, 28000),
         ("IT", "0-2", 6000, 8500, 12000),
         ("IT", "3-5", 10000, 14000, 19000),
         ("IT", "5+", 16000, 22000, 35000),
-        # Human Resources
-        ("HR", "0-2", 5000, 7000, 9500),
-        ("HR", "3-5", 8000, 11000, 15000),
-        ("HR", "5+", 13000, 18000, 28000),
-        # Marketing
-        ("Marketing", "0-2", 5500, 7500, 10000),
-        ("Marketing", "3-5", 9000, 12500, 16000),
-        ("Marketing", "5+", 14000, 19000, 30000),
-        # Engineering
-        ("Engineering", "0-2", 7000, 9500, 13000),
-        ("Engineering", "3-5", 11000, 15000, 20000),
-        ("Engineering", "5+", 17000, 24000, 38000),
-        # Finance / Accounting
+        
+        # --- Finance & Accounting ---
         ("Finance", "0-2", 6000, 8000, 11000),
         ("Finance", "3-5", 9500, 13000, 17000),
         ("Finance", "5+", 15000, 21000, 33000),
-        # Healthcare
+        ("Accountant", "0-2", 5000, 7000, 9500),
+        ("Accountant", "3-5", 8500, 11500, 15000),
+        ("Accountant", "5+", 13000, 18000, 26000),
+        ("Financial Analyst", "0-2", 6500, 9000, 12000),
+        ("Financial Analyst", "3-5", 10500, 14000, 18000),
+        ("Financial Analyst", "5+", 16000, 22000, 32000),
+        ("Auditor", "0-2", 6000, 8500, 11500),
+        ("Auditor", "3-5", 10000, 13500, 17500),
+        ("Auditor", "5+", 15500, 21500, 31000),
+
+        # --- Healthcare & Medical ---
         ("Healthcare", "0-2", 7000, 10000, 14000),
         ("Healthcare", "3-5", 12000, 16000, 22000),
         ("Healthcare", "5+", 18000, 26000, 40000),
-        # Education
-        ("Education", "0-2", 5000, 7000, 9000),
-        ("Education", "3-5", 7500, 10000, 13000),
-        ("Education", "5+", 11000, 15000, 22000),
-        # Legal
+        ("Doctor", "0-2", 12000, 16000, 22000),
+        ("Doctor", "3-5", 20000, 28000, 38000),
+        ("Doctor", "5+", 32000, 45000, 70000),
+        ("Nurse", "0-2", 5000, 7000, 9500),
+        ("Nurse", "3-5", 8500, 11500, 15000),
+        ("Nurse", "5+", 13000, 17000, 24000),
+        ("Pharmacist", "0-2", 7000, 9500, 13000),
+        ("Pharmacist", "3-5", 11500, 15500, 20000),
+        ("Pharmacist", "5+", 17000, 23000, 33000),
+
+        # --- Human Resources ---
+        ("HR", "0-2", 5000, 7000, 9500),
+        ("HR", "3-5", 8000, 11000, 15000),
+        ("HR", "5+", 13000, 18000, 28000),
+        ("HR Manager", "0-2", 9000, 12000, 16000),
+        ("HR Manager", "3-5", 14000, 19000, 25000),
+        ("HR Manager", "5+", 21000, 29000, 42000),
+        ("Recruitment Specialist", "0-2", 5000, 7500, 10000),
+        ("Recruitment Specialist", "3-5", 9000, 12000, 16000),
+        ("Recruitment Specialist", "5+", 14000, 19000, 27000),
+
+        # --- Legal ---
         ("Legal", "0-2", 6000, 8500, 12000),
         ("Legal", "3-5", 10000, 14000, 19000),
         ("Legal", "5+", 16000, 23000, 36000),
-        # Sales
+        ("Legal Counsel", "0-2", 8000, 11000, 15000),
+        ("Legal Counsel", "3-5", 13000, 18000, 24000),
+        ("Legal Counsel", "5+", 20000, 28000, 42000),
+        ("Lawyer", "0-2", 7000, 10000, 14000),
+        ("Lawyer", "3-5", 12000, 17000, 23000),
+        ("Lawyer", "5+", 19000, 27000, 40000),
+
+        # --- Engineering ---
+        ("Engineering", "0-2", 7000, 9500, 13000),
+        ("Engineering", "3-5", 11000, 15000, 20000),
+        ("Engineering", "5+", 17000, 24000, 38000),
+        ("Civil Engineer", "0-2", 6500, 9000, 12500),
+        ("Civil Engineer", "3-5", 10500, 14500, 19000),
+        ("Civil Engineer", "5+", 16000, 22000, 35000),
+        ("Mechanical Engineer", "0-2", 6500, 9000, 12500),
+        ("Mechanical Engineer", "3-5", 10500, 14500, 19000),
+        ("Mechanical Engineer", "5+", 16000, 22000, 35000),
+        ("Electrical Engineer", "0-2", 6500, 9000, 12500),
+        ("Electrical Engineer", "3-5", 10500, 14500, 19000),
+        ("Electrical Engineer", "5+", 16000, 22000, 35000),
+
+        # --- Marketing & Sales ---
+        ("Marketing", "0-2", 5500, 7500, 10000),
+        ("Marketing", "3-5", 9000, 12500, 16000),
+        ("Marketing", "5+", 14000, 19000, 30000),
+        ("Marketing Manager", "0-2", 9000, 12500, 17000),
+        ("Marketing Manager", "3-5", 15000, 20000, 27000),
+        ("Marketing Manager", "5+", 22000, 31000, 45000),
+        ("Digital Marketing Specialist", "0-2", 5500, 7500, 10500),
+        ("Digital Marketing Specialist", "3-5", 9000, 12500, 16500),
+        ("Digital Marketing Specialist", "5+", 14500, 19500, 28000),
         ("Sales", "0-2", 4500, 6500, 9000),
         ("Sales", "3-5", 7500, 10500, 14000),
         ("Sales", "5+", 12000, 16000, 25000),
-        # Administration
+        ("Sales Manager", "0-2", 8000, 11000, 15000),
+        ("Sales Manager", "3-5", 13000, 18000, 24000),
+        ("Sales Manager", "5+", 19000, 27000, 40000),
+
+        # --- Administration & General ---
         ("Administration", "0-2", 4500, 6000, 8500),
         ("Administration", "3-5", 7000, 9500, 13000),
         ("Administration", "5+", 11000, 15000, 23000),
+        ("General Administration", "0-2", 4500, 6000, 8500),
+        ("General Administration", "3-5", 7000, 9500, 13000),
+        ("General Administration", "5+", 11000, 15000, 23000),
+        ("Project Manager", "0-2", 8000, 11500, 15000),
+        ("Project Manager", "3-5", 13500, 18500, 25000),
+        ("Project Manager", "5+", 21000, 29000, 42000),
+        ("Other", "0-2", 4500, 6000, 8500),
+        ("Other", "3-5", 7000, 9500, 13000),
+        ("Other", "5+", 11000, 15000, 23000),
     ]
 
     df = pd.DataFrame(
@@ -632,6 +761,110 @@ def upsert_salary_benchmarks(conn: sqlite3.Connection, df: pd.DataFrame) -> int:
     return rows_upserted
 
 
+def fetch_sdaia_job_titles() -> List[str]:
+    """Fetch job titles from the local CSV if available, fallback to API.
+    
+    Returns:
+        List[str]: List of job titles extracted.
+    """
+    logger.info("[*] Starting data fetch for SDAIA 2025 Job Titles...")
+    
+    csv_path = os.path.join(BASE_DIR, "ai_engine", "Data", "sdaia_job_titles_2025.csv")
+    if os.path.exists(csv_path):
+        logger.info("[*] Found local SDAIA CSV file. Reading from file instead of API...")
+        try:
+            df = pd.read_csv(csv_path)
+            if "اسم الوظيفة" in df.columns:
+                titles = set(df["اسم الوظيفة"].dropna().astype(str).str.strip().tolist())
+                logger.info("[+] Fetched %d unique job titles from local CSV", len(titles))
+                return list(titles)
+        except Exception as e:
+            logger.warning("[-] Failed to read local SDAIA CSV: %s", e)
+            
+    titles: set[str] = set()
+    offset: int = 0
+    
+    while True:
+        params: Dict[str, Any] = {
+            "resource_id": SDAIA_CKAN_RESOURCE_ID,
+            "limit": API_PAGE_SIZE,
+            "offset": offset,
+        }
+
+        success = False
+        for attempt in range(1, API_MAX_RETRIES + 1):
+            try:
+                response = requests.get(
+                    CKAN_API_URL,
+                    params=params,
+                    headers=API_HEADERS,
+                    timeout=API_TIMEOUT_SECONDS,
+                    verify=True
+                )
+                response.raise_for_status()
+                payload = response.json()
+
+                if not payload.get("success", False):
+                    error_msg = payload.get("error", {}).get("message", "Unknown API error")
+                    logger.warning("[-] SDAIA API returned success=false: %s", error_msg)
+                    break
+
+                records = payload.get("result", {}).get("records", [])
+                if not records:
+                    success = True
+                    break
+
+                for rec in records:
+                    # Look for any string value that could be a job title
+                    # Some datasets have specific keys like "المسمى الوظيفي" or "job_title"
+                    for key, val in rec.items():
+                        if isinstance(val, str) and 2 <= len(val) <= 100:
+                            # Heuristic: exclude IDs or purely numeric/date strings
+                            if not re.match(r'^[\d\-\.\:\s]+$', val) and key != "_id":
+                                titles.add(val.strip())
+
+                offset += API_PAGE_SIZE
+                success = True
+                break
+
+            except (requests.RequestException, ValueError) as e:
+                logger.warning("[-] SDAIA fetch error (attempt %d/%d): %s", attempt, API_MAX_RETRIES, e)
+                time.sleep(2 ** attempt)
+
+        if not success or not records:
+            break
+
+    logger.info("[+] Fetched %d unique job titles from SDAIA API", len(titles))
+    return list(titles)
+
+def upsert_sdaia_titles(conn: sqlite3.Connection, titles: List[str]) -> int:
+    """Upsert SDAIA job titles into the sdaia_job_titles table."""
+    if not titles:
+        return 0
+
+    upsert_sql = """
+    INSERT OR IGNORE INTO sdaia_job_titles (job_title, last_updated)
+    VALUES (?, ?)
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    rows_inserted = 0
+
+    try:
+        cursor = conn.cursor()
+        for title in titles:
+            cursor.execute(upsert_sql, (title, now))
+            if cursor.rowcount > 0:
+                rows_inserted += 1
+        conn.commit()
+        logger.info("[+] Inserted %d new SDAIA job titles", rows_inserted)
+    except sqlite3.Error as e:
+        logger.error("[-] Database error during SDAIA titles upsert: %s", e)
+        conn.rollback()
+
+    return rows_inserted
+
+
+
 # ---------------------------------------------------------------------------
 # Pipeline Orchestrator
 # ---------------------------------------------------------------------------
@@ -678,6 +911,11 @@ def run_pipeline() -> None:
 
         # Step 4: Upsert into database
         rows = upsert_salary_benchmarks(conn, df)
+
+        # Step 5: Fetch and Upsert SDAIA job titles
+        sdaia_titles = fetch_sdaia_job_titles()
+        if sdaia_titles:
+            upsert_sdaia_titles(conn, sdaia_titles)
 
         logger.info("=" * 70)
         logger.info(

@@ -245,9 +245,9 @@
                             <td><i class="fas fa-map-marker-alt ms-1" style="color: var(--accent-red);"></i> {{ job_application.job.town }}</td>
                             <td>
                                 {% if job_application.team_name != None %}
-                                    <span class="badge bg-label-info p-2" style="font-size: 0.85rem;"><i class="fas fa-users ms-1"></i> {{ job_application.team_name }}</span>
+                                    <span class="badge bg-white text-dark border p-2" style="border-radius: 8px;"><i class="fas fa-users ms-1 text-muted"></i> {{ job_application.team_name }}</span>
                                 {% else %}
-                                    <span class="badge bg-label-secondary p-2" style="font-size: 0.85rem;"><i class="fas fa-user ms-1"></i> {{ customer.fullname }}</span>
+                                    <span class="badge bg-white text-dark border p-2" style="border-radius: 8px;"><i class="fas fa-user ms-1 text-muted"></i> {{ customer.fullname }}</span>
                                 {% endif %}
                             </td>
                             <td>

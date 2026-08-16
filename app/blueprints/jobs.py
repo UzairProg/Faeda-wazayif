@@ -129,7 +129,7 @@ def add_job_post():
 @job.route('/job-list', defaults={'page': 1})
 @job.route('/job-list/<int:page>')
 def job_list_get(page):
-    per_page = 6  # Adjust as needed
+    per_page = request.args.get('per_page', 6, type=int)
     application_count = 0
     recommended_jobs = []
     recommended_ids = []
@@ -374,11 +374,15 @@ def update_list(page):
     job_type = request.args.get('ttype')
     specialization = request.args.get('study')
     city = request.args.get('city')
+    title = request.args.get('title')
 
     # Construct the base query
     query = Jobs.query.filter_by(status='approved')
 
     # Apply filters if parameters are provided
+    if title:
+        query = query.filter(Jobs.title.ilike(f'%{title}%'))
+
     if job_type:
         jt_obj = JobType.query.filter_by(name_ar=job_type).first()
         if jt_obj and jt_obj.name_en:
@@ -438,7 +442,7 @@ def update_list(page):
     if recommended_ids:
         query = query.filter(~Jobs.id.in_(recommended_ids))
 
-    per_page = 6  # Adjust as needed
+    per_page = request.args.get('per_page', 6, type=int)
 
     # Paginate the filtered jobs
     paginated_jobs = query.paginate(page=page, per_page=per_page, error_out=False)

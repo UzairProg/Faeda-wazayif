@@ -4,7 +4,30 @@
 {% block nav_edu %}active{% endblock %}
 
 {% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
+  .select2-container .select2-selection--single {
+      height: 48px;
+      border-radius: 10px;
+      border: 1px solid #ced4da;
+      background-color: #f8f9fa;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+      line-height: 48px;
+      padding-right: 15px;
+      color: #212529;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 46px;
+      left: 10px;
+      right: auto;
+  }
+  .select2-container--default[dir="rtl"] .select2-selection--single .select2-selection__clear {
+      margin-left: 10px;
+      margin-right: 0;
+      float: left;
+      line-height: 46px;
+  }
   .auth-card {
       background-color: white;
       border-radius: 20px;
@@ -124,7 +147,17 @@
                         
                         <div class="col-md-6">
                             <label for="university" class="form-label almarai-bold" style="color: var(--primary-dark);">الجامعة <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" id="university" name="new_university" value="{{user.university}}" required placeholder="اسم الجامعة..."/>
+                            <select class="form-select select2" id="university" name="new_university" required>
+                                <option value=""></option> <!-- For Select2 placeholder -->
+                                {% if user.university %}
+                                    <option value="{{user.university}}" selected>{{user.university}}</option>
+                                {% endif %}
+                                {% for uni in universities %}
+                                    {% if uni != user.university %}
+                                        <option value="{{uni}}">{{uni}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
                         </div>
                         
                         <div class="col-md-6">
@@ -156,4 +189,18 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#university').select2({
+            placeholder: "ابحث عن جامعتك...",
+            allowClear: true,
+            dir: "rtl"
+        });
+    });
+</script>
 {% endblock %}

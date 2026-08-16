@@ -117,33 +117,33 @@
 
                         <div class="row g-4 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label almarai-bold">الاسم باللغة العربية</label>
-                                <input type="text" class="form-control almarai-regular" name="arabic_name" value="{{ company.company_arabic_name or '' }}" placeholder="أدخل اسم المنشأة بالعربية">
+                                <label class="form-label almarai-bold">الاسم باللغة العربية <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control almarai-regular" name="arabic_name" value="{{ company.company_arabic_name or '' }}" placeholder="أدخل اسم المنشأة بالعربية" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label almarai-bold">الاسم باللغة الإنجليزية</label>
+                                <label class="form-label almarai-bold">الاسم باللغة الإنجليزية <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control almarai-regular" name="english_name" value="{{ company.company_english_name or '' }}" placeholder="Enter Company Name" required>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label almarai-bold">مجال المنشأة (الصناعة)</label>
-                            <input type="text" class="form-control almarai-regular" name="industry" value="{{ company.company_field or '' }}" placeholder="مثال: تقنية المعلومات، الرعاية الصحية، البناء...">
+                            <label class="form-label almarai-bold">مجال المنشأة (الصناعة) <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control almarai-regular" name="industry" value="{{ company.company_field or '' }}" placeholder="مثال: تقنية المعلومات، الرعاية الصحية، البناء..." required>
                         </div>
 
                         <div class="row g-4 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label almarai-bold">البريد الإلكتروني للتواصل</label>
+                                <label class="form-label almarai-bold">البريد الإلكتروني للتواصل <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-white border-end-0" style="border-radius: 0 10px 10px 0; border-color:#e0e4ec;"><i class="fas fa-envelope text-muted"></i></span>
                                     <input type="email" class="form-control almarai-regular border-start-0 ps-0" name="email" value="{{ company.company_email or '' }}" placeholder="email@company.com" required style="border-radius: 10px 0 0 10px; background-color: white;">
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label almarai-bold">رقم الجوال / الهاتف</label>
+                                <label class="form-label almarai-bold">رقم الجوال / الهاتف <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-white border-end-0" style="border-radius: 0 10px 10px 0; border-color:#e0e4ec;"><i class="fas fa-phone text-muted"></i></span>
-                                    <input type="text" class="form-control almarai-regular border-start-0 ps-0" name="mobile" value="{{ company.company_mobile or '' }}" placeholder="05XXXXXXXX" style="border-radius: 10px 0 0 10px; background-color: white;">
+                                    <input type="text" class="form-control almarai-regular border-start-0 ps-0" name="mobile" value="{{ company.company_mobile or '' }}" placeholder="05XXXXXXXX" required style="border-radius: 10px 0 0 10px; background-color: white;">
                                 </div>
                             </div>
                         </div>
