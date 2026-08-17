@@ -87,14 +87,7 @@ def allowed_file(filename):
 
 
 
-
 ########## login ###########
-# @customer.route('/login')
-# def get_login():
-#     return render_template('/login/colorlib-regform-17/images/tes/index.html')
-
-
-
 
 @customer.route('/login')
 def get_login():
@@ -105,9 +98,9 @@ def login():
     email = request.form.get('email')
     password = request.form.get('password')
     query = Customers.query.filter_by(email=email).first()  # noqa: F405
-    query2 = Company.query.filter_by(company_email=email).first() # noqa: F405
     query3 = Admin.get_by_email(email)
 
+    # Admin login check
     if query3 and query3.check_password(password):
         if not query3.is_active:
             flash('حسابك معطّل. تواصل مع المدير العام.', 'error')
@@ -121,13 +114,20 @@ def login():
         flash(f'مرحباً {query3.username}!', 'success')
         return redirect(url_for('admin.admin_dashboard'))
 
+    # Check if this email belongs to a company account - reject and redirect
+    query2 = Company.query.filter_by(company_email=email).first() # noqa: F405
+    if query2 is not None:
+        flash('هذا البريد الإلكتروني مسجل كحساب منشأة. يرجى تسجيل الدخول من بوابة المنشآت.', 'warning')
+        return redirect(url_for('company_panel.company_login'))
+
+    # Customer login check
     if query is not None and query.password == password:
         if query.status == 'suspended':
             session['suspended_email'] = query.email
             session['suspension_reason'] = query.suspension_reason or 'انتهاك شروط الاستخدام'
             return redirect(url_for('core.suspended_account'))
             
-    # save session
+        # save session
         session['session_customer'] = True
         session['show_banner'] = True
         session['user_id'] = Customers.get_session_user_id(email=email)# noqa: F405
@@ -137,26 +137,10 @@ def login():
         if query.activated == True:
             session['customer_activated'] = True
         return redirect('/')
-        
-    if query2 is not None and query2.login_password == password:
-        if query2.status == 'suspended':
-            session['suspended_email'] = query2.company_email
-            session['suspension_reason'] = query2.suspension_reason or 'مخالفة سياسات المنصة'
-            return redirect(url_for('core.suspended_account'))
-            
-        session['session_company'] = True
-        session['show_banner'] = True
-        company_id = Company.get_company_id_by_email(company_email=email) # noqa: F405
-        session['company_id'] = company_id
-        session['company_email_session'] = email
-        company_name = Company.get_company_english_name_by_company_id(company_id) # noqa: F405
 
-        flash('<span class="h1-size">تم تسجيل الدخول بإسم شركة</span> <span class="h1-size">'  '</span>' '<span class="h1-size">   </span> <span class="h1-size">' + company_name + '</span>')
-        if query2.activated == True:
-            session['company_activated'] = True
-        return redirect('/')
-    else:
-        return render_template('/new_design/login.html' , error = True)
+    # No valid credentials found
+    return render_template('/new_design/login.html' , error = True)
+
 
     #### register ######
 
@@ -191,6 +175,11 @@ def reg_page():
     acc_type = request.form.get('userrole')
     activated = False
 
+    # Reject company registration from this form - companies must use their own portal
+    if acc_type == "company":
+        flash('لتسجيل حساب منشأة، يرجى استخدام بوابة تسجيل المنشآت.', 'warning')
+        return redirect(url_for('company_panel.company_login'))
+
     # Validation check
     if not all([full_name, email, mobile, password, acc_type]):
         flash('يجب ملئ جميع الحقول ', 'error')
@@ -200,7 +189,7 @@ def reg_page():
         flash('يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتحتوي على رمز خاص من (!@#$&*)', 'error')
         return render_template('/new_design/register.html', error=True)
 
-    # Check if email is already registered
+    # Check if email is already registered (in both customers and companies tables)
     check_customer = Customers.get_by_email(email) # noqa: F405
     check_company = Company.get_by_email(company_email=email) # noqa: F405
 
@@ -209,28 +198,16 @@ def reg_page():
         return render_template('/new_design/register.html' , error = True)
 
     try:
-        if acc_type == "customers":
-            new_user_id = generate_unique_user_id()
-            new_customer = Customers(# noqa: F405
-                user_id=new_user_id,
-                fullname=full_name,
-                email=email,
-                mobile=mobile,
-                password=password,
-                activated=activated,
-            )
-            db.session.add(new_customer) # noqa: F405
-
-        elif acc_type == "company":
-            new_company = Company( # noqa: F405
-                company_english_name=full_name,
-                company_email=email,
-                company_mobile=mobile,
-                login_password=password,
-                activated=activated,
-            )
-            db.session.add(new_company) # noqa: F405
-
+        new_user_id = generate_unique_user_id()
+        new_customer = Customers(# noqa: F405
+            user_id=new_user_id,
+            fullname=full_name,
+            email=email,
+            mobile=mobile,
+            password=password,
+            activated=activated,
+        )
+        db.session.add(new_customer) # noqa: F405
         db.session.commit() # noqa: F405
         flash('تم انشاء الحساب بنجاح', 'يرجى تسجيل الدخول للمتابعة')
     except Exception as e:
@@ -1243,9 +1220,7 @@ def redirects():
         
         return render_template('panel/customer_panel.html', customer=customer_obj, market_data=market_data, history=history_records)
     elif 'session_company' in session:
-        company_id = session.get('company_id')
-        company_obj = Company.query.get(company_id)  # noqa: F405
-        return render_template('panel/company_panel/company_panel.html', company=company_obj)
+        return redirect(url_for('company_panel.company_dashboard'))
     else:
         flash('يجب تسجيل الدخول أولاً')
         return redirect('/login')
@@ -1271,9 +1246,7 @@ def my_profile():
             
         return render_template('panel/profile.html', customer=customer_obj)
     elif 'session_company' in session:
-        company_id = session.get('company_id')
-        company_obj = Company.query.get(company_id)  # noqa: F405
-        return render_template('panel/company_panel/profile.html', company=company_obj, user=company_obj)
+        return redirect(url_for('company_panel.company_profile'))
     else:
         flash('يجب تسجيل الدخول أولاً')
         return redirect('/login')

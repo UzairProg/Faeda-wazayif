@@ -183,16 +183,19 @@ def job_list_get(page):
 @job.route('/read_job/<int:job_id>')
 def read_job(job_id):
     application_count = 0
-    if "user_id" in session:
+    cutomer_teams = ""
+    is_company_viewer = False
+
+    if "session_customer" in session and "user_id" in session:
+        # Customer viewing a job - show apply options and teams
         customer_id = session['user_id']
         application_count = Customers.get_number_of_job_applications_by_customer_id(customer_id)# noqa: F405
         cutomer_teams = Teams.get_teams_for_admin(admin_id = customer_id)# noqa: F405
-        print(cutomer_teams)
-        job = Jobs.get_by_id(id=job_id)  # noqa: F405
-    else:
-        application_count = ""
-        cutomer_teams = ""
-        job = Jobs.get_by_id(id=job_id)# noqa: F405
+    elif "session_company" in session:
+        # Company viewing a job - read-only view, no apply options
+        is_company_viewer = True
+
+    job = Jobs.get_by_id(id=job_id)  # noqa: F405
 
     if not job:
         abort(404)
@@ -205,7 +208,8 @@ def read_job(job_id):
         return redirect(url_for('job.job_list_get'))
 
 
-    return render_template('new_design/apply_order.html' , job=job,application_count = application_count,cutomer_teams = cutomer_teams)
+    return render_template('new_design/apply_order.html' , job=job, application_count=application_count, cutomer_teams=cutomer_teams, is_company_viewer=is_company_viewer)
+
 
 @job.route('/edit-post')
 def edit_post():
