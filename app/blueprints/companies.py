@@ -446,58 +446,6 @@ def company_editprofile_contact_data():
     flash('You must be logged in to edit your profile.', 'warning')
     return redirect('/login')
 
-@company.route('/see_teams')
-def see_teams():
-    if "company_id" in session:
-            id = session["company_id"]
-            company = Company.query.get(id)
-            all_teams = Teams.query.all()
-            for team in all_teams:
-                team.num_members = len(team.members)
-            return render_template("panel/company_panel/see_teams.html",company = company,all_teams = all_teams)
-    else:
-        flash("يجب تسجيل الدخول بحساب الشركة")
-        return redirect("/login")
-
-@company.route('/visit_team_profile/<int:team_id>')
-def visit_team_profile(team_id):
-    team_id = team_id
-    id = session["company_id"]
-    company = Teams.query.get(id) # noqa: F405
-    
-    team = Teams.query.get(team_id)
-    
-    
-    
-    
-    # استرجاع معرفات أعضاء الفريق
-    team_member_ids = Teams.get_member_ids_by_team_id(team_id=team_id)
-
-    # التحقق من وجود أعضاء الفريق
-    if not team_member_ids:
-        abort(404, description=f"No members found for team with ID {team_id}")
-
-    # استرجاع تفاصيل الأعضاء المتقدمين مع حالة الطلب
-    team_members = db.session.query(
-        Customers.id,
-        Customers.fullname,
-        Customers.email,
-        Customers.user_id,
-        Customers.cv,
-        team_members_association.c.status
-    ).join(
-        team_members_association,
-        team_members_association.c.member_id == Customers.user_id
-    ).filter(
-        team_members_association.c.team_id == team_id,
-        Customers.user_id.in_(team_member_ids)
-    ).all()
-    id = session['company_id']
-    company = Company.query.get(id)
-    job = Jobs.query.get(1)
-    return render_template('/panel/company_panel/visit_team.html',job =job,team =team , company=company, Customers = Customers  , applicants=team_members ) # noqa: F405
-
-
 
 @company.route('/company_editprofile/commercial_data')
 def get_company_editprofile_commercial_data():

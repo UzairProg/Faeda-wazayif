@@ -356,40 +356,43 @@
                             class="nav-link almarai-bold {% if request.endpoint == 'job.job_list_get' %}active{% endif %}"
                             href="{{ url_for('job.job_list_get') }}">البحث عن عمل</a></li>
 
+                    {% if not session.get('session_company') %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle almarai-bold {% if request.endpoint in ['customer.get_edit_profile_personal_data'] %}active{% endif %}"
                             href="#" data-bs-toggle="dropdown">أفراد</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('job.job_list_get') }}">البحث عن وظيفة
-                                    كفرد</a></li>
-                            <li><a class="dropdown-item"
-                                    href="{{ url_for('customer.get_edit_profile_personal_data') }}">انشاء سيرة ذاتية</a>
-                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for('job.job_list_get') }}">البحث عن وظيفة كفرد</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('customer.get_edit_profile_personal_data') }}">انشاء سيرة ذاتية</a></li>
                         </ul>
                     </li>
+                    {% endif %}
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle almarai-bold {% if request.endpoint in ['customer.Get_reg_page', 'company.see_teams'] %}active{% endif %}"
+                        <a class="nav-link dropdown-toggle almarai-bold {% if request.endpoint in ['customer.Get_reg_page', 'company_panel.browse_teams'] %}active{% endif %}"
                             href="#" data-bs-toggle="dropdown">منشآت</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('customer.Get_reg_page') }}">تسجيل منشأة</a>
-                            </li>
-                            <li><a class="dropdown-item" href="{{ url_for('company.see_teams') }}">استقطاب فريق</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('company.see_teams') }}">مشاهدة الأفرقة</a>
-                            </li>
+                            {% if not session.get('session_company') and not session.get('session_customer') %}
+                            <li><a class="dropdown-item" href="{{ url_for('customer.Get_reg_page') }}">تسجيل منشأة</a></li>
+                            {% endif %}
+                            
+                            {% if session.get('session_company') %}
+                            <li><a class="dropdown-item" href="{{ url_for('company_panel.browse_teams') }}">مشاهدة الأفرقة</a></li>
+                            {% else %}
+                            <li><a class="dropdown-item" href="{{ url_for('customer.browse_teams') }}">مشاهدة الأفرقة</a></li>
+                            {% endif %}
                         </ul>
                     </li>
 
+                    {% if not session.get('session_company') %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle almarai-bold {% if request.endpoint in ['customer.get_create_team', 'customer.browse_teams'] %}active{% endif %}"
                             href="#" data-bs-toggle="dropdown">تيم فائدة</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('customer.get_create_team') }}">انشاء فريق</a>
-                            </li>
-                            <li><a class="dropdown-item" href="{{ url_for('customer.browse_teams') }}">مشاهدة
-                                    الأفرقة</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('customer.get_create_team') }}">انشاء فريق</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('customer.browse_teams') }}">مشاهدة الأفرقة</a></li>
                         </ul>
                     </li>
+                    {% endif %}
 
                     <li class="nav-item">
                         <a class="nav-link almarai-bold {% if request.endpoint == 'core.news' %}active{% endif %}"
