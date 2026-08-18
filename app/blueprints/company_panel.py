@@ -78,14 +78,8 @@ def team_details(team_id):
     
     # Retrieve team members
     from services.teams import team_members_association
-    team_members = db.session.query(
-        Customers.id,
-        Customers.fullname,
-        Customers.email,
-        Customers.user_id,
-        Customers.cv,
-        team_members_association.c.status
-    ).join(
+    from ai_engine.market_value_calculator import get_market_value_for_customer
+    team_members = db.session.query(Customers).join(
         team_members_association,
         team_members_association.c.member_id == Customers.user_id
     ).filter(
@@ -93,6 +87,11 @@ def team_details(team_id):
         team_members_association.c.status == 'منضم'
     ).all()
     
+    # Calculate market value for each member
+    for member in team_members:
+        mv_data = get_market_value_for_customer(member)
+        member.market_value_data = mv_data
+
     return render_template('company/team_details.html', team=team, members=team_members)
 
 @company_panel_bp.route('/company/teams/<int:team_id>/offer', methods=['POST'])

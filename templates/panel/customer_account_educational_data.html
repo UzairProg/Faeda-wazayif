@@ -171,8 +171,18 @@
                         </div>
                         
                         <div class="col-md-6">
-                            <label for="gpa" class="form-label almarai-bold" style="color: var(--primary-dark);">التقدير / المعدل <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="gpa" name="new_gpa" value="{{user.gpa}}" required placeholder="مثال: 4.5 أو ممتاز"/>
+                            <label class="form-label almarai-bold" style="color: var(--primary-dark);">التقدير / المعدل <span class="text-danger">*</span></label>
+                            <div class="input-group" dir="ltr">
+                                <select class="form-select" id="gpa_scale" style="max-width: 120px; border-radius: 10px 0 0 10px; background-color: #f8f9fa;" required>
+                                    <option value="4">من 4</option>
+                                    <option value="5" selected>من 5</option>
+                                    <option value="100">من 100%</option>
+                                </select>
+                                <input type="text" class="form-control" id="gpa_value" placeholder="مثال: 3.75" style="border-radius: 0 10px 10px 0;" required
+                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1'); let match = this.value.match(/^\d+(?:\.\d{0,3})?/); this.value = match ? match[0] : '';">
+                            </div>
+                            <input type="hidden" name="new_gpa" id="hidden_gpa" value="{{user.gpa}}">
+                            <small class="text-danger d-none mt-1 almarai-regular" id="gpaError">القيمة المدخلة أكبر من المعدل المختار.</small>
                         </div>
                     </div>
                     
@@ -200,6 +210,32 @@
             placeholder: "ابحث عن جامعتك...",
             allowClear: true,
             dir: "rtl"
+        });
+        
+        // GPA Logic
+        let existingGpa = "{{ user.gpa or '' }}";
+        let gpaValueInput = document.getElementById('gpa_value');
+        let gpaScaleSelect = document.getElementById('gpa_scale');
+        let hiddenGpa = document.getElementById('hidden_gpa');
+        
+        if (existingGpa && existingGpa.includes('/')) {
+            let parts = existingGpa.split('/');
+            gpaValueInput.value = parts[0].trim();
+            gpaScaleSelect.value = parts[1].trim();
+        } else {
+            gpaValueInput.value = existingGpa;
+        }
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            let val = parseFloat(gpaValueInput.value);
+            let scale = parseFloat(gpaScaleSelect.value);
+            if (val > scale || isNaN(val)) {
+                e.preventDefault();
+                document.getElementById('gpaError').classList.remove('d-none');
+            } else {
+                document.getElementById('gpaError').classList.add('d-none');
+                hiddenGpa.value = gpaValueInput.value + ' / ' + gpaScaleSelect.value;
+            }
         });
     });
 </script>

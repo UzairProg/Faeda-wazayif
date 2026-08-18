@@ -63,7 +63,12 @@
 <div class="row g-4">
     {% for member in members %}
     <div class="col-12 col-md-6 col-lg-4">
-        <div class="card shadow-sm border-0 member-card h-100">
+        <div class="card shadow-sm border-0 member-card h-100 position-relative">
+            {% if member.market_value_data and member.market_value_data.total_score %}
+            <div class="position-absolute shadow-sm" style="top: 15px; right: 15px; width: 45px; height: 45px; background-color: white; color: var(--accent-yellow, #F0BF56); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--accent-yellow, #F0BF56); font-size: 0.9rem;" title="القيمة السوقية التقديرية" data-bs-toggle="tooltip">
+                {{ member.market_value_data.total_score }}%
+            </div>
+            {% endif %}
             <div class="card-body p-4 text-center d-flex flex-column">
                 <div class="mb-3">
                     <div style="width: 70px; height: 70px; border-radius: 50%; background-color: rgba(35,46,76,0.05); display: flex; align-items: center; justify-content: center; margin: 0 auto;">
@@ -94,4 +99,15 @@
     </div>
     {% endfor %}
 </div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}
 {% endblock %}
