@@ -51,6 +51,10 @@ def company_login():
         
         # Check against plain text (legacy) or hashed password
         if comp and (comp.login_password == password or check_password_hash(comp.login_password or '', password)):
+            if comp.deleted_at is not None:
+                flash('الحساب غير موجود', 'danger')
+                return render_template('company/auth/login.html')
+
             session['session_company'] = True
             session['company_id'] = comp.id
             session['company_email_session'] = email

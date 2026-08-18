@@ -122,6 +122,9 @@ def login():
 
     # Customer login check
     if query is not None and query.password == password:
+        if query.deleted_at is not None:
+            return render_template('/new_design/login.html' , deleted_error = True)
+
         if query.status == 'suspended':
             session['suspended_email'] = query.email
             session['suspension_reason'] = query.suspension_reason or 'انتهاك شروط الاستخدام'

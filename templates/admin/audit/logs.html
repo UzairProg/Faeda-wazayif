@@ -35,7 +35,18 @@
                         <td>{{ log.created_at.strftime('%Y/%m/%d %H:%M') }}</td>
                         <td><strong>{{ log.admin.username if log.admin else '—' }}</strong></td>
                         <td><span class="admin-badge pending">{{ log.action_label }}</span></td>
-                        <td>{{ log.target_type_label }} {% if log.target_id %}#{{ log.target_id }}{% endif %}</td>
+                        <td>
+                            {{ log.target_type_label }} 
+                            {% if log.target_id %}
+                                {% if log.target_type == 'company' %}
+                                    <a href="{{ url_for('admin.view_company', id=log.target_id) }}">#{{ log.target_id }}</a>
+                                {% elif log.target_type == 'customer' %}
+                                    <a href="{{ url_for('admin.view_user', id=log.target_id) }}">#{{ log.target_id }}</a>
+                                {% else %}
+                                    #{{ log.target_id }}
+                                {% endif %}
+                            {% endif %}
+                        </td>
                         <td style="font-family:monospace;font-size:0.8rem">{{ log.ip_address or '—' }}</td>
                     </tr>
                     {% endfor %}

@@ -5,12 +5,19 @@
 {% block page_title %}ملف المستخدم{% endblock %}
 {% block page_actions %}
 {% if current_admin and current_admin.has_permission('users.crud') %}
-<a href="{{ url_for('admin.edit_user', id=user.id) }}" class="btn-admin btn-admin-outline"><i class="fas fa-pen"></i>تعديل</a>
-<a href="#" class="btn-admin btn-admin-danger"
-   data-confirm="هل أنت متأكد من حذف هذا المستخدم نهائياً؟"
-   data-confirm-title="حذف مستخدم"
-   data-confirm-action="{{ url_for('admin.delete_user', id=user.id) }}"
-   data-confirm-btn="حذف نهائي"><i class="fas fa-trash"></i>حذف</a>
+  {% if user.deleted_at %}
+    <form method="POST" action="{{ url_for('admin.user_action', id=user.id) }}" style="display:inline">
+        <input type="hidden" name="action" value="restore">
+        <button class="btn-admin btn-admin-success"><i class="fas fa-undo"></i>استعادة الحساب</button>
+    </form>
+  {% else %}
+    <a href="{{ url_for('admin.edit_user', id=user.id) }}" class="btn-admin btn-admin-outline"><i class="fas fa-pen"></i>تعديل</a>
+    <a href="#" class="btn-admin btn-admin-danger"
+       data-confirm="هل أنت متأكد من حذف هذا المستخدم ونقله لسلة المحذوفات؟"
+       data-confirm-title="حذف مستخدم"
+       data-confirm-action="{{ url_for('admin.delete_user', id=user.id) }}"
+       data-confirm-btn="حذف"><i class="fas fa-trash"></i>حذف</a>
+  {% endif %}
 {% endif %}
 {% endblock %}
 
@@ -32,6 +39,7 @@
             <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
                 <span class="admin-badge {{ user.status or 'active' }}">{{ user.status or 'نشط' }}</span>
                 {% if user.warnings_count %}<span class="admin-badge warned">{{ user.warnings_count }} تحذير</span>{% endif %}
+                {% if user.deleted_at %}<span class="admin-badge" style="background:var(--admin-danger);color:white"><i class="fas fa-trash"></i> محذوف (قيد الانتظار)</span>{% endif %}
             </div>
         </div>
     </div>
@@ -196,7 +204,7 @@
     <div class="modal-header"><h5 class="modal-title">إعادة تعيين كلمة المرور</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
     <form method="POST" action="{{ url_for('admin.reset_password', id=user.id) }}">
     <div class="modal-body">
-        <div class="admin-form-group"><label>كلمة المرور الجديدة</label><input type="password" name="new_password" class="admin-form-input" placeholder="6 أحرف على الأقل" minlength="6" required></div>
+        <div class="admin-form-group"><label>كلمة المرور الجديدة</label><input type="password" name="new_password" class="admin-form-input" placeholder="8 أحرف على الأقل، وحرف واحد على الأقل" required oninput="if(this.value.length < 8 || !/[a-zA-Z]/.test(this.value)) { this.setCustomValidity('كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف واحد على الأقل.'); } else { this.setCustomValidity(''); }"></div>
     </div>
     <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">إلغاء</button><button type="submit" class="btn-admin btn-admin-primary">تعيين كلمة المرور</button></div>
     </form>

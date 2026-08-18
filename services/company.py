@@ -37,6 +37,8 @@ class Company(db.Model):
     verified_at = db.Column(db.DateTime, nullable=True)
     status = db.Column(db.String(20), default='active')    # 'active','suspended','banned'
     suspension_reason = db.Column(db.Text, nullable=True)
+    warnings_count = db.Column(db.Integer, default=0)
+    deleted_at = db.Column(db.DateTime, nullable=True)
     token = db.Column(db.String(120))
     
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
