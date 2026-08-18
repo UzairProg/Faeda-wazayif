@@ -1231,6 +1231,48 @@ def audit_logs():
                            admin_filter=admin_filter,
                            action_filter=action_filter)
 
+@admin_bp.route('/audit-logs/export')
+@admin_login_required
+@require_permission('audit_logs')
+def export_audit_logs():
+    import csv
+    import io
+    from flask import Response
+
+    admin_filter = request.args.get('admin_id', '', type=str)
+    action_filter = request.args.get('action', '')
+
+    query = AuditLog.query
+
+    if admin_filter:
+        query = query.filter_by(admin_id=int(admin_filter))
+    if action_filter:
+        query = query.filter_by(action=action_filter)
+
+    query = query.order_by(AuditLog.created_at.desc())
+    logs = query.all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['التاريخ', 'المدير', 'العملية', 'الهدف', 'IP Address', 'تفاصيل إضافية'])
+
+    for log in logs:
+        admin_name = log.admin.username if log.admin else 'غير معروف'
+        target = f"{log.target_type_label} #{log.target_id}" if log.target_id else log.target_type_label
+        writer.writerow([
+            log.created_at.strftime('%Y/%m/%d %H:%M:%S'),
+            admin_name,
+            log.action_label,
+            target,
+            log.ip_address or '',
+            str(log.details) if log.details else ''
+        ])
+
+    # utf-8-sig to support Arabic characters in Excel
+    response = Response(output.getvalue().encode('utf-8-sig'), mimetype='text/csv')
+    response.headers['Content-Disposition'] = 'attachment; filename=audit_logs.csv'
+    return response
+
 
 # ─────────────────────────────────────────────────────────────
 # Billing & Subscriptions
