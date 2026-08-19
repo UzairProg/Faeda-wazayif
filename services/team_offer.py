@@ -12,6 +12,8 @@ class TeamOffer(db.Model):
     job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=True)
     message = db.Column(db.Text, nullable=False)
     status = db.Column(db.String(50), default='pending') # pending, accepted, rejected
+    meeting_time = db.Column(db.DateTime, nullable=True)
+    offer_file = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationships

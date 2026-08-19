@@ -1,0 +1,602 @@
+{% extends "company/company_base.html" %}
+{% block title %}المواهب | بوابة المنشآت{% endblock %}
+{% block nav_talent %}active{% endblock %}
+
+{% block extra_css %}
+<!-- Phosphor Icons for modern thin icons -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<!-- AOS Animations -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+    /* Hero Banner */
+    .jobs-hero {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, #2a375a 100%);
+        padding: 60px 0 100px 0;
+        position: relative;
+        overflow: hidden;
+        margin: -30px -30px 0 -30px; /* Offset content-area padding */
+    }
+    
+    /* Subtle static pattern overlay */
+    .jobs-hero::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(rgba(255,255,255,0.05) 2px, transparent 2px);
+        background-size: 30px 30px;
+        z-index: 1;
+    }
+
+    .jobs-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .jobs-hero h1 {
+        font-size: 2.5rem;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    .jobs-hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Floating Search Section */
+    .search-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 25px 35px;
+        margin-top: -50px; /* Overlap hero */
+        margin-bottom: 40px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        border: 1px solid rgba(255,255,255,0.4);
+        position: relative;
+        z-index: 10;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .search-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(191, 42, 74, 0.15); /* Accent Red shadow */
+    }
+    
+    .form-label { 
+        color: var(--primary-dark); 
+        font-weight: 700; 
+        margin-bottom: 10px; 
+        font-size: 0.95rem;
+    }
+    
+    .search-input-group {
+        position: relative;
+    }
+    
+    .search-input-group i {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+        font-size: 1.2rem;
+        pointer-events: none;
+    }
+    
+    .search-input-group .form-select,
+    .search-input-group .form-control { 
+        border-radius: 12px; 
+        padding: 14px 45px 14px 15px; /* Extra padding for icon on the right */
+        border: 2px solid #edf2f7; 
+        background-color: #f8fafc;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        color: var(--primary-dark);
+        appearance: none;
+    }
+    
+    .search-input-group .form-select:focus,
+    .search-input-group .form-control:focus {
+        border-color: var(--accent-red);
+        background-color: #fff;
+        box-shadow: 0 0 0 4px rgba(191, 42, 74, 0.1);
+        outline: none;
+    }
+    
+    /* Custom chevron for select */
+    .search-input-group.is-select::after {
+        content: '\25BC';
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        font-size: 0.8rem;
+        pointer-events: none;
+    }
+
+    /* Premium Job Cards */
+    .job-card {
+        background-color: #ffffff;
+        border-radius: 24px;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        height: 100%;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+    
+    .job-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+    }
+    
+    .card-cover {
+        height: 110px;
+        background: linear-gradient(135deg, #111827 0%, #1e1b4b 100%);
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        z-index: 1;
+        overflow: hidden;
+    }
+    .card-cover::after {
+        content: '';
+        position: absolute;
+        top: -50%; left: -50%; width: 200%; height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    
+    .job-header {
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; /* Align badge to the left in RTL */
+        position: relative;
+        z-index: 3;
+        margin-top: 15px;
+    }
+    
+    .ai-badge {
+        background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); /* Gold gradient */
+        color: #fff;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 800;
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .ai-badge i {
+        color: #fff;
+    }
+
+    .job-logo-wrapper {
+        width: 95px;
+        height: 95px;
+        border-radius: 50%;
+        /* Gold ring gradient */
+        background: linear-gradient(135deg, #d4af37 0%, #ffdf00 50%, #b8860b 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px; /* Space for the gradient ring */
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        margin: 35px auto 15px auto;
+        position: relative;
+        z-index: 3;
+    }
+    
+    .job-card:hover .job-logo-wrapper {
+        transform: scale(1.08);
+        box-shadow: 0 15px 35px rgba(212, 175, 55, 0.3);
+    }
+    
+    .job-logo-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #fff; /* Inner white border */
+        background: #fff;
+    }
+    
+    .job-body {
+        padding: 10px 25px 25px 25px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 3;
+    }
+    
+    .job-title {
+        color: #111827; /* Very dark rich color */
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+        line-height: 1.4;
+        font-weight: 800;
+    }
+    
+    .job-subtitle {
+        color: #6b7280;
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+    
+    .job-badges-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .info-badge {
+        background: rgba(17, 24, 39, 0.04);
+        color: #374151;
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid rgba(17, 24, 39, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .job-card:hover .info-badge {
+        background: rgba(212, 175, 55, 0.08);
+        color: #b8860b;
+        border-color: rgba(212, 175, 55, 0.2);
+    }
+    
+    .info-badge i {
+        font-size: 1.15rem;
+        color: #9ca3af;
+        transition: color 0.3s ease;
+    }
+    
+    .job-card:hover .info-badge i {
+        color: #d4af37;
+    }
+
+    .job-footer {
+        padding: 0 25px 25px 25px;
+        margin-top: auto;
+        display: flex;
+        gap: 12px;
+    }
+    
+    .btn-apply {
+        flex: 1;
+        padding: 14px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--accent-red) 0%, #a5203c 100%);
+        color: white;
+        border: none;
+        font-weight: 800;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+        box-shadow: 0 8px 20px rgba(191, 42, 74, 0.2);
+    }
+    .btn-apply:hover {
+        background: linear-gradient(135deg, #a5203c 0%, #80182e 100%);
+        color: white;
+        box-shadow: 0 12px 25px rgba(191, 42, 74, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    .btn-outline-custom {
+        flex: 1;
+        padding: 14px;
+        border-radius: 14px;
+        background: #f9fafb;
+        color: #111827;
+        border: 2px solid #e5e7eb;
+        font-weight: 800;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+    }
+    .btn-outline-custom:hover {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+        transform: translateY(-2px);
+    }
+
+    /* Pagination Redesign */
+    .pagination .page-link { 
+        background-color: #fff !important;
+        color: var(--primary-dark) !important; 
+        border: 2px solid #edf2f7 !important; 
+        margin: 0 5px; 
+        border-radius: 12px; 
+        font-weight: bold; 
+        padding: 10px 18px;
+        transition: all 0.3s ease;
+    }
+    .pagination .page-link:hover {
+        background: var(--accent-red) !important;
+        color: white !important;
+        border-color: var(--accent-red) !important;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(191, 42, 74, 0.3);
+    }
+    .pagination .page-item.disabled .page-link {
+        background-color: #f8fafc !important;
+        color: #cbd5e1 !important;
+        border-color: #f1f5f9 !important;
+        pointer-events: none;
+    }
+    .pagination .page-item.active .page-link { 
+        background-color: var(--primary-dark) !important; 
+        color: white !important; 
+        border-color: var(--primary-dark) !important;
+        box-shadow: 0 5px 15px rgba(26, 34, 56, 0.2) !important;
+    }
+    .btn-custom-red {
+        background-color: var(--accent-red);
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .btn-custom-red:hover {
+        background-color: #a5203c;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% set is_first_load = not request.args %}
+
+<!-- HERO BANNER -->
+<section class="jobs-hero">
+    <div class="container jobs-hero-content text-center text-white">
+        <h1 class="almarai-extrabold mb-3" {% if is_first_load %}data-aos="zoom-in" data-aos-duration="1000"{% endif %}>اكتشف الكفاءات والمواهب</h1>
+        <p class="almarai-regular" {% if is_first_load %}data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000"{% endif %}>تصفح وقدم عروضاً وظيفية مباشرة لأفضل الكفاءات المتوفرة بناءً على التقييم الشامل</p>
+    </div>
+</section>
+
+<div class="container-fluid pb-5 px-xl-5">
+    
+    <!-- SEARCH SECTION (FLOATING) -->
+    <div class="search-section" {% if is_first_load %}data-aos="fade-up" data-aos-delay="400"{% endif %}>
+        <form method="GET" action="{{ url_for('company_panel.talent_pool') }}" class="row g-3 align-items-end">
+            
+            <div class="col-lg-2 col-md-4">
+                <label for="q" class="form-label almarai-bold">الاسم</label>
+                <div class="search-input-group">
+                    <i class="ph ph-user"></i>
+                    <input type="text" class="form-control almarai-regular" id="q" name="q" placeholder="ابحث بالاسم..." value="{{ q }}">
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4">
+                <label for="field" class="form-label almarai-bold">التخصص / المجال</label>
+                <div class="search-input-group is-select">
+                    <i class="ph ph-briefcase"></i>
+                    <select class="form-select almarai-regular" id="field" name="field">
+                        <option value="" selected>الكل</option>
+                        {% for spec in specialties %}
+                        <option value="{{ spec }}" {% if field == spec %}selected{% endif %}>{{ spec }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-4">
+                <label for="education" class="form-label almarai-bold">المؤهل</label>
+                <div class="search-input-group is-select">
+                    <i class="ph ph-graduation-cap"></i>
+                    <select class="form-select almarai-regular" id="education" name="education">
+                        <option value="" selected>الكل</option>
+                        {% for edu in educations %}
+                        <option value="{{ edu }}" {% if education == edu %}selected{% endif %}>{{ edu }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-4">
+                <label for="experience" class="form-label almarai-bold">الخبرة</label>
+                <div class="search-input-group is-select">
+                    <i class="ph ph-trend-up"></i>
+                    <select class="form-select almarai-regular" id="experience" name="experience">
+                        <option value="" selected>الكل</option>
+                        {% for exp in experience_years %}
+                        <option value="{{ exp }}" {% if experience == exp %}selected{% endif %}>{{ exp }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-4">
+                <label for="work_type" class="form-label almarai-bold">طبيعة العمل</label>
+                <div class="search-input-group is-select">
+                    <i class="ph ph-clock"></i>
+                    <select class="form-select almarai-regular" id="work_type" name="work_type">
+                        <option value="" selected>الكل</option>
+                        {% for wt in work_types %}
+                        <option value="{{ wt }}" {% if work_type == wt %}selected{% endif %}>{{ wt }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-4">
+                <button type="submit" class="btn-custom-red w-100 almarai-bold" style="padding: 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(191,42,74,0.15);">
+                    <i class="ph ph-magnifying-glass me-1"></i> ابحث
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TALENT GRID -->
+    <div class="row g-4">
+        {% for talent in talents %}
+        <div class="col-lg-4 col-md-6" {% if is_first_load %}data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}"{% endif %}>
+            <div class="job-card">
+                <div class="card-cover"></div>
+                <div class="job-header">
+                    <div class="ai-badge almarai-bold" title="نقاط القيمة السوقية">
+                        <i class="ph ph-star-fill"></i> القيمة السوقية: {{ talent.market_value_score }}
+                    </div>
+                </div>
+                
+                <div class="job-logo-wrapper">
+                    <img src="{{ url_for('static', filename='uploads/profile/' + talent.img) if talent.img else 'https://ui-avatars.com/api/?name=' + talent.fullname + '&background=101c38&color=fff' }}" alt="{{ talent.fullname }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                </div>
+                
+                <div class="job-body">
+                    <h3 class="job-title almarai-extrabold m-0">{{ talent.fullname }}</h3>
+                    <p class="job-subtitle m-0 mt-1">{{ talent.preferred_field_of_work or 'تخصص عام' }}</p>
+                    
+                    <div class="job-badges-container almarai-regular">
+                        <div class="info-badge" title="المؤهل">
+                            <i class="ph ph-graduation-cap"></i>
+                            <span>{{ talent.educational_qualification or 'غير محدد' }}</span>
+                        </div>
+                        <div class="info-badge" title="سنوات الخبرة">
+                            <i class="ph ph-trend-up"></i>
+                            <span>{{ talent.years_of_skills ~ ' سنوات' if talent.years_of_skills else 'غير محدد' }}</span>
+                        </div>
+                        <div class="info-badge" title="طبيعة العمل">
+                            <i class="ph ph-briefcase"></i>
+                            <span>{{ talent.work_type or 'دوام كامل' }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="job-footer">
+                    <a href="{{ url_for('company_panel.employee_profile', user_id=talent.user_id) }}" class="btn-outline-custom almarai-bold">
+                        عرض الملف
+                    </a>
+                    <button class="btn-apply almarai-bold" data-bs-toggle="modal" data-bs-target="#offerModal{{ talent.user_id }}">
+                        تقديم عرض
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direct Offer Modal -->
+        <div class="modal fade" id="offerModal{{ talent.user_id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="border-radius: 15px;">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title almarai-bold text-dark">تقديم عرض لـ {{ talent.fullname }}</h5>
+                        <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="{{ url_for('company_panel.send_direct_offer', user_id=talent.user_id) }}" method="POST" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label almarai-bold">الوظيفة المقترحة (اختياري)</label>
+                                <select class="form-select almarai-regular" name="job_id">
+                                    <option value="">-- عرض عام --</option>
+                                    {% for job in active_jobs %}
+                                    <option value="{{ job.id }}">{{ job.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label almarai-bold">موعد الاجتماع المقترح (اختياري)</label>
+                                <input type="datetime-local" class="form-control almarai-regular" name="meeting_time">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label almarai-bold">ملف العرض (اختياري)</label>
+                                <input type="file" class="form-control almarai-regular" name="offer_file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label almarai-bold">رسالة العرض</label>
+                                <textarea class="form-control almarai-regular" name="message" rows="4" placeholder="اكتب رسالة مقنعة للمرشح..." required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 pt-0">
+                            <button type="button" class="btn btn-light almarai-regular" data-bs-dismiss="modal">إلغاء</button>
+                            <button type="submit" class="btn text-white almarai-bold" style="background-color: var(--primary-dark);">إرسال العرض</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <h4 class="text-muted almarai-regular">لا توجد كفاءات متاحة تطابق بحثك حالياً.</h4>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    {% if pagination.pages > 1 %}
+    <div class="row mt-5">
+        <div class="col-12 d-flex justify-content-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-lg" dir="ltr">
+                    <!-- Previous Page -->
+                    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                        <a class="page-link almarai-bold text-dark" href="{{ url_for('company_panel.talent_pool', page=pagination.prev_num, q=q, field=field, city=city, education=education, experience=experience, work_type=work_type) if pagination.has_prev else '#' }}">
+                            السابق
+                        </a>
+                    </li>
+                    
+                    <!-- Page Numbers -->
+                    {% for p in pagination.iter_pages(left_edge=1, left_current=2, right_current=2, right_edge=1) %}
+                        {% if p %}
+                            <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                                <a class="page-link almarai-bold" 
+                                   href="{{ url_for('company_panel.talent_pool', page=p, q=q, field=field, city=city, education=education, experience=experience, work_type=work_type) }}">
+                                    {{ p }}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <!-- Next Page -->
+                    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                        <a class="page-link almarai-bold text-dark" href="{{ url_for('company_panel.talent_pool', page=pagination.next_num, q=q, field=field, city=city, education=education, experience=experience, work_type=work_type) if pagination.has_next else '#' }}">
+                            التالي
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- AOS Animations Script -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        AOS.init({
+            once: true,
+            offset: 50,
+            duration: 800,
+            easing: 'ease-out-cubic',
+        });
+    });
+</script>
+{% endblock %}

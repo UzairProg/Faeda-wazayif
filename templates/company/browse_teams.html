@@ -4,85 +4,300 @@
 {% block page_title %}الفرق والمجموعات{% endblock %}
 
 {% block extra_css %}
+<!-- Phosphor Icons for modern thin icons -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<!-- AOS Animations -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
 <style>
-    .team-card {
-        border-radius: 15px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Premium Job Cards for Teams */
+    .job-card {
+        background-color: #ffffff;
+        border-radius: 24px;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid rgba(255, 255, 255, 0.5);
         height: 100%;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        position: relative;
         display: flex;
         flex-direction: column;
+        text-align: center;
+        backdrop-filter: blur(10px);
     }
-    .team-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+    
+    .job-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.12);
     }
-    .team-img-container {
-        width: 80px;
-        height: 80px;
-        margin: 0 auto 15px;
+    
+    .card-cover {
+        height: 110px;
+        background: linear-gradient(135deg, #111827 0%, #1e1b4b 100%);
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        z-index: 1;
+        overflow: hidden;
+    }
+    .card-cover::after {
+        content: '';
+        position: absolute;
+        top: -50%; left: -50%; width: 200%; height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    
+    .job-header {
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        position: relative;
+        z-index: 3;
+        margin-top: 15px;
+    }
+    
+    .ai-badge {
+        background: linear-gradient(135deg, var(--accent-red) 0%, #a5203c 100%);
+        color: #fff;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 800;
+        box-shadow: 0 5px 15px rgba(191, 42, 74, 0.4);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .ai-badge i {
+        color: #fff;
+    }
+
+    .job-logo-wrapper {
+        width: 95px;
+        height: 95px;
         border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent-red) 0%, #ff8a9c 50%, var(--primary-dark) 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: rgba(35, 46, 76, 0.05);
-        border: 2px dashed rgba(35, 46, 76, 0.2);
+        padding: 4px; 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        margin: 35px auto 15px auto;
+        position: relative;
+        z-index: 3;
     }
-    .team-img-container img {
+    
+    .job-card:hover .job-logo-wrapper {
+        transform: scale(1.08);
+        box-shadow: 0 15px 35px rgba(191, 42, 74, 0.3);
+    }
+    
+    .job-logo-wrapper img {
         width: 100%;
         height: 100%;
-        border-radius: 50%;
         object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        background: #fff;
     }
-    .team-img-container i {
-        font-size: 2rem;
-        color: var(--primary-dark);
+    
+    .job-logo-wrapper .ph-users-three {
+        font-size: 3rem;
+        color: white;
+    }
+
+    .job-body {
+        padding: 10px 25px 25px 25px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 3;
+    }
+    
+    .job-title {
+        color: #111827; 
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+        line-height: 1.4;
+        font-weight: 800;
+    }
+    
+    .job-subtitle {
+        color: #6b7280;
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+    
+    .job-badges-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .info-badge {
+        background: rgba(17, 24, 39, 0.04);
+        color: #374151;
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid rgba(17, 24, 39, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .job-card:hover .info-badge {
+        background: rgba(191, 42, 74, 0.08);
+        color: var(--accent-red);
+        border-color: rgba(191, 42, 74, 0.2);
+    }
+    
+    .info-badge i {
+        font-size: 1.15rem;
+        color: #9ca3af;
+        transition: color 0.3s ease;
+    }
+    
+    .job-card:hover .info-badge i {
+        color: var(--accent-red);
+    }
+
+    .job-footer {
+        padding: 0 25px 25px 25px;
+        margin-top: auto;
+        display: flex;
+        gap: 12px;
+    }
+    
+    .btn-apply {
+        flex: 1;
+        padding: 14px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--accent-red) 0%, #a5203c 100%);
+        color: white;
+        border: none;
+        font-weight: 800;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+        box-shadow: 0 8px 20px rgba(191, 42, 74, 0.2);
+    }
+    .btn-apply:hover {
+        background: linear-gradient(135deg, #a5203c 0%, #80182e 100%);
+        color: white;
+        box-shadow: 0 12px 25px rgba(191, 42, 74, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    .btn-outline-custom {
+        flex: 1;
+        padding: 14px;
+        border-radius: 14px;
+        background: #f9fafb;
+        color: #111827;
+        border: 2px solid #e5e7eb;
+        font-weight: 800;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+    }
+    .btn-outline-custom:hover {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+        transform: translateY(-2px);
+    }
+    
+    /* Pagination Redesign */
+    .pagination .page-link { 
+        background-color: #fff !important;
+        color: var(--primary-dark) !important; 
+        border: 2px solid #edf2f7 !important; 
+        padding: 10px 18px;
+        transition: all 0.3s ease;
+        margin: 0 4px;
+        border-radius: 10px !important;
+    }
+    .pagination .page-link:hover {
+        background: var(--accent-red) !important;
+        color: white !important;
+        border-color: var(--accent-red) !important;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(191, 42, 74, 0.3);
+    }
+    .pagination .page-item.disabled .page-link {
+        background-color: #f8fafc !important;
+        color: #cbd5e1 !important;
+        border-color: #f1f5f9 !important;
+        pointer-events: none;
+        transform: none;
+        box-shadow: none;
+    }
+    .pagination .page-item.active .page-link { 
+        background-color: var(--primary-dark) !important; 
+        color: white !important; 
+        border-color: var(--primary-dark) !important;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-        <h4 class="almarai-bold" style="color: var(--primary-dark);">تصفح الفرق المتاحة</h4>
-        <span class="badge" style="background-color: rgba(35, 46, 76, 0.1); color: var(--primary-dark); padding: 8px 15px; font-size: 1rem;">
-            {{ teams|length }} فريق
-        </span>
+<!-- Section Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="almarai-extrabold mb-1" style="color: var(--primary-dark);">تصفح الفرق المتاحة</h3>
+        <p class="text-muted almarai-regular mb-0">اكتشف مجموعات العمل والفرق المستعدة لتنفيذ مشاريعك.</p>
+    </div>
+    <div class="badge bg-white text-dark shadow-sm px-4 py-2" style="border-radius: 12px; font-size: 1.1rem; border: 1px solid #edf2f7;">
+        <span class="almarai-bold">{{ pagination.total }}</span> <span class="almarai-regular text-muted">فريق متاح</span>
     </div>
 </div>
 
 <div class="row g-4">
     {% for team in teams %}
-    <div class="col-12 col-md-6 col-lg-4">
-        <div class="card shadow-sm border-0 team-card">
-            <div class="card-body text-center p-4 d-flex flex-column">
-                <div class="team-img-container">
-                    {% if team.img %}
-                        <img src="{{ url_for('static', filename='uploads/teams/images/' + team.img) }}" alt="{{ team.team_name }}">
-                    {% else %}
-                        <i class="fas fa-users"></i>
-                    {% endif %}
+    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+        <div class="job-card">
+            <div class="card-cover"></div>
+            <div class="job-header">
+                <div class="ai-badge almarai-bold" title="عدد أعضاء الفريق">
+                    <i class="ph ph-users-three"></i> الأعضاء: {{ team.num_members }}
                 </div>
-                
-                <h5 class="almarai-bold mb-2" style="color: var(--primary-dark);">{{ team.team_name }}</h5>
-                <p class="text-muted small mb-3 flex-grow-1">
-                    {{ team.about[:100] ~ '...' if team.about and team.about|length > 100 else team.about or 'لا يوجد وصف متاح' }}
+            </div>
+            
+            <div class="job-logo-wrapper">
+                {% if team.img %}
+                    <img src="{{ url_for('static', filename='uploads/teams/images/' + team.img) }}" alt="{{ team.team_name }}">
+                {% else %}
+                    <i class="ph ph-users-three"></i>
+                {% endif %}
+            </div>
+            
+            <div class="job-body">
+                <h3 class="job-title almarai-extrabold m-0">{{ team.team_name }}</h3>
+                <p class="job-subtitle m-0 mt-2" style="line-height: 1.5;">
+                    {{ team.about[:80] ~ '...' if team.about and team.about|length > 80 else team.about or 'لا يوجد وصف متاح لهذا الفريق حتى الآن.' }}
                 </p>
-                
-                <div class="d-flex justify-content-around mb-4">
-                    <div class="text-center">
-                        <span class="d-block almarai-bold fs-5" style="color: var(--primary-dark);">{{ team.num_members }}</span>
-                        <span class="text-muted small">الأعضاء</span>
-                    </div>
-                </div>
-
-                <div class="mt-auto d-flex gap-2 justify-content-center">
-                    <a href="{{ url_for('company_panel.team_details', team_id=team.id) }}" class="btn btn-outline-secondary w-50 almarai-bold" style="border-radius: 10px;">
-                        <i class="fas fa-eye ms-1"></i> التفاصيل
-                    </a>
-                    <button type="button" class="btn btn-custom-red w-50 almarai-bold" style="background-color: var(--accent-red); color: white; border-radius: 10px;" data-bs-toggle="modal" data-bs-target="#offerModal{{ team.id }}">
-                        <i class="fas fa-paper-plane ms-1"></i> إرسال عرض
-                    </button>
-                </div>
+            </div>
+            
+            <div class="job-footer">
+                <a href="{{ url_for('company_panel.team_details', team_id=team.id) }}" class="btn-outline-custom almarai-bold">
+                    <i class="ph ph-eye me-1"></i> التفاصيل
+                </a>
+                <button type="button" class="btn-apply almarai-bold" data-bs-toggle="modal" data-bs-target="#offerModal{{ team.id }}">
+                    <i class="ph ph-paper-plane-right me-1"></i> إرسال عرض
+                </button>
             </div>
         </div>
     </div>
@@ -95,7 +310,7 @@
                     <h5 class="modal-title almarai-bold" id="offerModalLabel{{ team.id }}">إرسال عرض لفريق: {{ team.team_name }}</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
                 </div>
-                <form action="{{ url_for('company_panel.make_offer', team_id=team.id) }}" method="POST">
+                <form action="{{ url_for('company_panel.make_offer', team_id=team.id) }}" method="POST" enctype="multipart/form-data">
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label almarai-bold" style="color: var(--primary-dark);">هل العرض مرتبط بوظيفة محددة؟ (اختياري)</label>
@@ -107,6 +322,14 @@
                                     {% endfor %}
                                 {% endif %}
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label almarai-bold" style="color: var(--primary-dark);">موعد الاجتماع المقترح (اختياري)</label>
+                            <input type="datetime-local" class="form-control almarai-regular" name="meeting_time" style="border-radius: 10px;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label almarai-bold" style="color: var(--primary-dark);">ملف العرض (اختياري)</label>
+                            <input type="file" class="form-control almarai-regular" name="offer_file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" style="border-radius: 10px;">
                         </div>
                         <div class="mb-3">
                             <label class="form-label almarai-bold" style="color: var(--primary-dark);">رسالة العرض والتفاصيل</label>
@@ -123,10 +346,66 @@
     </div>
     {% else %}
     <div class="col-12 text-center py-5">
-        <i class="fas fa-users-slash text-muted mb-3" style="font-size: 4rem; opacity: 0.3;"></i>
-        <h4 class="almarai-bold mb-3" style="color: var(--primary-dark);">لا توجد فرق متاحة حالياً</h4>
-        <p class="text-muted">يبدو أنه لم يتم إنشاء فرق بعد، أو لا توجد نتائج.</p>
+        <div style="background: white; border-radius: 20px; padding: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            <i class="ph ph-users-three text-muted mb-3" style="font-size: 5rem; opacity: 0.3;"></i>
+            <h4 class="almarai-bold mb-3" style="color: var(--primary-dark);">لا توجد فرق متاحة حالياً</h4>
+            <p class="text-muted almarai-regular">يبدو أنه لم يتم إنشاء فرق بعد، أو لا توجد نتائج مطابقة.</p>
+        </div>
     </div>
     {% endfor %}
 </div>
+
+<!-- Pagination Controls -->
+{% if pagination.pages > 1 %}
+<div class="row mt-5">
+    <div class="col-12 d-flex justify-content-center">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-lg" dir="ltr">
+                <!-- Previous Page -->
+                <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                    <a class="page-link almarai-bold text-dark" href="{{ url_for('company_panel.browse_teams', page=pagination.prev_num) if pagination.has_prev else '#' }}">
+                        السابق
+                    </a>
+                </li>
+                
+                <!-- Page Numbers -->
+                {% for p in pagination.iter_pages(left_edge=1, left_current=2, right_current=2, right_edge=1) %}
+                    {% if p %}
+                        <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                            <a class="page-link almarai-bold" 
+                               href="{{ url_for('company_panel.browse_teams', page=p) }}">
+                                {{ p }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                <!-- Next Page -->
+                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link almarai-bold text-dark" href="{{ url_for('company_panel.browse_teams', page=pagination.next_num) if pagination.has_next else '#' }}">
+                        التالي
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<!-- AOS Animations Script -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        AOS.init({
+            once: true,
+            offset: 50,
+            duration: 800,
+            easing: 'ease-out-cubic',
+        });
+    });
+</script>
 {% endblock %}

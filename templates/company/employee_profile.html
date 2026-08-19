@@ -1,0 +1,249 @@
+{% extends "company/company_base.html" %}
+{% block title %}ملف الكفاءة | {{ employee.fullname }}{% endblock %}
+{% block nav_talent %}active{% endblock %}
+{% block page_title %}ملف الكفاءة{% endblock %}
+
+{% block extra_css %}
+<style>
+    .market-value-badge {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: linear-gradient(135deg, var(--accent-red), #e63946);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+        font-size: 1.2rem;
+        z-index: 10;
+        text-align: center;
+    }
+    .profile-header-card {
+        border-radius: 15px;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+    .profile-img-large {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 5px 15px rgba(35, 46, 76, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Back Button -->
+    <a href="{{ url_for('company_panel.talent_pool') }}" class="btn btn-outline-secondary almarai-bold mb-4">
+        <i class="fas fa-arrow-right me-1"></i> العودة لقاعدة المواهب
+    </a>
+
+    <!-- Header Card -->
+    <div class="card shadow-sm profile-header-card mb-4 bg-white">
+        <div class="card-body p-4">
+            <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <!-- Profile Info -->
+                <div class="d-flex flex-column flex-md-row align-items-center text-center text-md-end">
+                    <img src="{{ url_for('static', filename='uploads/profile/' + employee.img) if employee.img else 'https://ui-avatars.com/api/?name=' + employee.fullname + '&background=101c38&color=fff' }}" 
+                         class="mb-3 mb-md-0 ms-md-4" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 3px solid white; box-shadow: 0 5px 15px rgba(35, 46, 76, 0.1);">
+                    <div>
+                        <h3 class="almarai-extrabold mb-2" style="color: var(--primary-dark);">{{ employee.fullname }}</h3>
+                        <p class="text-muted almarai-regular mb-0" style="font-size: 1rem;">
+                            <i class="fas fa-briefcase ms-1"></i> {{ employee.preferred_field_of_work or 'مجال العمل غير محدد' }}
+                            <span class="mx-2">|</span>
+                            <i class="fas fa-map-marker-alt ms-1"></i> {{ employee.government or 'المنطقة غير محددة' }}
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-4 mt-md-0 d-flex gap-2">
+                    {% if employee.cv %}
+                    <a href="{{ url_for('static', filename='uploads/cv/' + employee.cv) }}" target="_blank" class="btn btn-outline-secondary px-4 py-2 almarai-bold shadow-sm" style="border-radius: 10px;">
+                        <i class="fas fa-file-pdf ms-2"></i> استعراض السيرة الذاتية
+                    </a>
+                    {% endif %}
+                    <button class="btn px-4 py-2 almarai-bold text-white shadow-sm" style="background-color: var(--primary-dark); border-radius: 10px;" data-bs-toggle="modal" data-bs-target="#offerModal">
+                        <i class="fas fa-paper-plane ms-2"></i> تقديم عرض مباشر
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Market Value Details Card -->
+    <div class="card shadow-sm mb-4" style="border-radius: 15px; border: none; background: linear-gradient(135deg, #111827 0%, #1e1b4b 100%); color: white;">
+        <div class="card-body p-4 p-md-5">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+                <h4 class="almarai-extrabold m-0 text-warning"><i class="fas fa-chart-pie me-2"></i> تفاصيل القيمة السوقية</h4>
+                <div class="badge bg-warning text-dark fs-5 almarai-bold px-3 py-2 rounded-pill shadow-sm">
+                    إجمالي النقاط: {{ market_value_score }} / 100
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Education -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-4 rounded h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="almarai-bold text-white-50"><i class="fas fa-graduation-cap text-warning me-2"></i> المؤهل العلمي</span>
+                            <span class="fw-bold text-white text-end" style="font-size: 1.1rem;">{{ employee.educational_qualification or 'غير محدد' }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- University -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-4 rounded h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="almarai-bold text-white-50"><i class="fas fa-university text-warning me-2"></i> تصنيف الجامعة</span>
+                            <div class="text-end">
+                                <span class="fw-bold text-white d-block" style="font-size: 1.1rem;">{{ employee.university or 'غير محدد' }}</span>
+                                <small class="text-warning d-block mt-1" style="font-size: 0.85rem;">{{ mv_data.qs_rank_string }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Experience -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-4 rounded h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="almarai-bold text-white-50"><i class="fas fa-briefcase text-warning me-2"></i> الخبرة العملية</span>
+                            <span class="fw-bold text-white text-end" style="font-size: 1.1rem;">{{ employee.years_of_skills ~ ' سنوات' if employee.years_of_skills else 'غير محدد' }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- GPA -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-4 rounded h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="almarai-bold text-white-50"><i class="fas fa-star text-warning me-2"></i> المعدل التراكمي</span>
+                            <span class="fw-bold text-white text-end" style="font-size: 1.1rem;">{{ employee.gpa or 'غير محدد' }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Certifications -->
+                <div class="col-md-6 col-lg-8">
+                    <div class="p-4 rounded h-100 d-flex flex-column justify-content-center" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="almarai-bold text-white-50"><i class="fas fa-certificate text-warning me-2"></i> الشهادات المهنية</span>
+                            <span class="fw-bold text-white text-end" style="font-size: 1.1rem; overflow-wrap: anywhere; max-width: 60%;">
+                                {% if employee.certifications and employee.certifications != '[]' and employee.certifications != '""' %}
+                                    {{ employee.certifications | replace('[', '') | replace(']', '') | replace('"', '') | replace("'", "") }}
+                                {% else %}
+                                    غير محدد
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if mv_data.salary_range %}
+            <div class="mt-4 p-4 rounded" style="background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3);">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-money-bill-wave fs-3 text-warning me-3"></i>
+                    <div>
+                        <h6 class="almarai-bold mb-1 text-warning">متوسط الراتب المتوقع في السوق</h6>
+                        <span class="almarai-regular text-white fs-5">{{ mv_data.salary_range.min_salary }} - {{ mv_data.salary_range.max_salary }} ريال شهرياً</span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+        </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm h-100" style="border-radius: 15px; border: none;">
+                <div class="card-body p-4 p-md-5">
+                    <h4 class="almarai-extrabold border-bottom pb-3 mb-4" style="color: var(--primary-dark);"><i class="fas fa-user-circle me-2 text-primary"></i> عن المرشح</h4>
+                    <p class="almarai-regular text-muted fs-5" style="line-height: 1.8;">
+                        {{ employee.about or 'لم يقم المرشح بإضافة نبذة تعريفية.' }}
+                    </p>
+                    
+                    <div class="row g-4 mt-4">
+                        <div class="col-md-4">
+                            <div class="p-4 bg-light rounded text-center h-100">
+                                <i class="fas fa-briefcase text-primary fs-2 mb-3"></i>
+                                <span class="d-block text-muted mb-2">نمط العمل المفضل</span>
+                                <strong class="fs-5" style="color: var(--primary-dark);">{{ employee.work_type or 'غير محدد' }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4 bg-light rounded text-center h-100">
+                                <i class="fas fa-university text-primary fs-2 mb-3"></i>
+                                <span class="d-block text-muted mb-2">الكلية / القسم</span>
+                                <strong class="fs-5" style="color: var(--primary-dark);">{{ employee.department_university or 'غير محدد' }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4 bg-light rounded text-center h-100">
+                                <i class="fas fa-calendar-alt text-primary fs-2 mb-3"></i>
+                                <span class="d-block text-muted mb-2">تاريخ التخرج</span>
+                                <strong class="fs-5" style="color: var(--primary-dark);">
+                                    {{ employee.graduation_date.strftime('%Y/%m/%d') if employee.graduation_date else 'غير محدد' }}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Direct Offer Modal -->
+<div class="modal fade" id="offerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title almarai-bold text-dark">تقديم عرض لـ {{ employee.fullname }}</h5>
+                <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('company_panel.send_direct_offer', user_id=employee.user_id) }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label almarai-bold text-muted small">الوظيفة المقترحة (اختياري)</label>
+                        <select class="form-select almarai-regular" name="job_id">
+                            <option value="">-- عرض عام --</option>
+                            {% for job in active_jobs %}
+                            <option value="{{ job.id }}">{{ job.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label almarai-bold text-muted small">موعد الاجتماع المقترح (اختياري)</label>
+                        <input type="datetime-local" class="form-control almarai-regular" name="meeting_time">
+                        <small class="text-muted">سيصل إشعار للمرشح بهذا الموعد إذا تم تحديده.</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label almarai-bold text-muted small">ملف العرض أو التفاصيل (اختياري)</label>
+                        <input type="file" class="form-control almarai-regular" name="offer_file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label almarai-bold text-muted small">رسالة العرض <span class="text-danger">*</span></label>
+                        <textarea class="form-control almarai-regular" name="message" rows="4" placeholder="اكتب تفاصيل العرض المقنع للمرشح..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light almarai-regular" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn text-white almarai-bold" style="background-color: var(--primary-dark);">إرسال العرض</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
