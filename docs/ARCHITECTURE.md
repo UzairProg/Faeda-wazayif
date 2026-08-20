@@ -48,7 +48,8 @@ The **Faeda Jobs Platform** (منصة فائدة) is an enterprise digital recru
      | - admin.py              | | - subscription.py       |
      | - chat.py               | | - system_settings.py    |
      | - company_panel.py      | | - report.py / ticket.py |
-     +-------------------------+ +-------------------------+
+     +-------------------------+ | - direct_offer.py       |
+                                 +-------------------------+
 ```
 
 ---
@@ -64,7 +65,7 @@ mysite/
 │       ├── admin.py            # Admin dashboard, user management, audit logs, system settings
 │       ├── chat.py             # Live chat & real-time messaging endpoints
 │       ├── companies.py        # Company registration, profiles, and hiring workflows
-│       ├── company_panel.py    # Dedicated company management dashboard
+│       ├── company_panel.py    # Dedicated company management dashboard (talent browsing, team offers)
 │       ├── core.py             # Public routes (Home, Support, About, Terms, Maintenance check)
 │       ├── customers.py        # Job seeker profile management, team management, applications
 │       ├── jobs.py             # Job listing, filtering, search, and application processing
@@ -75,6 +76,7 @@ mysite/
 │   ├── audit_log.py            # System audit logging for security and admin actions
 │   ├── company.py              # Company profiles, verification, and commercial registration
 │   ├── customer.py             # Job seeker profiles, CV metadata, and job applications
+│   ├── direct_offer.py         # Direct offers from companies to individual employees
 │   ├── following.py            # Company & seeker follower relationships
 │   ├── job.py                  # Job posting schema, requirements, and status
 │   ├── job_category.py         # Job categories and classification taxonomies
@@ -94,7 +96,11 @@ mysite/
 │   ├── market_value_calculator.py # Salary estimation & market value calculation
 │   ├── market_data_updater.py  # Market benchmarking data pipeline
 │   ├── feature_engineering.py  # Text pre-processing and feature extraction
-│   └── generate_data.py        # Synthetic & training data generator
+│   ├── generate_data.py        # Synthetic & training data generator
+│   ├── generate_dummy_cvs.py   # Dummy CV data generator for testing
+│   ├── ats_parser.py           # ATS (Applicant Tracking System) resume parser
+│   ├── extract_data.py         # Data extraction utilities
+│   └── clean_data.py           # Data cleaning utilities
 │
 ├── templates/                  # Jinja2 HTML Templates
 │   ├── new_design/             # Modern active public interface (RTL Bootstrap 5)
@@ -103,42 +109,62 @@ mysite/
 │   │   ├── index.html          # Homepage
 │   │   ├── support.html        # Support Center
 │   │   └── ...                 # Public & authentication pages
-│   └── panel/                  # Admin & User Dashboard Templates
-│       ├── admin/              # Super Admin management control panel
-│       ├── customer/           # Job seeker dashboard & team management
-│       └── company/            # Company recruitment dashboard
+│   ├── admin/                  # Admin Panel Templates
+│   │   ├── admin_base.html     # Admin master template
+│   │   ├── dashboard.html      # Admin dashboard overview
+│   │   └── ...                 # User management, reports, settings, billing
+│   ├── company/                # Company Panel Templates
+│   │   ├── company_base.html   # Company panel master template
+│   │   ├── dashboard.html      # Company dashboard
+│   │   ├── browse_talent.html  # Talent pool browsing
+│   │   ├── browse_teams.html   # Teams discovery
+│   │   └── ...                 # Jobs, profile, applicants, settings
+│   ├── panel/                  # Job Seeker Dashboard Templates
+│   │   └── customer/           # Customer account & team management
+│   └── company_public_profile.html # Public-facing company profile page
 │
 ├── static/                     # Web Assets
 │   ├── css/ & js/              # Stylesheets, Bootstrap 5 RTL, and scripts
 │   ├── images/                 # Brand assets and graphics
 │   └── uploads/                # Media upload directories (CVs, Logos, Images)
 │
+├── data/                       # Reference Data Files
+│   ├── cities.json             # Saudi cities dataset (used by API & seeders)
+│   └── countries.json          # Countries dataset
+│
 ├── scripts/                    # Maintenance & Database Seeding Scripts
 │   ├── seed_admin.py           # Initial super-admin seed script
 │   ├── seed_cities.py          # Saudi cities dataset seeder
+│   ├── seed_filters.py         # Combined job filters seeder
 │   ├── seed_job_filters.py     # Job types and specialties seeder
 │   ├── seed_categories.py      # Job categories seeder
 │   ├── seed_specialties.py     # Detailed specialties seeder
 │   ├── create_team_offer_table.py # Team offers schema initializer
 │   ├── migrate_db.py           # Database migration utilities
-│   └── verify_db.py            # Database integrity checker
+│   ├── backup_db.py            # Automated database backup script
+│   ├── restore_db.py           # Database restore from backup
+│   ├── inspect_data.py         # Database inspection utility
+│   ├── inspect_data_2.py       # Extended database inspection utility
+│   ├── update_team_member_status.py # Team member status migration
+│   └── create_salary_benchmark_table.sql # Salary benchmark table DDL
+│
+├── docs/                       # Project Documentation
+│   ├── AI_AGENT_RULES.md       # AI Agent Governance, Security & Architectural Rules
+│   ├── ARCHITECTURE.md         # System Architecture & Technical Specifications (This Document)
+│   ├── CHATBOT_GUIDE.md        # Chatbot & LLM Integration Guidelines
+│   └── BACKUP_RECOVERY.md     # Database Backup & Recovery Strategy
+│
+├── frontend/                   # Vite + TypeScript Frontend (under development)
 │
 ├── instance/                   # Runtime Database & Instance Files
-│   └── database.db             # SQLite database file (git-ignored)
+│   ├── database.db             # SQLite database file (git-ignored)
+│   └── backups/                # Database backup archives
 │
-├── archive/                    # Deprecated scripts and historical backups
-│
-├── AI_AGENT_RULES.md           # AI Agent Governance, Security & Architectural Rules
-├── ARCHITECTURE.md            # System Architecture & Technical Specifications (This Document)
-├── CHATBOT_GUIDE.md            # Chatbot & LLM Integration Guidelines
-├── TODO.md                     # Roadmap and pending feature tracking
 ├── app.py                      # Main WSGI Entry Point (`python app.py`)
-├── main.py                     # Legacy configuration helper (Flask-Mail & Sessions)
 ├── config.py                   # Development and Production configuration settings
-├── googleAuth.py               # Google OAuth 2.0 integration helper
-├── cities_data.json            # Reference JSON dataset for Saudi cities
 ├── requirements.txt            # Python dependencies manifest
-└── .env.example                # Template environment variables manifest
+├── .env.example                # Template environment variables manifest
+└── .gitignore                  # Git exclusion rules
 ```
 
 ---
