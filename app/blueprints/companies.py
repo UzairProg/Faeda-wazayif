@@ -34,6 +34,10 @@ def allowed_file(filename):
 
 @company.route('/applicants/<int:job_id>')
 def job_applicants2(job_id):
+    """
+    Display all applicants for a specific job.
+    Retrieves both individual and team applicants for company review.
+    """
     job = Jobs.query.get(job_id)
 
     if job is None:
@@ -59,6 +63,10 @@ def job_applicants2(job_id):
 
 @company.route('/applicants_recommended/<int:job_id>')
 def job_applicants_recommended(job_id):
+    """
+    Display applicants who have been recommended for a specific job.
+    Filters applicants based on the 'recommended' status.
+    """
     # Query the database to get the job details
     job = Jobs.query.get(job_id)
 
@@ -201,6 +209,10 @@ def download_cv(cv_filename):
 
 @company.route('/company_editprofile', methods=['POST'])
 def company_editprofile():
+    """
+    Update the company's profile information.
+    Handles the submission of contact details, descriptions, and file uploads (e.g., logo, commercial register).
+    """
     if 'company_id' in session:
         commercial_register = os.path.join(current_app.config['UPLOAD_COMPANY_COMMERCIAL_REGISTER'])
         company_logo = os.path.join(current_app.config['UPLOAD_company_logo'])

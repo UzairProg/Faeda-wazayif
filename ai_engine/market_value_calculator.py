@@ -50,13 +50,21 @@ def get_qs_university_bonus(user_university_name: str) -> int:
     df = _load_qs_data()
     if df.empty:
         return 5
-    # Prepare list of institution names
+    # Prepare the list of institution names to compare against.
     institutions = df["Institution Name"].astype(str).tolist()
+    
+    # We use 'thefuzz' library to perform fuzzy string matching using Levenshtein Distance (fuzz.ratio).
+    # This ensures that slight variations or typos in the user's university name (e.g. "King Fahd Uni" 
+    # instead of "King Fahd University") will still yield a successful match against the QS ranking dataset.
     match, score = process.extractOne(user_university_name, institutions, scorer=fuzz.ratio) or (None, 0)
+    
+    # A confidence threshold of 80 ensures we avoid assigning high ranks to completely unrelated 
+    # institutions while still allowing for minor naming differences.
     if score < 80 or match is None:
         logger.debug("No confident QS match for university '%s' (best score %s)", user_university_name, score)
         return 5
-    # Retrieve rank for matched institution
+        
+    # Retrieve rank for the confidently matched institution
     try:
         rank_val = int(df.loc[df["Institution Name"] == match, "2025 Rank"].iloc[0])
     except Exception as e:

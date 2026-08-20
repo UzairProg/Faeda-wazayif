@@ -717,6 +717,11 @@ def upsert_salary_benchmarks(conn: sqlite3.Connection, df: pd.DataFrame) -> int:
         logger.warning("[-] Empty DataFrame provided. No data to upsert.")
         return 0
 
+    # The SQLite 'INSERT OR REPLACE' command provides UPSERT functionality.
+    # It ensures that if a record with the same (specialization, exp_years_range) 
+    # already exists (enforced by the UNIQUE constraint created in ensure_table_exists), 
+    # it updates the existing record rather than creating a duplicate. 
+    # This prevents the database from bloating with redundant benchmark iterations.
     upsert_sql = """
     INSERT OR REPLACE INTO salary_benchmark
         (specialization, exp_years_range, min_salary, avg_salary, max_salary, last_updated)

@@ -95,6 +95,10 @@ def get_login():
 
 @customer.route('/login', methods=['POST'])
 def login():
+    """
+    Handle user login for both customers and admins.
+    Redirects companies to their dedicated portal and checks suspension status.
+    """
     email = request.form.get('email')
     password = request.form.get('password')
     query = Customers.query.filter_by(email=email).first()  # noqa: F405
@@ -169,6 +173,10 @@ def generate_unique_user_id():
 
 @customer.route('/register', methods=['POST'])
 def reg_page():
+    """
+    Process new customer registration.
+    Validates form data, password strength, and ensures the email is unique across the platform.
+    """
     f_name = request.form.get('fName')  # Ensure this matches your form field's name attribute
     l_name = request.form.get('lName') 
     full_name = f_name + l_name
@@ -227,6 +235,10 @@ def reg_page():
 
 @customer.route('/forgot_password', methods=['GET', 'POST'])
 def post_reset_pass():
+    """
+    Handle password reset requests.
+    Generates a secure token and sends a reset link to the user's email address.
+    """
     if request.method == 'POST':
         email = request.form.get("email")
         user = Customers.query.filter_by(email=email).first() # noqa: F405
@@ -338,6 +350,10 @@ def searchjobb():
 ######################
 @customer.route('/applyjob/<int:job_id>' , methods=['GET','POST'])
 def apply_for_job(job_id):
+    """
+    Process a job application from a customer or a team.
+    Ensures the user's profile is fully completed before allowing the application.
+    """
     ##### it has to be in session and compeleted data profile##########
     if "session_customer" not in session:
         session.clear()

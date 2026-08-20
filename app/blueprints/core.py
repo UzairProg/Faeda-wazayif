@@ -14,10 +14,15 @@ core_bp = Blueprint('core', __name__)
 
 @core_bp.route('/')
 def home():
+    """Render the homepage for the application."""
     return render_template('new_design/index.html')
 
 @core_bp.route('/news')
 def news():
+    """
+    Render the news feed page containing mock posts, trending topics, 
+    and suggested profiles to follow.
+    """
     mock_posts = [
         {
             "id": 1,
@@ -72,6 +77,12 @@ def support():
 
 @core_bp.route('/support/ticket', methods=['GET', 'POST'])
 def support_ticket():
+    """
+    Handle the creation of support tickets.
+    
+    GET: Render the support ticket form.
+    POST: Process the submitted form data and save the ticket to the database.
+    """
     if request.method == 'POST':
         email = request.form.get('email')
         subject = request.form.get('subject')
@@ -110,6 +121,10 @@ def track_ticket():
 
 @core_bp.route('/report', methods=['POST'])
 def submit_report():
+    """
+    Process report submissions for content violation or other issues.
+    Ensures the reporter is logged in as either a customer or a company.
+    """
     from services.report import Report
     target_type = request.form.get('target_type')
     target_id = request.form.get('target_id')
