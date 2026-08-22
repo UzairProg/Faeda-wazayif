@@ -85,22 +85,46 @@ def get_login():
 
 @customer.route('/login', methods=['POST'])
 def login():
-    email = request.form.get('email')
-    password = request.form.get('password')
+    wants_json = request.is_json or request.headers.get('Accept') == 'application/json' or 'json' in request.headers.get('Accept', '').lower()
+
+    if request.is_json:
+        data = request.get_json() or {}
+        email = data.get('email', '').strip()
+        password = data.get('password', '')
+    else:
+        email = (request.form.get('email') or '').strip()
+        password = request.form.get('password') or ''
+
     query = Customers.query.filter_by(email=email).first()  # noqa: F405
     query2 = Company.query.filter_by(company_email=email).first() # noqa: F405
     query3 = Admin.get_by_email(email)
 
     if query3 and query3.check_password(password):
         if not query3.is_active:
+            if wants_json:
+                return jsonify({"success": False, "message": "حسابك معطّل. تواصل مع المدير العام."}), 403
             flash('حسابك معطّل. تواصل مع المدير العام.', 'error')
-            return render_template('/new_design/login.html' , error = True)
+            return render_template('/new_design/login.html', error=True)
             
         session['admin_id'] = query3.id
         session['admin_role'] = query3.role
         session['show_banner'] = True
         query3.last_login = datetime.utcnow()
         db.session.commit()
+
+        if wants_json:
+            return jsonify({
+                "success": True,
+                "role": "admin",
+                "user": {
+                    "id": query3.id,
+                    "name": query3.username,
+                    "email": query3.email,
+                    "role": "admin"
+                },
+                "redirect_url": "/admin"
+            })
+
         flash(f'مرحباً {query3.username}!', 'success')
         return redirect(url_for('admin.admin_dashboard'))
 
@@ -108,23 +132,42 @@ def login():
         if query.status == 'suspended':
             session['suspended_email'] = query.email
             session['suspension_reason'] = query.suspension_reason or 'انتهاك شروط الاستخدام'
+            if wants_json:
+                return jsonify({"success": False, "message": "حسابك معطل أو موقوف مؤقتاً."}), 403
             return redirect(url_for('core.suspended_account'))
             
-    # save session
+        # save session
         session['session_customer'] = True
         session['show_banner'] = True
-        session['user_id'] = Customers.get_session_user_id(email=email)# noqa: F405
+        session['user_id'] = query.id
         session['email_session'] = email
-        full_name = Customers.get_customer_fullname_by_user_email(email=email) # noqa: F405
-        flash(f'مرحباً بك مجدداً {full_name}!', 'success')
+        full_name = query.fullname or Customers.get_customer_fullname_by_user_email(email=email) or email.split('@')[0]
         if query.activated == True:
             session['customer_activated'] = True
+
+        if wants_json:
+            return jsonify({
+                "success": True,
+                "role": "candidate",
+                "user": {
+                    "id": query.id,
+                    "user_id": query.user_id,
+                    "name": full_name,
+                    "email": query.email,
+                    "role": "candidate"
+                },
+                "redirect_url": "/candidate/profile"
+            })
+
+        flash(f'مرحباً بك مجدداً {full_name}!', 'success')
         return redirect('/')
         
     if query2 is not None and query2.login_password == password:
         if query2.status == 'suspended':
             session['suspended_email'] = query2.company_email
             session['suspension_reason'] = query2.suspension_reason or 'مخالفة سياسات المنصة'
+            if wants_json:
+                return jsonify({"success": False, "message": "حساب الشركة معطل أو موقوف مؤقتاً."}), 403
             return redirect(url_for('core.suspended_account'))
             
         session['session_company'] = True
@@ -132,14 +175,29 @@ def login():
         company_id = Company.get_company_id_by_email(company_email=email) # noqa: F405
         session['company_id'] = company_id
         session['company_email_session'] = email
-        company_name = Company.get_company_english_name_by_company_id(company_id) # noqa: F405
-
-        flash('<span class="h1-size">تم تسجيل الدخول بإسم شركة</span> <span class="h1-size">'  '</span>' '<span class="h1-size">   </span> <span class="h1-size">' + company_name + '</span>')
+        company_name = Company.get_company_english_name_by_company_id(company_id) or "شركة" # noqa: F405
         if query2.activated == True:
             session['company_activated'] = True
+
+        if wants_json:
+            return jsonify({
+                "success": True,
+                "role": "company",
+                "user": {
+                    "id": company_id,
+                    "name": company_name,
+                    "email": query2.company_email,
+                    "role": "company"
+                },
+                "redirect_url": "/company"
+            })
+
+        flash('<span class="h1-size">تم تسجيل الدخول بإسم شركة</span> <span class="h1-size">'  '</span>' '<span class="h1-size">   </span> <span class="h1-size">' + company_name + '</span>')
         return redirect('/')
     else:
-        return render_template('/new_design/login.html' , error = True)
+        if wants_json:
+            return jsonify({"success": False, "message": "بيانات الدخول غير صحيحة. يرجى التأكد من البريد الإلكتروني وكلمة المرور."}), 401
+        return render_template('/new_design/login.html', error=True)
 
     #### register ######
 
@@ -1244,10 +1302,12 @@ def redirects():
         return redirect('/login')
 
 
-@customer.route('/logout')
+@customer.route('/logout', methods=['GET', 'POST'])
 def logout():
     """Clear all session data and redirect to home."""
     session.clear()
+    if request.is_json or request.headers.get('Accept') == 'application/json':
+        return jsonify({"success": True, "message": "تم تسجيل الخروج بنجاح"})
     flash('تم تسجيل الخروج بنجاح')
     return redirect('/')
 
@@ -1553,3 +1613,558 @@ def browse_teams():
     
     teams = Teams.query.all()
     return render_template('new_design/browse_teams.html', teams=teams, customer=customer_obj)
+
+
+# ==============================================================================
+# REST API v1 — CANDIDATE WORKSPACE & AUTH IDENTITY
+# ==============================================================================
+
+@customer.route('/api/v1/auth/me', methods=['GET'])
+def api_auth_me():
+    """Return authenticated user identity & active role."""
+    if 'session_customer' in session and 'user_id' in session:
+        cust = Customers.query.get(session['user_id'])
+        if cust:
+            return jsonify({
+                "authenticated": True,
+                "role": "candidate",
+                "user": {
+                    "id": cust.id,
+                    "user_id": cust.user_id,
+                    "email": cust.email,
+                    "name": cust.fullname,
+                    "img": cust.img,
+                    "is_verified": bool(cust.is_verified)
+                }
+            })
+    elif 'session_company' in session and 'company_id' in session:
+        comp = Company.query.get(session['company_id'])
+        if comp:
+            return jsonify({
+                "authenticated": True,
+                "role": "company",
+                "user": {
+                    "id": comp.id,
+                    "company_id": comp.id,
+                    "email": comp.company_email,
+                    "name": comp.company_english_name,
+                    "logo": comp.company_logo,
+                    "is_verified": bool(comp.is_verified)
+                }
+            })
+    elif 'admin_id' in session:
+        adm = Admin.query.get(session['admin_id'])
+        if adm:
+            return jsonify({
+                "authenticated": True,
+                "role": "admin",
+                "user": {
+                    "id": adm.id,
+                    "email": adm.email,
+                    "name": adm.username,
+                    "role": adm.role
+                }
+            })
+
+    return jsonify({
+        "authenticated": False,
+        "role": None,
+        "user": None
+    })
+
+
+@customer.route('/api/v1/candidate/profile', methods=['GET'])
+def api_get_candidate_profile():
+    """Return full structured profile for the current logged-in candidate."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "يجب تسجيل الدخول كمرشح للوصول إلى هذا الملف"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على بيانات المرشح"}), 404
+        
+    return jsonify(cust.to_candidate_profile_dict())
+
+
+@customer.route('/api/v1/candidate/profile/identity', methods=['PUT', 'POST'])
+def api_update_candidate_identity():
+    """Update candidate personal identity fields and optional profile avatar."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    # Supports both JSON and multipart form-data
+    if request.is_json:
+        data = request.get_json() or {}
+    else:
+        data = request.form.to_dict()
+
+    if 'fullname' in data and data['fullname']:
+        cust.fullname = data['fullname'].strip()
+    if 'about' in data:
+        cust.about = data['about'].strip()
+    if 'mobile' in data and data['mobile']:
+        cust.mobile = data['mobile'].strip()
+    if 'country' in data:
+        cust.country = data['country'].strip()
+    if 'government' in data:
+        cust.government = data['government'].strip()
+    if 'sex' in data:
+        cust.sex = data['sex'].strip()
+
+    # Handle avatar file upload
+    if 'avatar' in request.files or 'img' in request.files:
+        file = request.files.get('avatar') or request.files.get('img')
+        if file and file.filename:
+            upload_dir = current_app.config.get('UPLOAD_CUSTOMERS_IMAGES')
+            os.makedirs(upload_dir, exist_ok=True)
+            filename = secure_filename(f"user_{cust.id}_{int(datetime.utcnow().timestamp())}_{file.filename}")
+            file_path = os.path.join(upload_dir, filename)
+            file.save(file_path)
+            cust.img = filename
+
+    try:
+        log_profile_update(cust, 'تحديث البيانات الشخصية')
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ أثناء التحديث: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/profile/about', methods=['PUT'])
+def api_update_candidate_about():
+    """Update candidate professional summary/about."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    data = request.get_json() or {}
+    cust.about = data.get('about', '').strip()
+
+    try:
+        log_profile_update(cust, 'تحديث النبذة المهنية')
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/profile/skills', methods=['PUT'])
+def api_update_candidate_skills():
+    """Sync structured skills list for candidate."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    data = request.get_json() or {}
+    skills_list = data.get('skills', [])
+    if not isinstance(skills_list, list):
+        return jsonify({"message": "تنسيق المهارات غير صحيح"}), 400
+
+    # Delete existing skills for this candidate
+    Skills.query.filter_by(customer_id=cust.id).delete()
+
+    # Deduplicate & add
+    seen = set()
+    for s in skills_list:
+        clean_s = str(s).strip()
+        if clean_s and clean_s.lower() not in seen:
+            seen.add(clean_s.lower())
+            new_skill = Skills(customer_id=cust.id, skill_name=clean_s)
+            db.session.add(new_skill)
+
+    try:
+        log_profile_update(cust, 'تحديث المهارات المهنية')
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/profile/experience', methods=['PUT'])
+def api_update_candidate_experience():
+    """Update experience level, years, and specialization."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    data = request.get_json() or {}
+    if 'years_of_skills' in data:
+        cust.years_of_skills = str(data['years_of_skills']).strip()
+    if 'preferred_field_of_work' in data:
+        cust.preferred_field_of_work = str(data['preferred_field_of_work']).strip()
+    if 'resume_text' in data:
+        cust.resume_text = data['resume_text']
+
+    try:
+        log_profile_update(cust, 'تحديث الخبرة المهنية')
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/profile/education', methods=['PUT'])
+def api_update_candidate_education():
+    """Update candidate education qualifications."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    data = request.get_json() or {}
+    if 'educational_qualification' in data:
+        cust.educational_qualification = data['educational_qualification']
+    if 'university' in data:
+        cust.university = data['university']
+    if 'department_university' in data:
+        cust.department_university = data['department_university']
+    if 'gpa' in data:
+        cust.gpa = data['gpa']
+    if 'education_statue' in data:
+        cust.education_statue = data['education_statue']
+    if 'graduation_date' in data and data['graduation_date']:
+        try:
+            cust.graduation_date = datetime.strptime(data['graduation_date'][:10], '%Y-%m-%d').date()
+        except Exception:
+            pass
+
+    try:
+        log_profile_update(cust, 'تحديث المؤهلات التعليمية')
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/profile/projects', methods=['POST'])
+def api_save_candidate_project():
+    """Add or edit candidate project."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    data = request.get_json() or {}
+    project_id = data.get('id')
+    project_name = data.get('project_name', '').strip()
+    description = data.get('description', '').strip()
+    project_url = data.get('project_url', '').strip()
+
+    if not project_name:
+        return jsonify({"message": "اسم المشروع مطلوب"}), 400
+
+    if project_id:
+        proj = CustomerProject.query.filter_by(id=project_id, customer_id=cust.id).first()
+        if not proj:
+            return jsonify({"message": "المشروع غير موجود"}), 404
+        proj.project_name = project_name
+        proj.description = description
+        proj.project_url = project_url
+    else:
+        proj = CustomerProject(
+            customer_id=cust.id,
+            project_name=project_name,
+            project_size='متوسط',
+            description=description,
+            project_url=project_url
+        )
+        db.session.add(proj)
+
+    try:
+        log_profile_update(cust, 'تحديث المشاريع')
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/profile/projects/<int:project_id>', methods=['DELETE'])
+def api_delete_candidate_project(project_id):
+    """Delete a candidate project."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    proj = CustomerProject.query.filter_by(id=project_id, customer_id=cust.id).first()
+    if not proj:
+        return jsonify({"message": "المشروع غير موجود"}), 404
+
+    try:
+        db.session.delete(proj)
+        log_profile_update(cust, 'حذف مشروع')
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/profile/certifications', methods=['POST'])
+def api_save_candidate_certification():
+    """Add or edit candidate certification."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    data = request.get_json() or {}
+    cert_id = data.get('id')
+    cert_name = data.get('cert_name', '').strip()
+    issuing_org = data.get('issuing_org', '').strip()
+    issue_month = int(data['issue_month']) if data.get('issue_month') else None
+    issue_year = int(data['issue_year']) if data.get('issue_year') else None
+    expiry_month = int(data['expiry_month']) if data.get('expiry_month') else None
+    expiry_year = int(data['expiry_year']) if data.get('expiry_year') else None
+    no_expiry = bool(data.get('no_expiry', False))
+    credential_id = data.get('credential_id', '').strip()
+    credential_url = data.get('credential_url', '').strip()
+
+    if not cert_name:
+        return jsonify({"message": "اسم الشهادة مطلوب"}), 400
+
+    if cert_id:
+        cert = CustomerCertification.query.filter_by(id=cert_id, customer_id=cust.id).first()
+        if not cert:
+            return jsonify({"message": "الشهادة غير موجودة"}), 404
+        cert.cert_name = cert_name
+        cert.issuing_org = issuing_org
+        cert.issue_month = issue_month
+        cert.issue_year = issue_year
+        cert.expiry_month = expiry_month
+        cert.expiry_year = expiry_year
+        cert.no_expiry = no_expiry
+        cert.credential_id = credential_id
+        cert.credential_url = credential_url
+    else:
+        cert = CustomerCertification(
+            customer_id=cust.id,
+            cert_name=cert_name,
+            issuing_org=issuing_org,
+            issue_month=issue_month,
+            issue_year=issue_year,
+            expiry_month=expiry_month,
+            expiry_year=expiry_year,
+            no_expiry=no_expiry,
+            credential_id=credential_id,
+            credential_url=credential_url
+        )
+        db.session.add(cert)
+
+    try:
+        # Sync legacy JSON field
+        all_certs = CustomerCertification.query.filter_by(customer_id=cust.id).all()
+        import json as _json
+        cert_names = [c.cert_name for c in all_certs]
+        if cert_name not in cert_names:
+            cert_names.append(cert_name)
+        cust.certifications = _json.dumps(cert_names)
+
+        log_profile_update(cust, 'تحديث الشهادات المهنية')
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/profile/certifications/<int:cert_id>', methods=['DELETE'])
+def api_delete_candidate_certification(cert_id):
+    """Delete a candidate certification."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    cert = CustomerCertification.query.filter_by(id=cert_id, customer_id=cust.id).first()
+    if not cert:
+        return jsonify({"message": "الشهادة غير موجودة"}), 404
+
+    try:
+        db.session.delete(cert)
+        # Resync legacy string
+        all_certs = [c.cert_name for c in cust.certifications_list if c.id != cert_id]
+        import json as _json
+        cust.certifications = _json.dumps(all_certs) if all_certs else None
+        log_profile_update(cust, 'حذف شهادة مهنية')
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/profile/preferences', methods=['PUT'])
+def api_update_candidate_preferences():
+    """Update job search preferences."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    data = request.get_json() or {}
+    if 'preferred_field_of_work' in data:
+        cust.preferred_field_of_work = data['preferred_field_of_work']
+    if 'work_type' in data:
+        cust.work_type = data['work_type']
+    if 'work_style' in data:
+        cust.work_style = data['work_style']
+    if 'expected_salary' in data:
+        cust.expected_salary = int(data['expected_salary']) if data['expected_salary'] else None
+    if 'country' in data:
+        cust.country = data['country']
+    if 'government' in data:
+        cust.government = data['government']
+
+    try:
+        log_profile_update(cust, 'تحديث تفضيلات العمل')
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/profile/visibility', methods=['PUT'])
+def api_update_candidate_visibility():
+    """Update profile visibility privacy level."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    data = request.get_json() or {}
+    visibility = data.get('visibility', 'employers_only')
+    if visibility not in ['public', 'employers_only', 'private']:
+        visibility = 'employers_only'
+
+    cust.visibility = visibility
+
+    try:
+        db.session.commit()
+        return jsonify(cust.to_candidate_profile_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/cv/upload', methods=['POST'])
+def api_upload_candidate_cv():
+    """Dedicated CV upload with ATS parsing and real score return."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust:
+        return jsonify({"message": "لم يتم العثور على المرشح"}), 404
+
+    if 'cv' not in request.files and 'file' not in request.files:
+        return jsonify({"message": "لم يتم إرفاق ملف السيرة الذاتية"}), 400
+
+    file = request.files.get('cv') or request.files.get('file')
+    if not file or not file.filename:
+        return jsonify({"message": "الملف غير صالح"}), 400
+
+    allowed_exts = {'pdf', 'docx', 'doc', 'txt'}
+    ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+    if ext not in allowed_exts:
+        return jsonify({"message": "صيغة الملف غير مدعومة. يرجى رفع ملف PDF أو DOCX"}), 400
+
+    upload_cv_dir = current_app.config.get('UPLOAD_CUSTOMERS_CV')
+    os.makedirs(upload_cv_dir, exist_ok=True)
+
+    # Delete old CV if exists
+    if cust.cv:
+        old_path = os.path.join(upload_cv_dir, cust.cv)
+        if os.path.exists(old_path):
+            try:
+                os.remove(old_path)
+            except Exception:
+                pass
+
+    filename = secure_filename(f"cv_{cust.id}_{int(datetime.utcnow().timestamp())}_{file.filename}")
+    file_path = os.path.join(upload_cv_dir, filename)
+    file.save(file_path)
+    cust.cv = filename
+
+    # Run ATS parsing safely
+    extracted_data = {}
+    if ext == 'pdf':
+        try:
+            parsed = parse_cv(file_path)
+            if parsed:
+                extracted_data = parsed
+                if parsed.get('university_en') and not cust.university:
+                    cust.university = parsed['university_en']
+                if parsed.get('educational_qualification') and not cust.educational_qualification:
+                    cust.educational_qualification = parsed['educational_qualification']
+                if parsed.get('years_of_experience') and not cust.years_of_skills:
+                    cust.years_of_skills = f"{parsed['years_of_experience']} سنوات"
+                if parsed.get('raw_text'):
+                    cust.resume_text = parsed['raw_text']
+        except Exception as err:
+            current_app.logger.warning("ATS parsing failed: %s", err)
+
+    try:
+        log_profile_update(cust, 'رفع وتحليل السيرة الذاتية (ATS)')
+        db.session.commit()
+        
+        profile_dict = cust.to_candidate_profile_dict()
+        profile_dict['extracted_ats_data'] = {
+            'university': extracted_data.get('university_en') or extracted_data.get('university_ar'),
+            'qualification': extracted_data.get('educational_qualification'),
+            'experience_years': extracted_data.get('years_of_experience'),
+            'skills_found': extracted_data.get('skills')
+        }
+        return jsonify(profile_dict)
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"حدث خطأ أثناء حفظ السيرة الذاتية: {str(e)}"}), 500
+
+
+@customer.route('/api/v1/candidate/cv/download', methods=['GET'])
+def api_download_candidate_cv():
+    """Allow logged-in candidate to download their own CV."""
+    if 'session_customer' not in session or 'user_id' not in session:
+        return jsonify({"message": "غير مصرح"}), 401
+    
+    cust = Customers.query.get(session['user_id'])
+    if not cust or not cust.cv:
+        return jsonify({"message": "لا توجد سيرة ذاتية مرفوعة"}), 404
+
+    upload_cv_dir = current_app.config.get('UPLOAD_CUSTOMERS_CV')
+    return send_from_directory(upload_cv_dir, cust.cv, as_attachment=True)
+

@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { ROUTES } from "@/config/routes"
 import { useTranslation } from "@/i18n"
+import { useAuthStore } from "@/store/auth.store"
 import type { Language } from "@/store/language.store"
 import faedaWhiteLogo from "@/assets/logos/faeda_white_logo.png"
 
@@ -22,6 +23,7 @@ export function Navbar() {
   const [langMenuOpen, setLangMenuOpen] = useState(false)
   const location = useLocation()
   const { t, language, setLanguage } = useTranslation()
+  const { user, isAuthenticated, logout } = useAuthStore()
 
   const langContainerRef = useRef<HTMLDivElement>(null)
 
@@ -164,13 +166,49 @@ export function Navbar() {
             <Bell className="h-4 w-4" />
           </Button>
 
-          <Button asChild variant="outline" size="sm" className="rounded-xl border-white/10 bg-white/5 text-xs text-white hover:bg-white/10">
-            <Link to={ROUTES.AUTH.LOGIN}>{t("common.nav.login")}</Link>
-          </Button>
+          {isAuthenticated && user ? (
+            <div className="flex items-center gap-2">
+              <Button asChild size="sm" className="rounded-xl bg-primary hover:bg-primary/90 text-xs font-bold text-white shadow-md shadow-primary/20">
+                <Link
+                  to={
+                    user.role === "company"
+                      ? ROUTES.COMPANY.DASHBOARD
+                      : user.role === "admin"
+                      ? ROUTES.ADMIN.ROOT
+                      : ROUTES.CANDIDATE.PROFILE
+                  }
+                >
+                  <User className="h-3.5 w-3.5 me-1.5" />
+                  <span>
+                    {user.role === "company"
+                      ? "لوحة الشركة"
+                      : user.role === "admin"
+                      ? "لوحة الإدارة"
+                      : "مساحة المرشح"}
+                  </span>
+                </Link>
+              </Button>
 
-          <Button asChild size="sm" className="rounded-xl bg-primary text-xs font-semibold text-primary-foreground shadow-md shadow-primary/20 hover:bg-primary/90">
-            <Link to={ROUTES.AUTH.REGISTER}>{t("common.nav.register")}</Link>
-          </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => logout()}
+                className="rounded-xl border-white/10 bg-white/5 text-xs text-rose-300 hover:text-rose-200 hover:bg-rose-500/10"
+              >
+                {t("common.nav.logout")}
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Button asChild variant="outline" size="sm" className="rounded-xl border-white/10 bg-white/5 text-xs text-white hover:bg-white/10">
+                <Link to={ROUTES.AUTH.LOGIN}>{t("common.nav.login")}</Link>
+              </Button>
+
+              <Button asChild size="sm" className="rounded-xl bg-primary text-xs font-semibold text-primary-foreground shadow-md shadow-primary/20 hover:bg-primary/90">
+                <Link to={ROUTES.AUTH.REGISTER}>{t("common.nav.register")}</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -244,17 +282,54 @@ export function Navbar() {
             </div>
 
             <div className="pt-2 flex flex-col gap-2">
-              <Button asChild variant="outline" className="w-full justify-center rounded-xl border-white/10 bg-white/5 text-white">
-                <Link to={ROUTES.AUTH.LOGIN} onClick={() => setIsOpen(false)}>
-                  <User className="h-4 w-4 me-2" />
-                  {t("common.nav.login")}
-                </Link>
-              </Button>
-              <Button asChild className="w-full justify-center rounded-xl bg-primary text-primary-foreground font-semibold">
-                <Link to={ROUTES.AUTH.REGISTER} onClick={() => setIsOpen(false)}>
-                  {t("common.nav.register")}
-                </Link>
-              </Button>
+              {isAuthenticated && user ? (
+                <>
+                  <Button asChild className="w-full justify-center rounded-xl bg-primary text-primary-foreground font-semibold">
+                    <Link
+                      to={
+                        user.role === "company"
+                          ? ROUTES.COMPANY.DASHBOARD
+                          : user.role === "admin"
+                          ? ROUTES.ADMIN.ROOT
+                          : ROUTES.CANDIDATE.PROFILE
+                      }
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <User className="h-4 w-4 me-2" />
+                      {user.role === "company"
+                        ? "لوحة الشركة"
+                        : user.role === "admin"
+                        ? "لوحة الإدارة"
+                        : "مساحة المرشح"}
+                    </Link>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      logout()
+                      setIsOpen(false)
+                    }}
+                    className="w-full justify-center rounded-xl border-white/10 bg-white/5 text-rose-300 hover:text-rose-200"
+                  >
+                    {t("common.nav.logout")}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button asChild variant="outline" className="w-full justify-center rounded-xl border-white/10 bg-white/5 text-white">
+                    <Link to={ROUTES.AUTH.LOGIN} onClick={() => setIsOpen(false)}>
+                      <User className="h-4 w-4 me-2" />
+                      {t("common.nav.login")}
+                    </Link>
+                  </Button>
+                  <Button asChild className="w-full justify-center rounded-xl bg-primary text-primary-foreground font-semibold">
+                    <Link to={ROUTES.AUTH.REGISTER} onClick={() => setIsOpen(false)}>
+                      {t("common.nav.register")}
+                    </Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </motion.div>

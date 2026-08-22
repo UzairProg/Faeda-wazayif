@@ -55,14 +55,15 @@ class Customers(db.Model):
 
     ############# uploaded data names ##########
     cv = db.Column(db.String(120), nullable=True)
+    visibility = db.Column(db.String(30), default='employers_only')  # 'public', 'employers_only', 'private'
     token = db.Column(db.String(120))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     jobs = db.relationship("Jobs", secondary="customer_jobs", back_populates="customers")
 
     messages = db.relationship('Message', backref='customer', lazy=True)
     skills = db.relationship('Skills', backref='job_skills', lazy=True)
-    lang = db.relationship('Lang', backref='customer_languages', lazy=True)
-    profile_history = db.relationship('CustomerProfileHistory', backref='customer', lazy=True, order_by="desc(CustomerProfileHistory.created_at)")
+    lang = db.relationship('Lang', backref='customer_languages', lazy=True, cascade="all, delete-orphan")
+    profile_history = db.relationship('CustomerProfileHistory', backref='customer', lazy=True, order_by="desc(CustomerProfileHistory.created_at)", cascade="all, delete-orphan")
     projects = db.relationship('CustomerProject', backref='customer', lazy=True, cascade="all, delete-orphan")
     ip_contributions = db.relationship('CustomerIPContribution', backref='customer', lazy=True, cascade="all, delete-orphan")
     certifications_list = db.relationship('CustomerCertification', backref='customer', lazy=True, cascade="all, delete-orphan")
@@ -71,10 +72,8 @@ class Customers(db.Model):
         self, fullname, email, mobile, password,about=None, sex=None, country=None,city = None,government = None, education_statue=None,
         educational_qualification=None, university=None, department_university=None, graduation_date=None,
         gpa=None, years_of_skills=None, preferred_field_of_work=None, work_type=None, activated=False, cv=None,
-        token=None, resume_text=None, expected_salary=None, languages_json=None, certifications=None, work_style=None, **kwargs
+        token=None, resume_text=None, expected_salary=None, languages_json=None, certifications=None, work_style=None, visibility='employers_only', **kwargs
     ):
-    # ... rest of the code ...
-
         self.fullname = fullname
         self.email = email
         self.mobile = mobile
@@ -95,13 +94,105 @@ class Customers(db.Model):
         self.work_type = work_type
         self.activated = activated
         self.cv = cv
+        self.visibility = visibility or 'employers_only'
         self.token = token
         self.resume_text = resume_text
         self.expected_salary = expected_salary
         self.languages_json = languages_json
         self.certifications = certifications
         self.work_style = work_style
-        super().__init__(**kwargs)  # handle additional fields and inheritance if necessary
+        super().__init__(**kwargs)
+
+    def to_candidate_profile_dict(self):
+        """Serialize customer into a clean structured candidate profile dictionary."""
+        skills_list = [s.skill_name for s in self.skills] if self.skills else []
+        
+        projects_data = []
+        for p in (self.projects or []):
+            desc = getattr(p, 'description', None) or getattr(p, 'project_size', None) or ''
+            projects_data.append({
+                'id': p.id,
+                'project_name': p.project_name,
+                'description': desc,
+                'project_url': p.project_url or '',
+                'created_at': p.created_at.isoformat() if p.created_at else None
+            })
+            
+        certs_data = []
+        for c in (self.certifications_list or []):
+            certs_data.append({
+                'id': c.id,
+                'cert_name': c.cert_name,
+                'issuing_org': c.issuing_org or '',
+                'issue_month': c.issue_month,
+                'issue_year': c.issue_year,
+                'expiry_month': c.expiry_month,
+                'expiry_year': c.expiry_year,
+                'no_expiry': bool(c.no_expiry),
+                'credential_id': c.credential_id or '',
+                'credential_url': c.credential_url or '',
+                'created_at': c.created_at.isoformat() if c.created_at else None
+            })
+
+        langs_data = [l.language_name for l in self.lang] if self.lang else []
+
+        checklist = [
+            {'key': 'basic_info', 'label': 'المعلومات الشخصية والاتصال', 'completed': bool(self.fullname and self.email and self.mobile), 'weight': 15},
+            {'key': 'headline_about', 'label': 'الملخص المهني والنبذة', 'completed': bool(self.about and len(self.about.strip()) > 5), 'weight': 15},
+            {'key': 'skills', 'label': 'المهارات المهنية', 'completed': bool(len(skills_list) > 0), 'weight': 15},
+            {'key': 'education', 'label': 'المؤهل العلمي والتعليم', 'completed': bool(self.educational_qualification or self.university), 'weight': 15},
+            {'key': 'experience', 'label': 'سنوات الخبرة والمجال', 'completed': bool(self.years_of_skills and self.preferred_field_of_work), 'weight': 15},
+            {'key': 'cv', 'label': 'السيرة الذاتية (CV)', 'completed': bool(self.cv), 'weight': 15},
+            {'key': 'preferences', 'label': 'تفضيلات العمل ونوع الوظيفة', 'completed': bool(self.work_type or self.work_style or self.expected_salary), 'weight': 10},
+        ]
+        completed_weight = sum(item['weight'] for item in checklist if item['completed'])
+
+        ats_score = None
+        if self.cv:
+            try:
+                from ai_engine.market_value_calculator import get_market_value_for_customer
+                market = get_market_value_for_customer(self)
+                ats_score = market.get('total_score', 75)
+            except Exception:
+                ats_score = 75
+
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'fullname': self.fullname or '',
+            'about': self.about or '',
+            'email': self.email or '',
+            'mobile': self.mobile or '',
+            'img': self.img or '',
+            'sex': self.sex or '',
+            'country': self.country or 'المملكة العربية السعودية',
+            'government': self.government or '',
+            'education_statue': self.education_statue or '',
+            'educational_qualification': self.educational_qualification or '',
+            'university': self.university or '',
+            'department_university': self.department_university or '',
+            'graduation_date': self.graduation_date.isoformat() if self.graduation_date else None,
+            'gpa': self.gpa or '',
+            'years_of_skills': self.years_of_skills or '',
+            'preferred_field_of_work': self.preferred_field_of_work or '',
+            'work_type': self.work_type or '',
+            'work_style': self.work_style or '',
+            'expected_salary': self.expected_salary,
+            'visibility': getattr(self, 'visibility', 'employers_only') or 'employers_only',
+            'status': self.status or 'active',
+            'is_verified': bool(self.is_verified),
+            'verified_at': self.verified_at.isoformat() if self.verified_at else None,
+            'cv': self.cv or '',
+            'skills': skills_list,
+            'languages': langs_data,
+            'projects': projects_data,
+            'certifications': certs_data,
+            'ats_score': ats_score,
+            'completion': {
+                'percentage': completed_weight,
+                'checklist': checklist
+            }
+        }
 
 
     @classmethod
@@ -436,6 +527,7 @@ class CustomerProject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     project_name = db.Column(db.String(200), nullable=False)
+    project_size = db.Column(db.String(50), default='متوسط')
     description = db.Column(db.Text, nullable=True)
     project_url = db.Column(db.String(500), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -445,9 +537,6 @@ class CustomerIPContribution(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     ip_name = db.Column(db.String(255), nullable=False)
-    patent_number = db.Column(db.String(100), nullable=True)
-    credential_url = db.Column(db.String(500), nullable=True)
-    evidence_file = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 

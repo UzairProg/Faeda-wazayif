@@ -17,6 +17,7 @@ import { ROUTES } from "./config/routes"
 // Layouts
 import { PublicLayout } from "./layouts/MainLayout"
 import { CandidateLayout } from "./features/candidate/layouts/CandidateLayout"
+import { CandidateProfilePage } from "./features/candidate/pages/CandidateProfilePage"
 import { CompanyLayout } from "./features/company/layouts/CompanyLayout"
 import { AdminLayout } from "./features/admin/layouts/AdminLayout"
 
@@ -106,7 +107,12 @@ function App() {
         {/* ── Candidate Routes (/candidate/*) ───────────────── */}
         <Route element={<AuthGuard />}>
           <Route element={<RoleGuard allowedRoles={["candidate"]} />}>
-            <Route path="/candidate/*" element={<CandidateLayout />} />
+            <Route path="/candidate" element={<CandidateLayout />}>
+              <Route index element={<CandidateProfilePage />} />
+              <Route path="profile" element={<CandidateProfilePage />} />
+              <Route path="cv" element={<CandidateProfilePage />} />
+              <Route path="*" element={<Navigate to="/candidate/profile" replace />} />
+            </Route>
           </Route>
         </Route>
 

@@ -1,0 +1,6 @@
+Uzair Mohammad
+Software Engineer
+Email: programmeruzair@gmail.com
+Education: Bachelor of Science in Computer Science from King Fahd University of Petroleum and Minerals
+Experience: 4 years of experience building modern web applications with React, TypeScript, Python, Flask, Docker.
+Skills: React, TypeScript, Python, Node.js, FastApi, SQL, Git, Linux, ATS Optimization, REST APIs.

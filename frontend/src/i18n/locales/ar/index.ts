@@ -11,6 +11,7 @@ import { teams } from "@/i18n/namespaces/teams"
 import { about } from "@/i18n/namespaces/about"
 import { contact } from "@/i18n/namespaces/contact"
 import { publicAr } from "@/i18n/namespaces/public"
+import { candidateAr } from "@/i18n/namespaces/candidate"
 
 export const arLocale = {
   common,
@@ -21,4 +22,5 @@ export const arLocale = {
   about,
   contact,
   public: publicAr,
+  candidate: candidateAr,
 }

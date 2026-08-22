@@ -30,7 +30,6 @@ export function Login() {
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const fromPath = (location.state as { from?: string })?.from || ROUTES.PUBLIC.HOME
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -52,7 +51,31 @@ export function Login() {
     try {
       const res = await authService.login({ email: email.trim(), password })
       loginStore(res.user, res.token)
-      navigate(fromPath, { replace: true })
+
+      // Determine proper role-based redirect target
+      const rawFrom = (location.state as { from?: string })?.from
+      let targetPath: string = ROUTES.CANDIDATE.PROFILE
+
+      if (res.user.role === "company") {
+        targetPath = ROUTES.COMPANY.DASHBOARD
+      } else if (res.user.role === "admin") {
+        targetPath = ROUTES.ADMIN.ROOT
+      } else {
+        targetPath = ROUTES.CANDIDATE.PROFILE
+      }
+
+      // If user came from a specific valid role-protected route, preserve it
+      if (rawFrom && rawFrom !== "/" && !rawFrom.startsWith("/auth") && rawFrom !== "/login" && rawFrom !== "/register") {
+        if (res.user.role === "candidate" && (rawFrom.startsWith("/candidate") || rawFrom.startsWith("/jobs") || rawFrom.startsWith("/applyjob"))) {
+          targetPath = rawFrom
+        } else if (res.user.role === "company" && rawFrom.startsWith("/company")) {
+          targetPath = rawFrom
+        } else if (res.user.role === "admin" && rawFrom.startsWith("/admin")) {
+          targetPath = rawFrom
+        }
+      }
+
+      navigate(targetPath, { replace: true })
     } catch (err: any) {
       setErrorMessage(err.message || t("auth.errors.generic"))
     } finally {

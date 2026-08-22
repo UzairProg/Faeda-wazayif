@@ -19,13 +19,13 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       token: null,
       isAuthenticated: false,
-      isCheckingSession: false,
+      isCheckingSession: true,
 
-      login: (user, token) => set({ user, token, isAuthenticated: true }),
+      login: (user, token) => set({ user, token, isAuthenticated: true, isCheckingSession: false }),
 
       logout: async () => {
         await authService.logout()
-        set({ user: null, token: null, isAuthenticated: false })
+        set({ user: null, token: null, isAuthenticated: false, isCheckingSession: false })
       },
 
       checkSession: async () => {
@@ -35,8 +35,10 @@ export const useAuthStore = create<AuthStore>()(
           if (restoredUser) {
             set({ user: restoredUser, token: "cookie-session-active", isAuthenticated: true })
           } else {
-            // Keep local state if available or clear if invalid
+            set({ user: null, token: null, isAuthenticated: false })
           }
+        } catch {
+          set({ user: null, token: null, isAuthenticated: false })
         } finally {
           set({ isCheckingSession: false })
         }

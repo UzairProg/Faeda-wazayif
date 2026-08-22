@@ -5,8 +5,10 @@
  * Uses clean, modern SaaS terminology.
  */
 import { publicEn } from "@/i18n/namespaces/public"
+import { candidateEn } from "@/i18n/namespaces/candidate"
 
 export const enLocale = {
+  candidate: candidateEn,
   common: {
     actions: {
       save: "Save",

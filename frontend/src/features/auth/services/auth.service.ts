@@ -5,50 +5,46 @@ class AuthService {
 
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const formData = new URLSearchParams()
-      formData.append("email", credentials.email.trim())
-      formData.append("password", credentials.password)
-
       const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Accept: "text/html,application/xhtml+xml,application/xml,application/json",
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        body: formData.toString(),
+        body: JSON.stringify({
+          email: credentials.email.trim(),
+          password: credentials.password,
+        }),
         credentials: "include",
       })
 
-      const responseText = await response.text()
+      const responseData = await response.json().catch(() => null)
 
-      // Flask renders login template again on error (indicated by error = True or error flash)
-      if (responseText.includes("error = True") || responseText.includes("بيانات الدخول غير صحيحة") || responseText.includes("خطأ في كلمة المرور")) {
-        throw new Error("بيانات الدخول غير صحيحة. يرجى التأكد من البريد الإلكتروني وكلمة المرور.")
+      if (!response.ok) {
+        const msg =
+          responseData?.message ||
+          "بيانات الدخول غير صحيحة. يرجى التأكد من البريد الإلكتروني وكلمة المرور."
+        throw new Error(msg)
       }
 
-      if (responseText.includes("حسابك معطّل") || responseText.includes("suspended")) {
-        throw new Error("حسابك معطل أو موقوف مؤقتاً. يرجى التواصل مع الإدارة.")
-      }
-
-      // Check active session via session check helper
+      // Verify and restore full canonical session
       const restoredUser = await this.checkSession()
-      if (restoredUser) {
-        return {
-          user: restoredUser,
-          token: "cookie-session-active",
-          message: "تم تسجيل الدخول بنجاح",
-        }
-      }
+      const finalUser: AuthUser = restoredUser || (responseData?.user
+        ? {
+            id: String(responseData.user.id || responseData.user.user_id),
+            email: responseData.user.email,
+            role: responseData.role || responseData.user.role || "candidate",
+            name: responseData.user.name || responseData.user.fullname || "",
+          }
+        : {
+            id: credentials.email,
+            email: credentials.email,
+            role: "candidate",
+            name: credentials.email.split("@")[0],
+          })
 
-      // Fallback user construction from email
-      const inferredRole = credentials.email.includes("company") ? "company" : credentials.email.includes("admin") ? "admin" : "candidate"
       return {
-        user: {
-          id: credentials.email,
-          email: credentials.email,
-          role: inferredRole,
-          name: credentials.email.split("@")[0],
-        },
+        user: finalUser,
         token: "cookie-session-active",
         message: "تم تسجيل الدخول بنجاح",
       }
@@ -194,6 +190,28 @@ class AuthService {
 
   async checkSession(): Promise<AuthUser | null> {
     try {
+      // First try the clean REST API endpoint
+      const meResponse = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.ME}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+        credentials: "include",
+      })
+
+      if (meResponse.ok) {
+        const meData = await meResponse.json()
+        if (meData.authenticated && meData.user) {
+          return {
+            id: String(meData.user.id || meData.user.user_id),
+            email: meData.user.email || "",
+            role: meData.role,
+            name: meData.user.name || meData.user.fullname || "",
+          }
+        }
+      }
+
+      // Fallback check via redirects route
       const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REDIRECTS}`, {
         method: "GET",
         headers: {
