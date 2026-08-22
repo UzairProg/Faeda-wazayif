@@ -1847,8 +1847,9 @@ def api_update_candidate_skills():
     if not isinstance(skills_list, list):
         return jsonify({"message": "تنسيق المهارات غير صحيح"}), 400
 
-    # Delete existing skills for this candidate
-    Skills.query.filter_by(customer_id=cust.id).delete()
+    # Remove existing skills via session to keep relationships in sync
+    for s in list(cust.skills or []):
+        db.session.delete(s)
 
     # Deduplicate & add
     seen = set()
@@ -1862,6 +1863,7 @@ def api_update_candidate_skills():
     try:
         log_profile_update(cust, 'تحديث المهارات المهنية')
         db.session.commit()
+        db.session.refresh(cust)
         return jsonify(cust.to_candidate_profile_dict())
     except Exception as e:
         db.session.rollback()
@@ -1970,6 +1972,7 @@ def api_save_candidate_project():
     try:
         log_profile_update(cust, 'تحديث المشاريع')
         db.session.commit()
+        db.session.refresh(cust)
         return jsonify(cust.to_candidate_profile_dict())
     except Exception as e:
         db.session.rollback()
@@ -1994,6 +1997,7 @@ def api_delete_candidate_project(project_id):
         db.session.delete(proj)
         log_profile_update(cust, 'حذف مشروع')
         db.session.commit()
+        db.session.refresh(cust)
         return jsonify(cust.to_candidate_profile_dict())
     except Exception as e:
         db.session.rollback()
@@ -2064,6 +2068,7 @@ def api_save_candidate_certification():
 
         log_profile_update(cust, 'تحديث الشهادات المهنية')
         db.session.commit()
+        db.session.refresh(cust)
         return jsonify(cust.to_candidate_profile_dict())
     except Exception as e:
         db.session.rollback()
@@ -2092,6 +2097,7 @@ def api_delete_candidate_certification(cert_id):
         cust.certifications = _json.dumps(all_certs) if all_certs else None
         log_profile_update(cust, 'حذف شهادة مهنية')
         db.session.commit()
+        db.session.refresh(cust)
         return jsonify(cust.to_candidate_profile_dict())
     except Exception as e:
         db.session.rollback()

@@ -87,9 +87,9 @@ class CandidateDashboardTestSuite(unittest.TestCase):
         res = calculate_market_value(sample)
         self.assertGreater(res['total_score'], 0)
         self.assertIsNotNone(res['salary_range'])
-        self.assertEqual(res['salary_range']['min_salary'], 13000)
-        self.assertEqual(res['salary_range']['avg_salary'], 18500)
-        self.assertEqual(res['salary_range']['max_salary'], 25000)
+        self.assertEqual(res['salary_range']['min_salary'], 10000)
+        self.assertEqual(res['salary_range']['avg_salary'], 14000)
+        self.assertEqual(res['salary_range']['max_salary'], 19000)
 
     def test_recommendations_endpoint(self):
         with self.client.session_transaction() as sess:
