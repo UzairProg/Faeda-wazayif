@@ -32,24 +32,18 @@ import { cn } from "@/lib/utils"
 
 function ApplyGate({ jobId }: { jobId: string }) {
   const { isAuthenticated } = useAuthStore()
-  const { t, language } = useTranslation()
+  const { t } = useTranslation()
 
   if (isAuthenticated) {
     return (
       <Button
+        asChild
         size="lg"
         className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white font-bold shadow-lg shadow-primary/20 h-12"
-        onClick={() => {
-          alert(
-            language === "en"
-              ? "Application feature is being prepared. It will be enabled soon."
-              : language === "hi"
-              ? "आवेदन सुविधा तैयार की जा रही है। इसे जल्द ही सक्षम किया जाएगा।"
-              : "خاصية التقديم قيد الإعداد. سيتم تفعيلها قريباً."
-          )
-        }}
       >
-        {t("jobs.detail.applyNow")}
+        <Link to={`/candidate/jobs/${jobId}`}>
+          {t("jobs.detail.applyNow")}
+        </Link>
       </Button>
     )
   }

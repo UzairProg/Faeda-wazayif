@@ -900,29 +900,35 @@ def api_university_get_opportunities():
         jobs_q = jobs_q.filter(
             or_(
                 Jobs.title.ilike(f"%{q_str}%"),
-                Jobs.description.ilike(f"%{q_str}%"),
-                Jobs.skills_req.ilike(f"%{q_str}%")
+                Jobs.job_description.ilike(f"%{q_str}%"),
+                Jobs.required_skills.ilike(f"%{q_str}%"),
+                Jobs.specialization.ilike(f"%{q_str}%")
             )
         )
 
     if work_type:
-        jobs_q = jobs_q.filter(Jobs.work_type.ilike(f"%{work_type}%"))
+        jobs_q = jobs_q.filter(Jobs.job_type.ilike(f"%{work_type}%"))
 
     jobs = jobs_q.order_by(desc(Jobs.date_posted)).limit(30).all()
 
     items = []
     for j in jobs:
         comp = Company.query.get(j.company_id) if j.company_id else None
+        company_name = (comp.company_arabic_name or comp.company_english_name) if comp else "شركة معتمدة"
+        company_logo = comp.company_logo if comp else None
+        skills = [s.strip() for s in (j.required_skills or '').split(',') if s.strip()]
+        salary_str = f"{j.salary_min or 8000:,} - {j.salary_max or 18000:,} ر.س" if j.salary_min else "غير معلن"
+
         items.append({
             "id": j.id,
             "title": j.title,
-            "company_name": comp.company_english_name if comp else (j.company_name or "شركة معتمدة"),
-            "company_logo": comp.company_logo if comp else None,
-            "location": j.location or "المملكة العربية السعودية",
-            "work_type": j.work_type or "دوام كامل",
-            "experience_level": j.experience_level or "مبتدئ / متوسط",
-            "salary_range": f"{j.salary_min or 8000} - {j.salary_max or 18000} ر.س" if j.salary_min else "غير محدد",
-            "skills": [s.strip() for s in (j.skills_req or '').split(',') if s.strip()],
+            "company_name": company_name,
+            "company_logo": company_logo,
+            "location": j.town or (comp.state if comp else "المملكة العربية السعودية"),
+            "work_type": j.job_type or "دوام كامل",
+            "experience_level": j.skills_years or "مبتدئ / متوسط",
+            "salary_range": salary_str,
+            "skills": skills,
             "date_posted": j.date_posted.isoformat() if j.date_posted else None
         })
 

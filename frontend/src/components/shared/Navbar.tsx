@@ -173,18 +173,22 @@ export function Navbar() {
                   to={
                     user.role === "company"
                       ? ROUTES.COMPANY.DASHBOARD
+                      : user.role === "university"
+                      ? ROUTES.UNIVERSITY.DASHBOARD
                       : user.role === "admin"
                       ? ROUTES.ADMIN.ROOT
-                      : ROUTES.CANDIDATE.PROFILE
+                      : ROUTES.CANDIDATE.DASHBOARD
                   }
                 >
                   <User className="h-3.5 w-3.5 me-1.5" />
                   <span>
                     {user.role === "company"
-                      ? "لوحة الشركة"
+                      ? language === "en" ? "Company Dashboard" : "لوحة الشركة"
+                      : user.role === "university"
+                      ? language === "en" ? "University Portal" : "بوابة الجامعة"
                       : user.role === "admin"
-                      ? "لوحة الإدارة"
-                      : "مساحة المرشح"}
+                      ? language === "en" ? "Admin Console" : "لوحة الإدارة"
+                      : language === "en" ? "Candidate Dashboard" : "مساحة المرشح"}
                   </span>
                 </Link>
               </Button>
@@ -289,18 +293,22 @@ export function Navbar() {
                       to={
                         user.role === "company"
                           ? ROUTES.COMPANY.DASHBOARD
+                          : user.role === "university"
+                          ? ROUTES.UNIVERSITY.DASHBOARD
                           : user.role === "admin"
                           ? ROUTES.ADMIN.ROOT
-                          : ROUTES.CANDIDATE.PROFILE
+                          : ROUTES.CANDIDATE.DASHBOARD
                       }
                       onClick={() => setIsOpen(false)}
                     >
                       <User className="h-4 w-4 me-2" />
                       {user.role === "company"
-                        ? "لوحة الشركة"
+                        ? language === "en" ? "Company Dashboard" : "لوحة الشركة"
+                        : user.role === "university"
+                        ? language === "en" ? "University Portal" : "بوابة الجامعة"
                         : user.role === "admin"
-                        ? "لوحة الإدارة"
-                        : "مساحة المرشح"}
+                        ? language === "en" ? "Admin Console" : "لوحة الإدارة"
+                        : language === "en" ? "Candidate Dashboard" : "مساحة المرشح"}
                     </Link>
                   </Button>
 

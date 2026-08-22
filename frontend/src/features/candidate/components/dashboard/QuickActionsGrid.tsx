@@ -37,7 +37,7 @@ export function QuickActionsGrid() {
       isLive: true,
     },
     {
-      to: ROUTES.CANDIDATE.PROFILE,
+      to: `${ROUTES.CANDIDATE.PROFILE}?section=cv`,
       icon: FileText,
       title: t("candidate.dashboard.quickActions.cvHub"),
       desc: t("candidate.dashboard.quickActions.cvHubDesc"),

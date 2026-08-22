@@ -1,7 +1,8 @@
 /**
  * CandidateProfilePage.tsx — Master Candidate Professional Identity & Onboarding Page.
  */
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "react-router-dom"
 import { useCandidateProfile } from "../hooks/useCandidateProfile"
 import { CandidateProfileHeader } from "../components/CandidateProfileHeader"
 import { ProfileCompletionCard } from "../components/ProfileCompletionCard"
@@ -20,6 +21,7 @@ import { ErrorState } from "@/shared/components/states/ErrorState"
 
 export function CandidateProfilePage() {
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false)
+  const [searchParams] = useSearchParams()
 
   const {
     profile,
@@ -40,6 +42,22 @@ export function CandidateProfilePage() {
     updateVisibility,
     uploadCV,
   } = useCandidateProfile()
+
+  useEffect(() => {
+    const sectionParam = searchParams.get("section")
+    if (sectionParam) {
+      if (sectionParam === "onboarding") {
+        setIsOnboardingOpen(true)
+      } else {
+        const elem = document.getElementById(`${sectionParam}-section`)
+        if (elem) {
+          setTimeout(() => {
+            elem.scrollIntoView({ behavior: "smooth", block: "center" })
+          }, 200)
+        }
+      }
+    }
+  }, [searchParams])
 
   if (isLoading) {
     return (
@@ -78,6 +96,36 @@ export function CandidateProfilePage() {
         if (cvElem) cvElem.scrollIntoView({ behavior: "smooth" })
         break
       }
+      case "skills": {
+        const skillsElem = document.getElementById("skills-section")
+        if (skillsElem) skillsElem.scrollIntoView({ behavior: "smooth" })
+        break
+      }
+      case "education": {
+        const eduElem = document.getElementById("education-section")
+        if (eduElem) eduElem.scrollIntoView({ behavior: "smooth" })
+        break
+      }
+      case "experience": {
+        const expElem = document.getElementById("experience-section")
+        if (expElem) expElem.scrollIntoView({ behavior: "smooth" })
+        break
+      }
+      case "projects": {
+        const projElem = document.getElementById("projects-section")
+        if (projElem) projElem.scrollIntoView({ behavior: "smooth" })
+        break
+      }
+      case "certifications": {
+        const certElem = document.getElementById("certifications-section")
+        if (certElem) certElem.scrollIntoView({ behavior: "smooth" })
+        break
+      }
+      case "preferences": {
+        const prefElem = document.getElementById("preferences-section")
+        if (prefElem) prefElem.scrollIntoView({ behavior: "smooth" })
+        break
+      }
       default:
         setIsOnboardingOpen(true)
         break
@@ -100,60 +148,78 @@ export function CandidateProfilePage() {
       />
 
       {/* 3. About / Summary */}
-      <AboutSection
-        profile={profile}
-        onUpdate={updateAbout.mutateAsync}
-      />
-
-      {/* 4. Skills Tag Cloud */}
-      <SkillsSection
-        profile={profile}
-        onUpdate={updateSkills.mutateAsync}
-      />
-
-      {/* 5. Experience & Education in a 2-Column Responsive Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ExperienceSection
+      <div id="about-section">
+        <AboutSection
           profile={profile}
-          onUpdate={updateExperience.mutateAsync}
-        />
-        <EducationSection
-          profile={profile}
-          onUpdate={updateEducation.mutateAsync}
+          onUpdate={updateAbout.mutateAsync}
         />
       </div>
 
+      {/* 4. Skills Tag Cloud */}
+      <div id="skills-section">
+        <SkillsSection
+          profile={profile}
+          onUpdate={updateSkills.mutateAsync}
+        />
+      </div>
+
+      {/* 5. Experience & Education in a 2-Column Responsive Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div id="experience-section">
+          <ExperienceSection
+            profile={profile}
+            onUpdate={updateExperience.mutateAsync}
+          />
+        </div>
+        <div id="education-section">
+          <EducationSection
+            profile={profile}
+            onUpdate={updateEducation.mutateAsync}
+          />
+        </div>
+      </div>
+
       {/* 6. CV & ATS Readiness */}
-      <CVSection
-        profile={profile}
-        onUploadCV={uploadCV.mutateAsync}
-      />
+      <div id="cv-section">
+        <CVSection
+          profile={profile}
+          onUploadCV={uploadCV.mutateAsync}
+        />
+      </div>
 
       {/* 7. Featured Projects */}
-      <ProjectsSection
-        profile={profile}
-        onSaveProject={saveProject.mutateAsync}
-        onDeleteProject={deleteProject.mutateAsync}
-      />
+      <div id="projects-section">
+        <ProjectsSection
+          profile={profile}
+          onSaveProject={saveProject.mutateAsync}
+          onDeleteProject={deleteProject.mutateAsync}
+        />
+      </div>
 
       {/* 8. Certifications & Credentials */}
-      <CertificationsSection
-        profile={profile}
-        onSaveCertification={saveCertification.mutateAsync}
-        onDeleteCertification={deleteCertification.mutateAsync}
-      />
+      <div id="certifications-section">
+        <CertificationsSection
+          profile={profile}
+          onSaveCertification={saveCertification.mutateAsync}
+          onDeleteCertification={deleteCertification.mutateAsync}
+        />
+      </div>
 
       {/* 9. Work Preferences */}
-      <WorkPreferencesSection
-        profile={profile}
-        onUpdate={updatePreferences.mutateAsync}
-      />
+      <div id="preferences-section">
+        <WorkPreferencesSection
+          profile={profile}
+          onUpdate={updatePreferences.mutateAsync}
+        />
+      </div>
 
       {/* 10. Privacy & Visibility Controls */}
-      <VisibilitySection
-        profile={profile}
-        onUpdateVisibility={updateVisibility.mutateAsync}
-      />
+      <div id="visibility-section">
+        <VisibilitySection
+          profile={profile}
+          onUpdateVisibility={updateVisibility.mutateAsync}
+        />
+      </div>
 
       {/* Progressive Multi-Step Onboarding Modal */}
       <OnboardingWizardModal

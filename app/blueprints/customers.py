@@ -2342,7 +2342,7 @@ def build_candidate_dashboard_dict(cust):
             "desc_en": "Upload your resume to activate ATS readiness and fast-track applications.",
             "action_label_ar": "رفع السيرة الذاتية",
             "action_label_en": "Upload CV",
-            "action_url": "/candidate/profile",
+            "action_url": "/candidate/profile?section=cv",
             "section": "cv",
             "priority": "urgent",
             "type": "cv"
@@ -2356,7 +2356,7 @@ def build_candidate_dashboard_dict(cust):
             "desc_en": "Add your core and technical skills to help match you with opportunities.",
             "action_label_ar": "إضافة مهارات",
             "action_label_en": "Add Skills",
-            "action_url": "/candidate/profile",
+            "action_url": "/candidate/profile?section=skills",
             "section": "skills",
             "priority": "high",
             "type": "skills"
@@ -2370,7 +2370,7 @@ def build_candidate_dashboard_dict(cust):
             "desc_en": "Practical projects prove your execution ability and give employers confidence.",
             "action_label_ar": "إضافة مشروع",
             "action_label_en": "Add Project",
-            "action_url": "/candidate/profile",
+            "action_url": "/candidate/profile?section=projects",
             "section": "projects",
             "priority": "medium",
             "type": "projects"
@@ -2384,7 +2384,7 @@ def build_candidate_dashboard_dict(cust):
             "desc_en": "Add degree, university and GPA to complete academic verification.",
             "action_label_ar": "تعديل المؤهلات",
             "action_label_en": "Edit Education",
-            "action_url": "/candidate/profile",
+            "action_url": "/candidate/profile?section=education",
             "section": "education",
             "priority": "medium",
             "type": "education"
@@ -2398,7 +2398,7 @@ def build_candidate_dashboard_dict(cust):
             "desc_en": "Specify years of experience and field to benchmark your market value.",
             "action_label_ar": "تعديل الخبرة",
             "action_label_en": "Edit Experience",
-            "action_url": "/candidate/profile",
+            "action_url": "/candidate/profile?section=experience",
             "section": "experience",
             "priority": "medium",
             "type": "experience"
@@ -2412,7 +2412,7 @@ def build_candidate_dashboard_dict(cust):
             "desc_en": "Set your preferred work style, job type, and target salary.",
             "action_label_ar": "تعديل التفضيلات",
             "action_label_en": "Edit Preferences",
-            "action_url": "/candidate/profile",
+            "action_url": "/candidate/profile?section=preferences",
             "section": "preferences",
             "priority": "low",
             "type": "preferences"
@@ -2428,7 +2428,7 @@ def build_candidate_dashboard_dict(cust):
             "desc_en": "Discover active opportunities in the Saudi market matching your background.",
             "action_label_ar": "تصفح الوظائف",
             "action_label_en": "Browse Jobs",
-            "action_url": "/jobs",
+            "action_url": "/candidate/opportunities",
             "section": "jobs",
             "priority": "low",
             "type": "jobs"
