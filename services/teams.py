@@ -90,3 +90,20 @@ class Teams(db.Model):
         query = db.session.query(team_members_association.c.member_id).filter_by(team_id=team_id, status = 'منضم').all()
         member_ids = [result[0] for result in query]
         return member_ids
+
+
+class TeamInvitation(db.Model):
+    __tablename__ = 'team_invitations'
+    id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id', ondelete='CASCADE'), nullable=False)
+    candidate_id = db.Column(db.Integer, db.ForeignKey('customers.id', ondelete='CASCADE'), nullable=False)
+    invited_by_id = db.Column(db.Integer, db.ForeignKey('customers.id', ondelete='CASCADE'), nullable=False)
+    status = db.Column(db.String(20), default='pending')  # 'pending', 'accepted', 'rejected', 'cancelled'
+    message = db.Column(db.String(255), nullable=True)
+    role = db.Column(db.String(100), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    responded_at = db.Column(db.DateTime, nullable=True)
+
+    team = db.relationship('Teams', backref=db.backref('invitations', lazy=True, cascade='all, delete-orphan'))
+    candidate = db.relationship('Customers', foreign_keys=[candidate_id], backref=db.backref('received_team_invitations', lazy=True))
+    invited_by = db.relationship('Customers', foreign_keys=[invited_by_id], backref=db.backref('sent_team_invitations', lazy=True))

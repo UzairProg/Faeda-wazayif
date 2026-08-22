@@ -6,9 +6,11 @@
  */
 import { publicEn } from "@/i18n/namespaces/public"
 import { candidateEn } from "@/i18n/namespaces/candidate"
+import { universityEn } from "@/i18n/namespaces/university"
 
 export const enLocale = {
   candidate: candidateEn,
+  university: universityEn,
   common: {
     actions: {
       save: "Save",

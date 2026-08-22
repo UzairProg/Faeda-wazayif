@@ -12,11 +12,10 @@ import { useTranslation } from "@/i18n"
 import {
   User,
   LayoutDashboard,
-  FileText,
   Briefcase,
   Bookmark,
+  Compass,
   Users,
-  TrendingUp,
   Settings,
   LogOut,
   Menu,
@@ -41,46 +40,46 @@ export function CandidateLayout() {
 
   const navItems = [
     {
+      to: ROUTES.CANDIDATE.ROOT,
+      icon: LayoutDashboard,
+      label: t("candidate.shell.nav.overview"),
+      isPrimary: true,
+      end: true,
+    },
+    {
       to: ROUTES.CANDIDATE.PROFILE,
       icon: User,
       label: t("candidate.shell.nav.profile"),
       isPrimary: true,
+      end: false,
     },
     {
-      to: ROUTES.CANDIDATE.DASHBOARD,
-      icon: LayoutDashboard,
-      label: t("candidate.shell.nav.overview"),
-      isUpcoming: true,
-    },
-    {
-      to: ROUTES.CANDIDATE.CV,
-      icon: FileText,
-      label: t("candidate.profile.cv.title"),
-      isDirectSection: true,
+      to: ROUTES.CANDIDATE.JOBS,
+      icon: Compass,
+      label: isRTL ? "استكشاف الفرص" : "Explore Jobs",
+      isPrimary: true,
+      end: false,
     },
     {
       to: ROUTES.CANDIDATE.APPLICATIONS,
       icon: Briefcase,
       label: t("candidate.shell.nav.applications"),
-      isUpcoming: true,
+      isPrimary: true,
+      end: false,
     },
     {
-      to: ROUTES.CANDIDATE.JOBS,
+      to: ROUTES.CANDIDATE.SAVED_JOBS,
       icon: Bookmark,
       label: t("candidate.shell.nav.savedJobs"),
-      isUpcoming: true,
+      isPrimary: true,
+      end: false,
     },
     {
       to: ROUTES.CANDIDATE.TEAMS,
       icon: Users,
       label: t("candidate.shell.nav.teams"),
-      isUpcoming: true,
-    },
-    {
-      to: ROUTES.CANDIDATE.MARKET_VALUE,
-      icon: TrendingUp,
-      label: t("candidate.shell.nav.opportunities"),
-      isUpcoming: true,
+      isPrimary: true,
+      end: false,
     },
     {
       to: ROUTES.CANDIDATE.SETTINGS,
@@ -209,7 +208,7 @@ export function CandidateLayout() {
                   <NavLink
                     key={item.to}
                     to={item.to}
-                    end={item.to === ROUTES.CANDIDATE.PROFILE}
+                    end={Boolean(item.end)}
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                         isActive
@@ -293,7 +292,7 @@ export function CandidateLayout() {
                     <NavLink
                       key={item.to}
                       to={item.to}
-                      end={item.to === ROUTES.CANDIDATE.PROFILE}
+                      end={Boolean(item.end)}
                       onClick={() => setMobileOpen(false)}
                       className={({ isActive }) =>
                         `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${

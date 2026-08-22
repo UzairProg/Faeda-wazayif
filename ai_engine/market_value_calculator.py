@@ -293,11 +293,11 @@ def score_gpa(gpa: Optional[str]) -> int:
     return 0
 
 
-def score_certifications(certifications: Optional[str]) -> int:
+def score_certifications(certifications: Optional[Any]) -> int:
     """Score the user's professional certifications.
 
     Args:
-        certifications: JSON string or comma-separated list of certifications.
+        certifications: List of cert strings, JSON string, or comma-separated string.
 
     Returns:
         int: Points for certifications (0-15).
@@ -305,7 +305,11 @@ def score_certifications(certifications: Optional[str]) -> int:
     if not certifications:
         return 0
 
-    cleaned = certifications.strip()
+    if isinstance(certifications, list):
+        meaningful = [str(c).strip() for c in certifications if str(c).strip().lower() not in ("none", "null", "nan", "")]
+        return min(len(meaningful), 3) * 5
+
+    cleaned = str(certifications).strip()
     if cleaned.lower() in ("none", "null", "nan", "[]", '["none"]', '["None"]'):
         return 0
 
@@ -610,12 +614,16 @@ def get_market_value_for_customer(customer_row: Any) -> Dict[str, Any]:
         profile = customer_row
     else:
         # SQLAlchemy model instance — extract attributes
+        certs = getattr(customer_row, "certifications", None)
+        if not certs and hasattr(customer_row, "certifications_list") and customer_row.certifications_list:
+            certs = [c.cert_name for c in customer_row.certifications_list if getattr(c, "cert_name", None)]
+
         profile = {
             "educational_qualification": getattr(customer_row, "educational_qualification", None),
             "university": getattr(customer_row, "university", None),
             "years_of_skills": getattr(customer_row, "years_of_skills", None),
             "gpa": getattr(customer_row, "gpa", None),
-            "certifications": getattr(customer_row, "certifications", None),
+            "certifications": certs,
             "preferred_field_of_work": getattr(customer_row, "preferred_field_of_work", None),
         }
 

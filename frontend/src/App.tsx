@@ -17,8 +17,30 @@ import { ROUTES } from "./config/routes"
 // Layouts
 import { PublicLayout } from "./layouts/MainLayout"
 import { CandidateLayout } from "./features/candidate/layouts/CandidateLayout"
+import { CandidateDashboardPage } from "./features/candidate/pages/CandidateDashboardPage"
 import { CandidateProfilePage } from "./features/candidate/pages/CandidateProfilePage"
+import { CandidateJobsPage } from "./features/candidate/pages/CandidateJobsPage"
+import { CandidateJobDetailPage } from "./features/candidate/pages/CandidateJobDetailPage"
+import { CandidateApplicationsPage } from "./features/candidate/pages/CandidateApplicationsPage"
+import { CandidateApplicationDetailPage } from "./features/candidate/pages/CandidateApplicationDetailPage"
+import { CandidateSavedJobsPage } from "./features/candidate/pages/CandidateSavedJobsPage"
+import { CandidateTeamsPage } from "./features/candidate/pages/CandidateTeamsPage"
+import { CandidateTeamDetailPage } from "./features/candidate/pages/CandidateTeamDetailPage"
 import { CompanyLayout } from "./features/company/layouts/CompanyLayout"
+import { CompanyDashboardPage } from "./features/company/pages/CompanyDashboardPage"
+import { CompanyProfilePage } from "./features/company/pages/CompanyProfilePage"
+import { CompanyJobsPage } from "./features/company/pages/CompanyJobsPage"
+import { CompanyApplicationsPage } from "./features/company/pages/CompanyApplicationsPage"
+import { CompanyTalentPage } from "./features/company/pages/CompanyTalentPage"
+import { CompanyTeamsPage } from "./features/company/pages/CompanyTeamsPage"
+import { UniversityLayout } from "./features/university/layouts/UniversityLayout"
+import { UniversityDashboardPage } from "./features/university/pages/UniversityDashboardPage"
+import { UniversityProfilePage } from "./features/university/pages/UniversityProfilePage"
+import { UniversityStudentsPage } from "./features/university/pages/UniversityStudentsPage"
+import { UniversityStudentDetailPage } from "./features/university/pages/UniversityStudentDetailPage"
+import { UniversityVerificationsPage } from "./features/university/pages/UniversityVerificationsPage"
+import { UniversityDepartmentsPage } from "./features/university/pages/UniversityDepartmentsPage"
+import { UniversityOpportunitiesPage } from "./features/university/pages/UniversityOpportunitiesPage"
 import { AdminLayout } from "./features/admin/layouts/AdminLayout"
 
 // Guards
@@ -108,10 +130,19 @@ function App() {
         <Route element={<AuthGuard />}>
           <Route element={<RoleGuard allowedRoles={["candidate"]} />}>
             <Route path="/candidate" element={<CandidateLayout />}>
-              <Route index element={<CandidateProfilePage />} />
+              <Route index element={<CandidateDashboardPage />} />
+              <Route path="dashboard" element={<CandidateDashboardPage />} />
               <Route path="profile" element={<CandidateProfilePage />} />
               <Route path="cv" element={<CandidateProfilePage />} />
-              <Route path="*" element={<Navigate to="/candidate/profile" replace />} />
+              <Route path="opportunities" element={<CandidateJobsPage />} />
+              <Route path="jobs" element={<CandidateJobsPage />} />
+              <Route path="jobs/:id" element={<CandidateJobDetailPage />} />
+              <Route path="applications" element={<CandidateApplicationsPage />} />
+              <Route path="applications/:id" element={<CandidateApplicationDetailPage />} />
+              <Route path="saved-jobs" element={<CandidateSavedJobsPage />} />
+              <Route path="teams" element={<CandidateTeamsPage />} />
+              <Route path="teams/:id" element={<CandidateTeamDetailPage />} />
+              <Route path="*" element={<Navigate to="/candidate" replace />} />
             </Route>
           </Route>
         </Route>
@@ -119,7 +150,35 @@ function App() {
         {/* ── Company Routes (/company/*) ────────────────────── */}
         <Route element={<AuthGuard />}>
           <Route element={<RoleGuard allowedRoles={["company"]} />}>
-            <Route path="/company/*" element={<CompanyLayout />} />
+            <Route path="/company" element={<CompanyLayout />}>
+              <Route index element={<CompanyDashboardPage />} />
+              <Route path="dashboard" element={<CompanyDashboardPage />} />
+              <Route path="profile" element={<CompanyProfilePage />} />
+              <Route path="jobs" element={<CompanyJobsPage />} />
+              <Route path="applications" element={<CompanyApplicationsPage />} />
+              <Route path="talent" element={<CompanyTalentPage />} />
+              <Route path="teams" element={<CompanyTeamsPage />} />
+              <Route path="settings" element={<CompanyProfilePage />} />
+              <Route path="*" element={<Navigate to="/company" replace />} />
+            </Route>
+          </Route>
+        </Route>
+
+        {/* ── University Routes (/university/*) ────────────────── */}
+        <Route element={<AuthGuard />}>
+          <Route element={<RoleGuard allowedRoles={["university"]} />}>
+            <Route path="/university" element={<UniversityLayout />}>
+              <Route index element={<UniversityDashboardPage />} />
+              <Route path="dashboard" element={<UniversityDashboardPage />} />
+              <Route path="profile" element={<UniversityProfilePage />} />
+              <Route path="students" element={<UniversityStudentsPage />} />
+              <Route path="students/:id" element={<UniversityStudentDetailPage />} />
+              <Route path="verifications" element={<UniversityVerificationsPage />} />
+              <Route path="departments" element={<UniversityDepartmentsPage />} />
+              <Route path="opportunities" element={<UniversityOpportunitiesPage />} />
+              <Route path="settings" element={<UniversityProfilePage />} />
+              <Route path="*" element={<Navigate to="/university" replace />} />
+            </Route>
           </Route>
         </Route>
 

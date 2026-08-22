@@ -1,5 +1,5 @@
-export type AuthRole = "candidate" | "company" | "admin"
-export type RegisterRole = "candidate" | "company"
+export type AuthRole = "candidate" | "company" | "university" | "admin"
+export type RegisterRole = "candidate" | "company" | "university"
 
 export interface LoginCredentials {
   email: string

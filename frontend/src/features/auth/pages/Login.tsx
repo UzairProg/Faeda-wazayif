@@ -58,6 +58,8 @@ export function Login() {
 
       if (res.user.role === "company") {
         targetPath = ROUTES.COMPANY.DASHBOARD
+      } else if (res.user.role === "university") {
+        targetPath = ROUTES.UNIVERSITY.DASHBOARD
       } else if (res.user.role === "admin") {
         targetPath = ROUTES.ADMIN.ROOT
       } else {
@@ -69,6 +71,8 @@ export function Login() {
         if (res.user.role === "candidate" && (rawFrom.startsWith("/candidate") || rawFrom.startsWith("/jobs") || rawFrom.startsWith("/applyjob"))) {
           targetPath = rawFrom
         } else if (res.user.role === "company" && rawFrom.startsWith("/company")) {
+          targetPath = rawFrom
+        } else if (res.user.role === "university" && rawFrom.startsWith("/university")) {
           targetPath = rawFrom
         } else if (res.user.role === "admin" && rawFrom.startsWith("/admin")) {
           targetPath = rawFrom

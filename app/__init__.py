@@ -51,6 +51,7 @@ def create_app():
         from services.subscription import SubscriptionPlan, Subscription, Payment
         from services.system_settings import SystemSetting
         from services.job_category import JobCategory
+        from services.university import University, UniversityDepartment, AcademicVerification
         
         # استيراد وتسجيل المسارات (Blueprints)
         from app.blueprints.core import core_bp
@@ -61,6 +62,7 @@ def create_app():
         from app.blueprints.admin import admin_bp
         from app.blueprints.chat import chat_bp
         from app.blueprints.company_panel import company_panel_bp
+        from app.blueprints.universities import university_bp
         
         app.register_blueprint(core_bp)
         app.register_blueprint(customer)
@@ -70,6 +72,7 @@ def create_app():
         app.register_blueprint(admin_bp)
         app.register_blueprint(chat_bp)
         app.register_blueprint(company_panel_bp)
+        app.register_blueprint(university_bp)
         
         from services.team_offer import TeamOffer
         db.create_all()

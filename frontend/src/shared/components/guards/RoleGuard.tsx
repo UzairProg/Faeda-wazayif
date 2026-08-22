@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { ROUTES } from "@/config/routes"
 
-type AllowedRole = "candidate" | "company" | "admin"
+type AllowedRole = "candidate" | "company" | "university" | "admin"
 
 interface RoleGuardProps {
   allowedRoles: AllowedRole[]

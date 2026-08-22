@@ -16,6 +16,8 @@ import type {
   UpdateVisibilityDTO,
 } from "../types/candidate.types"
 
+import { CANDIDATE_DASHBOARD_QUERY_KEY } from "./useCandidateDashboard"
+
 export const CANDIDATE_PROFILE_QUERY_KEY = ["candidate", "profile"]
 
 export function useCandidateProfile() {
@@ -28,91 +30,97 @@ export function useCandidateProfile() {
     retry: 1,
   })
 
+  const syncCache = (updated: CandidateProfile) => {
+    queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+    queryClient.invalidateQueries({ queryKey: CANDIDATE_DASHBOARD_QUERY_KEY })
+  }
+
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: CANDIDATE_PROFILE_QUERY_KEY })
+    queryClient.invalidateQueries({ queryKey: CANDIDATE_DASHBOARD_QUERY_KEY })
   }
 
   const updateIdentity = useMutation({
     mutationFn: (dto: UpdateIdentityDTO) => candidateService.updateIdentity(dto),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const updateAbout = useMutation({
     mutationFn: (dto: UpdateAboutDTO) => candidateService.updateAbout(dto),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const updateSkills = useMutation({
     mutationFn: (dto: UpdateSkillsDTO) => candidateService.updateSkills(dto),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const updateExperience = useMutation({
     mutationFn: (dto: UpdateExperienceDTO) => candidateService.updateExperience(dto),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const updateEducation = useMutation({
     mutationFn: (dto: UpdateEducationDTO) => candidateService.updateEducation(dto),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const saveProject = useMutation({
     mutationFn: (dto: SaveProjectDTO) => candidateService.saveProject(dto),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const deleteProject = useMutation({
     mutationFn: (projectId: number) => candidateService.deleteProject(projectId),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const saveCertification = useMutation({
     mutationFn: (dto: SaveCertificationDTO) => candidateService.saveCertification(dto),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const deleteCertification = useMutation({
     mutationFn: (certId: number) => candidateService.deleteCertification(certId),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const updatePreferences = useMutation({
     mutationFn: (dto: UpdatePreferencesDTO) => candidateService.updatePreferences(dto),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const updateVisibility = useMutation({
     mutationFn: (dto: UpdateVisibilityDTO) => candidateService.updateVisibility(dto),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 
   const uploadCV = useMutation({
     mutationFn: (file: File) => candidateService.uploadCV(file),
     onSuccess: (updated) => {
-      queryClient.setQueryData(CANDIDATE_PROFILE_QUERY_KEY, updated)
+      syncCache(updated)
     },
   })
 

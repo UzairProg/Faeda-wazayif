@@ -5,6 +5,13 @@ import axios from "axios"
 import { API_CONFIG } from "@/config/api"
 import type {
   CandidateProfile,
+  CandidateDashboardData,
+  RecommendedJobItem,
+  CandidateJobDetail,
+  CandidateJobsFilterParams,
+  CandidateJobsResponse,
+  CandidateApplicationDetail,
+  CandidateApplicationsResponse,
   UpdateIdentityDTO,
   UpdateAboutDTO,
   UpdateSkillsDTO,
@@ -14,6 +21,13 @@ import type {
   SaveCertificationDTO,
   UpdatePreferencesDTO,
   UpdateVisibilityDTO,
+  CandidateTeamsListResponse,
+  CandidateTeamDetail,
+  CreateTeamPayload,
+  UpdateTeamPayload,
+  InviteMemberPayload,
+  CandidateSearchResponse,
+  ReceivedInvitationItem,
 } from "../types/candidate.types"
 
 const apiClient = axios.create({
@@ -23,6 +37,20 @@ const apiClient = axios.create({
 })
 
 class CandidateService {
+  async getDashboard(): Promise<CandidateDashboardData> {
+    const { data } = await apiClient.get<CandidateDashboardData>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.DASHBOARD
+    )
+    return data
+  }
+
+  async getRecommendations(): Promise<RecommendedJobItem[]> {
+    const { data } = await apiClient.get<{ jobs: RecommendedJobItem[] }>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.RECOMMENDATIONS
+    )
+    return data.jobs || []
+  }
+
   async getProfile(): Promise<CandidateProfile> {
     const { data } = await apiClient.get<CandidateProfile>(
       API_CONFIG.ENDPOINTS.CANDIDATES.PROFILE
@@ -150,6 +178,166 @@ class CandidateService {
           "Content-Type": "multipart/form-data",
         },
       }
+    )
+    return data
+  }
+
+  // ── Section 3: Opportunities, Detail, Apply, Applications & Saved Jobs ──
+
+  async getCandidateJobs(params?: CandidateJobsFilterParams): Promise<CandidateJobsResponse> {
+    const { data } = await apiClient.get<CandidateJobsResponse>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.JOBS,
+      { params }
+    )
+    return data
+  }
+
+  async getCandidateJobDetail(id: string | number): Promise<CandidateJobDetail> {
+    const { data } = await apiClient.get<CandidateJobDetail>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.JOB_DETAIL(id)
+    )
+    return data
+  }
+
+  async applyToJob(id: string | number): Promise<{ success: boolean; message: string; application: any }> {
+    const { data } = await apiClient.post(
+      API_CONFIG.ENDPOINTS.CANDIDATES.JOB_APPLY(id)
+    )
+    return data
+  }
+
+  async saveJob(id: string | number): Promise<{ success: boolean; isSaved: boolean; message: string }> {
+    const { data } = await apiClient.post(
+      API_CONFIG.ENDPOINTS.CANDIDATES.JOB_SAVE(id)
+    )
+    return data
+  }
+
+  async unsaveJob(id: string | number): Promise<{ success: boolean; isSaved: boolean; message: string }> {
+    const { data } = await apiClient.delete(
+      API_CONFIG.ENDPOINTS.CANDIDATES.JOB_SAVE(id)
+    )
+    return data
+  }
+
+  async getApplications(params?: { status?: string; page?: number; page_size?: number }): Promise<CandidateApplicationsResponse> {
+    const { data } = await apiClient.get<CandidateApplicationsResponse>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.APPLICATIONS_LIST,
+      { params }
+    )
+    return data
+  }
+
+  async getApplicationDetail(id: string | number): Promise<CandidateApplicationDetail> {
+    const { data } = await apiClient.get<CandidateApplicationDetail>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.APPLICATION_DETAIL(id)
+    )
+    return data
+  }
+
+  async getSavedJobs(params?: { page?: number; page_size?: number }): Promise<CandidateJobsResponse> {
+    const { data } = await apiClient.get<CandidateJobsResponse>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.SAVED_JOBS,
+      { params }
+    )
+    return data
+  }
+
+  // ── Section 4: Candidate Teams, Capabilities, Invitations & Search ──────
+
+  async getTeams(): Promise<CandidateTeamsListResponse> {
+    const { data } = await apiClient.get<CandidateTeamsListResponse>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAMS
+    )
+    return data
+  }
+
+  async getTeamDetail(id: string | number): Promise<CandidateTeamDetail> {
+    const { data } = await apiClient.get<CandidateTeamDetail>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAM_DETAIL(id)
+    )
+    return data
+  }
+
+  async createTeam(payload: CreateTeamPayload): Promise<{ success: boolean; teamId: number; message: string; team: CandidateTeamDetail }> {
+    const { data } = await apiClient.post(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAMS,
+      payload
+    )
+    return data
+  }
+
+  async updateTeam(id: string | number, payload: UpdateTeamPayload): Promise<{ success: boolean; message: string; team: CandidateTeamDetail }> {
+    const { data } = await apiClient.put(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAM_UPDATE(id),
+      payload
+    )
+    return data
+  }
+
+  async deleteTeam(id: string | number): Promise<{ success: boolean; message: string }> {
+    const { data } = await apiClient.delete(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAM_DELETE(id)
+    )
+    return data
+  }
+
+  async leaveTeam(id: string | number): Promise<{ success: boolean; message: string }> {
+    const { data } = await apiClient.post(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAM_LEAVE(id)
+    )
+    return data
+  }
+
+  async removeTeamMember(teamId: string | number, memberUserId: string): Promise<{ success: boolean; message: string }> {
+    const { data } = await apiClient.delete(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAM_MEMBER_REMOVE(teamId, memberUserId)
+    )
+    return data
+  }
+
+  async searchCandidatesForTeams(params?: {
+    q?: string
+    skill?: string
+    field?: string
+    location?: string
+    team_id?: number
+    page?: number
+    page_size?: number
+  }): Promise<CandidateSearchResponse> {
+    const { data } = await apiClient.get<CandidateSearchResponse>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAM_CANDIDATES_SEARCH,
+      { params }
+    )
+    return data
+  }
+
+  async inviteCandidateToTeam(teamId: string | number, payload: InviteMemberPayload): Promise<{ success: boolean; invitationId: number; message: string }> {
+    const { data } = await apiClient.post(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAM_INVITE(teamId),
+      payload
+    )
+    return data
+  }
+
+  async getReceivedInvitations(): Promise<{ invitations: ReceivedInvitationItem[] }> {
+    const { data } = await apiClient.get<{ invitations: ReceivedInvitationItem[] }>(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAM_INVITATIONS
+    )
+    return data
+  }
+
+  async respondToInvitation(invId: number, action: "accept" | "reject"): Promise<{ success: boolean; action: string; message: string }> {
+    const { data } = await apiClient.post(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAM_INVITATION_RESPOND(invId),
+      { action }
+    )
+    return data
+  }
+
+  async cancelInvitation(invId: number): Promise<{ success: boolean; message: string }> {
+    const { data } = await apiClient.delete(
+      API_CONFIG.ENDPOINTS.CANDIDATES.TEAM_INVITATION_CANCEL(invId)
     )
     return data
   }

@@ -509,6 +509,15 @@ customer_jobs = db.Table(
     db.Column('timestamp', db.DateTime, default=datetime.utcnow)
 )
 
+customer_saved_jobs = db.Table(
+    'customer_saved_jobs', db.Model.metadata,
+    db.Column('id', db.Integer, primary_key=True),
+    db.Column('customer_id', db.Integer, db.ForeignKey('customers.id'), nullable=False),
+    db.Column('job_id', db.Integer, db.ForeignKey('jobs.id'), nullable=False),
+    db.Column('created_at', db.DateTime, default=datetime.utcnow),
+    db.UniqueConstraint('customer_id', 'job_id', name='uq_customer_job_saved')
+)
+
 class CustomerProfileHistory(db.Model):
     __tablename__ = 'customer_profile_history'
     id = db.Column(db.Integer, primary_key=True)
