@@ -1,0 +1,542 @@
+{% extends 'new_design/base.html' %}
+
+{% block title %}منصة فائدة | الأخبار{% endblock %}
+
+{% block extra_css %}
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        corePlugins: {
+            visibility: false
+        },
+        theme: {
+            extend: {
+                colors: {
+                    misk: {
+                        dark: '#232E4C',
+                        green: '#2CB884',
+                        light: '#F0F1F0',
+                        red: '#BF2A4A',
+                        yellow: '#F0BF56'
+                    }
+                }
+            }
+        }
+    }
+</script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+    /* Override base styles for this specific page */
+    .news-page-wrapper {
+        background-color: var(--bg-light); /* #F0F1F0 */
+        color: var(--primary-dark);
+        min-height: 100vh;
+        font-family: 'Almarai', sans-serif;
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="news-page-wrapper relative w-full text-right" dir="rtl">
+
+    <div class="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8 flex-1 overflow-hidden flex flex-col pt-10">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start h-full">
+            
+            <!-- Main Feed Column -->
+            <div class="lg:col-span-8 flex flex-col gap-6 h-full pb-20 pl-1">
+                
+                <!-- Search -->
+                <div class="relative w-full group transition-all" id="search-container">
+                    <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none">
+                        <i data-lucide="search" class="text-gray-400 w-5 h-5 transition-colors" id="search-icon"></i>
+                    </div>
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="ابحث في الأخبار والمنشورات..."
+                        class="w-full py-4 pr-14 pl-20 rounded-2xl bg-white border border-gray-200 text-misk-dark placeholder-gray-400 focus:outline-none focus:bg-gray-50 focus:ring-2 focus:ring-misk-green/50 transition-all text-sm shadow-sm"
+                    />
+                    <div class="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                        <div class="hidden sm:flex items-center gap-1 px-2 py-1 rounded bg-gray-100 border border-gray-200 text-gray-500 text-[10px] font-medium tracking-wider" dir="ltr">
+                            <kbd class="font-sans">Ctrl</kbd><span>+</span><kbd class="font-sans">K</kbd>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Post Card -->
+                <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm transition-all hover:border-gray-300">
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100 shadow-sm">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" alt="User Avatar" class="w-full h-full object-cover" />
+                        </div>
+                        <div class="flex-1">
+                            <textarea
+                                id="create-post-content"
+                                placeholder="بم تفكر؟"
+                                class="w-full bg-gray-50 hover:bg-gray-100 focus:bg-white focus:outline-none focus:ring-1 focus:ring-misk-green border border-gray-200 rounded-2xl p-4 text-misk-dark text-sm transition-colors resize-none min-h-[80px]"
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div id="media-preview-container" class="relative mt-4 mr-16 rounded-xl overflow-hidden border border-gray-200 w-fit max-w-full hidden shadow-sm">
+                        <button id="remove-media-btn" class="absolute top-2 right-2 p-1.5 bg-black/60 rounded-full hover:bg-black text-white transition-colors">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                        <img id="media-preview-img" src="" alt="Preview" class="max-h-[300px] object-contain bg-gray-100" />
+                    </div>
+                    
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                        <div class="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
+                            <input type="file" id="file-input" class="hidden" accept="image/*,video/*" />
+                            
+                            <button onclick="document.getElementById('file-input').click()" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors whitespace-nowrap">
+                                <div class="p-1.5 rounded-lg bg-blue-50">
+                                    <i data-lucide="image" class="w-4 h-4 text-blue-500"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-600 hidden sm:block">صورة</span>
+                            </button>
+                            
+                            <button onclick="document.getElementById('file-input').click()" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors whitespace-nowrap">
+                                <div class="p-1.5 rounded-lg bg-misk-green/10">
+                                    <i data-lucide="video" class="w-4 h-4 text-misk-green"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-600 hidden sm:block">فيديو</span>
+                            </button>
+                            
+                            <button onclick="alert('Document feature coming soon!')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors whitespace-nowrap">
+                                <div class="p-1.5 rounded-lg bg-orange-50">
+                                    <i data-lucide="file-text" class="w-4 h-4 text-orange-500"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-600 hidden sm:block">مستند</span>
+                            </button>
+                            
+                            <button onclick="alert('Poll feature coming soon!')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors whitespace-nowrap">
+                                <div class="p-1.5 rounded-lg bg-purple-50">
+                                    <i data-lucide="bar-chart-2" class="w-4 h-4 text-purple-500"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-600 hidden sm:block">استطلاع</span>
+                            </button>
+                        </div>
+                        
+                        <button id="post-btn" class="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all shrink-0 bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200" disabled>
+                            نشر <i data-lucide="send" class="w-4 h-4 transform rotate-180"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="flex items-center gap-4 my-2">
+                    <div class="h-px bg-gray-200 flex-1"></div>
+                    <span class="text-gray-500 text-xs font-medium uppercase tracking-wider">ترتيب حسب: <span class="text-misk-green cursor-pointer">الأحدث</span></span>
+                </div>
+
+                <!-- Posts Feed -->
+                <div id="posts-feed" class="flex flex-col gap-6">
+                    <!-- Posts will be injected here via JS -->
+                </div>
+
+            </div>
+
+            <!-- Left Sidebar (Since RTL, it's on the left) -->
+            <div class="mt-10 hidden lg:block lg:col-span-4 h-full pb-20 pl-1">
+                <div class="flex flex-col gap-5">
+                    
+                    <!-- Trending Topics -->
+                    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+                        <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
+                            <i data-lucide="trending-up" class="w-[18px] h-[18px] text-misk-green"></i>
+                            <h3 class="font-bold text-misk-dark text-sm">المواضيع الشائعة</h3>
+                        </div>
+                        <div class="flex flex-col gap-4" id="trending-container">
+                            <!-- Injected via JS -->
+                        </div>
+                        <button class="w-full mt-5 py-2 text-center text-xs font-bold text-gray-500 hover:text-misk-dark hover:bg-gray-50 rounded-xl transition-colors border border-gray-100">
+                            عرض المزيد
+                        </button>
+                    </div>
+
+                    <!-- Suggested People -->
+                    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+                        <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
+                            <i data-lucide="users" class="w-[18px] h-[18px] text-misk-green"></i>
+                            <h3 class="font-bold text-misk-dark text-sm">أشخاص مقترحون</h3>
+                        </div>
+                        <div class="flex flex-col gap-4" id="suggested-container">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 text-center text-xs text-gray-500">
+                        <a href="#" class="hover:text-misk-green transition-colors">من نحن</a>
+                        <a href="#" class="hover:text-misk-green transition-colors">الخدمات</a>
+                        <a href="#" class="hover:text-misk-green transition-colors">تواصل معنا</a>
+                        <div class="w-full mt-2 text-[10px]">منصة فائدة © 2024</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Mock Data (Translated to Arabic for consistency)
+let mockPosts = [
+  {
+    id: 1,
+    user: { name: "أحمد الفارسي", title: "مصمم منتجات أول في جوجل", avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop", isVerified: true },
+    content: "نشرت للتو دليلاً جديدًا حول كيفية تحسين سيرتك الذاتية لأنظمة ATS في المملكة العربية السعودية! 🇸🇦 المشهد يتغير بسرعة مع فحص الذكاء الاصطناعي. تأكد من توافق كلماتك المفتاحية تمامًا مع الوصف الوظيفي.\n\nأهم النقاط:\n1. تجنب التنسيق المعقد\n2. استخدم المسميات الوظيفية القياسية\n3. حدد إنجازاتك بالأرقام\n\nما هو التحدي الأكبر لك في كتابة السيرة الذاتية؟",
+    image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=400&fit=crop",
+    time: "منذ ساعتين", likes: 1245, comments: 84, reposts: 32, isLiked: false,
+    localComments: []
+  },
+  {
+    id: 2,
+    user: { name: "سارة تشين", title: "قائدة استقطاب المواهب في أرامكو", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop", isVerified: true },
+    content: "نحن نوظف بنشاط لقسم أبحاث الذكاء الاصطناعي الجديد في الظهران! 🚀\n\nنبحث عن:\n- مهندسي تعلم آلي (Senior)\n- علماء بيانات\n- مدراء منتجات ذكاء اصطناعي\n\nإذا كنت شغوفًا بدفع حدود التكنولوجيا في قطاع الطاقة، دعنا نتواصل. اترك تعليقًا أدناه أو أرسل سيرتك الذاتية مباشرة عبر منصة فائدة.",
+    time: "منذ 5 ساعات", likes: 3421, comments: 215, reposts: 412, isLiked: true,
+    localComments: []
+  }
+];
+
+const trendingTopics = [
+  { id: 1, title: "#رؤية_السعودية_2030", posts: "45.2 ألف منشور" },
+  { id: 2, title: "الذكاء الاصطناعي في التوظيف", posts: "12.5 ألف منشور" },
+  { id: 3, title: "العمل عن بعد في الشرق الأوسط", posts: "8.2 ألف منشور" },
+  { id: 4, title: "توظيف التقنية بالرياض", posts: "5.1 ألف منشور" }
+];
+
+const suggestedPeople = [
+  { id: 1, name: "د. خالد", title: "باحث ذكاء اصطناعي", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" },
+  { id: 2, name: "ريم فهد", title: "مديرة موارد بشرية", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop" },
+  { id: 3, name: "علي حسن", title: "قائد منتج", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" }
+];
+
+let currentMediaUrl = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    renderSidebars();
+    renderPosts();
+    setupCreatePost();
+    setupSearch();
+});
+
+function renderSidebars() {
+    const trendContainer = document.getElementById('trending-container');
+    trendContainer.innerHTML = trendingTopics.map((topic, index) => `
+        <div class="group cursor-pointer">
+            <div class="flex items-start gap-3">
+                <span class="text-gray-400 text-xs font-bold mt-0.5">${index + 1}.</span>
+                <div class="flex flex-col">
+                    <span class="text-misk-dark text-sm font-bold group-hover:text-misk-green transition-colors">${topic.title}</span>
+                    <span class="text-gray-500 text-xs mt-0.5">${topic.posts}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    const peopleContainer = document.getElementById('suggested-container');
+    peopleContainer.innerHTML = suggestedPeople.map(person => `
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="${person.avatar}" alt="${person.name}" class="w-10 h-10 rounded-full object-cover border border-gray-100 shadow-sm" />
+                <div class="flex flex-col">
+                    <span class="text-misk-dark text-sm font-bold hover:text-misk-green cursor-pointer">${person.name}</span>
+                    <span class="text-gray-500 text-xs">${person.title}</span>
+                </div>
+            </div>
+            <button class="p-2 rounded-full border border-gray-200 text-gray-400 hover:text-misk-green hover:border-misk-green hover:bg-misk-green/5 transition-colors">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+            </button>
+        </div>
+    `).join('');
+    lucide.createIcons();
+}
+
+function renderPosts(query = "") {
+    const feed = document.getElementById('posts-feed');
+    feed.innerHTML = '';
+    
+    const filtered = mockPosts.filter(p => 
+        p.content.toLowerCase().includes(query.toLowerCase()) || 
+        p.user.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    if (filtered.length === 0) {
+        feed.innerHTML = `<div class="text-center py-10 text-gray-500 bg-white border border-gray-200 rounded-2xl shadow-sm">لا توجد منشورات.</div>`;
+        return;
+    }
+
+    filtered.forEach(post => {
+        const postEl = document.createElement('div');
+        postEl.className = "bg-white border border-gray-200 rounded-2xl p-5 shadow-sm transition-all hover:border-gray-300 flex flex-col gap-4 group";
+        
+        let localCommentsHtml = post.localComments.map(c => `
+            <div class="flex gap-3">
+                <div class="w-8 h-8 rounded-full bg-misk-green/10 text-misk-green flex items-center justify-center font-bold text-xs shrink-0">${c.user.charAt(0)}</div>
+                <div class="flex flex-col bg-gray-50 rounded-2xl rounded-tr-none p-3 text-sm border border-gray-100">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="font-bold text-misk-dark">${c.user}</span>
+                        <span class="text-[10px] text-gray-400">${c.time}</span>
+                    </div>
+                    <span class="text-gray-700">${c.text}</span>
+                </div>
+            </div>
+        `).join('');
+
+        postEl.innerHTML = `
+            <div class="flex items-start justify-between">
+                <div class="flex gap-3">
+                    <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100 shadow-sm">
+                        <img src="${post.user.avatar}" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-bold text-misk-dark text-sm hover:text-misk-green cursor-pointer">${post.user.name}</span>
+                            ${post.user.isVerified ? `<i data-lucide="check-circle-2" class="w-[14px] h-[14px] text-blue-500 shrink-0"></i>` : ''}
+                            <span class="text-gray-400 text-xs mx-1">•</span>
+                            <span class="text-gray-400 text-xs">${post.time}</span>
+                        </div>
+                        <span class="text-gray-500 text-xs line-clamp-1">${post.user.title}</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="px-4 py-1.5 rounded-full bg-white border border-misk-green text-misk-green text-xs font-bold hover:bg-misk-green hover:text-white transition-colors shrink-0">
+                        + متابعة
+                    </button>
+                    <button class="p-1.5 text-gray-400 hover:text-misk-dark hover:bg-gray-100 rounded-full transition-colors opacity-0 group-hover:opacity-100">
+                        <i data-lucide="more-horizontal" class="w-[18px] h-[18px]"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">${post.content}</div>
+
+            ${post.image ? `
+            <div class="mt-2 rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                <img src="${post.image}" class="w-full max-h-[400px] object-cover" />
+            </div>` : ''}
+
+            <div class="flex items-center justify-between text-xs text-gray-500 border-b border-gray-100 pb-4 mt-2">
+                <div class="flex items-center gap-1">
+                    <div class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-50 text-blue-500">
+                        <i data-lucide="thumbs-up" class="w-[12px] h-[12px] fill-current"></i>
+                    </div>
+                    <span class="mr-1" id="like-count-${post.id}">${post.likes.toLocaleString()}</span>
+                </div>
+                <div class="flex gap-3">
+                    <span id="comment-count-${post.id}">${post.comments + post.localComments.length} تعليقات</span>
+                    <span id="repost-count-${post.id}">${post.reposts} إعادة نشر</span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-1 pt-1">
+                <button onclick="toggleLike(${post.id})" id="like-btn-${post.id}" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-200 ${post.isLiked ? 'text-blue-500 bg-blue-50' : 'text-gray-500 hover:bg-gray-50 hover:text-misk-dark'}">
+                    <i data-lucide="thumbs-up" class="w-[18px] h-[18px] ${post.isLiked ? 'fill-current' : ''}"></i>
+                    <span class="text-sm font-bold hidden sm:block">إعجاب</span>
+                </button>
+                <button onclick="toggleComments(${post.id})" id="comment-btn-${post.id}" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:text-misk-dark">
+                    <i data-lucide="message-square" class="w-[18px] h-[18px]"></i>
+                    <span class="text-sm font-bold hidden sm:block">تعليق</span>
+                </button>
+                <button onclick="toggleRepost(${post.id})" id="repost-btn-${post.id}" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:text-misk-dark">
+                    <i data-lucide="repeat-2" class="w-[18px] h-[18px]"></i>
+                    <span class="text-sm font-bold hidden sm:block">إعادة نشر</span>
+                </button>
+                <button onclick="alert('Share dialog opened!')" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:text-misk-dark">
+                    <i data-lucide="send" class="w-[18px] h-[18px] transform rotate-180"></i>
+                    <span class="text-sm font-bold hidden sm:block">إرسال</span>
+                </button>
+            </div>
+
+            <div id="comment-section-${post.id}" class="hidden pt-4 border-t border-gray-100 flex flex-col gap-4 overflow-hidden mt-2">
+                <div id="comments-list-${post.id}">${localCommentsHtml}</div>
+                <div class="flex gap-3 items-start mt-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-gray-200 mt-1 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="flex-1 flex gap-2">
+                        <input type="text" id="comment-input-${post.id}" placeholder="أضف تعليقاً..." onkeyup="checkCommentInput(${post.id})" class="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm text-misk-dark focus:outline-none focus:border-misk-green focus:bg-white transition-colors" />
+                        <button id="submit-comment-${post.id}" onclick="submitComment(${post.id})" class="p-2.5 rounded-full transition-colors bg-gray-100 text-gray-400 cursor-not-allowed" disabled>
+                            <i data-lucide="send" class="w-4 h-4 transform rotate-180"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        feed.appendChild(postEl);
+    });
+    
+    lucide.createIcons();
+}
+
+window.toggleLike = function(id) {
+    const post = mockPosts.find(p => p.id === id);
+    if (!post) return;
+    post.isLiked = !post.isLiked;
+    post.likes += post.isLiked ? 1 : -1;
+    
+    document.getElementById(`like-count-${id}`).innerText = post.likes.toLocaleString();
+    const btn = document.getElementById(`like-btn-${id}`);
+    
+    if (post.isLiked) {
+        btn.className = "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-200 text-blue-500 bg-blue-50";
+        btn.innerHTML = `<i data-lucide="thumbs-up" class="w-[18px] h-[18px] fill-current"></i><span class="text-sm font-bold hidden sm:block">إعجاب</span>`;
+    } else {
+        btn.className = "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:text-misk-dark";
+        btn.innerHTML = `<i data-lucide="thumbs-up" class="w-[18px] h-[18px]"></i><span class="text-sm font-bold hidden sm:block">إعجاب</span>`;
+    }
+    lucide.createIcons();
+}
+
+window.toggleRepost = function(id) {
+    const post = mockPosts.find(p => p.id === id);
+    if (!post) return;
+    const btn = document.getElementById(`repost-btn-${id}`);
+    const countSpan = document.getElementById(`repost-count-${id}`);
+    
+    if (btn.classList.contains('text-purple-500')) {
+        post.reposts -= 1;
+        btn.className = "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:text-misk-dark";
+    } else {
+        post.reposts += 1;
+        btn.className = "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-200 text-purple-500 bg-purple-50";
+    }
+    countSpan.innerText = `${post.reposts} إعادة نشر`;
+    lucide.createIcons();
+}
+
+window.toggleComments = function(id) {
+    const sec = document.getElementById(`comment-section-${id}`);
+    const btn = document.getElementById(`comment-btn-${id}`);
+    
+    if (sec.classList.contains('hidden')) {
+        sec.classList.remove('hidden');
+        btn.className = "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-200 text-misk-green bg-misk-green/10";
+    } else {
+        sec.classList.add('hidden');
+        btn.className = "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:text-misk-dark";
+    }
+}
+
+window.checkCommentInput = function(id) {
+    const val = document.getElementById(`comment-input-${id}`).value.trim();
+    const btn = document.getElementById(`submit-comment-${id}`);
+    if (val) {
+        btn.disabled = false;
+        btn.className = "p-2.5 rounded-full transition-colors bg-misk-green text-white hover:bg-[#24996d] cursor-pointer";
+    } else {
+        btn.disabled = true;
+        btn.className = "p-2.5 rounded-full transition-colors bg-gray-100 text-gray-400 cursor-not-allowed";
+    }
+}
+
+window.submitComment = function(id) {
+    const input = document.getElementById(`comment-input-${id}`);
+    const val = input.value.trim();
+    if (!val) return;
+    
+    const post = mockPosts.find(p => p.id === id);
+    post.localComments.push({ user: "أحمد", text: val, time: "الآن" });
+    
+    input.value = "";
+    checkCommentInput(id);
+    document.getElementById(`comment-count-${id}`).innerText = `${post.comments + post.localComments.length} تعليقات`;
+    
+    const commentsList = document.getElementById(`comments-list-${id}`);
+    commentsList.innerHTML += `
+        <div class="flex gap-3 mt-4">
+            <div class="w-8 h-8 rounded-full bg-misk-green/10 text-misk-green flex items-center justify-center font-bold text-xs shrink-0">أ</div>
+            <div class="flex flex-col bg-gray-50 rounded-2xl rounded-tr-none p-3 text-sm border border-gray-100">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="font-bold text-misk-dark">أحمد</span>
+                    <span class="text-[10px] text-gray-400">الآن</span>
+                </div>
+                <span class="text-gray-700">${val}</span>
+            </div>
+        </div>
+    `;
+}
+
+function setupCreatePost() {
+    const content = document.getElementById('create-post-content');
+    const fileInput = document.getElementById('file-input');
+    const postBtn = document.getElementById('post-btn');
+    const mediaContainer = document.getElementById('media-preview-container');
+    const mediaImg = document.getElementById('media-preview-img');
+    const removeMediaBtn = document.getElementById('remove-media-btn');
+
+    function checkPostStatus() {
+        if (content.value.trim() || currentMediaUrl) {
+            postBtn.disabled = false;
+            postBtn.className = "flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold transition-all shrink-0 bg-misk-green text-white shadow-md hover:bg-[#24996d] cursor-pointer hover:shadow-lg transform hover:-translate-y-0.5";
+        } else {
+            postBtn.disabled = true;
+            postBtn.className = "flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold transition-all shrink-0 bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200";
+        }
+    }
+
+    content.addEventListener('input', checkPostStatus);
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            currentMediaUrl = URL.createObjectURL(file);
+            mediaImg.src = currentMediaUrl;
+            mediaContainer.classList.remove('hidden');
+            checkPostStatus();
+        }
+    });
+
+    removeMediaBtn.addEventListener('click', () => {
+        currentMediaUrl = null;
+        fileInput.value = "";
+        mediaContainer.classList.add('hidden');
+        checkPostStatus();
+    });
+
+    postBtn.addEventListener('click', () => {
+        if (!content.value.trim() && !currentMediaUrl) return;
+
+        const newPost = {
+            id: Date.now(),
+            user: { name: "أحمد", title: "مهندس برمجيات", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop", isVerified: true },
+            content: content.value,
+            image: currentMediaUrl,
+            time: "الآن",
+            likes: 0, comments: 0, reposts: 0, isLiked: false,
+            localComments: []
+        };
+
+        mockPosts.unshift(newPost);
+        content.value = "";
+        removeMediaBtn.click();
+        
+        renderPosts(document.getElementById('search-input').value);
+    });
+}
+
+function setupSearch() {
+    const searchInput = document.getElementById('search-input');
+    
+    searchInput.addEventListener('input', (e) => {
+        renderPosts(e.target.value);
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}ملف الشركة | {{ company.company_english_name }}{% endblock %}
+
+{% block content %}
+<div class="company-hero-banner text-white" style="background-color: #101c38; padding: 60px 20px; text-align: center;">
+    <h2 class="almarai-extrabold mb-3">{{ company.company_arabic_name or company.company_english_name }}</h2>
+    <p class="almarai-regular" style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">
+        {{ company.about_company_arabic or "لا يوجد وصف متوفر لهذه المنشأة حالياً." }}
+    </p>
+    
+    <div class="container mt-5">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-3">
+                <div class="metric-card bg-white p-4 rounded shadow-sm h-100" style="color: var(--primary-dark);">
+                    <h5 class="almarai-bold text-muted mb-2">نسبة نجاح المشاريع</h5>
+                    <h3 class="almarai-extrabold">{{ company.success_rate or 0 }}%</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card bg-white p-4 rounded shadow-sm h-100" style="color: var(--primary-dark);">
+                    <h5 class="almarai-bold text-muted mb-2">عدد المشاريع</h5>
+                    <h3 class="almarai-extrabold">{{ company.number_of_projects or 0 }}</h3>
+                </div>
+            </div>
+            <!-- Calculate the visual market value score using the same backend logic -->
+            <div class="col-md-6">
+                <div class="metric-card p-4 rounded shadow-sm h-100 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, var(--accent-red), #e63946); border: none;">
+                    <h5 class="almarai-bold text-white mb-2">التقييم الشامل للمنشأة (نقاط القيمة السوقية)</h5>
+                    <h2 class="almarai-extrabold text-white m-0">{{ market_value_points }} / 100</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h4 class="almarai-bold mb-4 text-dark border-bottom pb-2">معلومات إضافية</h4>
+            <ul class="list-group list-group-flush almarai-regular text-muted" style="font-size: 1.1rem;">
+                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                    <span><i class="fas fa-briefcase me-2 text-primary"></i> مجال المنشأة</span>
+                    <strong>{{ company.company_field or 'غير محدد' }}</strong>
+                </li>
+                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                    <span><i class="fas fa-star me-2 text-warning"></i> السمعة</span>
+                    <strong>{{ company.reputation or 'غير محدد' }}</strong>
+                </li>
+                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                    <span><i class="fas fa-lightbulb me-2 text-info"></i> الملكية الفكرية (براءات الاختراع)</span>
+                    <strong>{{ company.intellectual_property or 0 }}</strong>
+                </li>
+                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                    <span><i class="fas fa-chart-line me-2 text-success"></i> نسبة الأرباح</span>
+                    <strong>{{ company.profit_percentage or 0 }}%</strong>
+                </li>
+            </ul>
+            
+            <div class="mt-5 text-center">
+                <a href="{{ url_for('core.home') }}" class="btn btn-outline-secondary almarai-bold px-4 py-2">
+                    العودة للصفحة الرئيسية
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
