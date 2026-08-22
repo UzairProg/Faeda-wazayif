@@ -1,4 +1,6 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
+import { ROUTES } from "@/config/routes"
 import { useTranslation } from "@/i18n"
 import { useCompanyTeams } from "../hooks/useCompanyTeams"
 import { CompanyTeamCard } from "../components/CompanyTeamCard"
@@ -9,6 +11,7 @@ import {
   Loader2,
   X,
   CheckCircle2,
+  MessageSquare,
 } from "lucide-react"
 
 export function CompanyTeamsPage() {
@@ -219,7 +222,15 @@ export function CompanyTeamsPage() {
             </div>
 
             {/* Footer */}
-            <div className="pt-6 border-t border-slate-800 flex items-center justify-end">
+            <div className="pt-6 border-t border-slate-800 flex items-center justify-between">
+              <Link
+                to={`${ROUTES.COMPANY.CHAT}?new=true&type=TEAM_COMPANY&targetId=${selectedTeam.id}&contextType=team&contextId=${selectedTeam.id}&subject=${encodeURIComponent('تواصل مع فريق ' + selectedTeam.name)}`}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-md shadow-emerald-950/30 transition-all hover:scale-105"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>{isRTL ? "مراسلة الفريق" : "Contact Squad"}</span>
+              </Link>
+
               <button
                 type="button"
                 onClick={() => setSelectedTeam(null)}

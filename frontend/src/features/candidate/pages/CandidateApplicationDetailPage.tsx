@@ -16,6 +16,7 @@ import {
   GraduationCap,
   ShieldCheck,
   Download,
+  MessageSquare,
 } from "lucide-react"
 
 export function CandidateApplicationDetailPage() {
@@ -126,7 +127,16 @@ export function CandidateApplicationDetailPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 self-start sm:self-auto">
+          <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap">
+            {application.company?.id && (
+              <Link
+                to={`${ROUTES.CANDIDATE.CHAT}?new=true&type=CANDIDATE_COMPANY&targetId=${application.company.id}&contextType=job_application&contextId=${application.id}&subject=${encodeURIComponent(application.job?.title || 'طلب توظيف')}`}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-950/40 transition-all hover:scale-105"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>{isRTL ? "مراسلة المنشأة" : "Contact Employer"}</span>
+              </Link>
+            )}
             {application.job?.id && (
               <Link
                 to={ROUTES.CANDIDATE.JOB_DETAIL(application.job.id)}

@@ -16,6 +16,7 @@ import {
   Bookmark,
   Compass,
   Users,
+  MessageSquare,
   Settings,
   LogOut,
   Menu,
@@ -26,11 +27,14 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react"
+import { useUnreadCount } from "@/features/chat/hooks/useChat"
+import { UnreadBadge } from "@/features/chat/components/UnreadBadge"
 
 export function CandidateLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { user, logout } = useAuthStore()
   const { t, isRTL, language, toggleLanguage } = useTranslation()
+  const { data: unreadCount = 0 } = useUnreadCount()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -78,6 +82,14 @@ export function CandidateLayout() {
       to: ROUTES.CANDIDATE.TEAMS,
       icon: Users,
       label: t("candidate.shell.nav.teams"),
+      isPrimary: true,
+      end: false,
+    },
+    {
+      to: ROUTES.CANDIDATE.CHAT,
+      icon: MessageSquare,
+      label: isRTL ? "الرسائل والمحادثات" : "Messages",
+      badgeCount: unreadCount,
       isPrimary: true,
       end: false,
     },
@@ -210,15 +222,20 @@ export function CandidateLayout() {
                     to={item.to}
                     end={Boolean(item.end)}
                     className={({ isActive }) =>
-                      `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                      `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                         isActive
                           ? "bg-primary text-white shadow-lg shadow-primary/25 font-bold"
                           : "text-slate-300 hover:text-white hover:bg-slate-800/60"
                       }`
                     }
                   >
-                    <Icon className="w-4 h-4 shrink-0" />
-                    <span className="truncate">{item.label}</span>
+                    <div className="flex items-center gap-3 truncate">
+                      <Icon className="w-4 h-4 shrink-0" />
+                      <span className="truncate">{item.label}</span>
+                    </div>
+                    {Boolean(item.badgeCount && item.badgeCount > 0) && (
+                      <UnreadBadge count={item.badgeCount} size="sm" />
+                    )}
                   </NavLink>
                 )
               })}
@@ -295,15 +312,20 @@ export function CandidateLayout() {
                       end={Boolean(item.end)}
                       onClick={() => setMobileOpen(false)}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                        `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                           isActive
                             ? "bg-primary text-white"
                             : "text-slate-300 hover:text-white hover:bg-slate-800/60"
                         }`
                       }
                     >
-                      <Icon className="w-4 h-4 shrink-0" />
-                      <span>{item.label}</span>
+                      <div className="flex items-center gap-3">
+                        <Icon className="w-4 h-4 shrink-0" />
+                        <span>{item.label}</span>
+                      </div>
+                      {Boolean(item.badgeCount && item.badgeCount > 0) && (
+                        <UnreadBadge count={item.badgeCount} size="sm" />
+                      )}
                     </NavLink>
                   )
                 })}

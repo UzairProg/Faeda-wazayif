@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   Loader2,
   Mail,
+  MessageSquare,
   X,
 } from "lucide-react"
 import { useCandidateTeamDetail } from "../hooks/useCandidateTeamDetail"
@@ -173,6 +174,13 @@ export const CandidateTeamDetailPage: React.FC = () => {
 
           {/* Header Action Buttons */}
           <div className="flex flex-wrap items-center gap-2.5">
+            <Link
+              to={`${ROUTES.CANDIDATE.CHAT}?new=true&type=TEAM_INTERNAL&targetId=${team.id}&contextType=team&contextId=${team.id}&subject=${encodeURIComponent('فريق ' + team.name)}`}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-teal-900/30 transition-all hover:from-teal-500 hover:to-emerald-500 hover:scale-105"
+            >
+              <MessageSquare className="h-4 w-4" />
+              <span>{isRtl ? "محادثة الفريق" : "Team Chat"}</span>
+            </Link>
             {team.isOwner ? (
               <>
                 <button

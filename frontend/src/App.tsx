@@ -41,6 +41,7 @@ import { UniversityStudentDetailPage } from "./features/university/pages/Univers
 import { UniversityVerificationsPage } from "./features/university/pages/UniversityVerificationsPage"
 import { UniversityDepartmentsPage } from "./features/university/pages/UniversityDepartmentsPage"
 import { UniversityOpportunitiesPage } from "./features/university/pages/UniversityOpportunitiesPage"
+import { ChatPage } from "./features/chat/pages/ChatPage"
 import { AdminLayout } from "./features/admin/layouts/AdminLayout"
 
 // Guards
@@ -142,6 +143,7 @@ function App() {
               <Route path="saved-jobs" element={<CandidateSavedJobsPage />} />
               <Route path="teams" element={<CandidateTeamsPage />} />
               <Route path="teams/:id" element={<CandidateTeamDetailPage />} />
+              <Route path="chat" element={<ChatPage />} />
               <Route path="*" element={<Navigate to="/candidate" replace />} />
             </Route>
           </Route>
@@ -158,6 +160,7 @@ function App() {
               <Route path="applications" element={<CompanyApplicationsPage />} />
               <Route path="talent" element={<CompanyTalentPage />} />
               <Route path="teams" element={<CompanyTeamsPage />} />
+              <Route path="chat" element={<ChatPage />} />
               <Route path="settings" element={<CompanyProfilePage />} />
               <Route path="*" element={<Navigate to="/company" replace />} />
             </Route>

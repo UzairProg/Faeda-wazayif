@@ -115,6 +115,16 @@ export const API_CONFIG = {
       DEPARTMENT_DETAIL: (id: string | number) => `/api/v1/university/departments/${id}`,
       OPPORTUNITIES: "/api/v1/university/opportunities",
     },
+    CHAT: {
+      CONVERSATIONS: "/api/v1/chat/conversations",
+      CONVERSATION_DETAIL: (id: string | number) => `/api/v1/chat/conversations/${id}`,
+      CREATE_CONVERSATION: "/api/v1/chat/conversations",
+      SEND_MESSAGE: (id: string | number) => `/api/v1/chat/conversations/${id}/messages`,
+      EDIT_MESSAGE: (id: string | number) => `/api/v1/chat/messages/${id}`,
+      DELETE_MESSAGE: (id: string | number) => `/api/v1/chat/messages/${id}`,
+      MARK_READ: (id: string | number) => `/api/v1/chat/conversations/${id}/read`,
+      UNREAD_COUNT: "/api/v1/chat/unread-count",
+    },
     CONTACT: "/api/v1/contact",
   },
 }

@@ -7,8 +7,10 @@
 import { publicEn } from "@/i18n/namespaces/public"
 import { candidateEn } from "@/i18n/namespaces/candidate"
 import { universityEn } from "@/i18n/namespaces/university"
+import { chatEn } from "@/i18n/namespaces/chat"
 
 export const enLocale = {
+  chat: chatEn,
   candidate: candidateEn,
   university: universityEn,
   common: {

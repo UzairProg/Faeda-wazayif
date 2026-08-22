@@ -62,6 +62,7 @@ export const ROUTES = {
     SAVED_JOBS: "/candidate/saved-jobs",
     TEAMS: "/candidate/teams",
     TEAM_DETAIL: (id: string | number) => `/candidate/teams/${id}`,
+    CHAT: "/candidate/chat",
     SETTINGS: "/candidate/settings",
   },
   COMPANY: {
@@ -78,6 +79,7 @@ export const ROUTES = {
     TALENT_DETAIL: (id: string | number) => `/company/talent/${id}`,
     TEAMS: "/company/teams",
     TEAM_DETAIL: (id: string | number) => `/company/teams/${id}`,
+    CHAT: "/company/chat",
     SETTINGS: "/company/settings",
   },
   UNIVERSITY: {

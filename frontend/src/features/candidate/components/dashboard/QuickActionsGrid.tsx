@@ -12,6 +12,7 @@ import {
   Briefcase,
   Bookmark,
   ShoppingBag,
+  MessageSquare,
   ChevronRight,
   ChevronLeft,
 } from "lucide-react"
@@ -58,6 +59,14 @@ export function QuickActionsGrid() {
       title: t("candidate.dashboard.quickActions.applications"),
       desc: t("candidate.dashboard.quickActions.applicationsDesc"),
       color: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      isLive: true,
+    },
+    {
+      to: ROUTES.CANDIDATE.CHAT,
+      icon: MessageSquare,
+      title: isRTL ? "الرسائل المهنية" : "Messages",
+      desc: isRTL ? "تواصل مباشر مع المنشآت والفرق" : "Direct chat with employers",
+      color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
       isLive: true,
     },
     {

@@ -25,6 +25,8 @@ team_members_association = db.Table('team_members',
     db.Column('date_of_addition',db.DateTime, default=datetime.utcnow)
 )
 
+team_members = team_members_association
+
 # Define the Teams class
 
 class Teams(db.Model):
@@ -41,7 +43,29 @@ class Teams(db.Model):
     members = relationship("Customers", secondary=team_members_association, backref="teams")
     jobs = db.relationship("Jobs", secondary="customer_jobs", back_populates="teams")
     
+    @property
+    def name(self):
+        return self.team_name
+
+    @name.setter
+    def name(self, val):
+        self.team_name = val
+
+    @property
+    def team_img(self):
+        return self.img
+
+    @property
+    def specialization(self):
+        return self.special_program or self.general_program
+
     def __init__(self, **kwargs):
+        if 'name' in kwargs and 'team_name' not in kwargs:
+            kwargs['team_name'] = kwargs.pop('name')
+        if 'specialization' in kwargs and 'special_program' not in kwargs:
+            kwargs['special_program'] = kwargs.pop('specialization')
+        if 'leader_id' in kwargs and 'admin_id' not in kwargs:
+            kwargs['admin_id'] = str(kwargs.pop('leader_id'))
         super(Teams, self).__init__(**kwargs)
     
     

@@ -26,6 +26,7 @@ import {
   ArrowRight,
   Loader2,
   Building2,
+  MessageSquare,
 } from "lucide-react"
 
 export function CompanyDashboardPage() {
@@ -135,6 +136,14 @@ export function CompanyDashboardPage() {
 
           {/* Action buttons */}
           <div className="flex flex-wrap items-center gap-3">
+            <Link
+              to={ROUTES.COMPANY.CHAT}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white text-xs font-bold transition-all shadow-sm"
+            >
+              <MessageSquare className="h-4 w-4 text-emerald-400" />
+              <span>{isRTL ? "الرسائل المهنية" : "Messages"}</span>
+            </Link>
+
             <Link
               to={ROUTES.COMPANY.TALENT}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white text-xs font-bold transition-all shadow-sm"

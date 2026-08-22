@@ -13,6 +13,7 @@ import { contact } from "@/i18n/namespaces/contact"
 import { publicAr } from "@/i18n/namespaces/public"
 import { candidateAr } from "@/i18n/namespaces/candidate"
 import { universityAr } from "@/i18n/namespaces/university"
+import { chatAr } from "@/i18n/namespaces/chat"
 
 export const arLocale = {
   common,
@@ -25,4 +26,5 @@ export const arLocale = {
   public: publicAr,
   candidate: candidateAr,
   university: universityAr,
+  chat: chatAr,
 }

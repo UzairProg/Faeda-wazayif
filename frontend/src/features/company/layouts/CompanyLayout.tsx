@@ -16,6 +16,7 @@ import {
   Users,
   Search,
   Layers,
+  MessageSquare,
   Settings,
   LogOut,
   Menu,
@@ -27,11 +28,14 @@ import {
   ChevronLeft,
   Plus,
 } from "lucide-react"
+import { useUnreadCount } from "@/features/chat/hooks/useChat"
+import { UnreadBadge } from "@/features/chat/components/UnreadBadge"
 
 export function CompanyLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { user, logout } = useAuthStore()
   const { isRTL, language, toggleLanguage } = useTranslation()
+  const { data: unreadCount = 0 } = useUnreadCount()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -85,6 +89,15 @@ export function CompanyLayout() {
       icon: Layers,
       label_ar: "الفرق المهنية",
       label_en: "Professional Teams",
+      isPrimary: true,
+      end: false,
+    },
+    {
+      to: ROUTES.COMPANY.CHAT,
+      icon: MessageSquare,
+      label_ar: "الرسائل والمحادثات",
+      label_en: "Messages & Chat",
+      badgeCount: unreadCount,
       isPrimary: true,
       end: false,
     },
@@ -198,15 +211,20 @@ export function CompanyLayout() {
                   to={item.to}
                   end={item.end}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                       isActive
                         ? "bg-gradient-to-r from-emerald-600/90 to-teal-600/90 text-white shadow-lg shadow-emerald-950/40"
                         : "text-slate-400 hover:text-white hover:bg-slate-800/50"
                     }`
                   }
                 >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  <span className="flex-1">{label}</span>
+                  <div className="flex items-center gap-3 truncate">
+                    <Icon className="w-4 h-4 shrink-0" />
+                    <span className="truncate">{label}</span>
+                  </div>
+                  {Boolean(item.badgeCount && item.badgeCount > 0) && (
+                    <UnreadBadge count={item.badgeCount} size="sm" />
+                  )}
                 </NavLink>
               )
             })}
@@ -270,15 +288,20 @@ export function CompanyLayout() {
                         end={item.end}
                         onClick={() => setMobileOpen(false)}
                         className={({ isActive }) =>
-                          `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                          `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                             isActive
                               ? "bg-gradient-to-r from-emerald-600/90 to-teal-600/90 text-white shadow-md"
                               : "text-slate-400 hover:text-white hover:bg-slate-800/50"
                           }`
                         }
                       >
-                        <Icon className="w-4 h-4 shrink-0" />
-                        <span>{label}</span>
+                        <div className="flex items-center gap-3">
+                          <Icon className="w-4 h-4 shrink-0" />
+                          <span>{label}</span>
+                        </div>
+                        {Boolean(item.badgeCount && item.badgeCount > 0) && (
+                          <UnreadBadge count={item.badgeCount} size="sm" />
+                        )}
                       </NavLink>
                     )
                   })}
