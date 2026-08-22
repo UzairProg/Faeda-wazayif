@@ -11,7 +11,7 @@
  * Old /login and /register paths redirect to /auth/login and /auth/register
  * for backward compatibility during the transition period.
  */
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom"
 import { ROUTES } from "./config/routes"
 
 // Layouts
@@ -202,12 +202,12 @@ function App() {
               <p className="text-muted-foreground text-sm mb-8">
                 لم يتم العثور على الصفحة التي تبحث عنها.
               </p>
-              <a
-                href={ROUTES.PUBLIC.HOME}
+              <Link
+                to={ROUTES.PUBLIC.HOME}
                 className="px-6 py-3 bg-primary text-white rounded-full font-semibold hover:bg-primary/90 transition-colors"
               >
                 العودة للرئيسية
-              </a>
+              </Link>
             </div>
           }
         />

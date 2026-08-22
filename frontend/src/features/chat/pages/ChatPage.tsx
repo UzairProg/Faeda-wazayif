@@ -14,7 +14,7 @@ import { ChatWindow } from "../components/ChatWindow"
 import type { ConversationType } from "../types/chat.types"
 
 export function ChatPage() {
-  const { t } = useTranslation()
+  const { t, isRTL } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const { data: conversations = [], isLoading } = useConversations()
   const { createConversation } = useChatActions()
@@ -90,7 +90,7 @@ export function ChatPage() {
 
         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
           <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          <span>مراسلات مشفرة وآمنة</span>
+          <span>{isRTL ? "مراسلات مشفرة وآمنة" : "Encrypted & Secure Messages"}</span>
         </div>
       </div>
 
