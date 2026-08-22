@@ -359,9 +359,9 @@ export const enLocale = {
         desc: "Combine collective capabilities ready for execution instead of single hires.",
       },
       education: {
-        title: "Educational Institutions",
-        badge: "Coming Soon",
-        desc: "Bridge academic learning and skills directly to market demands.",
+        title: "Educational & University Institutions",
+        badge: "Live",
+        desc: "Bridge academic learning, qualifications, and student verification directly to market demands.",
       },
     },
     audience: {

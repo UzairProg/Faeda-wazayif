@@ -22,7 +22,7 @@ export function AboutHero() {
     { label: t("jobs.search.title"), icon: Briefcase, color: "from-cyan-500/30 to-teal-500/30 border-cyan-500/40 text-cyan-400" },
     { label: t("about.ecosystem.employers.title"), icon: Building2, color: "from-indigo-500/30 to-purple-500/30 border-indigo-500/40 text-indigo-400" },
     { label: t("about.ecosystem.teams.title"), icon: Users, color: "from-emerald-500/30 to-teal-700/30 border-emerald-500/40 text-emerald-400" },
-    { label: t("about.ecosystem.education.title"), subLabel: `(${t("common.states.comingSoon")})`, icon: GraduationCap, color: "from-amber-500/30 to-orange-500/30 border-amber-500/40 text-amber-400" },
+    { label: t("about.ecosystem.education.title"), icon: GraduationCap, color: "from-amber-500/30 to-orange-500/30 border-amber-500/40 text-amber-400" },
   ]
 
   return (
@@ -127,9 +127,6 @@ export function AboutHero() {
                           </div>
                           <div>
                             <span className="text-xs font-bold text-white block">{node.label}</span>
-                            {node.subLabel && (
-                              <span className="text-[10px] text-amber-300 font-mono">{node.subLabel}</span>
-                            )}
                           </div>
                         </div>
 

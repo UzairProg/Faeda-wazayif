@@ -75,19 +75,19 @@ export function AudienceSwitcher() {
     education: {
       title: t("about.audience.tabEducation"),
       icon: GraduationCap,
-      badge: t("common.states.comingSoon"),
+      badge: language === "en" ? "For Educational Institutions" : "للمؤسسات التعليمية والجامعات",
       heading: language === "en" ? "Bridge academic education with real labor market demands." : "ربط مخرجات التعليم باحتياجات سوق العمل الحقيقية.",
       bullets: language === "en" ? [
         "Skill-gap alignment between academic programs and live jobs",
         "Empower graduates to transition into active candidate profiles",
-        "Educational partner dashboards (Coming Soon)"
+        "Comprehensive academic verification and student dossier management"
       ] : [
         "تحليل الفجوة بين المناهج الأكاديمية والمهارات المطلوبة بالسوق",
         "تمكين الخريجين من إبراز جاهزيتهم المهنية فور التخرج",
-        "لوحات التحكم المخصصة للشركاء التعليميين (قريباً)"
+        "إدارة التحقق الأكاديمي الشامل وملفات الطلاب المعتمدة"
       ],
-      ctaText: t("about.hero.ctaRegister"),
-      ctaLink: ROUTES.AUTH.REGISTER,
+      ctaText: language === "en" ? "University Portal" : "بوابة المؤسسات التعليمية",
+      ctaLink: ROUTES.AUTH.LOGIN,
     },
   }
 
