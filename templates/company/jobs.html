@@ -113,9 +113,45 @@
                                         <a href="{{ url_for('company_panel.company_applicants_list') }}" class="action-btn" title="إدارة طلبات التوظيف">
                                             <i class="fas fa-users"></i>
                                         </a>
+                                        <button class="action-btn border-0" data-bs-toggle="modal" data-bs-target="#editJob{{ job.id }}" title="تعديل الوظيفة">
+                                            <i class="fas fa-edit text-primary"></i>
+                                        </button>
+                                        <form action="{{ url_for('company_panel.delete_job', job_id=job.id) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذه الوظيفة؟ (لا يمكن التراجع عن هذا الإجراء)');">
+                                            <button type="submit" class="action-btn border-0" title="حذف الوظيفة">
+                                                <i class="fas fa-trash text-danger"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
+                            <!-- Edit Job Modal -->
+                            <div class="modal fade" id="editJob{{ job.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content" style="border-radius: 15px;">
+                                        <div class="modal-header border-0 pb-0">
+                                            <h5 class="modal-title almarai-bold" style="color: var(--primary-dark);">تعديل الوظيفة: {{ job.title }}</h5>
+                                            <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ url_for('company_panel.edit_job', job_id=job.id) }}" method="POST">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label almarai-bold">المسمى الوظيفي</label>
+                                                    <input type="text" class="form-control almarai-regular" name="title" value="{{ job.title }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label almarai-bold">وصف الوظيفة</label>
+                                                    <textarea class="form-control almarai-regular" name="job_description" rows="5" required>{{ job.job_description }}</textarea>
+                                                </div>
+                                                <!-- Other fields can be added here -->
+                                            </div>
+                                            <div class="modal-footer border-0 pt-0">
+                                                <button type="button" class="btn btn-light almarai-regular" data-bs-dismiss="modal">إلغاء</button>
+                                                <button type="submit" class="btn text-white almarai-bold" style="background-color: var(--accent-red);">حفظ التعديلات</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             {% endfor %}
                         </tbody>
                     </table>

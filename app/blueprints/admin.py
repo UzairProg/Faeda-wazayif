@@ -154,8 +154,20 @@ def admin_logout():
 @require_permission('dashboard')
 def admin_dashboard():
     # Gather key metrics
-    total_users = Customers.query.count()
-    total_companies = Company.query.count()
+    # Background task: Clean up soft-deleted accounts older than 7 days
+    from datetime import timedelta
+    cutoff_date = datetime.utcnow() - timedelta(days=7)
+    expired_users = Customers.query.filter(Customers.deleted_at != None, Customers.deleted_at <= cutoff_date).all()
+    for u in expired_users:
+        db.session.delete(u)
+    expired_companies = Company.query.filter(Company.deleted_at != None, Company.deleted_at <= cutoff_date).all()
+    for c in expired_companies:
+        db.session.delete(c)
+    if expired_users or expired_companies:
+        db.session.commit()
+
+    total_users = Customers.query.filter_by(deleted_at=None).count()
+    total_companies = Company.query.filter_by(deleted_at=None).count()
     total_jobs = Jobs.query.count()
     total_teams = Teams.query.count()
     pending_reports = Report.query.filter_by(status='pending').count()
@@ -318,8 +330,13 @@ def list_users():
                 Customers.mobile.ilike(f'%{search}%'),
             )
         )
-    if status_filter:
+    if status_filter == 'deleted':
+        query = query.filter(Customers.deleted_at != None)
+    elif status_filter:
         query = query.filter_by(status=status_filter)
+        query = query.filter_by(deleted_at=None)
+    else:
+        query = query.filter_by(deleted_at=None)
     if verified_filter == 'yes':
         query = query.filter_by(is_verified=True)
     elif verified_filter == 'no':
@@ -435,10 +452,10 @@ def edit_user(id):
 def delete_user(id):
     user = Customers.query.get_or_404(id)
     fullname = user.fullname
-    db.session.delete(user)
+    user.deleted_at = datetime.utcnow()
     db.session.commit()
-    log_admin_action('delete_user', 'customer', id, {'fullname': fullname})
-    flash(f'تم حذف المستخدم: {fullname}', 'success')
+    log_admin_action('delete_user', 'customer', id, {'fullname': fullname, 'soft_delete': True})
+    flash(f'تم نقل المستخدم ({fullname}) إلى سلة المحذوفات وسيتم حذفه نهائياً بعد 7 أيام.', 'success')
     return redirect(url_for('admin.list_users'))
 
 
@@ -476,8 +493,13 @@ def user_action(id):
     elif action == 'activate':
         user.status = 'active'
         user.suspension_reason = None
-        log_admin_action('activate_user', 'customer', user.id)
-        flash(f'تم تفعيل حساب {user.fullname}', 'success')
+        log_admin_action('activate_user', 'customer', id)
+        flash(f'تم تفعيل حساب المستخدم ({user.fullname}).', 'success')
+        
+    elif action == 'restore':
+        user.deleted_at = None
+        log_admin_action('restore_user', 'customer', id)
+        flash(f'تم استعادة حساب المستخدم ({user.fullname}) بنجاح.', 'success')
 
     elif action == 'verify':
         user.is_verified = True
@@ -501,8 +523,9 @@ def user_action(id):
 def reset_password(id):
     user = Customers.query.get_or_404(id)
     new_password = request.form.get('new_password', '')
-    if len(new_password) < 6:
-        flash('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'danger')
+    import re
+    if len(new_password) < 8 or not re.search(r'[a-zA-Z]', new_password):
+        flash('كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف واحد على الأقل.', 'danger')
         return redirect(url_for('admin.view_user', id=user.id))
 
     user.password = new_password
@@ -522,6 +545,7 @@ def reset_password(id):
 def list_companies():
     page = request.args.get('page', 1, type=int)
     search = request.args.get('search', '').strip()
+    status_filter = request.args.get('status', '')
     verified_filter = request.args.get('verified', '')
 
     query = Company.query
@@ -534,6 +558,14 @@ def list_companies():
                 Company.company_email.ilike(f'%{search}%'),
             )
         )
+    if status_filter == 'deleted':
+        query = query.filter(Company.deleted_at != None)
+    elif status_filter:
+        query = query.filter_by(status=status_filter)
+        query = query.filter_by(deleted_at=None)
+    else:
+        query = query.filter_by(deleted_at=None)
+
     if verified_filter == 'yes':
         query = query.filter_by(is_verified=True)
     elif verified_filter == 'no':
@@ -546,6 +578,7 @@ def list_companies():
                            companies=pagination.items,
                            pagination=pagination,
                            search=search,
+                           status_filter=status_filter,
                            verified_filter=verified_filter)
 
 
@@ -579,6 +612,81 @@ def verify_company(id):
         flash(f'تم إلغاء توثيق شركة {company.company_english_name}', 'info')
 
     db.session.commit()
+    return redirect(url_for('admin.view_company', id=company.id))
+
+
+@admin_bp.route('/companies/<int:id>/delete', methods=['POST'])
+@admin_login_required
+@require_permission('companies')
+def delete_company(id):
+    company = Company.query.get_or_404(id)
+    name = company.company_english_name or company.company_arabic_name
+    company.deleted_at = datetime.utcnow()
+    db.session.commit()
+    log_admin_action('delete_company', 'company', id, {'name': name, 'soft_delete': True})
+    flash(f'تم نقل الشركة ({name}) إلى سلة المحذوفات وسيتم حذفها نهائياً بعد 7 أيام.', 'success')
+    return redirect(url_for('admin.list_companies'))
+
+
+@admin_bp.route('/companies/<int:id>/action', methods=['POST'])
+@admin_login_required
+@require_permission('companies')
+def company_action(id):
+    company = Company.query.get_or_404(id)
+    action = request.form.get('action')
+    reason = request.form.get('reason', '')
+    admin = get_current_admin()
+
+    if action == 'suspend':
+        company.status = 'suspended'
+        company.suspension_reason = reason
+        log_admin_action('suspend_company', 'company', id, {'reason': reason})
+        flash(f'تم إيقاف حساب الشركة ({company.company_english_name}) مؤقتاً.', 'warning')
+
+    elif action == 'ban':
+        company.status = 'banned'
+        company.suspension_reason = reason
+        log_admin_action('ban_company', 'company', id, {'reason': reason})
+        flash(f'تم حظر حساب الشركة ({company.company_english_name}) نهائياً.', 'danger')
+
+    elif action == 'activate':
+        company.status = 'active'
+        company.suspension_reason = None
+        log_admin_action('activate_company', 'company', id)
+        flash(f'تم تفعيل حساب الشركة ({company.company_english_name}).', 'success')
+
+    elif action == 'restore':
+        company.deleted_at = None
+        log_admin_action('restore_company', 'company', id)
+        flash(f'تم استعادة حساب الشركة ({company.company_english_name}) بنجاح.', 'success')
+
+    elif action == 'warn':
+        company.warnings_count = (company.warnings_count or 0) + 1
+        log_admin_action('warn_company', 'company', id, {'reason': reason, 'count': company.warnings_count})
+        flash(f'تم إرسال تحذير للشركة. إجمالي التحذيرات: {company.warnings_count}', 'warning')
+
+    db.session.commit()
+    return redirect(url_for('admin.view_company', id=company.id))
+
+
+@admin_bp.route('/companies/<int:id>/reset-password', methods=['POST'])
+@admin_login_required
+@require_permission('companies')
+def reset_company_password(id):
+    company = Company.query.get_or_404(id)
+    new_password = request.form.get('new_password', '')
+    
+    import re
+    if len(new_password) < 8 or not re.search(r'[a-zA-Z]', new_password):
+        flash('كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف واحد على الأقل.', 'danger')
+        return redirect(url_for('admin.view_company', id=company.id))
+
+    from werkzeug.security import generate_password_hash
+    company.login_password = generate_password_hash(new_password)
+    db.session.commit()
+    
+    log_admin_action('reset_password', 'company', company.id)
+    flash(f'تم إعادة تعيين كلمة مرور الشركة {company.company_english_name} بنجاح.', 'success')
     return redirect(url_for('admin.view_company', id=company.id))
 
 @admin_bp.route('/companies/<int:id>/edit', methods=['GET', 'POST'])
@@ -1122,6 +1230,48 @@ def audit_logs():
                            admins=admins,
                            admin_filter=admin_filter,
                            action_filter=action_filter)
+
+@admin_bp.route('/audit-logs/export')
+@admin_login_required
+@require_permission('audit_logs')
+def export_audit_logs():
+    import csv
+    import io
+    from flask import Response
+
+    admin_filter = request.args.get('admin_id', '', type=str)
+    action_filter = request.args.get('action', '')
+
+    query = AuditLog.query
+
+    if admin_filter:
+        query = query.filter_by(admin_id=int(admin_filter))
+    if action_filter:
+        query = query.filter_by(action=action_filter)
+
+    query = query.order_by(AuditLog.created_at.desc())
+    logs = query.all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['التاريخ', 'المدير', 'العملية', 'الهدف', 'IP Address', 'تفاصيل إضافية'])
+
+    for log in logs:
+        admin_name = log.admin.username if log.admin else 'غير معروف'
+        target = f"{log.target_type_label} #{log.target_id}" if log.target_id else log.target_type_label
+        writer.writerow([
+            log.created_at.strftime('%Y/%m/%d %H:%M:%S'),
+            admin_name,
+            log.action_label,
+            target,
+            log.ip_address or '',
+            str(log.details) if log.details else ''
+        ])
+
+    # utf-8-sig to support Arabic characters in Excel
+    response = Response(output.getvalue().encode('utf-8-sig'), mimetype='text/csv')
+    response.headers['Content-Disposition'] = 'attachment; filename=audit_logs.csv'
+    return response
 
 
 # ─────────────────────────────────────────────────────────────

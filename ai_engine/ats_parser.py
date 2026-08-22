@@ -136,15 +136,22 @@ def parse_cv(pdf_path: str) -> Dict[str, Optional[str]]:
     """
     logger.info("ATS Parser: starting extraction for '%s'", pdf_path)
 
+    # Extract all text across all pages in the PDF into a single string.
     raw_text = _extract_text_from_pdf(pdf_path)
 
     # --- Field extraction (tries Arabic pattern first, then English) ----------
+    # We iterate over predefined regex patterns to locate specific sections.
+    # The _extract_field function is robust enough to handle the ordered tuples 
+    # of (Arabic_Pattern, English_Pattern) for flexible multi-language extraction.
     university_raw = _extract_field(_PATTERNS["university"], raw_text)
     qualification   = _extract_field(_PATTERNS["qualification"], raw_text)
     experience      = _extract_field(_PATTERNS["experience"], raw_text)
     skills          = _extract_field(_PATTERNS["skills"], raw_text)
 
     # --- University translation -----------------------------------------------
+    # The QS ranking dataset requires English names for high-confidence fuzzy matching.
+    # We detect if the parsed university contains Arabic script. If so, we translate it 
+    # using deep-translator (Google Translator API) for accurate global scoring later.
     if university_raw and _is_arabic(university_raw):
         university_en = _translate_to_english(university_raw)
         logger.info(
@@ -153,9 +160,10 @@ def parse_cv(pdf_path: str) -> Dict[str, Optional[str]]:
             university_en,
         )
     elif university_raw:
-        # Already in English — no translation needed
+        # Already in English — no translation needed, use as is.
         university_en = university_raw
     else:
+        # Failsafe if the parser couldn't find a valid university name.
         university_en = None
 
     result = {

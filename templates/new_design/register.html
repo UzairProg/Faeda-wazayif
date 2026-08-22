@@ -38,7 +38,7 @@
         box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.25);
     }
 
-    .btn-custom-red {
+    .btn-faeda-accent {
         background-color: var(--accent-red);
         color: white;
         border-radius: 10px;
@@ -48,7 +48,7 @@
         transition: transform 0.3s, background-color 0.3s;
     }
 
-    .btn-custom-red:hover {
+    .btn-faeda-accent:hover {
         background-color: #9e203b;
         transform: translateY(-2px);
         color: white;
@@ -163,25 +163,21 @@
                 </div>
 
                 <div class="text-center mb-4">
-                    <label class="form-label almarai-extrabold fs-5 mb-3">تسجيل كـ :</label>
-                    <div class="radio-btns d-flex justify-content-center flex-wrap">
-                        <input type="radio" id="individual" name="userrole" value="customers" checked>
-                        <label for="individual">
+                    <input type="hidden" name="userrole" value="customers">
+                    <div class="d-flex justify-content-center flex-wrap">
+                        <div class="text-center p-3 rounded" style="background-color: #f8f9fa; border: 2px solid var(--primary-dark);">
                             <img src="{{ url_for('static', filename='new_design/images/people.png') }}" height="50"
-                                alt="أفراد">
-                            <h5 class="almarai-regular m-0">أفراد</h5>
-                        </label>
-
-                        <input type="radio" id="enterprise" name="userrole" value="company">
-                        <label for="enterprise">
-                            <img src="{{ url_for('static', filename='new_design/images/enterprise.png') }}" height="50"
-                                alt="منشآت">
-                            <h5 class="almarai-regular m-0">منشآت</h5>
-                        </label>
+                                alt="أفراد" class="mb-2" style="background-color: var(--accent-yellow); padding: 8px; border-radius: 10px;">
+                            <h5 class="almarai-extrabold m-0" style="color: var(--primary-dark);">تسجيل حساب أفراد</h5>
+                        </div>
                     </div>
+                    <p class="text-muted almarai-regular mt-3">
+                        هل تريد تسجيل منشأة؟ 
+                        <a href="{{ url_for('company_panel.company_login') }}" class="almarai-bold" style="color: var(--accent-red); text-decoration: underline;">اضغط هنا لبوابة المنشآت</a>
+                    </p>
                 </div>
 
-                <button type="submit" class="btn btn-custom-red w-100 almarai-bold mb-4 fs-5">إنشاء حساب</button>
+                <button type="submit" class="btn btn-faeda-accent w-100 almarai-bold mb-4 fs-5">إنشاء حساب</button>
 
                 <div class="text-center mt-3 almarai-regular">
                     <span class="text-muted">لديك حساب بالفعل؟</span>

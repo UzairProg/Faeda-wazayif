@@ -5,8 +5,13 @@
 
 {% block extra_css %}
 <style>
-  /* Match the React phone input to the new theme */
-  #react-phone-input-root input {
+  /* Match the intl-tel-input to the new theme */
+  .iti {
+      display: block !important;
+      width: 100% !important;
+      direction: ltr;
+  }
+  .iti__input {
       display: block !important;
       width: 100% !important;
       height: 48px !important;
@@ -17,35 +22,14 @@
       border: 1px solid #ced4da !important;
       border-radius: 10px !important;
       transition: all 0.3s ease !important;
-      padding-right: 15px !important;
   }
-  
-  #react-phone-input-root select,
-  #react-phone-input-root button,
-  #react-phone-input-root [role="combobox"],
-  #react-phone-input-root [role="button"],
-  #react-phone-input-root .flag-dropdown {
-      height: 48px !important;
-      min-height: 48px !important;
-      border: 1px solid #ced4da !important;
-      border-radius: 10px !important;
-      background-color: #f8f9fa !important;
-  }
-
-  #react-phone-input-root input {
-      direction: ltr !important; 
-      text-align: left !important;
-      flex: 1 1 auto !important;
-  }
-
-  #react-phone-input-root .react-tel-input input {
-      padding-left: 48px !important; 
-  }
-
-  #react-phone-input-root input:focus {
+  .iti__input:focus {
       border-color: var(--primary-light) !important;
       outline: 0 !important;
       box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.25) !important;
+  }
+  .iti__flag-container {
+      border-radius: 10px 0 0 10px !important;
   }
 
   .auth-card {
@@ -170,9 +154,7 @@
                         
                         <div class="col-md-6" dir="ltr">
                             <label class="form-label almarai-bold w-100 text-end" for="phoneNumber" style="color: var(--primary-dark);">رقم الهاتف <span class="text-danger">*</span></label>
-                            <div id="react-phone-input-root" data-initial-value="{{user.mobile}}"></div>
-                            <!-- Hidden input to store the phone number for form submission -->
-                            <input type="hidden" name="phoneNumber" id="hiddenPhoneNumber" value="{{user.mobile}}">
+                            <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control" value="{{user.mobile}}" style="direction: ltr; text-align: left;" required maxlength="9" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
                         
                         <div class="col-md-6">
@@ -217,8 +199,8 @@
 {% endblock %}
 
 {% block extra_js %}
-<link rel="stylesheet" href="{{ url_for('static', filename='react/assets/index.css') }}">
-<script type="module" src="{{ url_for('static', filename='react/assets/index.js') }}"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <script src="{{ url_for('static', filename='API/ar_country.js') }}"></script>
 <script>
   // Image preview functionality
@@ -232,12 +214,20 @@
       }
   });
 
-  // Capture the React phone input value right before form submission
-  document.querySelector('form').addEventListener('submit', function() {
-    var reactInput = document.querySelector('#react-phone-input-root input');
-    if (reactInput && reactInput.value) {
-      document.getElementById('hiddenPhoneNumber').value = reactInput.value;
+  // Initialize intl-tel-input
+  var input = document.querySelector("#phoneNumber");
+  var iti = window.intlTelInput(input, {
+    initialCountry: "sa",
+    preferredCountries: ["sa", "ae", "eg", "kw", "qa", "bh", "om"],
+    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
+        return "51 234 6789";
     }
+  });
+
+  // Before submit, set the full number if needed, or rely on normal form submission
+  document.querySelector('form').addEventListener('submit', function() {
+      input.value = iti.getNumber();
   });
 </script>
 {% endblock %}

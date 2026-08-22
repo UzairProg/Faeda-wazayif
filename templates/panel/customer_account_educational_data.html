@@ -4,7 +4,30 @@
 {% block nav_edu %}active{% endblock %}
 
 {% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
+  .select2-container .select2-selection--single {
+      height: 48px;
+      border-radius: 10px;
+      border: 1px solid #ced4da;
+      background-color: #f8f9fa;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+      line-height: 48px;
+      padding-right: 15px;
+      color: #212529;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 46px;
+      left: 10px;
+      right: auto;
+  }
+  .select2-container--default[dir="rtl"] .select2-selection--single .select2-selection__clear {
+      margin-left: 10px;
+      margin-right: 0;
+      float: left;
+      line-height: 46px;
+  }
   .auth-card {
       background-color: white;
       border-radius: 20px;
@@ -124,7 +147,17 @@
                         
                         <div class="col-md-6">
                             <label for="university" class="form-label almarai-bold" style="color: var(--primary-dark);">الجامعة <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" id="university" name="new_university" value="{{user.university}}" required placeholder="اسم الجامعة..."/>
+                            <select class="form-select select2" id="university" name="new_university" required>
+                                <option value=""></option> <!-- For Select2 placeholder -->
+                                {% if user.university %}
+                                    <option value="{{user.university}}" selected>{{user.university}}</option>
+                                {% endif %}
+                                {% for uni in universities %}
+                                    {% if uni != user.university %}
+                                        <option value="{{uni}}">{{uni}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
                         </div>
                         
                         <div class="col-md-6">
@@ -138,8 +171,18 @@
                         </div>
                         
                         <div class="col-md-6">
-                            <label for="gpa" class="form-label almarai-bold" style="color: var(--primary-dark);">التقدير / المعدل <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="gpa" name="new_gpa" value="{{user.gpa}}" required placeholder="مثال: 4.5 أو ممتاز"/>
+                            <label class="form-label almarai-bold" style="color: var(--primary-dark);">التقدير / المعدل <span class="text-danger">*</span></label>
+                            <div class="input-group" dir="ltr">
+                                <select class="form-select" id="gpa_scale" style="max-width: 120px; border-radius: 10px 0 0 10px; background-color: #f8f9fa;" required>
+                                    <option value="4">من 4</option>
+                                    <option value="5" selected>من 5</option>
+                                    <option value="100">من 100%</option>
+                                </select>
+                                <input type="text" class="form-control" id="gpa_value" placeholder="مثال: 3.75" style="border-radius: 0 10px 10px 0;" required
+                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1'); let match = this.value.match(/^\d+(?:\.\d{0,3})?/); this.value = match ? match[0] : '';">
+                            </div>
+                            <input type="hidden" name="new_gpa" id="hidden_gpa" value="{{user.gpa}}">
+                            <small class="text-danger d-none mt-1 almarai-regular" id="gpaError">القيمة المدخلة أكبر من المعدل المختار.</small>
                         </div>
                     </div>
                     
@@ -156,4 +199,44 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#university').select2({
+            placeholder: "ابحث عن جامعتك...",
+            allowClear: true,
+            dir: "rtl"
+        });
+        
+        // GPA Logic
+        let existingGpa = "{{ user.gpa or '' }}";
+        let gpaValueInput = document.getElementById('gpa_value');
+        let gpaScaleSelect = document.getElementById('gpa_scale');
+        let hiddenGpa = document.getElementById('hidden_gpa');
+        
+        if (existingGpa && existingGpa.includes('/')) {
+            let parts = existingGpa.split('/');
+            gpaValueInput.value = parts[0].trim();
+            gpaScaleSelect.value = parts[1].trim();
+        } else {
+            gpaValueInput.value = existingGpa;
+        }
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            let val = parseFloat(gpaValueInput.value);
+            let scale = parseFloat(gpaScaleSelect.value);
+            if (val > scale || isNaN(val)) {
+                e.preventDefault();
+                document.getElementById('gpaError').classList.remove('d-none');
+            } else {
+                document.getElementById('gpaError').classList.add('d-none');
+                hiddenGpa.value = gpaValueInput.value + ' / ' + gpaScaleSelect.value;
+            }
+        });
+    });
+</script>
 {% endblock %}

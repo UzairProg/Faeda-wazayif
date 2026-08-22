@@ -45,6 +45,7 @@ class Customers(db.Model):
     verified_at = db.Column(db.DateTime, nullable=True)
     suspension_reason = db.Column(db.Text, nullable=True)
     warnings_count = db.Column(db.Integer, default=0)
+    deleted_at = db.Column(db.DateTime, nullable=True)
 
     ############# AI Recommendation Fields ##########
     resume_text = db.Column(db.Text, nullable=True)

@@ -83,6 +83,30 @@
         background-color: #c9302c;
         color: white;
     }
+    .iti {
+        display: block !important;
+        width: 100% !important;
+        direction: ltr;
+    }
+    .iti__input {
+        display: block !important;
+        width: 100% !important;
+        border-radius: 10px !important;
+        padding: 0.75rem 1rem !important;
+        border: 1px solid #e0e4ec !important;
+        background-color: #f8f9fc !important;
+        font-family: 'Almarai', sans-serif !important;
+        color: var(--primary-dark) !important;
+    }
+    .iti__input:focus {
+        border-color: var(--primary-dark) !important;
+        box-shadow: 0 0 0 0.2rem rgba(35, 46, 76, 0.1) !important;
+        background-color: white !important;
+        outline: 0 !important;
+    }
+    .iti__flag-container {
+        border-radius: 10px 0 0 10px !important;
+    }
 </style>
 {% endblock %}
 
@@ -117,34 +141,31 @@
 
                         <div class="row g-4 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label almarai-bold">الاسم باللغة العربية</label>
-                                <input type="text" class="form-control almarai-regular" name="arabic_name" value="{{ company.company_arabic_name or '' }}" placeholder="أدخل اسم المنشأة بالعربية">
+                                <label class="form-label almarai-bold">الاسم باللغة العربية <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control almarai-regular" name="arabic_name" value="{{ company.company_arabic_name or '' }}" placeholder="أدخل اسم المنشأة بالعربية" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label almarai-bold">الاسم باللغة الإنجليزية</label>
+                                <label class="form-label almarai-bold">الاسم باللغة الإنجليزية <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control almarai-regular" name="english_name" value="{{ company.company_english_name or '' }}" placeholder="Enter Company Name" required>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label almarai-bold">مجال المنشأة (الصناعة)</label>
-                            <input type="text" class="form-control almarai-regular" name="industry" value="{{ company.company_field or '' }}" placeholder="مثال: تقنية المعلومات، الرعاية الصحية، البناء...">
+                            <label class="form-label almarai-bold">مجال المنشأة (الصناعة) <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control almarai-regular" name="industry" value="{{ company.company_field or '' }}" placeholder="مثال: تقنية المعلومات، الرعاية الصحية، البناء..." required>
                         </div>
 
                         <div class="row g-4 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label almarai-bold">البريد الإلكتروني للتواصل</label>
+                                <label class="form-label almarai-bold">البريد الإلكتروني للتواصل <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-white border-end-0" style="border-radius: 0 10px 10px 0; border-color:#e0e4ec;"><i class="fas fa-envelope text-muted"></i></span>
                                     <input type="email" class="form-control almarai-regular border-start-0 ps-0" name="email" value="{{ company.company_email or '' }}" placeholder="email@company.com" required style="border-radius: 10px 0 0 10px; background-color: white;">
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label almarai-bold">رقم الجوال / الهاتف</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0" style="border-radius: 0 10px 10px 0; border-color:#e0e4ec;"><i class="fas fa-phone text-muted"></i></span>
-                                    <input type="text" class="form-control almarai-regular border-start-0 ps-0" name="mobile" value="{{ company.company_mobile or '' }}" placeholder="05XXXXXXXX" style="border-radius: 10px 0 0 10px; background-color: white;">
-                                </div>
+                            <div class="col-md-6" dir="ltr">
+                                <label class="form-label almarai-bold w-100 text-end">رقم الجوال / الهاتف <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control almarai-regular" id="companyMobile" name="mobile" value="{{ company.company_mobile or '' }}" required style="direction: ltr; text-align: left; width: 100%;" maxlength="9" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
                         </div>
 
@@ -162,19 +183,15 @@
                         <h4 class="almarai-bold mb-4" style="color: var(--primary-dark);">مؤشرات المنشأة (للوحة التحكم)</h4>
                         
                         <div class="row g-4 mb-4">
-                            <div class="col-md-3">
-                                <label class="form-label almarai-bold">حجم المشاريع</label>
-                                <input type="number" class="form-control almarai-regular" name="project_size" value="{{ company.project_size or 0 }}">
-                            </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label almarai-bold">عدد المشاريع</label>
                                 <input type="number" class="form-control almarai-regular" name="number_of_projects" value="{{ company.number_of_projects or 0 }}">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label almarai-bold">نسبة نجاح المشاريع (%)</label>
                                 <input type="number" step="0.1" class="form-control almarai-regular" name="success_rate" value="{{ company.success_rate or 0.0 }}">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label almarai-bold">السمعة</label>
                                 <input type="text" class="form-control almarai-regular" name="reputation" value="{{ company.reputation or 'N/A' }}" placeholder="مثال: A+">
                             </div>
@@ -212,6 +229,8 @@
 </div>
 
 {% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <script>
     function previewImage(input) {
         if (input.files && input.files[0]) {
@@ -229,6 +248,20 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    var input = document.querySelector("#companyMobile");
+    var iti = window.intlTelInput(input, {
+        initialCountry: "sa",
+        preferredCountries: ["sa", "ae", "eg", "kw", "qa", "bh", "om"],
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
+            return "51 234 6789";
+        }
+    });
+
+    document.querySelector('form').addEventListener('submit', function() {
+        input.value = iti.getNumber();
+    });
 </script>
 {% endblock %}
 {% endblock %}

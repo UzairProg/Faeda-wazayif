@@ -13,6 +13,7 @@ from services.company import *  # noqa: F403
 from services.job import * # noqa: F403
 from services.skills import * # noqa: F403
 import os
+import csv
 from werkzeug.utils import secure_filename
 import random
 import secrets
@@ -33,6 +34,22 @@ from datetime import datetime
 
 from ai_engine.market_value_calculator import get_market_value_for_customer
 from services.customer import CustomerProfileHistory
+
+QS_UNIVERSITIES = []
+
+def get_qs_universities():
+    global QS_UNIVERSITIES
+    if not QS_UNIVERSITIES:
+        # current_app.root_path is typically app folder, so we go up to find ai_engine
+        csv_path = os.path.join(current_app.root_path, '..', 'ai_engine', 'Data', 'qs_rankings_2025.csv')
+        try:
+            with open(csv_path, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                QS_UNIVERSITIES = [row['Institution Name'] for row in reader if row.get('Institution Name')]
+        except Exception as e:
+            print(f"Error loading QS dataset: {e}")
+            QS_UNIVERSITIES = []
+    return QS_UNIVERSITIES
 
 def log_profile_update(customer_obj, event_desc):
     """Recalculates market value and logs it to history."""
@@ -71,14 +88,7 @@ def allowed_file(filename):
 
 
 
-
 ########## login ###########
-# @customer.route('/login')
-# def get_login():
-#     return render_template('/login/colorlib-regform-17/images/tes/index.html')
-
-
-
 
 @customer.route('/login')
 def get_login():
@@ -86,6 +96,10 @@ def get_login():
 
 @customer.route('/login', methods=['POST'])
 def login():
+    """
+    Handle multi-tenant authentication for Candidates, Companies, Universities, and Admins.
+    Supports both JSON API clients and standard HTML form submissions.
+    """
     wants_json = request.is_json or request.headers.get('Accept') == 'application/json' or 'json' in request.headers.get('Accept', '').lower()
 
     if request.is_json:
@@ -101,6 +115,7 @@ def login():
     query3 = Admin.get_by_email(email)
     query4 = University.query.filter_by(email=email).first()
 
+    # Admin login check
     if query3 and query3.check_password(password):
         if not query3.is_active:
             if wants_json:
@@ -130,7 +145,13 @@ def login():
         flash(f'مرحباً {query3.username}!', 'success')
         return redirect(url_for('admin.admin_dashboard'))
 
+    # Candidate login check
     if query is not None and query.password == password:
+        if getattr(query, 'deleted_at', None) is not None:
+            if wants_json:
+                return jsonify({"success": False, "message": "هذا الحساب تم حذفه سابقاً."}), 403
+            return render_template('/new_design/login.html', deleted_error=True)
+
         if query.status == 'suspended':
             session['suspended_email'] = query.email
             session['suspension_reason'] = query.suspension_reason or 'انتهاك شروط الاستخدام'
@@ -138,7 +159,6 @@ def login():
                 return jsonify({"success": False, "message": "حسابك معطل أو موقوف مؤقتاً."}), 403
             return redirect(url_for('core.suspended_account'))
             
-        # save session
         session['session_customer'] = True
         session['show_banner'] = True
         session['user_id'] = query.id
@@ -163,7 +183,8 @@ def login():
 
         flash(f'مرحباً بك مجدداً {full_name}!', 'success')
         return redirect('/')
-        
+
+    # Company login check
     if query2 is not None and query2.login_password == password:
         if query2.status == 'suspended':
             session['suspended_email'] = query2.company_email
@@ -197,6 +218,7 @@ def login():
         flash('<span class="h1-size">تم تسجيل الدخول بإسم شركة</span> <span class="h1-size">'  '</span>' '<span class="h1-size">   </span> <span class="h1-size">' + company_name + '</span>')
         return redirect('/')
 
+    # University login check
     if query4 is not None and query4.password == password:
         if query4.status == 'suspended':
             session['suspended_email'] = query4.email
@@ -227,10 +249,11 @@ def login():
 
         flash(f'مرحباً بك {uni_name}!')
         return redirect('/university')
-    else:
-        if wants_json:
-            return jsonify({"success": False, "message": "بيانات الدخول غير صحيحة. يرجى التأكد من البريد الإلكتروني وكلمة المرور."}), 401
-        return render_template('/new_design/login.html', error=True)
+
+    # No valid credentials found
+    if wants_json:
+        return jsonify({"success": False, "message": "بيانات الدخول غير صحيحة. يرجى التأكد من البريد الإلكتروني وكلمة المرور."}), 401
+    return render_template('/new_design/login.html', error=True)
 
     #### register ######
 
@@ -256,6 +279,10 @@ def generate_unique_user_id():
 
 @customer.route('/register', methods=['POST'])
 def reg_page():
+    """
+    Process new customer registration.
+    Validates form data, password strength, and ensures the email is unique across the platform.
+    """
     f_name = request.form.get('fName')  # Ensure this matches your form field's name attribute
     l_name = request.form.get('lName') 
     full_name = f_name + l_name
@@ -264,6 +291,11 @@ def reg_page():
     password = request.form.get('password')
     acc_type = request.form.get('userrole')
     activated = False
+
+    # Reject company registration from this form - companies must use their own portal
+    if acc_type == "company":
+        flash('لتسجيل حساب منشأة، يرجى استخدام بوابة تسجيل المنشآت.', 'warning')
+        return redirect(url_for('company_panel.company_login'))
 
     # Validation check
     if not all([full_name, email, mobile, password, acc_type]):
@@ -274,7 +306,7 @@ def reg_page():
         flash('يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتحتوي على رمز خاص من (!@#$&*)', 'error')
         return render_template('/new_design/register.html', error=True)
 
-    # Check if email is already registered
+    # Check if email is already registered (in both customers and companies tables)
     check_customer = Customers.get_by_email(email) # noqa: F405
     check_company = Company.get_by_email(company_email=email) # noqa: F405
 
@@ -283,28 +315,16 @@ def reg_page():
         return render_template('/new_design/register.html' , error = True)
 
     try:
-        if acc_type == "customers":
-            new_user_id = generate_unique_user_id()
-            new_customer = Customers(# noqa: F405
-                user_id=new_user_id,
-                fullname=full_name,
-                email=email,
-                mobile=mobile,
-                password=password,
-                activated=activated,
-            )
-            db.session.add(new_customer) # noqa: F405
-
-        elif acc_type == "company":
-            new_company = Company( # noqa: F405
-                company_english_name=full_name,
-                company_email=email,
-                company_mobile=mobile,
-                login_password=password,
-                activated=activated,
-            )
-            db.session.add(new_company) # noqa: F405
-
+        new_user_id = generate_unique_user_id()
+        new_customer = Customers(# noqa: F405
+            user_id=new_user_id,
+            fullname=full_name,
+            email=email,
+            mobile=mobile,
+            password=password,
+            activated=activated,
+        )
+        db.session.add(new_customer) # noqa: F405
         db.session.commit() # noqa: F405
         flash('تم انشاء الحساب بنجاح', 'يرجى تسجيل الدخول للمتابعة')
     except Exception as e:
@@ -321,6 +341,10 @@ def reg_page():
 
 @customer.route('/forgot_password', methods=['GET', 'POST'])
 def post_reset_pass():
+    """
+    Handle password reset requests.
+    Generates a secure token and sends a reset link to the user's email address.
+    """
     if request.method == 'POST':
         email = request.form.get("email")
         user = Customers.query.filter_by(email=email).first() # noqa: F405
@@ -432,6 +456,10 @@ def searchjobb():
 ######################
 @customer.route('/applyjob/<int:job_id>' , methods=['GET','POST'])
 def apply_for_job(job_id):
+    """
+    Process a job application from a customer or a team.
+    Ensures the user's profile is fully completed before allowing the application.
+    """
     ##### it has to be in session and compeleted data profile##########
     if "session_customer" not in session:
         session.clear()
@@ -949,7 +977,8 @@ def get_edit_profile_educational_data():
                            educational_qualification=user.educational_qualification,
                            university=user.university,
                            department_university=user.department_university,
-                           gpa=user.gpa)
+                           gpa=user.gpa,
+                           universities=get_qs_universities())
 
 
 @customer.route('/edit-profile/personal_data', methods=['POST'])
@@ -1357,9 +1386,7 @@ def my_profile():
             
         return render_template('panel/profile.html', customer=customer_obj)
     elif 'session_company' in session:
-        company_id = session.get('company_id')
-        company_obj = Company.query.get(company_id)  # noqa: F405
-        return render_template('panel/company_panel/profile.html', company=company_obj, user=company_obj)
+        return redirect(url_for('company_panel.company_profile'))
     else:
         flash('يجب تسجيل الدخول أولاً')
         return redirect('/login')

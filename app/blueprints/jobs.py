@@ -25,34 +25,42 @@ from ai_engine.recommendation_model import get_job_recommendations
 
 @job.route('/add_new_job')
 def add_job_GET():
-        if "session_company" in session:
-            ########## get all skills ########
-            skill = Skills.query.all()  # noqa: F405
-            id = session['company_id']
-            company = Company.query.get(id)  # noqa: F405
-            # public
-            public_data_not_null = Company.is_public_not_null(id)  # noqa: F405
-            if not public_data_not_null:
-                flash('You have to compelete all missing data')
-                return redirect('/company_editprofile/public')
-                #contact_data
+    """
+    Render the page for adding a new job.
+    Ensures that the company has completed public, contact, and commercial data before allowing job creation.
+    """
+    if "session_company" in session:
+        ########## get all skills ########
+        skill = Skills.query.all()  # noqa: F405
+        id = session['company_id']
+        company = Company.query.get(id)  # noqa: F405
+        # public
+        public_data_not_null = Company.is_public_not_null(id)  # noqa: F405
+        if not public_data_not_null:
+            flash('You have to compelete all missing data')
+            return redirect('/company_editprofile/public')
+            #contact_data
 
-            contact_data_not_null = Company.is_contact_data_not_null(id)
-            if not contact_data_not_null:
-                flash('You have to compelete all missing data')
-                return redirect('/company_editprofile/contact_data')
-            #commercial_data
-            data_not_null = Company.is_commercial_data_not_null(id)
-            if not data_not_null:
-                return redirect('/company_editprofile/commercial_data')
-            return render_template('panel/company_panel/add_job.html', skills = skill , company=company)
+        contact_data_not_null = Company.is_contact_data_not_null(id)
+        if not contact_data_not_null:
+            flash('You have to compelete all missing data')
+            return redirect('/company_editprofile/contact_data')
+        #commercial_data
+        data_not_null = Company.is_commercial_data_not_null(id)
+        if not data_not_null:
+            return redirect('/company_editprofile/commercial_data')
+        return render_template('panel/company_panel/add_job.html', skills = skill , company=company)
 
-        else:
-            flash('you have to login frist')
-            return redirect('/login')
+    else:
+        flash('you have to login frist')
+        return redirect('/login')
 
 @job.route('/add_new_job', methods=['POST'])
 def add_job_post():
+    """
+    Process the submission of a new job post.
+    Validates company profile completeness and required job fields before inserting into the database.
+    """
     # Get form data
     id = session['company_id']
         # public
@@ -129,7 +137,11 @@ def add_job_post():
 @job.route('/job-list', defaults={'page': 1})
 @job.route('/job-list/<int:page>')
 def job_list_get(page):
-    per_page = 6  # Adjust as needed
+    """
+    Retrieve and display a paginated list of available jobs.
+    Integrates AI recommendations if a customer is logged in, displaying recommended jobs first.
+    """
+    per_page = request.args.get('per_page', 6, type=int)
     application_count = 0
     recommended_jobs = []
     recommended_ids = []
@@ -183,16 +195,19 @@ def job_list_get(page):
 @job.route('/read_job/<int:job_id>')
 def read_job(job_id):
     application_count = 0
-    if "user_id" in session:
+    cutomer_teams = ""
+    is_company_viewer = False
+
+    if "session_customer" in session and "user_id" in session:
+        # Customer viewing a job - show apply options and teams
         customer_id = session['user_id']
         application_count = Customers.get_number_of_job_applications_by_customer_id(customer_id)# noqa: F405
         cutomer_teams = Teams.get_teams_for_admin(admin_id = customer_id)# noqa: F405
-        print(cutomer_teams)
-        job = Jobs.get_by_id(id=job_id)  # noqa: F405
-    else:
-        application_count = ""
-        cutomer_teams = ""
-        job = Jobs.get_by_id(id=job_id)# noqa: F405
+    elif "session_company" in session:
+        # Company viewing a job - read-only view, no apply options
+        is_company_viewer = True
+
+    job = Jobs.get_by_id(id=job_id)  # noqa: F405
 
     if not job:
         abort(404)
@@ -205,7 +220,8 @@ def read_job(job_id):
         return redirect(url_for('job.job_list_get'))
 
 
-    return render_template('new_design/apply_order.html' , job=job,application_count = application_count,cutomer_teams = cutomer_teams)
+    return render_template('new_design/apply_order.html' , job=job, application_count=application_count, cutomer_teams=cutomer_teams, is_company_viewer=is_company_viewer)
+
 
 @job.route('/edit-post')
 def edit_post():
@@ -374,11 +390,15 @@ def update_list(page):
     job_type = request.args.get('ttype')
     specialization = request.args.get('study')
     city = request.args.get('city')
+    title = request.args.get('title')
 
     # Construct the base query
     query = Jobs.query.filter_by(status='approved')
 
     # Apply filters if parameters are provided
+    if title:
+        query = query.filter(Jobs.title.ilike(f'%{title}%'))
+
     if job_type:
         jt_obj = JobType.query.filter_by(name_ar=job_type).first()
         if jt_obj and jt_obj.name_en:
@@ -438,7 +458,7 @@ def update_list(page):
     if recommended_ids:
         query = query.filter(~Jobs.id.in_(recommended_ids))
 
-    per_page = 6  # Adjust as needed
+    per_page = request.args.get('per_page', 6, type=int)
 
     # Paginate the filtered jobs
     paginated_jobs = query.paginate(page=page, per_page=per_page, error_out=False)

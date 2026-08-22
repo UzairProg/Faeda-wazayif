@@ -23,7 +23,7 @@
 {% block content %}
 <div class="container">
     <!-- Button to trigger modal (hidden, as it's not needed for auto display) -->
-    <button type="button" class="almarai-regular btn btn-primary m-5" data-toggle="modal" data-target="#exampleModal" style="display: none;">
+    <button type="button" class="almarai-regular btn btn-faeda-primary m-5" data-toggle="modal" data-target="#exampleModal" style="display: none;">
         انشاء حساب
     </button>
 
@@ -43,7 +43,7 @@
                         <img src="{{ url_for('static', filename='images/Group.png') }}" alt="" class="img-fluid">
                     </div>
                     <div class="p-2" style="margin-left: 30%;">
-                       <a href="{{ url_for('customer.get_login') }}"> <button style="background-color:#F0BF56; color: black; border-radius: 10px; border: 2px solid;" type="button" class="almarai-bold btn btn-confirm m-3">تأكيد</button></a>
+                       <a href="{{ url_for('customer.get_login') }}"> <button class="btn btn-faeda-accent" type="button" class="almarai-bold btn btn-confirm m-3">تأكيد</button></a>
                     </div>
                 </div>
             </div>

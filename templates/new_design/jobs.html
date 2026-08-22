@@ -83,7 +83,8 @@
         pointer-events: none;
     }
     
-    .search-input-group .form-select { 
+    .search-input-group .form-select,
+    .search-input-group .form-control { 
         border-radius: 12px; 
         padding: 14px 45px 14px 15px; /* Extra padding for icon on the right */
         border: 2px solid #edf2f7; 
@@ -94,21 +95,23 @@
         appearance: none;
     }
     
-    .search-input-group .form-select:focus {
+    .search-input-group .form-select:focus,
+    .search-input-group .form-control:focus {
         border-color: var(--misk-green);
         background-color: #fff;
         box-shadow: 0 0 0 4px rgba(44, 184, 132, 0.1);
+        outline: none;
     }
     
     /* Custom chevron for select */
-    .search-input-group::after {
+    .search-input-group.is-select::after {
         content: '\25BC';
         position: absolute;
         left: 15px;
         top: 50%;
         transform: translateY(-50%);
         color: #a0aec0;
-        font-size: 0.7rem;
+        font-size: 0.8rem;
         pointer-events: none;
     }
 
@@ -337,10 +340,18 @@
     
     <!-- SEARCH SECTION (FLOATING) -->
     <div class="search-section" {% if is_first_load %}data-aos="fade-up" data-aos-delay="400"{% endif %}>
-        <form method="GET" action="/update-list" class="row g-4 align-items-end">
-            <div class="col-md-3">
-                <label for="requestType" class="form-label almarai-bold">نوع الطلب</label>
+        <form method="GET" action="/update-list" class="row g-3 align-items-end">
+            <div class="col-lg-3 col-md-6">
+                <label for="searchTitle" class="form-label almarai-bold">المسمى الوظيفي</label>
                 <div class="search-input-group">
+                    <i class="ph ph-text-t"></i>
+                    <input type="text" class="form-control almarai-regular" id="searchTitle" name="title" placeholder="ابحث باسم الوظيفة..." value="{{ request.args.get('title', '') }}">
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <label for="requestType" class="form-label almarai-bold">نوع الطلب</label>
+                <div class="search-input-group is-select">
                     <i class="ph ph-briefcase"></i>
                     <select class="form-select almarai-regular" id="requestType" name="ttype">
                         <option value="" selected>الكل</option>
@@ -351,9 +362,9 @@
                 </div>
             </div>
             
-            <div class="col-md-4">
+            <div class="col-lg-3 col-md-6">
                 <label for="specialty" class="form-label almarai-bold">التخصص</label>
-                <div class="search-input-group">
+                <div class="search-input-group is-select">
                     <i class="ph ph-graduation-cap"></i>
                     <select class="form-select almarai-regular" id="specialty" name="study">
                         <option value="" selected>الكل</option>
@@ -364,9 +375,9 @@
                 </div>
             </div>
             
-            <div class="col-md-3">
+            <div class="col-lg-2 col-md-6">
                 <label for="city" class="form-label almarai-bold">المدينة</label>
-                <div class="search-input-group">
+                <div class="search-input-group is-select">
                     <i class="ph ph-map-pin"></i>
                     <select class="form-select almarai-regular" id="city" name="city">
                         <option value="" selected>الكل</option>
@@ -377,9 +388,9 @@
                 </div>
             </div>
             
-            <div class="col-md-2">
-                <button type="submit" class="btn-custom-red w-100 almarai-bold" style="padding: 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(191,42,74,0.15);">
-                    <i class="ph ph-magnifying-glass me-1"></i> ابحث الآن
+            <div class="col-lg-2 col-md-12">
+                <button type="submit" class="btn-faeda-accent w-100 almarai-bold" style="padding: 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(191,42,74,0.15);">
+                    <i class="ph ph-magnifying-glass me-1"></i> ابحث
                 </button>
             </div>
         </form>
@@ -496,37 +507,60 @@
         {% endfor %}
     </div>
     
-    <!-- Pagination -->
-    {% if jobs.pages > 1 %}
-    <nav aria-label="Page navigation" class="mt-5 pt-4" data-aos="fade-up">
-        <ul class="pagination justify-content-center" dir="ltr">
-            {% if jobs.has_prev %}
-            <li class="page-item">
-                <a class="page-link almarai-bold" href="{{ url_for(request.endpoint, page=jobs.prev_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">السابق</a>
-            </li>
-            {% endif %}
-            
-            {% for page_num in jobs.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-                {% if page_num %}
-                    {% if jobs.page == page_num %}
-                    <li class="page-item active"><span class="page-link almarai-bold">{{ page_num }}</span></li>
-                    {% else %}
-                    <li class="page-item"><a class="page-link almarai-bold" href="{{ url_for(request.endpoint, page=page_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">{{ page_num }}</a></li>
+    <!-- Pagination & Per Page -->
+    <div class="row align-items-center mt-5 pt-4" data-aos="fade-up">
+        
+        <div class="col-md-3 d-flex justify-content-start mb-3 mb-md-0">
+            <form method="GET" action="{{ url_for(request.endpoint) }}" id="perPageForm" class="d-inline-flex align-items-center">
+                {% for key, value in request.args.items() %}
+                    {% if key != 'per_page' and key != 'page' %}
+                    <input type="hidden" name="{{ key }}" value="{{ value }}">
                     {% endif %}
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link almarai-bold">...</span></li>
+                {% endfor %}
+                <label for="per_page" class="form-label almarai-bold me-2 mb-0" style="white-space: nowrap;">عدد الوظائف:</label>
+                <select name="per_page" id="per_page" class="form-select form-select-sm almarai-regular" style="border-radius: 8px;" onchange="document.getElementById('perPageForm').submit();">
+                    <option value="6" {% if request.args.get('per_page') == '6' or not request.args.get('per_page') %}selected{% endif %}>6</option>
+                    <option value="12" {% if request.args.get('per_page') == '12' %}selected{% endif %}>12</option>
+                    <option value="24" {% if request.args.get('per_page') == '24' %}selected{% endif %}>24</option>
+                    <option value="1000" {% if request.args.get('per_page') == '1000' %}selected{% endif %}>الكل</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="col-md-6 d-flex justify-content-center mb-3 mb-md-0">
+            {% if jobs.pages > 1 %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-0" dir="ltr">
+                {% if jobs.has_prev %}
+                <li class="page-item">
+                    <a class="page-link almarai-bold" href="{{ url_for(request.endpoint, page=jobs.prev_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city'), title=request.args.get('title'), per_page=request.args.get('per_page')) }}">السابق</a>
+                </li>
                 {% endif %}
-            {% endfor %}
-            
-            {% if jobs.has_next %}
-            <li class="page-item">
-                <a class="page-link almarai-bold" href="{{ url_for(request.endpoint, page=jobs.next_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city')) }}">التالي</a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
-    {% endif %}
-    
+                
+                {% for page_num in jobs.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        {% if jobs.page == page_num %}
+                        <li class="page-item active"><span class="page-link almarai-bold">{{ page_num }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link almarai-bold" href="{{ url_for(request.endpoint, page=page_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city'), title=request.args.get('title'), per_page=request.args.get('per_page')) }}">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link almarai-bold">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if jobs.has_next %}
+                <li class="page-item">
+                    <a class="page-link almarai-bold" href="{{ url_for(request.endpoint, page=jobs.next_num, ttype=request.args.get('ttype'), study=request.args.get('study'), city=request.args.get('city'), title=request.args.get('title'), per_page=request.args.get('per_page')) }}">التالي</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        </div>
+        
+        <div class="col-md-3 d-none d-md-block"></div>
+    </div>
 </div>
 
 <!-- AOS Animation JS -->

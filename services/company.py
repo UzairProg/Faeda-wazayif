@@ -8,6 +8,20 @@ from datetime import datetime
 from app import db
 
 # User model
+class CompanyProfileHistory(db.Model):
+    __tablename__ = 'company_profile_history'
+    id = db.Column(db.Integer, primary_key=True)
+    company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
+    score = db.Column(db.Float, nullable=False)
+    event_description = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __init__(self, company_id, score, event_description):
+        self.company_id = company_id
+        self.score = score
+        self.event_description = event_description
+
+
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     company_arabic_name = db.Column(db.String(80), nullable=True)
@@ -37,6 +51,8 @@ class Company(db.Model):
     verified_at = db.Column(db.DateTime, nullable=True)
     status = db.Column(db.String(20), default='active')    # 'active','suspended','banned'
     suspension_reason = db.Column(db.Text, nullable=True)
+    warnings_count = db.Column(db.Integer, default=0)
+    deleted_at = db.Column(db.DateTime, nullable=True)
     token = db.Column(db.String(120))
     
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
@@ -52,6 +68,7 @@ class Company(db.Model):
     social_impact = db.Column(db.String(20), default='N/A')
 
     company_jobs = db.relationship('Jobs', backref='company', lazy=True)
+    profile_history = db.relationship('CompanyProfileHistory', backref='company_record', lazy=True, order_by="desc(CompanyProfileHistory.created_at)")
 
 
     def __init__(self, company_arabic_name=None, company_english_name=None, company_email=None, company_mobile=None, country=None, state=None, english_adress=None, company_type=None, company_size=None, company_field=None, hr_name=None, hr_mobile=None, hr_email=None, about_company_arabic=None, about_company_english=None, commercial_register=None, company_website=None, twitter_email=None, instagram_email=None, company_logo=None, google_map_link=None, company_name_on_faeda=None, login_password=None, activated=None):
