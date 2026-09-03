@@ -16,6 +16,7 @@ env/
 *.db
 *.sqlite3
 instance/*.db
+instance/backups/
 
 # Secrets & Local Configuration — NEVER commit these
 .env

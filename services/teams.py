@@ -17,7 +17,7 @@ from sqlalchemy.orm import relationship
 # Define the association table for the many-to-many relationship
 team_members_association = db.Table('team_members',
     db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), primary_key=True),
-    db.Column('member_id', db.Integer, db.ForeignKey('customers.user_id'), primary_key=True),
+    db.Column('member_id', db.String(120), db.ForeignKey('customers.user_id'), primary_key=True),
     db.Column('status', db.String(50), nullable=False, default='مدعو'),  # Status column added
     db.Column('general_program', db.String(50), nullable=True),  
     db.Column('semi_special_program', db.String(50), nullable=True),  
@@ -32,13 +32,13 @@ team_members = team_members_association
 class Teams(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     admin_id =  db.Column(db.String(120), nullable=False)
-    team_name = db.Column(db.String(120), nullable=False)
-    about = db.Column(db.String(120), nullable=True)
-    achievements = db.Column(db.String(120), nullable=True)
-    general_program = db.Column(db.String(120), nullable=True)
-    special_program = db.Column(db.String(120), nullable=True)
-    semi_special_program = db.Column(db.String(120), nullable=True)
-    img = db.Column(db.String(80), nullable=True)
+    team_name = db.Column(db.String(255), nullable=False)
+    about = db.Column(db.Text, nullable=True)
+    achievements = db.Column(db.Text, nullable=True)
+    general_program = db.Column(db.String(255), nullable=True)
+    special_program = db.Column(db.String(255), nullable=True)
+    semi_special_program = db.Column(db.String(255), nullable=True)
+    img = db.Column(db.String(255), nullable=True)
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
     members = relationship("Customers", secondary=team_members_association, backref="teams")
     jobs = db.relationship("Jobs", secondary="customer_jobs", back_populates="teams")

@@ -17,25 +17,25 @@ class Customers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id =  db.Column(db.String(120), nullable=False , unique = True)
     ############## personal data ##########
-    fullname = db.Column(db.String(120), nullable=False)
-    about = db.Column(db.String(120), nullable=True)
-    email = db.Column(db.String(120), nullable=False)
+    fullname = db.Column(db.String(255), nullable=False)
+    about = db.Column(db.Text, nullable=True)
+    email = db.Column(db.String(255), nullable=False)
     mobile = db.Column(db.String(120), nullable=False)
-    password = db.Column(db.String(120), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     #########################################################################################
-    img = db.Column(db.String(80), nullable=True)
+    img = db.Column(db.String(255), nullable=True)
 
     sex = db.Column(db.String(120), nullable=True)
     country = db.Column(db.String(120), nullable=True)
     government = db.Column(db.String(120), nullable=True)
     education_statue = db.Column(db.String(120), nullable=True)
-    educational_qualification = db.Column(db.String(120), nullable=True)
-    university = db.Column(db.String(120), nullable=True)
-    department_university = db.Column(db.String(120), nullable=True)
+    educational_qualification = db.Column(db.String(255), nullable=True)
+    university = db.Column(db.String(255), nullable=True)
+    department_university = db.Column(db.String(255), nullable=True)
     graduation_date = db.Column(db.Date, nullable=True)
     gpa = db.Column(db.String(120), nullable=True)
     years_of_skills = db.Column(db.String(120), nullable=True)
-    preferred_field_of_work = db.Column(db.String(120), nullable=True)
+    preferred_field_of_work = db.Column(db.String(255), nullable=True)
     work_type = db.Column(db.String(120), nullable=True)
     activated = db.Column(db.Boolean, nullable=True)
 
@@ -50,14 +50,14 @@ class Customers(db.Model):
     ############# AI Recommendation Fields ##########
     resume_text = db.Column(db.Text, nullable=True)
     expected_salary = db.Column(db.Integer, nullable=True)
-    languages_json = db.Column(db.String(500), nullable=True)
-    certifications = db.Column(db.String(500), nullable=True)
-    work_style = db.Column(db.String(120), nullable=True)
+    languages_json = db.Column(db.Text, nullable=True)
+    certifications = db.Column(db.Text, nullable=True)
+    work_style = db.Column(db.String(255), nullable=True)
 
     ############# uploaded data names ##########
-    cv = db.Column(db.String(120), nullable=True)
+    cv = db.Column(db.String(255), nullable=True)
     visibility = db.Column(db.String(30), default='employers_only')  # 'public', 'employers_only', 'private'
-    token = db.Column(db.String(120))
+    token = db.Column(db.String(255))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     jobs = db.relationship("Jobs", secondary="customer_jobs", back_populates="customers")
 

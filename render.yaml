@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: faeda-jobs-backend
+    env: python
+    region: ohio
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+
+  - type: web
+    name: faeda-jobs-frontend
+    env: static
+    region: ohio
+    plan: free
+    rootDir: frontend
+    buildCommand: "npm run build"
+    staticPublishPath: "dist"
+    envVars:
+      - key: VITE_API_URL
+        sync: false
