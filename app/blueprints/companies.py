@@ -20,7 +20,7 @@ company = Blueprint('company' , __name__)
 
 
 ####### upload company logo ############
-UPLOAD_company_logo ='mysite/static/uploads/company/logo'
+UPLOAD_company_logo ='static/uploads/company/logo'
 
 
 

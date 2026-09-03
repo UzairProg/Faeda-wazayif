@@ -196,7 +196,7 @@ if __name__ == "__main__":
 
     # Default to the standard dummy-CV directory
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    cv_dir = os.path.join(BASE_DIR, "mysite", "static", "uploads", "customers", "cv")
+    cv_dir = os.path.join(BASE_DIR, "static", "uploads", "customers", "cv")
 
     if not os.path.isdir(cv_dir):
         print(f"CV directory not found: {cv_dir}")

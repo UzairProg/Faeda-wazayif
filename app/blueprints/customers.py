@@ -73,9 +73,9 @@ customer = Blueprint('customer' , __name__)
 
 
 
-UPLOAD_CUSTOMERS_IMAGES = 'mysite/static/uploads/customers/images'
-UPLOAD_TEAM_IMAGES = 'mysite/static/uploads/customers/teams/images'
-UPLOAD_CUSTOMERS_CV = 'mysite/static/uploads/customers/cv'
+UPLOAD_CUSTOMERS_IMAGES = 'static/uploads/customers/images'
+UPLOAD_TEAM_IMAGES = 'static/uploads/customers/teams/images'
+UPLOAD_CUSTOMERS_CV = 'static/uploads/customers/cv'
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -549,7 +549,7 @@ def apply_for_job(job_id):
 # Route to serve user images
 @customer.route('/download_image/<filename>')
 def download_image(filename):
-    return send_from_directory('mysite/static/uploads/customers/images', filename)
+    return send_from_directory('static/uploads/customers/images', filename)
 
 
 
@@ -1113,7 +1113,7 @@ def edit_profile_job_data():
 
         CustomerIPContribution.query.filter_by(customer_id=user_id).delete()
         
-        ip_evidence_dir = os.path.join('mysite/static/uploads/customers/ip_evidence')
+        ip_evidence_dir = os.path.join('static', 'uploads', 'customers', 'ip_evidence')
         os.makedirs(ip_evidence_dir, exist_ok=True)
         
         for i in range(len(ip_names)):
