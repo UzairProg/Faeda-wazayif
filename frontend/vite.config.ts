@@ -11,7 +11,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../static/react',
+    outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
       output: {
