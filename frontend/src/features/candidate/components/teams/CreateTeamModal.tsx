@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { X, Users, Sparkles, Loader2, Check } from "lucide-react"
 import { useCandidateTeamActions } from "../../hooks/useCandidateTeamActions"
 import type { CreateTeamPayload } from "../../types/candidate.types"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 
 interface CreateTeamModalProps {
   isOpen: boolean
@@ -94,8 +95,9 @@ export const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm animate-in fade-in">
-      <div
+    <ModalPortal>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm animate-in fade-in">
+        <div
         className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-900 shadow-2xl transition-all"
         dir={isRtl ? "rtl" : "ltr"}
       >
@@ -255,7 +257,8 @@ export const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
             </button>
           </div>
         </form>
+        </div>
       </div>
-    </div>
+    </ModalPortal>
   )
 }

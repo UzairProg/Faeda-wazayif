@@ -3,6 +3,7 @@ import { Search, UserPlus, X, Loader2, Check, Sparkles, MapPin, Briefcase } from
 import { useCandidateTeamActions } from "../../hooks/useCandidateTeamActions"
 import type { CandidateSearchItem, CandidateSearchResponse } from "../../types/candidate.types"
 import { candidateService } from "../../services/candidate.service"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 
 interface TeamMemberSearchModalProps {
   isOpen: boolean
@@ -79,8 +80,9 @@ export const TeamMemberSearchModal: React.FC<TeamMemberSearchModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm animate-in fade-in">
-      <div
+    <ModalPortal>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm animate-in fade-in">
+        <div
         className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-900 shadow-2xl transition-all"
         dir={isRtl ? "rtl" : "ltr"}
       >
@@ -310,6 +312,7 @@ export const TeamMemberSearchModal: React.FC<TeamMemberSearchModalProps> = ({
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </ModalPortal>
   )
 }

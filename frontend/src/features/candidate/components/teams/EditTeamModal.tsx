@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { X, Settings, Loader2, Check } from "lucide-react"
 import { useCandidateTeamActions } from "../../hooks/useCandidateTeamActions"
 import type { CandidateTeamDetail, UpdateTeamPayload } from "../../types/candidate.types"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 
 interface EditTeamModalProps {
   isOpen: boolean
@@ -55,8 +56,9 @@ export const EditTeamModal: React.FC<EditTeamModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm animate-in fade-in">
-      <div
+    <ModalPortal>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm animate-in fade-in">
+        <div
         className="relative w-full max-w-xl overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-900 shadow-2xl transition-all"
         dir={isRtl ? "rtl" : "ltr"}
       >
@@ -180,7 +182,8 @@ export const EditTeamModal: React.FC<EditTeamModalProps> = ({
             </button>
           </div>
         </form>
+        </div>
       </div>
-    </div>
+    </ModalPortal>
   )
 }

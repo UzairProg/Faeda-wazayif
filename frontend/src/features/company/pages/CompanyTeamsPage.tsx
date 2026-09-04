@@ -5,6 +5,7 @@ import { useTranslation } from "@/i18n"
 import { useCompanyTeams } from "../hooks/useCompanyTeams"
 import { CompanyTeamCard } from "../components/CompanyTeamCard"
 import type { CompanyTeamItem } from "../types/company.types"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 import {
   Layers,
   Search,
@@ -115,8 +116,9 @@ export function CompanyTeamsPage() {
 
       {/* ── Team Detail Modal for Employers ──────────────────────────── */}
       {selectedTeam && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" dir={isRTL ? "rtl" : "ltr"}>
-          <div
+        <ModalPortal>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-in fade-in" dir={isRTL ? "rtl" : "ltr"}>
+            <div
             className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
             onClick={() => setSelectedTeam(null)}
           />
@@ -241,7 +243,8 @@ export function CompanyTeamsPage() {
             </div>
           </div>
         </div>
-      )}
+      </ModalPortal>
+    )}
     </div>
   )
 }

@@ -8,6 +8,7 @@ import { ROUTES } from "@/config/routes"
 import { useTranslation } from "@/i18n"
 import type { CandidateJobItem, CandidateReadiness } from "../../types/candidate.types"
 import { useCandidateJobActions } from "../../hooks/useCandidateJobActions"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 import {
   X,
   Briefcase,
@@ -59,13 +60,14 @@ export function ApplyModal({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="apply-modal-title"
-    >
-      <div className="relative w-full max-w-lg rounded-3xl border border-slate-800 bg-[#0c1322] p-6 sm:p-8 shadow-2xl overflow-hidden">
+    <ModalPortal>
+      <div
+        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="apply-modal-title"
+      >
+        <div className="relative w-full max-w-lg rounded-3xl border border-slate-800 bg-[#0c1322] p-6 sm:p-8 shadow-2xl overflow-hidden">
         {/* Decorative ambient gradients */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/15 rounded-full blur-3xl pointer-events-none -mr-10 -mt-10" />
 
@@ -229,5 +231,6 @@ export function ApplyModal({
         )}
       </div>
     </div>
+    </ModalPortal>
   )
 }

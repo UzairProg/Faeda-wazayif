@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { X, Loader2, Briefcase } from "lucide-react"
 import type { CompanyJob, CreateJobPayload } from "../types/company.types"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 
 interface JobModalProps {
   isOpen: boolean
@@ -79,8 +80,9 @@ export const JobModal: React.FC<JobModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" dir={isRtl ? "rtl" : "ltr"}>
-      {/* Backdrop */}
+    <ModalPortal>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-in fade-in" dir={isRtl ? "rtl" : "ltr"}>
+        {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
@@ -369,5 +371,6 @@ export const JobModal: React.FC<JobModalProps> = ({
         </form>
       </div>
     </div>
+    </ModalPortal>
   )
 }

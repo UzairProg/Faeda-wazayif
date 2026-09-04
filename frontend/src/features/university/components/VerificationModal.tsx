@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { X, Loader2, ShieldCheck, CheckCircle2, XCircle } from "lucide-react"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 
 interface VerificationModalProps {
   isOpen: boolean
@@ -41,8 +42,9 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" dir={isRtl ? "rtl" : "ltr"}>
-      {/* Backdrop */}
+    <ModalPortal>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-in fade-in" dir={isRtl ? "rtl" : "ltr"}>
+        {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
@@ -188,5 +190,6 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
         </form>
       </div>
     </div>
+    </ModalPortal>
   )
 }

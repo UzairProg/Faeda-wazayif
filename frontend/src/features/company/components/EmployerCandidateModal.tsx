@@ -14,6 +14,7 @@ import {
   MessageSquare,
 } from "lucide-react"
 import type { CompanyTalentDetail } from "../types/company.types"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 
 interface EmployerCandidateModalProps {
   isOpen: boolean
@@ -31,8 +32,9 @@ export const EmployerCandidateModal: React.FC<EmployerCandidateModalProps> = ({
   if (!isOpen || !candidate) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" dir={isRtl ? "rtl" : "ltr"}>
-      {/* Backdrop */}
+    <ModalPortal>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-in fade-in" dir={isRtl ? "rtl" : "ltr"}>
+        {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
@@ -274,6 +276,7 @@ export const EmployerCandidateModal: React.FC<EmployerCandidateModalProps> = ({
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </ModalPortal>
   )
 }

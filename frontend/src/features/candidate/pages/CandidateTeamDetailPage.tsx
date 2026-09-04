@@ -23,6 +23,7 @@ import { useCandidateTeamDetail } from "../hooks/useCandidateTeamDetail"
 import { useCandidateTeamActions } from "../hooks/useCandidateTeamActions"
 import { TeamMemberCard } from "../components/teams/TeamMemberCard"
 import { TeamCapabilityMatrix } from "../components/teams/TeamCapabilityMatrix"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 import { TeamOpportunitiesList } from "../components/teams/TeamOpportunitiesList"
 import { EditTeamModal } from "../components/teams/EditTeamModal"
 import { TeamMemberSearchModal } from "../components/teams/TeamMemberSearchModal"
@@ -421,8 +422,9 @@ export const CandidateTeamDetailPage: React.FC = () => {
 
       {/* Disband Confirmation Dialog */}
       {showDisbandConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-2xl" dir={isRtl ? "rtl" : "ltr"}>
+        <ModalPortal>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm animate-in fade-in">
+            <div className="w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-2xl" dir={isRtl ? "rtl" : "ltr"}>
             <div className="flex items-center gap-3 text-rose-400">
               <AlertTriangle className="h-6 w-6" />
               <h4 className="font-bold text-white">
@@ -454,12 +456,14 @@ export const CandidateTeamDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      </ModalPortal>
+    )}
 
       {/* Leave Team Confirmation Dialog */}
       {showLeaveConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-2xl" dir={isRtl ? "rtl" : "ltr"}>
+        <ModalPortal>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm animate-in fade-in">
+            <div className="w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-2xl" dir={isRtl ? "rtl" : "ltr"}>
             <div className="flex items-center gap-3 text-rose-400">
               <AlertTriangle className="h-6 w-6" />
               <h4 className="font-bold text-white">
@@ -491,7 +495,8 @@ export const CandidateTeamDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      </ModalPortal>
+    )}
     </div>
   )
 }

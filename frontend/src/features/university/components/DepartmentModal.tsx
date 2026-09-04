@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { X, Loader2, Layers } from "lucide-react"
 import type { UniversityDepartmentItem, CreateDepartmentPayload } from "../types/university.types"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 
 interface DepartmentModalProps {
   isOpen: boolean
@@ -59,8 +60,9 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" dir={isRtl ? "rtl" : "ltr"}>
-      {/* Backdrop */}
+    <ModalPortal>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-in fade-in" dir={isRtl ? "rtl" : "ltr"}>
+        {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
@@ -189,5 +191,6 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
         </form>
       </div>
     </div>
+    </ModalPortal>
   )
 }

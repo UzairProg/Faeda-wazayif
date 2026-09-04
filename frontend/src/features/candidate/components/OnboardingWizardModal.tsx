@@ -4,6 +4,7 @@
 import { useState } from "react"
 import { useTranslation } from "@/i18n"
 import type { CandidateProfile } from "../types/candidate.types"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 import {
   Sparkles,
   CheckCircle2,
@@ -160,8 +161,9 @@ export function OnboardingWizardModal({
   const NextIcon = isRTL ? ArrowLeft : ArrowRight
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
-      <div className="w-full max-w-2xl bg-[#0b1220] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col gap-6 max-h-[92vh] overflow-y-auto">
+    <ModalPortal>
+      <div className="fixed inset-0 z-[9999] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-in fade-in">
+        <div className="w-full max-w-2xl bg-[#0b1220] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col gap-6 max-h-[92vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-800">
           <div className="flex items-center gap-3">
@@ -589,6 +591,7 @@ export function OnboardingWizardModal({
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </ModalPortal>
   )
 }

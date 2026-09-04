@@ -4,6 +4,7 @@
 import { useState } from "react"
 import { useTranslation } from "@/i18n"
 import type { CandidateProfile, UpdateExperienceDTO } from "../types/candidate.types"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 import { Briefcase, Clock, Layers, Edit2, X, Loader2 } from "lucide-react"
 
 interface ExperienceSectionProps {
@@ -145,14 +146,15 @@ export function ExperienceSection({ profile, onUpdate }: ExperienceSectionProps)
 
       {/* Edit Experience Modal Dialog */}
       {isEditing && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setIsEditing(false)}
-        >
+        <ModalPortal>
           <div
-            className="w-full max-w-lg bg-[#0d1527] border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-2xl flex flex-col gap-5"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
+            onClick={() => setIsEditing(false)}
           >
+            <div
+              className="w-full max-w-lg bg-[#0d1527] border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-2xl flex flex-col gap-5 max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
@@ -223,6 +225,7 @@ export function ExperienceSection({ profile, onUpdate }: ExperienceSectionProps)
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   )

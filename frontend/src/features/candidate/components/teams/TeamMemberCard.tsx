@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Crown, Shield, Trash2, Calendar, Briefcase, Loader2, AlertTriangle } from "lucide-react"
 import type { TeamMember } from "../../types/candidate.types"
 import { useCandidateTeamActions } from "../../hooks/useCandidateTeamActions"
+import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 
 interface TeamMemberCardProps {
   member: TeamMember
@@ -123,11 +124,12 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 
       {/* Remove Confirmation Modal */}
       {showConfirmRemove && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-          <div
-            className="w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-2xl"
-            dir={isRtl ? "rtl" : "ltr"}
-          >
+        <ModalPortal>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm animate-in fade-in">
+            <div
+              className="w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-2xl"
+              dir={isRtl ? "rtl" : "ltr"}
+            >
             <div className="flex items-center gap-3 text-rose-400">
               <AlertTriangle className="h-6 w-6" />
               <h4 className="font-bold text-white">
@@ -159,7 +161,8 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
             </div>
           </div>
         </div>
-      )}
+      </ModalPortal>
+    )}
     </div>
   )
 }
