@@ -3369,9 +3369,11 @@ def serialize_candidate_team_summary(team, current_cust):
     if team.admin_id and team.admin_id not in member_user_ids:
         member_user_ids.append(team.admin_id)
         
-    members_custs = Customers.query.filter(
-        (Customers.user_id.in_(member_user_ids)) | (Customers.id.in_(member_user_ids))
-    ).all()
+    int_ids = [int(x) for x in member_user_ids if str(x).isdigit()]
+    cust_filters = [Customers.user_id.in_(member_user_ids)]
+    if int_ids:
+        cust_filters.append(Customers.id.in_(int_ids))
+    members_custs = Customers.query.filter(db.or_(*cust_filters)).all()
     
     # Extract capabilities
     all_member_skills = []
@@ -3440,9 +3442,11 @@ def serialize_candidate_team_detail(team, current_cust):
     if team.admin_id and team.admin_id not in all_member_keys:
         all_member_keys.append(team.admin_id)
         
-    members_custs = Customers.query.filter(
-        (Customers.user_id.in_(all_member_keys)) | (Customers.id.in_(all_member_keys))
-    ).all()
+    int_keys = [int(x) for x in all_member_keys if str(x).isdigit()]
+    cust_filters = [Customers.user_id.in_(all_member_keys)]
+    if int_keys:
+        cust_filters.append(Customers.id.in_(int_keys))
+    members_custs = Customers.query.filter(db.or_(*cust_filters)).all()
     
     serialized_members = []
     all_member_skills = []

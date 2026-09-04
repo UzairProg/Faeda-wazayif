@@ -1,6 +1,6 @@
 /**
- * candidate.service.ts — HTTP client service for Candidate Workspace.
- */
+* candidate.service.ts — HTTP client service for Candidate Workspace.
+*/
 import { apiClient } from "@/lib/api-client"
 import { API_CONFIG } from "@/config/api"
 import type {

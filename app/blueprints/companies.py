@@ -1797,9 +1797,11 @@ def serialize_employer_team_item(t):
     if t.admin_id and t.admin_id not in member_user_ids:
         member_user_ids.append(t.admin_id)
 
-    members_custs = Customers.query.filter(
-        (Customers.user_id.in_(member_user_ids)) | (Customers.id.in_(member_user_ids))
-    ).all()
+    int_ids = [int(x) for x in member_user_ids if str(x).isdigit()]
+    cust_filters = [Customers.user_id.in_(member_user_ids)]
+    if int_ids:
+        cust_filters.append(Customers.id.in_(int_ids))
+    members_custs = Customers.query.filter(db.or_(*cust_filters)).all()
 
     all_member_skills = []
     for m in members_custs:
