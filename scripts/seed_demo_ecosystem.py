@@ -301,8 +301,8 @@ def seed_database():
             # Candidate 1: 100% Complete Senior Full-Stack
             {
                 "user_id": "DEMO_CAND_01",
-                "fullname": "أحمد المنصور",
-                "email": "ahmed.mansoor@faeda.demo",
+                "fullname": "عزير محمد",
+                "email": "uzair.mohammad@faeda.demo",
                 "mobile": "0501230001",
                 "password": DEMO_PASSWORD,
                 "about": "مهندس برمجيات أول وحلول سحابية بخبرة تتجاوز 5 سنوات في بناء المنصات الموزعة وتطوير واجهات React وخدمات الباك إند السحابية الموثوقة.",
@@ -387,8 +387,8 @@ def seed_database():
             # Candidate 3: AI / ML Engineer
             {
                 "user_id": "DEMO_CAND_03",
-                "fullname": "طارق الزهراني",
-                "email": "tariq.zahrani@faeda.demo",
+                "fullname": "علي الزهراني",
+                "email": "ali.zahrani@faeda.demo",
                 "mobile": "0501230003",
                 "password": DEMO_PASSWORD,
                 "about": "مهندس ذكاء اصطناعي ونماذج لغوية متخصص في تدريب ونشر نماذج LLMs ومعالجة اللغات الطبيعية وتطوير نظم التوصيات الذكية.",
@@ -671,8 +671,8 @@ def seed_database():
         # ---------------------------------------------------------------------
         print("\n🎓 Seeding University Academic Verifications...")
         
-        # Ahmed Al-Mansoor -> KFUPM (Verified)
-        c1 = seeded_candidates["ahmed.mansoor@faeda.demo"]
+        # Uzair Mohammad -> KFUPM (Verified)
+        c1 = seeded_candidates["uzair.mohammad@faeda.demo"]
         v1 = AcademicVerification.query.filter_by(customer_id=c1.id, university_id=kfupm.id).first()
         if not v1:
             v1 = AcademicVerification(
@@ -1038,7 +1038,7 @@ def seed_database():
         # ---------------------------------------------------------------------
         print("\n👥 Seeding Professional Teams & Squads...")
         
-        # Squad 1: Apex Digital Squad (Ahmed leader, Reem member, Faisal member)
+        # Squad 1: Apex Digital Squad (Uzair leader, Reem member, Faisal member)
         team1 = Teams.query.filter_by(team_name="فريق أبيكس للحلول الرقمية Apex Digital Squad").first()
         if not team1:
             team1 = Teams(
@@ -1131,7 +1131,7 @@ def seed_database():
         # ---------------------------------------------------------------------
         print("\n💬 Seeding Professional Chat Conversations...")
         
-        # Thread 1: Candidate (Ahmed) <-> Company (CloudScale Solutions)
+        # Thread 1: Candidate (Uzair) <-> Company (CloudScale Solutions)
         conv1 = Conversation.query.filter_by(
             type="CANDIDATE_COMPANY",
             context_type="job_application",
@@ -1186,7 +1186,7 @@ def seed_database():
                 created_at=datetime.utcnow() - timedelta(hours=3)
             )
             db.session.add_all([m1, m2, m3])
-            print("✅ Created Chat Thread: CloudScale <-> Ahmed Al-Mansoor")
+            print("✅ Created Chat Thread: CloudScale <-> Uzair Mohammad")
 
         # Thread 2: Company (FinTech Oasis) <-> Team (Apex Digital Squad)
         conv2 = Conversation.query.filter_by(
@@ -1248,20 +1248,20 @@ def seed_database():
         db.session.commit()
 
         # ---------------------------------------------------------------------
-        # 10. GENERATE ATS DEMO CV FOR AHMED AL-MANSOOR
+        # 10. GENERATE ATS DEMO CV FOR UZAIR MOHAMMAD
         # ---------------------------------------------------------------------
-        print("\n📄 Ensuring Demo CV & ATS Parsing Artifact for Ahmed...")
+        print("\n📄 Ensuring Demo CV & ATS Parsing Artifact for Uzair...")
         cv_dir = os.path.join(BASE_DIR, "static", "uploads", "customers", "cv")
         os.makedirs(cv_dir, exist_ok=True)
-        cv_filename = f"cv_{c1.id}_demo_ahmed_al_mansoor.txt"
+        cv_filename = f"cv_{c1.id}_demo_uzair_mohammad.txt"
         cv_path = os.path.join(cv_dir, cv_filename)
         
         cv_content = f"""
 ======================================================================
-AHMED AL-MANSOOR | أحمد المنصور
+UZAIR MOHAMMAD | عزير محمد
 Senior Full Stack & Cloud Software Engineer
-Email: ahmed.mansoor@faeda.demo | Phone: +966 50 123 0001 | Riyadh, Saudi Arabia
-LinkedIn: linkedin.com/in/ahmed-mansoor-demo | GitHub: github.com/demo
+Email: uzair.mohammad@faeda.demo | Phone: +966 50 123 0001 | Riyadh, Saudi Arabia
+LinkedIn: linkedin.com/in/uzair-mohammad-demo | GitHub: github.com/demo
 ======================================================================
 
 EXECUTIVE SUMMARY:

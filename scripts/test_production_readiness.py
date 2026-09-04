@@ -43,7 +43,7 @@ def run_tests():
     print("\n==================================================")
     print("2. CANDIDATE AUTH & WORKSPACE ENDPOINTS")
     print("==================================================")
-    r_cand = client.post("/login", json={"email": "ahmed.mansoor@faeda.demo", "password": "FaedaDemo123!"})
+    r_cand = client.post("/login", json={"email": "uzair.mohammad@faeda.demo", "password": "FaedaDemo123!"})
     assert r_cand.status_code == 200, f"Candidate login failed: {r_cand.status_code}"
     cand_token = r_cand.get_json().get("token")
     assert cand_token, "Candidate auth token not found in login response"

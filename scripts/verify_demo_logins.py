@@ -5,9 +5,9 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
 accounts = [
-    ("Candidate 1 (Ahmed - Complete)", "ahmed.mansoor@faeda.demo", "FaedaDemo123!", "candidate", "/candidate/profile"),
+    ("Candidate 1 (Uzair - Complete)", "uzair.mohammad@faeda.demo", "FaedaDemo123!", "candidate", "/candidate/profile"),
     ("Candidate 2 (Sarah - Incomplete)", "sarah.otaibi@faeda.demo", "FaedaDemo123!", "candidate", "/candidate/profile"),
-    ("Candidate 3 (Tariq - AI)", "tariq.zahrani@faeda.demo", "FaedaDemo123!", "candidate", "/candidate/profile"),
+    ("Candidate 3 (Ali - AI)", "ali.zahrani@faeda.demo", "FaedaDemo123!", "candidate", "/candidate/profile"),
     ("Candidate 4 (Reem - Frontend)", "reem.ghamdi@faeda.demo", "FaedaDemo123!", "candidate", "/candidate/profile"),
     ("Candidate 5 (Faisal - Data)", "faisal.harbi@faeda.demo", "FaedaDemo123!", "candidate", "/candidate/profile"),
     ("Candidate 6 (Lina - Mobile)", "lina.dosari@faeda.demo", "FaedaDemo123!", "candidate", "/candidate/profile"),
