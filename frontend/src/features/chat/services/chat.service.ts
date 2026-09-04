@@ -3,7 +3,7 @@
  *
  * REST API client service for Faeda Professional Chat.
  */
-import axios from "axios"
+import { apiClient } from "@/lib/api-client"
 import { API_CONFIG } from "@/config/api"
 import type {
   ConversationListResponse,
@@ -14,12 +14,6 @@ import type {
   ChatMessage,
   ConversationSummary,
 } from "../types/chat.types"
-
-const apiClient = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  timeout: API_CONFIG.TIMEOUT,
-  withCredentials: true,
-})
 
 export const chatService = {
   /**

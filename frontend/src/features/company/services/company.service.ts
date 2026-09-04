@@ -3,7 +3,7 @@
  *
  * HTTP API client for Authenticated Company Workspace.
  */
-import axios from "axios"
+import { apiClient } from "@/lib/api-client"
 import { API_CONFIG } from "@/config/api"
 import type {
   CompanyProfile,
@@ -19,12 +19,6 @@ import type {
   CompanyTeamsResponse,
   CompanyTeamItem,
 } from "../types/company.types"
-
-const apiClient = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  timeout: API_CONFIG.TIMEOUT,
-  withCredentials: true,
-})
 
 export const companyService = {
   // ── Session & Auth ───────────────────────────────────────────

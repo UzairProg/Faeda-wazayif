@@ -34,6 +34,7 @@ from datetime import datetime
 
 from ai_engine.market_value_calculator import get_market_value_for_customer
 from services.customer import CustomerProfileHistory
+from services.auth_token import generate_auth_token
 
 QS_UNIVERSITIES = []
 
@@ -129,10 +130,19 @@ def login():
         query3.last_login = datetime.utcnow()
         db.session.commit()
 
+        token = generate_auth_token({
+            "id": query3.id,
+            "user_id": query3.id,
+            "email": query3.email,
+            "role": "admin",
+            "admin_role": query3.role
+        })
+
         if wants_json:
             return jsonify({
                 "success": True,
                 "role": "admin",
+                "token": token,
                 "user": {
                     "id": query3.id,
                     "name": query3.username,
@@ -167,10 +177,19 @@ def login():
         if query.activated == True:
             session['customer_activated'] = True
 
+        token = generate_auth_token({
+            "id": query.id,
+            "user_id": query.id,
+            "user_string_id": query.user_id,
+            "email": query.email,
+            "role": "candidate"
+        })
+
         if wants_json:
             return jsonify({
                 "success": True,
                 "role": "candidate",
+                "token": token,
                 "user": {
                     "id": query.id,
                     "user_id": query.user_id,
@@ -202,10 +221,19 @@ def login():
         if query2.activated == True:
             session['company_activated'] = True
 
+        token = generate_auth_token({
+            "id": company_id,
+            "user_id": company_id,
+            "company_id": company_id,
+            "email": query2.company_email,
+            "role": "company"
+        })
+
         if wants_json:
             return jsonify({
                 "success": True,
                 "role": "company",
+                "token": token,
                 "user": {
                     "id": company_id,
                     "name": company_name,
@@ -233,10 +261,19 @@ def login():
         session['university_email'] = query4.email
         uni_name = query4.name_ar or query4.name_en or "جامعة"
 
+        token = generate_auth_token({
+            "id": query4.id,
+            "user_id": query4.id,
+            "university_id": query4.id,
+            "email": query4.email,
+            "role": "university"
+        })
+
         if wants_json:
             return jsonify({
                 "success": True,
                 "role": "university",
+                "token": token,
                 "user": {
                     "id": query4.id,
                     "name": uni_name,
@@ -1685,9 +1722,17 @@ def api_auth_me():
     if 'session_customer' in session and 'user_id' in session:
         cust = Customers.query.get(session['user_id'])
         if cust:
+            token = generate_auth_token({
+                "id": cust.id,
+                "user_id": cust.id,
+                "user_string_id": cust.user_id,
+                "email": cust.email,
+                "role": "candidate"
+            })
             return jsonify({
                 "authenticated": True,
                 "role": "candidate",
+                "token": token,
                 "user": {
                     "id": cust.id,
                     "user_id": cust.user_id,
@@ -1700,9 +1745,17 @@ def api_auth_me():
     elif 'session_company' in session and 'company_id' in session:
         comp = Company.query.get(session['company_id'])
         if comp:
+            token = generate_auth_token({
+                "id": comp.id,
+                "user_id": comp.id,
+                "company_id": comp.id,
+                "email": comp.company_email,
+                "role": "company"
+            })
             return jsonify({
                 "authenticated": True,
                 "role": "company",
+                "token": token,
                 "user": {
                     "id": comp.id,
                     "company_id": comp.id,
@@ -1715,9 +1768,17 @@ def api_auth_me():
     elif 'session_university' in session and 'university_id' in session:
         uni = University.query.get(session['university_id'])
         if uni:
+            token = generate_auth_token({
+                "id": uni.id,
+                "user_id": uni.id,
+                "university_id": uni.id,
+                "email": uni.email,
+                "role": "university"
+            })
             return jsonify({
                 "authenticated": True,
                 "role": "university",
+                "token": token,
                 "user": {
                     "id": uni.id,
                     "university_id": uni.id,
@@ -1730,9 +1791,17 @@ def api_auth_me():
     elif 'admin_id' in session:
         adm = Admin.query.get(session['admin_id'])
         if adm:
+            token = generate_auth_token({
+                "id": adm.id,
+                "user_id": adm.id,
+                "email": adm.email,
+                "role": "admin",
+                "admin_role": adm.role
+            })
             return jsonify({
                 "authenticated": True,
                 "role": "admin",
+                "token": token,
                 "user": {
                     "id": adm.id,
                     "email": adm.email,

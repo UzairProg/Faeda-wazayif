@@ -4,7 +4,7 @@
  * Service layer for the public Teams module.
  * All HTTP calls for public team discovery go through here.
  */
-import axios from "axios"
+import { apiClient as api } from "@/lib/api-client"
 import { API_CONFIG } from "@/config/api"
 import type {
   TeamDetail,
@@ -12,13 +12,6 @@ import type {
   TeamListResponse,
   TeamSuggestion,
 } from "../types/team.types"
-
-const api = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  timeout: API_CONFIG.TIMEOUT,
-  headers: API_CONFIG.HEADERS,
-  withCredentials: true,
-})
 
 function buildTeamParams(filter: TeamFilter): Record<string, string | number | boolean> {
   const params: Record<string, string | number | boolean> = {}

@@ -24,18 +24,12 @@ def create_app():
     
     db.init_app(app)
 
-    allowed_origins = [
-        os.environ.get('FRONTEND_ORIGIN', 'http://localhost:5173'),
-        'http://localhost:5173',
-        'http://127.0.0.1:5173',
-    ]
-
     CORS(
         app,
-        resources={r"/*": {"origins": allowed_origins}},
+        resources={r"/*": {"origins": [r"^https?://.*"]}},
         supports_credentials=True,
-        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allow_headers=["Content-Type", "Authorization", "Accept", "X-Requested-With"]
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+        allow_headers=["Content-Type", "Authorization", "Accept", "X-Requested-With", "Origin"]
     )
 
     with app.app_context():
@@ -78,7 +72,23 @@ def create_app():
         app.register_blueprint(university_bp)
         
         from services.team_offer import TeamOffer
+        from services.auth_token import process_request_auth
         db.create_all()
+
+        @app.before_request
+        def authenticate_token():
+            process_request_auth()
+
+        @app.after_request
+        def enforce_cors_headers(response):
+            from flask import request
+            origin = request.headers.get('Origin')
+            if origin:
+                response.headers['Access-Control-Allow-Origin'] = origin
+                response.headers['Access-Control-Allow-Credentials'] = 'true'
+                response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, Accept, X-Requested-With, Origin'
+                response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH'
+            return response
 
         @app.before_request
         def check_maintenance():

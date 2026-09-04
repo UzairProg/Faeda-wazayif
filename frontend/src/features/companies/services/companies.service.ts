@@ -4,7 +4,7 @@
  * Service layer for the public Companies module.
  * All HTTP calls for public company discovery go through here.
  */
-import axios from "axios"
+import { apiClient as api } from "@/lib/api-client"
 import { API_CONFIG } from "@/config/api"
 import type {
   CompanyDetail,
@@ -12,13 +12,6 @@ import type {
   CompanyListResponse,
   CompanySuggestion,
 } from "../types/company.types"
-
-const api = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  timeout: API_CONFIG.TIMEOUT,
-  headers: API_CONFIG.HEADERS,
-  withCredentials: true,
-})
 
 function buildCompanyParams(filter: CompanyFilter): Record<string, string | number | boolean> {
   const params: Record<string, string | number | boolean> = {}

@@ -11,16 +11,9 @@
  *
  * API dependency documented: backend needs GET /api/v1/jobs → JobListResponse
  */
-import axios from "axios"
+import { apiClient as api } from "@/lib/api-client"
 import { API_CONFIG } from "@/config/api"
 import type { Job, JobDetail, JobFilter, JobListResponse, JobSuggestion } from "../types/job.types"
-
-const api = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  timeout: API_CONFIG.TIMEOUT,
-  headers: API_CONFIG.HEADERS,
-  withCredentials: true, // Session cookie auth (current Flask backend)
-})
 
 /**
  * Build a URL query string from JobFilter params.

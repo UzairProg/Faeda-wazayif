@@ -1,4 +1,4 @@
-import axios from "axios"
+import { apiClient } from "@/lib/api-client"
 import { API_CONFIG } from "@/config/api"
 import type {
   UniversityDashboardData,
@@ -12,12 +12,6 @@ import type {
   UniversityOpportunityItem,
   StudentFilterParams,
 } from "../types/university.types"
-
-const apiClient = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  timeout: API_CONFIG.TIMEOUT,
-  withCredentials: true,
-})
 
 export const universityService = {
   /**

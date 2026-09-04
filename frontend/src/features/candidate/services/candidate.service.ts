@@ -1,7 +1,7 @@
 /**
  * candidate.service.ts — HTTP client service for Candidate Workspace.
  */
-import axios from "axios"
+import { apiClient } from "@/lib/api-client"
 import { API_CONFIG } from "@/config/api"
 import type {
   CandidateProfile,
@@ -29,12 +29,6 @@ import type {
   CandidateSearchResponse,
   ReceivedInvitationItem,
 } from "../types/candidate.types"
-
-const apiClient = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  timeout: API_CONFIG.TIMEOUT,
-  withCredentials: true,
-})
 
 class CandidateService {
   async getDashboard(): Promise<CandidateDashboardData> {

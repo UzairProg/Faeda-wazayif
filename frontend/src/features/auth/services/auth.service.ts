@@ -27,8 +27,10 @@ class AuthService {
         throw new Error(msg)
       }
 
+      const receivedToken = responseData?.token || "cookie-session-active"
+
       // Verify and restore full canonical session
-      const restoredUser = await this.checkSession()
+      const restoredUser = await this.checkSession(receivedToken)
       const finalUser: AuthUser = restoredUser || (responseData?.user
         ? {
             id: String(responseData.user.id || responseData.user.user_id),
@@ -45,7 +47,7 @@ class AuthService {
 
       return {
         user: finalUser,
-        token: "cookie-session-active",
+        token: receivedToken,
         message: "تم تسجيل الدخول بنجاح",
       }
     } catch (err: any) {
@@ -188,14 +190,32 @@ class AuthService {
     }
   }
 
-  async checkSession(): Promise<AuthUser | null> {
+  async checkSession(tokenOverride?: string): Promise<AuthUser | null> {
     try {
+      let activeToken = tokenOverride
+      if (!activeToken) {
+        try {
+          const raw = localStorage.getItem("auth-storage")
+          if (raw) {
+            const parsed = JSON.parse(raw)
+            activeToken = parsed?.state?.token
+          }
+        } catch {
+          // Ignore
+        }
+      }
+
+      const headers: Record<string, string> = {
+        Accept: "application/json",
+      }
+      if (activeToken && activeToken !== "cookie-session-active") {
+        headers["Authorization"] = `Bearer ${activeToken}`
+      }
+
       // First try the clean REST API endpoint
       const meResponse = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.ME}`, {
         method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
+        headers,
         credentials: "include",
       })
 

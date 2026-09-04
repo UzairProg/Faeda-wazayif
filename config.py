@@ -12,7 +12,8 @@ class Config:
         raw_db_url = raw_db_url.replace('postgresql://', 'postgresql+psycopg://', 1)
     SQLALCHEMY_DATABASE_URI = raw_db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SAMESITE = os.environ.get('SESSION_COOKIE_SAMESITE', 'None')
+    SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'True').lower() in ('true', '1')
     SESSION_COOKIE_HTTPONLY = True
     
     # Mail Config

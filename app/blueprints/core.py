@@ -14,8 +14,18 @@ core_bp = Blueprint('core', __name__)
 
 @core_bp.route('/')
 def home():
-    """Render the homepage for the application."""
-    return render_template('new_design/index.html')
+    """Clean API gateway / SPA root handler."""
+    base_dir = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    frontend_dist = os.path.join(base_dir, 'frontend', 'dist')
+    if os.path.exists(os.path.join(frontend_dist, 'index.html')):
+        from flask import send_from_directory
+        return send_from_directory(frontend_dist, 'index.html')
+    return jsonify({
+        "service": "Faeda Jobs REST API Engine",
+        "status": "online",
+        "version": "1.0",
+        "message": "Faeda Jobs API backend is running. Access the application via your React frontend portal."
+    })
 
 
 @core_bp.route('/news')
