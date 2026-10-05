@@ -45,7 +45,12 @@ export function t(
 
   let value = resolve(lang)
   if (value == null && lang !== "ar") {
-    value = resolve("ar")
+    if (lang === "hi") {
+      value = resolve("en")
+    }
+    if (value == null) {
+      value = resolve("ar")
+    }
   }
 
   if (typeof value === "function") {

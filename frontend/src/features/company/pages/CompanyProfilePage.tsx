@@ -3,6 +3,7 @@ import { useTranslation } from "@/i18n"
 import { useCompanyProfile } from "../hooks/useCompanyProfile"
 import { useCompanyActions } from "../hooks/useCompanyActions"
 import { CompanyProfileHealthCard } from "../components/CompanyProfileHealthCard"
+import { UserPublishedCampaignsSection } from "@/features/public/components/UserPublishedCampaignsSection"
 import type { UpdateCompanyProfilePayload } from "../types/company.types"
 import {
   Building2,
@@ -504,6 +505,9 @@ export function CompanyProfilePage() {
           </button>
         </div>
       </form>
+
+      {/* Published Recruitment Campaigns Section */}
+      <UserPublishedCampaignsSection userType="company" userId={profile?.id} />
     </div>
   )
 }

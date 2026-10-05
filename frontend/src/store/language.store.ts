@@ -5,6 +5,7 @@
  * and document direction (rtl ↔ ltr).
  */
 import { create } from "zustand"
+import { useLangStore } from "./lang.store"
 
 export type Language = "ar" | "en" | "hi"
 export type Direction = "rtl" | "ltr"
@@ -46,6 +47,11 @@ export const useLanguageStore = create<LanguageState>((set, get) => ({
       localStorage.setItem(STORAGE_KEY, lang)
     }
     syncDocumentAttributes(lang)
+    try {
+      useLangStore.setState({ lang: lang === "ar" ? "ar" : "en", isRTL: lang === "ar" })
+    } catch {
+      // ignore in tests/ssr
+    }
     set({
       language: lang,
       direction: lang === "ar" ? "rtl" : "ltr",

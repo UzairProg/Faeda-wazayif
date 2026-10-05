@@ -115,7 +115,9 @@ export function RecommendedOpportunities({ jobs }: RecommendedOpportunitiesProps
                   <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
                     {job.workType && (
                       <span className="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700/50">
-                        {job.workType}
+                        {job.workType === "دوام كامل"
+                          ? isRTL ? "دوام كامل" : "Full-time"
+                          : job.workType}
                       </span>
                     )}
                     {job.isRemote && (
@@ -127,7 +129,7 @@ export function RecommendedOpportunities({ jobs }: RecommendedOpportunitiesProps
                       <span className="px-2 py-0.5 rounded-md bg-slate-800 text-emerald-300 font-medium border border-slate-700/50 flex items-center gap-1">
                         <Coins className="w-3 h-3 text-emerald-400" />
                         <span>
-                          {job.salary.min.toLocaleString()} - {job.salary.max.toLocaleString()} SAR
+                          {job.salary.min.toLocaleString()} - {job.salary.max.toLocaleString()} {isRTL ? "ريال" : "SAR"}
                         </span>
                       </span>
                     )}

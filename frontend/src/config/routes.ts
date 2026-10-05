@@ -20,6 +20,7 @@ export const ROUTES = {
     RESOURCES: "/resources",
     PRIVACY: "/privacy",
     TERMS: "/terms",
+    MARKET_TRENDS: "/market-trends",
   },
   AUTH: {
     LOGIN: "/auth/login",
@@ -64,6 +65,8 @@ export const ROUTES = {
     TEAM_DETAIL: (id: string | number) => `/candidate/teams/${id}`,
     CHAT: "/candidate/chat",
     SETTINGS: "/candidate/settings",
+    CAMPAIGNS: "/candidate/campaigns",
+    COOP: "/candidate/coop-training",
   },
   COMPANY: {
     ROOT: "/company",
@@ -79,8 +82,11 @@ export const ROUTES = {
     TALENT_DETAIL: (id: string | number) => `/company/talent/${id}`,
     TEAMS: "/company/teams",
     TEAM_DETAIL: (id: string | number) => `/company/teams/${id}`,
+    CAMPAIGNS: "/company/campaigns",
+    CAMPAIGN_DETAIL: (id: string | number) => `/company/campaigns/${id}`,
     CHAT: "/company/chat",
     SETTINGS: "/company/settings",
+    BILLING: "/company/billing",
   },
   UNIVERSITY: {
     ROOT: "/university",
@@ -91,6 +97,10 @@ export const ROUTES = {
     VERIFICATIONS: "/university/verifications",
     DEPARTMENTS: "/university/departments",
     OPPORTUNITIES: "/university/opportunities",
+    CAMPAIGNS: "/university/campaigns",
+    INCUBATOR: "/university/incubator",
+    COOP: "/university/coop-supervision",
+    UPDATES: "/university/academic-updates",
     SETTINGS: "/university/settings",
   },
   ADMIN: {
@@ -99,7 +109,10 @@ export const ROUTES = {
     USERS: "/admin/users",
     COMPANIES: "/admin/companies",
     JOBS: "/admin/jobs",
+    AUDIT_LOGS: "/admin/audit-logs",
     REPORTS: "/admin/reports",
+    CATEGORIES: "/admin/categories",
     SETTINGS: "/admin/settings",
+    MARKET_DATA: "/admin/market-data",
   },
 } as const

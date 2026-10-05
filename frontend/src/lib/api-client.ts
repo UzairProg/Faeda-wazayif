@@ -22,6 +22,10 @@ apiClient.interceptors.request.use((config) => {
     if (rawStorage) {
       const parsed = JSON.parse(rawStorage)
       const token = parsed?.state?.token
+      const role = parsed?.state?.user?.role
+      if (role && !config.headers["X-Persona-Role"]) {
+        config.headers["X-Persona-Role"] = role
+      }
       if (token && token !== "cookie-session-active" && !config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${token}`
       }

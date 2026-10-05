@@ -15,13 +15,18 @@ import { CertificationsSection } from "../components/CertificationsSection"
 import { CVSection } from "../components/CVSection"
 import { WorkPreferencesSection } from "../components/WorkPreferencesSection"
 import { VisibilitySection } from "../components/VisibilitySection"
+import { UserPublishedCampaignsSection } from "@/features/public/components/UserPublishedCampaignsSection"
 import { OnboardingWizardModal } from "../components/OnboardingWizardModal"
 import { LoadingState } from "@/shared/components/states/LoadingState"
 import { ErrorState } from "@/shared/components/states/ErrorState"
+import { useTranslation } from "@/i18n"
 
 export function CandidateProfilePage() {
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false)
   const [searchParams] = useSearchParams()
+  const { language } = useTranslation()
+  const L = (ar: string, en: string, hi?: string) =>
+    language === "ar" ? ar : language === "hi" ? (hi || en) : en
 
   const {
     profile,
@@ -71,11 +76,15 @@ export function CandidateProfilePage() {
     return (
       <div className="py-12">
         <ErrorState
-          title="تعذر تحميل الملف المهني"
+          title={L("تعذر تحميل الملف المهني", "Unable to load candidate profile", "प्रोफ़ाइल लोड करने में असमर्थ")}
           description={
             error instanceof Error
               ? error.message
-              : "حدث خطأ أثناء جلب بياناتك المهنية. تأكد من اتصالك بالإنترنت."
+              : L(
+                  "حدث خطأ أثناء جلب بياناتك المهنية. تأكد من اتصالك بالإنترنت.",
+                  "An error occurred while fetching your profile. Please check your connection.",
+                  "आपकी प्रोफ़ाइल प्राप्त करते समय एक त्रुटि हुई। कृपया अपना कनेक्शन जांचें।"
+                )
           }
           onRetry={() => {
             refetch()
@@ -218,6 +227,20 @@ export function CandidateProfilePage() {
         <VisibilitySection
           profile={profile}
           onUpdateVisibility={updateVisibility.mutateAsync}
+        />
+      </div>
+
+      {/* 11. Published Campaigns & Community Posts */}
+      <div id="campaigns-section">
+        <UserPublishedCampaignsSection
+          userType="candidate"
+          userId={profile?.id}
+          title={L("منشوراتي ومشاريعي المنشورة", "My Published Campaigns & Projects", "मेरे प्रकाशित अभियान और परियोजनाएं")}
+          description={L(
+            "عرض التفاعل والإحصائيات الخاصة بالمشاريع والمنشورات المهنية التي شاركتها في مجتمع فائدة.",
+            "Track real-time engagement and insights for your campaigns and projects shared in Faeda.",
+            "फायदा समुदाय में साझा किए गए अपने अभियानों और परियोजनाओं के लिए रीयल-टाइम जुड़ाव और अंतर्दृष्टि ट्रैक करें।"
+          )}
         />
       </div>
 

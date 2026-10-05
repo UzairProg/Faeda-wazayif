@@ -21,8 +21,17 @@ interface RoleGuardProps {
 export function RoleGuard({ allowedRoles }: RoleGuardProps) {
   const { user } = useAuthStore()
 
-  const userRole = user?.role as AllowedRole | undefined
-  const hasAccess = userRole != null && allowedRoles.includes(userRole)
+  const userRole = user?.role
+  // Normalize sub-roles (e.g. super_admin, support_moderator, etc. -> admin)
+  const normalizedRole =
+    userRole && String(userRole).toLowerCase().includes("admin")
+      ? ("admin" as AllowedRole)
+      : (userRole as AllowedRole)
+
+  const hasAccess =
+    userRole != null &&
+    (allowedRoles.includes(userRole) ||
+      (allowedRoles.includes("admin") && normalizedRole === "admin"))
 
   if (!hasAccess) {
     return (

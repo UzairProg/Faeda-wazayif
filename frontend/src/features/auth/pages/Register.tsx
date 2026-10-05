@@ -17,6 +17,7 @@ import { ROUTES } from "@/config/routes"
 import { useTranslation } from "@/i18n"
 import type { RegisterRole } from "../types/auth.types"
 import type { Language } from "@/store/language.store"
+import faedaWhiteLogo from "@/assets/logos/faeda_white_logo.png"
 
 export function Register() {
   const navigate = useNavigate()
@@ -129,6 +130,15 @@ export function Register() {
 
         {/* Form Container */}
         <div className="w-full max-w-[480px] mx-auto my-auto py-6">
+          <div className="flex justify-center mb-6 lg:hidden">
+            <Link to="/" className="group">
+              <img
+                src={faedaWhiteLogo}
+                alt="Faeda Jobs Logo"
+                className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+              />
+            </Link>
+          </div>
           
           {/* Header */}
           <motion.div
@@ -335,10 +345,13 @@ export function Register() {
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[160px] pointer-events-none" />
 
         <div className="flex items-center gap-3 relative z-10">
-          <div className="w-10 h-10 rounded-xl bg-primary text-primary-foreground font-bold flex items-center justify-center text-xl font-heading">
-            ف
-          </div>
-          <span className="font-heading font-extrabold text-2xl text-white">Faeda Jobs</span>
+          <Link to="/" className="group">
+            <img
+              src={faedaWhiteLogo}
+              alt="Faeda Jobs Logo"
+              className="h-12 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+          </Link>
         </div>
 
         <div className="space-y-4 max-w-md relative z-10">

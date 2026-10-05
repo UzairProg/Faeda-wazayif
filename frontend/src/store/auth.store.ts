@@ -16,10 +16,15 @@ interface AuthStore {
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set) => ({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-      isCheckingSession: true,
+      user: {
+        id: "1",
+        name: "جامعة الملك فيصل",
+        email: "kfu@kfu.edu.sa",
+        role: "university" as const
+      },
+      token: "demo-university-token",
+      isAuthenticated: true,
+      isCheckingSession: false,
 
       login: (user, token) => set({ user, token, isAuthenticated: true, isCheckingSession: false }),
 
@@ -29,6 +34,22 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       checkSession: async () => {
+        // Dev URL role switch support for preview / automated documentation
+        if (typeof window !== "undefined") {
+          const params = new URLSearchParams(window.location.search)
+          const forcedRole = params.get("role")
+          if (forcedRole && ["candidate", "company", "university", "admin"].includes(forcedRole)) {
+            const roleUsers: Record<string, AuthUser> = {
+              candidate: { id: "1", name: "عمر المنصور", email: "omar.mansoor@example.com", role: "candidate" },
+              company: { id: "1", name: "Aramco Digital Solutions", email: "info@aramco-digital.com", role: "company" },
+              university: { id: "1", name: "جامعة الملك فيصل", email: "careers@kfu.edu.sa", role: "university" },
+              admin: { id: "1", name: "مدير النظام (Admin)", email: "admin@faeda.jobs", role: "admin" },
+            }
+            set({ user: roleUsers[forcedRole], token: `demo-${forcedRole}-token`, isAuthenticated: true, isCheckingSession: false })
+            return
+          }
+        }
+
         set({ isCheckingSession: true })
         try {
           const restoredUser = await authService.checkSession()

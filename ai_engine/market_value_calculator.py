@@ -11,29 +11,33 @@ import re
 import sys
 import sqlite3
 import logging
+import csv
 from typing import Dict, Optional, Any, List, Tuple
 
-import pandas as pd
+try:
+    import pandas as pd
+except Exception:
+    pd = None
+
 from thefuzz import fuzz, process
 from deep_translator import GoogleTranslator
 
-_qs_df: pd.DataFrame | None = None
+_qs_data: List[Dict[str, Any]] = []
 
-def _load_qs_data() -> pd.DataFrame:
-    """Load QS rankings CSV into a cached DataFrame.
-
-    Returns:
-        pd.DataFrame: DataFrame with at least '2025 Rank' and 'Institution Name' columns.
-    """
-    global _qs_df
-    if _qs_df is None:
+def _load_qs_data() -> List[Dict[str, Any]]:
+    """Load QS rankings CSV into a cached list of dictionaries."""
+    global _qs_data
+    if not _qs_data:
         try:
             csv_path = os.path.join(BASE_DIR, "ai_engine", "data", "qs_rankings_2025.csv")
-            _qs_df = pd.read_csv(csv_path)
+            if os.path.exists(csv_path):
+                with open(csv_path, mode="r", encoding="utf-8", errors="ignore") as f:
+                    reader = csv.DictReader(f)
+                    _qs_data = list(reader)
         except Exception as e:
             logger.warning("Failed to load QS rankings data: %s", e)
-            _qs_df = pd.DataFrame(columns=["2025 Rank", "Institution Name"])
-    return _qs_df
+            _qs_data = []
+    return _qs_data
 
 def get_qs_university_bonus(user_university_name: str) -> int:
     """Return bonus points based on QS world ranking using fuzzy matching.
@@ -47,26 +51,22 @@ def get_qs_university_bonus(user_university_name: str) -> int:
     """
     if not user_university_name:
         return 0
-    df = _load_qs_data()
-    if df.empty:
+    data = _load_qs_data()
+    if not data:
         return 5
     # Prepare the list of institution names to compare against.
-    institutions = df["Institution Name"].astype(str).tolist()
+    institutions = [str(r.get("Institution Name", "")) for r in data if r.get("Institution Name")]
     
-    # We use 'thefuzz' library to perform fuzzy string matching using Levenshtein Distance (fuzz.ratio).
-    # This ensures that slight variations or typos in the user's university name (e.g. "King Fahd Uni" 
-    # instead of "King Fahd University") will still yield a successful match against the QS ranking dataset.
     match, score = process.extractOne(user_university_name, institutions, scorer=fuzz.ratio) or (None, 0)
     
-    # A confidence threshold of 80 ensures we avoid assigning high ranks to completely unrelated 
-    # institutions while still allowing for minor naming differences.
     if score < 80 or match is None:
         logger.debug("No confident QS match for university '%s' (best score %s)", user_university_name, score)
         return 5
         
     # Retrieve rank for the confidently matched institution
     try:
-        rank_val = int(df.loc[df["Institution Name"] == match, "2025 Rank"].iloc[0])
+        matched_row = next((r for r in data if r.get("Institution Name") == match), None)
+        rank_val = int(matched_row.get("2025 Rank", 999)) if matched_row else 999
     except Exception as e:
         logger.debug("Failed to retrieve rank for matched university '%s': %s", match, e)
         return 5
@@ -87,16 +87,20 @@ def get_qs_university_rank_string(user_university_name: str) -> str:
     """Return a string representing the QS university rank."""
     if not user_university_name:
         return "غير مصنفة"
-    df = _load_qs_data()
-    if df.empty:
+    data = _load_qs_data()
+    if not data:
         return "غير مصنفة"
-    institutions = df["Institution Name"].astype(str).tolist()
+    institutions = [str(r.get("Institution Name", "")) for r in data if r.get("Institution Name")]
+    if not institutions:
+        return "غير مصنفة"
     match, score = process.extractOne(user_university_name, institutions, scorer=fuzz.ratio) or (None, 0)
     if score < 80 or match is None:
         return "غير مصنفة"
     try:
-        rank_val = df.loc[df["Institution Name"] == match, "2025 Rank"].iloc[0]
-        return str(rank_val)
+        matched_row = next((r for r in data if r.get("Institution Name") == match), None)
+        if matched_row and matched_row.get("2025 Rank"):
+            return f"#{matched_row.get('2025 Rank')}"
+        return "غير مصنفة"
     except Exception:
         return "غير مصنفة"
 

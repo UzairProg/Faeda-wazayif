@@ -18,6 +18,7 @@ export function Footer() {
     { label: t("common.nav.jobs"), href: ROUTES.JOBS.LIST },
     { label: t("common.nav.companies"), href: ROUTES.COMPANIES.LIST },
     { label: t("common.nav.teams"), href: ROUTES.TEAMS.LIST },
+    { label: language === "ar" ? "المقالات والرؤى" : language === "hi" ? "लेख और अंतर्दृष्टि" : "Articles & Insights", href: ROUTES.POSTS.LIST },
     { label: t("common.nav.about"), href: ROUTES.PUBLIC.ABOUT },
   ]
 
@@ -45,7 +46,7 @@ export function Footer() {
                 <img
                   src={faedaWhiteLogo}
                   alt="Faeda Jobs Logo"
-                  className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                  className="h-12 sm:h-14 lg:h-16 w-auto max-h-[64px] object-contain transition-transform duration-300 group-hover:scale-105"
                 />
               </Link>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold mb-6">

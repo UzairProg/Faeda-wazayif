@@ -24,6 +24,7 @@ import {
   getLocalizedCompanyName,
   formatLocalizedSalary,
   formatLocalizedDate,
+  getLocalizedJob,
 } from "@/lib/localization.utils"
 import type { JobDetail } from "@/features/jobs/types/job.types"
 import { cn } from "@/lib/utils"
@@ -88,14 +89,15 @@ function ApplyGate({ jobId }: { jobId: string }) {
 
 function JobDetailContent({ job }: { job: JobDetail }) {
   const { t, language, isRTL } = useTranslation()
+  const currentJob = getLocalizedJob(job, language)
 
-  const companyName = getLocalizedCompanyName(job.company, language)
-  const workTypeLabel = getLocalizedWorkType(job.workType, language)
-  const expLabel = getLocalizedExperienceLevel(job.experienceLevel, language)
-  const salaryText = job.salary?.isDisclosed
-    ? formatLocalizedSalary(job.salary.min, job.salary.max, language)
+  const companyName = getLocalizedCompanyName(currentJob.company, language)
+  const workTypeLabel = getLocalizedWorkType(currentJob.workType, language)
+  const expLabel = getLocalizedExperienceLevel(currentJob.experienceLevel, language)
+  const salaryText = currentJob.salary?.isDisclosed
+    ? formatLocalizedSalary(currentJob.salary.min, currentJob.salary.max, language)
     : null
-  const postedDate = formatLocalizedDate(job.postedAt, language)
+  const postedDate = formatLocalizedDate(currentJob.postedAt, language)
 
   const ChevronIcon = isRTL ? ChevronRight : ChevronLeft
   const BackArrowIcon = isRTL ? ArrowLeft : ArrowRight
@@ -108,7 +110,7 @@ function JobDetailContent({ job }: { job: JobDetail }) {
         <ChevronIcon className="w-3 h-3 text-white/30" />
         <Link to={ROUTES.JOBS.LIST} className="hover:text-white transition-colors">{t("common.nav.jobs")}</Link>
         <ChevronIcon className="w-3 h-3 text-white/30" />
-        <span className="text-white truncate max-w-xs">{job.title}</span>
+        <span className="text-white truncate max-w-xs">{currentJob.title}</span>
       </nav>
 
       <div className="flex flex-col lg:flex-row gap-8 items-start">
@@ -122,9 +124,9 @@ function JobDetailContent({ job }: { job: JobDetail }) {
           {/* Job Header Card */}
           <div className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
             <div className="flex items-start gap-4 mb-6">
-              {job.company.logoUrl ? (
+              {currentJob.company.logoUrl ? (
                 <img
-                  src={job.company.logoUrl}
+                  src={currentJob.company.logoUrl}
                   alt={companyName}
                   className="w-14 h-14 rounded-xl object-contain bg-white p-1 shrink-0"
                 />
@@ -135,7 +137,7 @@ function JobDetailContent({ job }: { job: JobDetail }) {
               )}
               <div>
                 <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-white mb-1 leading-tight">
-                  {job.title}
+                  {currentJob.title}
                 </h1>
                 <p className="text-lg text-muted-foreground">{companyName}</p>
               </div>
@@ -143,12 +145,12 @@ function JobDetailContent({ job }: { job: JobDetail }) {
 
             {/* Meta info */}
             <div className="flex flex-wrap gap-3 mb-6">
-              {job.location && (
+              {currentJob.location && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-sm text-muted-foreground">
                   <MapPin className="w-4 h-4 shrink-0" />
-                  {job.isRemote
-                    ? (language === "en" ? `Remote (${job.location})` : language === "hi" ? `रिमोट (${job.location})` : `عن بعد (${job.location})`)
-                    : job.location}
+                  {currentJob.isRemote
+                    ? (language === "en" ? `Remote (${currentJob.location})` : language === "hi" ? `रिमोट (${currentJob.location})` : `عن بعد (${currentJob.location})`)
+                    : currentJob.location}
                 </span>
               )}
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-sm text-muted-foreground">
@@ -159,13 +161,14 @@ function JobDetailContent({ job }: { job: JobDetail }) {
                 <Briefcase className="w-4 h-4 shrink-0" />
                 {expLabel}
               </span>
-              {job.isTeamFriendly && (
+              {currentJob.isTeamFriendly && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/10 border border-secondary/20 text-sm text-secondary font-semibold">
                   <Users className="w-4 h-4 shrink-0" />
                   {t("jobs.filters.teamFriendly")}
                 </span>
               )}
             </div>
+
 
             {/* Salary */}
             {salaryText && (
@@ -183,19 +186,19 @@ function JobDetailContent({ job }: { job: JobDetail }) {
           </div>
 
           {/* Description */}
-          {job.description && (
+          {currentJob.description && (
             <section className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
               <h2 className="text-xl font-bold font-heading text-white mb-4">{t("jobs.detail.about")}</h2>
-              <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{job.description}</p>
+              <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{currentJob.description}</p>
             </section>
           )}
 
           {/* Responsibilities */}
-          {job.responsibilities.length > 0 && (
+          {currentJob.responsibilities && currentJob.responsibilities.length > 0 && (
             <section className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
               <h2 className="text-xl font-bold font-heading text-white mb-5">{t("jobs.detail.responsibilities")}</h2>
               <ul className="space-y-3">
-                {job.responsibilities.map((item, i) => (
+                {currentJob.responsibilities.map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                     <span className="text-muted-foreground text-sm leading-relaxed">{item}</span>
@@ -206,11 +209,11 @@ function JobDetailContent({ job }: { job: JobDetail }) {
           )}
 
           {/* Requirements */}
-          {job.requirements.length > 0 && (
+          {currentJob.requirements && currentJob.requirements.length > 0 && (
             <section className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
               <h2 className="text-xl font-bold font-heading text-white mb-5">{t("jobs.detail.requirements")}</h2>
               <ul className="space-y-3">
-                {job.requirements.map((item, i) => (
+                {currentJob.requirements.map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
                     <span className="text-muted-foreground text-sm leading-relaxed">{item}</span>
@@ -221,11 +224,11 @@ function JobDetailContent({ job }: { job: JobDetail }) {
           )}
 
           {/* Skills */}
-          {job.skills.length > 0 && (
+          {currentJob.skills && currentJob.skills.length > 0 && (
             <section className="bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
               <h2 className="text-xl font-bold font-heading text-white mb-4">{t("jobs.detail.skills")}</h2>
               <div className="flex flex-wrap gap-2">
-                {job.skills.map((skill) => (
+                {currentJob.skills.map((skill) => (
                   <span
                     key={skill}
                     className="px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium"
@@ -243,17 +246,17 @@ function JobDetailContent({ job }: { job: JobDetail }) {
             <div className="flex items-center gap-3 mb-3">
               <Building2 className="w-5 h-5 text-muted-foreground" />
               <span className="text-white font-semibold">{companyName}</span>
-              {job.company.isVerified && (
+              {currentJob.company.isVerified && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
                   <CheckCircle2 className="w-3 h-3" />
                   {t("companies.detail.verified")}
                 </span>
               )}
             </div>
-            {job.company.location && (
+            {currentJob.company.location && (
               <p className="text-sm text-muted-foreground flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-primary" />
-                {job.company.location}
+                {currentJob.company.location}
               </p>
             )}
           </section>

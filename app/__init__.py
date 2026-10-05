@@ -45,8 +45,18 @@ def create_app():
         from services.subscription import SubscriptionPlan, Subscription, Payment
         from services.system_settings import SystemSetting
         from services.job_category import JobCategory
-        from services.university import University, UniversityDepartment, AcademicVerification
+        from services.university import (
+            University, UniversityDepartment, AcademicVerification,
+            UniversityThesisCampaign, UniversityIncubatorVenture,
+            CoopTrainingSupervision, ProfessorSupervisionSchedule
+        )
         from services.chat import Conversation, ConversationParticipant, ChatMessage
+        from services.campaign import (
+            Campaign, CampaignCandidate, CampaignJob,
+            CampaignLike, CampaignComment, CampaignShare,
+            CampaignSave, CampaignView, Notification
+        )
+        from services.market_insights import MarketInsight, CandidateMarketInsight
         
         # استيراد وتسجيل المسارات (Blueprints)
         from app.blueprints.core import core_bp
@@ -55,10 +65,13 @@ def create_app():
         from app.blueprints.jobs import job
         from app.blueprints.messages import messages_routes 
         from app.blueprints.admin import admin_bp
+        from app.blueprints.admin_v1 import admin_v1_bp
         from app.blueprints.chat import chat_bp
         from app.blueprints.chat_v1 import chat_v1_bp
         from app.blueprints.company_panel import company_panel_bp
         from app.blueprints.universities import university_bp
+        from app.blueprints.campaigns_v1 import campaigns_v1_bp
+        from app.blueprints.market_insights import market_insights_bp
         
         app.register_blueprint(core_bp)
         app.register_blueprint(customer)
@@ -66,10 +79,13 @@ def create_app():
         app.register_blueprint(job)
         app.register_blueprint(messages_routes)
         app.register_blueprint(admin_bp)
+        app.register_blueprint(admin_v1_bp)
         app.register_blueprint(chat_bp)
         app.register_blueprint(chat_v1_bp)
         app.register_blueprint(company_panel_bp)
         app.register_blueprint(university_bp)
+        app.register_blueprint(campaigns_v1_bp)
+        app.register_blueprint(market_insights_bp)
         
         from services.team_offer import TeamOffer
         from services.auth_token import process_request_auth
@@ -86,7 +102,7 @@ def create_app():
             if origin:
                 response.headers['Access-Control-Allow-Origin'] = origin
                 response.headers['Access-Control-Allow-Credentials'] = 'true'
-                response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, Accept, X-Requested-With, Origin'
+                response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, Accept, X-Requested-With, Origin, X-Persona-Role'
                 response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH'
             return response
 

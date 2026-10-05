@@ -27,9 +27,11 @@ import {
   formatLocalizedSalary,
   formatLocalizedDate,
   formatLocalizedNumber,
+  getLocalizedJob,
 } from "@/lib/localization.utils"
 import type { Job, JobFilter, WorkType, ExperienceLevel } from "@/features/jobs/types/job.types"
 import { cn } from "@/lib/utils"
+
 
 const WORK_TYPES: WorkType[] = ["full_time", "part_time", "contract", "remote", "hybrid"]
 const EXPERIENCE_LEVELS: ExperienceLevel[] = ["entry", "mid", "senior", "lead", "executive"]
@@ -95,22 +97,23 @@ function OpportunityPreview({ job }: { job: Job | undefined }) {
     )
   }
 
-  const companyName = getLocalizedCompanyName(job.company, language)
-  const workTypeLabel = getLocalizedWorkType(job.workType, language)
-  const expLabel = getLocalizedExperienceLevel(job.experienceLevel, language)
-  const salaryText = job.salary?.isDisclosed
-    ? formatLocalizedSalary(job.salary.min, job.salary.max, language)
+  const currentJob = getLocalizedJob(job, language)
+  const companyName = getLocalizedCompanyName(currentJob.company, language)
+  const workTypeLabel = getLocalizedWorkType(currentJob.workType, language)
+  const expLabel = getLocalizedExperienceLevel(currentJob.experienceLevel, language)
+  const salaryText = currentJob.salary?.isDisclosed
+    ? formatLocalizedSalary(currentJob.salary.min, currentJob.salary.max, language)
     : null
-  const postedDate = formatLocalizedDate(job.postedAt, language)
+  const postedDate = formatLocalizedDate(currentJob.postedAt, language)
 
   return (
     <GlassCard className="p-6 bg-card/70 backdrop-blur-xl border-primary/30 shadow-2xl sticky top-28 text-start space-y-6 overflow-hidden">
       
       {/* Header Info */}
       <div className="flex items-start gap-4 pb-5 border-b border-white/10">
-        {job.company.logoUrl ? (
+        {currentJob.company.logoUrl ? (
           <img
-            src={job.company.logoUrl}
+            src={currentJob.company.logoUrl}
             alt={companyName}
             className="w-16 h-16 rounded-2xl object-contain bg-white p-1 border border-white/10 shrink-0"
             onError={(e) => {
@@ -130,14 +133,14 @@ function OpportunityPreview({ job }: { job: Job | undefined }) {
           </span>
 
           <h3 className="text-xl font-extrabold font-heading text-white truncate mb-1">
-            {job.title}
+            {currentJob.title}
           </h3>
 
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            {job.location && (
+            {currentJob.location && (
               <span className="inline-flex items-center gap-1 text-white/80">
                 <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span>{job.isRemote ? (language === "en" ? "Remote" : language === "hi" ? "रिमोट" : "عن بعد") : job.location}</span>
+                <span>{currentJob.isRemote ? (language === "en" ? "Remote" : language === "hi" ? "रिमोट" : "عن بعد") : currentJob.location}</span>
               </span>
             )}
             <span className="inline-flex items-center gap-1">
@@ -157,7 +160,7 @@ function OpportunityPreview({ job }: { job: Job | undefined }) {
         <span className="px-3 py-1 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-white">
           {expLabel}
         </span>
-        {job.isTeamFriendly && (
+        {currentJob.isTeamFriendly && (
           <span className="px-3 py-1 rounded-xl bg-secondary/10 border border-secondary/20 text-xs font-semibold text-secondary">
             <Users className="w-3.5 h-3.5 inline-block me-1" />
             {t("jobs.filters.teamFriendly")}
@@ -176,11 +179,11 @@ function OpportunityPreview({ job }: { job: Job | undefined }) {
       )}
 
       {/* Skills Coverage */}
-      {job.skills.length > 0 && (
+      {currentJob.skills.length > 0 && (
         <div className="space-y-2">
           <span className="text-xs font-bold text-white block">{t("jobs.detail.skills")}</span>
           <div className="flex flex-wrap gap-1.5">
-            {job.skills.map((skill) => (
+            {currentJob.skills.map((skill) => (
               <span
                 key={skill}
                 className="px-3 py-1 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-semibold"
@@ -193,11 +196,11 @@ function OpportunityPreview({ job }: { job: Job | undefined }) {
       )}
 
       {/* Excerpt Snippet */}
-      {job.excerpt && (
+      {currentJob.excerpt && (
         <div className="space-y-1">
           <span className="text-xs font-bold text-white block">{t("jobs.detail.about")}</span>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-4">
-            {job.excerpt}
+            {currentJob.excerpt}
           </p>
         </div>
       )}
@@ -205,15 +208,16 @@ function OpportunityPreview({ job }: { job: Job | undefined }) {
       {/* Primary CTA / Apply Gate */}
       <div className="pt-2">
         {isAuthenticated ? (
-          <Link to={ROUTES.JOBS.DETAIL(job.id)} className="block w-full">
+          <Link to={ROUTES.JOBS.DETAIL(currentJob.id)} className="block w-full">
             <Button size="lg" className="w-full rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs sm:text-sm shadow-lg shadow-primary/20">
               {t("jobs.card.apply")}
             </Button>
           </Link>
         ) : (
-          <ApplyGatePanel job={job} />
+          <ApplyGatePanel job={currentJob} />
         )}
       </div>
+
 
     </GlassCard>
   )

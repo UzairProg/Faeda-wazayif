@@ -2,6 +2,7 @@
  * CandidateProfileHeader.tsx — Top Hero Card for Candidate Identity.
  */
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { useTranslation } from "@/i18n"
 import { candidateService } from "../services/candidate.service"
 import type { CandidateProfile, UpdateIdentityDTO } from "../types/candidate.types"
@@ -18,6 +19,7 @@ import {
   Building2,
   X,
   Loader2,
+  ExternalLink,
 } from "lucide-react"
 
 interface CandidateProfileHeaderProps {
@@ -241,6 +243,18 @@ export function CandidateProfileHeader({
             <Edit3 className="w-4 h-4" />
             <span>{t("candidate.profile.header.editProfile")}</span>
           </button>
+
+          {profile.user_id && (
+            <Link
+              to={`/portfolio/${profile.user_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary hover:text-white text-xs font-semibold transition-all"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>معاينة المعرض العام</span>
+            </Link>
+          )}
 
           {onOpenOnboarding && (
             <button

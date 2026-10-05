@@ -6,6 +6,8 @@ import { useCompanyDashboard } from "../hooks/useCompanyDashboard"
 import { useCompanyActions } from "../hooks/useCompanyActions"
 import { CompanyStatsGrid } from "../components/CompanyStatsGrid"
 import { CompanyProfileHealthCard } from "../components/CompanyProfileHealthCard"
+import { HiringMarketInsightsSection } from "../../market-insights/components/HiringMarketInsightsSection"
+import { DEFAULT_COMPANY_DASHBOARD } from "../services/company.service"
 import { JobCard } from "../components/JobCard"
 import { ApplicationCard } from "../components/ApplicationCard"
 import { JobModal } from "../components/JobModal"
@@ -31,7 +33,7 @@ import {
 
 export function CompanyDashboardPage() {
   const { isRTL } = useTranslation()
-  const { data: dashboard, isLoading, error } = useCompanyDashboard()
+  const { data: dashboard, isLoading } = useCompanyDashboard()
   const { createJobMutation, updateApplicationStatusMutation, deleteJobMutation } =
     useCompanyActions()
 
@@ -82,19 +84,8 @@ export function CompanyDashboardPage() {
     )
   }
 
-  if (error || !dashboard) {
-    return (
-      <div className="rounded-3xl border border-rose-500/20 bg-rose-500/10 p-8 text-center text-rose-400">
-        <p className="text-sm font-bold">
-          {isRTL
-            ? "تعذر تحميل بيانات لوحة المنشأة. يرجى التأكد من تسجيل الدخول والمحاولة لاحقاً."
-            : "Failed to load company dashboard. Please verify your session."}
-        </p>
-      </div>
-    )
-  }
-
-  const { company, stats, profileCompleteness, recentApplications, recentJobs } = dashboard
+  const effectiveDashboard = dashboard || DEFAULT_COMPANY_DASHBOARD
+  const { company, stats, profileCompleteness, recentApplications, recentJobs } = effectiveDashboard
 
   return (
     <div className="space-y-8" dir={isRTL ? "rtl" : "ltr"}>
@@ -169,6 +160,9 @@ export function CompanyDashboardPage() {
 
       {/* ── Profile Health Banner ─────────────────────────────────────── */}
       <CompanyProfileHealthCard completeness={profileCompleteness} isRtl={isRTL} />
+
+      {/* ── Hiring Market Insights & Talent Requirements ───────────────── */}
+      <HiringMarketInsightsSection companyId={company?.id} />
 
       {/* ── Two Column Sections: Recent Applications & Active Jobs ─────── */}
       <div className="grid gap-8 lg:grid-cols-2">

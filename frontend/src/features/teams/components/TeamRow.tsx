@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/config/routes"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "@/i18n"
-import { formatLocalizedNumber } from "@/lib/localization.utils"
+import { formatLocalizedNumber, getLocalizedTeam } from "@/lib/localization.utils"
 import type { Team } from "../types/team.types"
 
 interface TeamRowProps {
@@ -47,10 +47,11 @@ function getTeamInitials(name: string): string {
 
 export function TeamRow({ team, isSelected = false, onSelect }: TeamRowProps) {
   const { t, language, isRTL } = useTranslation()
-  const gradientStyle = getAvatarGradient(team.id)
-  const initials = getTeamInitials(team.name)
-  const visibleCaps = team.capabilities.slice(0, 4)
-  const remainingCaps = team.capabilities.length - visibleCaps.length
+  const localizedTeam = getLocalizedTeam(team, language)
+  const gradientStyle = getAvatarGradient(localizedTeam.id)
+  const initials = getTeamInitials(localizedTeam.name)
+  const visibleCaps = localizedTeam.capabilities.slice(0, 4)
+  const remainingCaps = localizedTeam.capabilities.length - visibleCaps.length
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
 
   return (
@@ -67,10 +68,10 @@ export function TeamRow({ team, isSelected = false, onSelect }: TeamRowProps) {
         
         {/* Left Info: Avatar + Text */}
         <div className="flex items-start gap-4 sm:gap-5 min-w-0 w-full sm:w-auto flex-1">
-          {team.logoUrl ? (
+          {localizedTeam.logoUrl ? (
             <img
-              src={team.logoUrl}
-              alt={team.name}
+              src={localizedTeam.logoUrl}
+              alt={localizedTeam.name}
               className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border border-white/10 shrink-0 bg-black/30"
               onError={(e) => {
                 ;(e.currentTarget as HTMLElement).style.display = "none"
@@ -89,21 +90,21 @@ export function TeamRow({ team, isSelected = false, onSelect }: TeamRowProps) {
             <div className="flex flex-wrap items-center gap-2 mb-1.5">
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold font-mono">
                 <Users className="w-3 h-3" />
-                <span>{t("teams.list.memberCount", { count: formatLocalizedNumber(team.memberCount, language) })}</span>
+                <span>{t("teams.list.memberCount", { count: formatLocalizedNumber(localizedTeam.memberCount, language) })}</span>
               </span>
 
-              {team.generalProgram && (
+              {localizedTeam.generalProgram && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/90 text-xs font-semibold">
                   <Layers className="w-3 h-3 text-primary" />
-                  <span className="truncate max-w-[150px]">{team.generalProgram}</span>
+                  <span className="truncate max-w-[150px]">{localizedTeam.generalProgram}</span>
                 </span>
               )}
             </div>
 
             {/* Team Name */}
-            <Link to={ROUTES.TEAMS.DETAIL(team.id)} className="block group/link">
+            <Link to={ROUTES.TEAMS.DETAIL(localizedTeam.id)} className="block group/link">
               <h3 className="text-lg sm:text-xl font-extrabold font-heading text-white group-hover/link:text-primary transition-colors truncate">
-                {team.name}
+                {localizedTeam.name}
               </h3>
             </Link>
 
@@ -111,9 +112,9 @@ export function TeamRow({ team, isSelected = false, onSelect }: TeamRowProps) {
             <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 mb-2">
               <span className="inline-flex items-center gap-1 text-white/80">
                 <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span>{team.location}</span>
+                <span>{localizedTeam.location}</span>
               </span>
-              {team.isRemote && (
+              {localizedTeam.isRemote && (
                 <span className="before:content-['•'] before:me-2 before:text-white/20 text-cyan-400 font-semibold">
                   {language === "en" ? "Remote Available" : language === "hi" ? "रिमोट उपलब्ध" : "متاح للعمل عن بعد"}
                 </span>

@@ -5,8 +5,14 @@
  * Localizes all 8 core namespaces: common, auth, jobs, companies, teams, about, contact, public.
  */
 import { publicHi } from "@/i18n/namespaces/public"
+import { universityHi } from "@/i18n/namespaces/university"
+import { candidateHi } from "@/i18n/namespaces/candidate"
+import { chatEn } from "@/i18n/namespaces/chat"
 
 export const hiLocale = {
+  chat: chatEn,
+  candidate: candidateHi,
+  university: universityHi,
   common: {
     actions: {
       save: "सहेजें",

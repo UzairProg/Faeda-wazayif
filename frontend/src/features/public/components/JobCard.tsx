@@ -17,6 +17,7 @@ import {
   getLocalizedCompanyName,
   formatLocalizedSalary,
   formatLocalizedDate,
+  getLocalizedJob,
 } from "@/lib/localization.utils"
 import type { Job } from "@/features/jobs/types/job.types"
 
@@ -49,18 +50,20 @@ interface JobCardProps {
 
 export function JobCard({ job, index = 0, className }: JobCardProps) {
   const { t, language, isRTL } = useTranslation()
+  const currentJob = getLocalizedJob(job, language)
 
-  const companyName = getLocalizedCompanyName(job.company, language)
-  const workTypeLabel = getLocalizedWorkType(job.workType, language)
-  const expLabel = getLocalizedExperienceLevel(job.experienceLevel, language)
-  const salaryText = job.salary?.isDisclosed
-    ? formatLocalizedSalary(job.salary.min, job.salary.max, language)
+  const companyName = getLocalizedCompanyName(currentJob.company, language)
+  const workTypeLabel = getLocalizedWorkType(currentJob.workType, language)
+  const expLabel = getLocalizedExperienceLevel(currentJob.experienceLevel, language)
+  const salaryText = currentJob.salary?.isDisclosed
+    ? formatLocalizedSalary(currentJob.salary.min, currentJob.salary.max, language)
     : null
-  const postedDate = formatLocalizedDate(job.postedAt, language)
+  const postedDate = formatLocalizedDate(currentJob.postedAt, language)
 
-  const visibleSkills = job.skills.slice(0, 4)
-  const remainingSkills = job.skills.length - visibleSkills.length
+  const visibleSkills = currentJob.skills.slice(0, 4)
+  const remainingSkills = currentJob.skills.length - visibleSkills.length
   const ChevronIcon = isRTL ? ChevronRight : ChevronLeft
+
 
   return (
     <motion.article
@@ -78,10 +81,10 @@ export function JobCard({ job, index = 0, className }: JobCardProps) {
         {/* Header: Company + Title + Save */}
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex items-center gap-3 min-w-0">
-            <CompanyAvatar name={companyName} logoUrl={job.company.logoUrl} />
+            <CompanyAvatar name={companyName} logoUrl={currentJob.company.logoUrl} />
             <div className="min-w-0">
               <h3 className="font-bold font-heading text-white text-base leading-tight mb-1 group-hover:text-primary transition-colors truncate">
-                {job.title}
+                {currentJob.title}
               </h3>
               <p className="text-sm text-muted-foreground truncate">{companyName}</p>
             </div>
@@ -97,10 +100,10 @@ export function JobCard({ job, index = 0, className }: JobCardProps) {
 
         {/* Meta Badges */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {job.location && (
+          {currentJob.location && (
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-xs text-muted-foreground">
               <MapPin className="w-3 h-3 shrink-0" />
-              {job.isRemote ? (language === "en" ? "Remote" : language === "hi" ? "रिमोट" : "عن بعد") : job.location}
+              {currentJob.isRemote ? (language === "en" ? "Remote" : language === "hi" ? "रिमोट" : "عن بعد") : currentJob.location}
             </span>
           )}
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-xs text-muted-foreground">
@@ -110,7 +113,8 @@ export function JobCard({ job, index = 0, className }: JobCardProps) {
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-xs text-muted-foreground">
             {expLabel}
           </span>
-          {job.isTeamFriendly && (
+          {currentJob.isTeamFriendly && (
+
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-secondary/10 border border-secondary/20 text-xs text-secondary font-semibold">
               <Users className="w-3 h-3 shrink-0" />
               {t("jobs.filters.teamFriendly")}

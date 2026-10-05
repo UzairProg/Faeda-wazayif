@@ -10,7 +10,7 @@ import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/config/routes"
 import { useTranslation } from "@/i18n"
-import { getLocalizedCompanyName } from "@/lib/localization.utils"
+import { getLocalizedCompany } from "@/lib/localization.utils"
 import type { Company } from "../types/company.types"
 
 interface CompanyRowProps {
@@ -45,9 +45,9 @@ function getCompanyInitials(name: string): string {
 export function CompanyRow({ company }: CompanyRowProps) {
   const { t, language, isRTL } = useTranslation()
 
-  const companyName = getLocalizedCompanyName(company, language)
-  const gradientStyle = getAvatarGradient(company.id)
-  const initials = getCompanyInitials(companyName)
+  const localizedCompany = getLocalizedCompany(company, language)
+  const gradientStyle = getAvatarGradient(localizedCompany.id)
+  const initials = getCompanyInitials(localizedCompany.name)
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
 
   return (
@@ -56,10 +56,10 @@ export function CompanyRow({ company }: CompanyRowProps) {
         
         {/* Left Info: Avatar + Details */}
         <div className="flex items-start gap-4 sm:gap-5 min-w-0 w-full md:w-auto flex-1">
-          {company.logoUrl ? (
+          {localizedCompany.logoUrl ? (
             <img
-              src={company.logoUrl}
-              alt={companyName}
+              src={localizedCompany.logoUrl}
+              alt={localizedCompany.name}
               className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border border-white/10 shrink-0 bg-black/30"
               onError={(e) => {
                 ;(e.currentTarget as HTMLElement).style.display = "none"
@@ -77,24 +77,24 @@ export function CompanyRow({ company }: CompanyRowProps) {
           <div className="min-w-0 flex-1">
             {/* Badges row */}
             <div className="flex flex-wrap items-center gap-2 mb-1.5">
-              {company.isVerified && (
+              {localizedCompany.isVerified && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>{t("companies.list.verifiedBadge")}</span>
                 </span>
               )}
 
-              {company.companyField && (
+              {localizedCompany.companyField && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold">
                   <Building2 className="w-3 h-3" />
-                  <span>{company.companyField}</span>
+                  <span>{localizedCompany.companyField}</span>
                 </span>
               )}
 
-              {company.openJobsCount > 0 ? (
+              {localizedCompany.openJobsCount > 0 ? (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-bold font-mono">
                   <Briefcase className="w-3 h-3 text-cyan-400" />
-                  <span>{t("companies.list.openJobsCount", { count: company.openJobsCount })}</span>
+                  <span>{t("companies.list.openJobsCount", { count: localizedCompany.openJobsCount })}</span>
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-muted-foreground text-xs">
@@ -104,9 +104,9 @@ export function CompanyRow({ company }: CompanyRowProps) {
             </div>
 
             {/* Company Name */}
-            <Link to={ROUTES.COMPANIES.DETAIL(company.id)} className="block group/link">
+            <Link to={ROUTES.COMPANIES.DETAIL(localizedCompany.id)} className="block group/link">
               <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-white group-hover/link:text-primary transition-colors truncate">
-                {companyName}
+                {localizedCompany.name}
               </h3>
             </Link>
 
@@ -114,32 +114,32 @@ export function CompanyRow({ company }: CompanyRowProps) {
             <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-muted-foreground mt-1 mb-2">
               <span className="inline-flex items-center gap-1 text-white/80">
                 <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span>{company.location || company.country || (language === "en" ? "Saudi Arabia" : language === "hi" ? "सऊदी अरब" : "المملكة العربية السعودية")}</span>
+                <span>{localizedCompany.location || localizedCompany.country || (language === "en" ? "Saudi Arabia" : language === "hi" ? "सऊदी अरब" : "المملكة العربية السعودية")}</span>
               </span>
 
-              {company.companySize && (
+              {localizedCompany.companySize && (
                 <span className="before:content-['•'] before:me-2 before:text-white/20">
-                  {company.companySize}
+                  {localizedCompany.companySize}
                 </span>
               )}
 
-              {company.website && (
+              {localizedCompany.website && (
                 <a
-                  href={company.website.startsWith("http") ? company.website : `https://${company.website}`}
+                  href={localizedCompany.website.startsWith("http") ? localizedCompany.website : `https://${localizedCompany.website}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-primary hover:underline ms-auto md:ms-0"
                 >
                   <ExternalLink className="w-3 h-3" />
-                  <span className="truncate max-w-[140px]">{company.website.replace(/^https?:\/\//, "")}</span>
+                  <span className="truncate max-w-[140px]">{localizedCompany.website.replace(/^https?:\/\//, "")}</span>
                 </a>
               )}
             </div>
 
             {/* Description Excerpt */}
-            {company.description && (
+            {localizedCompany.description && (
               <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                {company.description}
+                {localizedCompany.description}
               </p>
             )}
           </div>

@@ -1516,3 +1516,17 @@ def delete_admin(id):
     log_admin_action('delete_admin', 'admin', id, {'username': username})
     flash(f'تم حذف حساب المدير: {username}', 'success')
     return redirect(url_for('admin.manage_admins'))
+
+
+# ------------------------------------------------------------------------------
+# REST API v1 EXPORT (/api/v1/admin/*)
+# ------------------------------------------------------------------------------
+# The modern React Admin Console REST APIs are implemented in admin_v1.py and
+# exported here for seamless access and backwards compatibility:
+# - /api/v1/admin/dashboard (Stats)
+# - /api/v1/admin/users (Candidate & User Management)
+# - /api/v1/admin/companies (Company Verification)
+# - /api/v1/admin/jobs (Job Moderation)
+# - /api/v1/admin/auditlogs (Audit Trail)
+from app.blueprints.admin_v1 import admin_v1_bp
+

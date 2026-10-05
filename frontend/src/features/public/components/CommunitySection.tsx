@@ -4,6 +4,7 @@
  * Public community insights section for Home page.
  * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
+import { Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import { GlassCard } from "@/components/ui/glass-card"
 import { BookOpen, ArrowLeft, ArrowRight, Calendar } from "lucide-react"
@@ -15,48 +16,57 @@ export function CommunitySection() {
 
   const insightsArticles = language === "en" ? [
     {
+      id: 1,
       title: "How to prepare your CV to pass automated ATS screening systems?",
       category: "Career Development",
       date: "August 2026",
     },
     {
+      id: 2,
       title: "Understanding market value & negotiating salaries based on real data",
       category: "Career Growth",
       date: "August 2026",
     },
     {
+      id: 3,
       title: "Integrated Team Hiring: Why leading employers contract whole teams",
       category: "Hiring Trends",
       date: "August 2026",
     },
   ] : language === "hi" ? [
     {
+      id: 1,
       title: "स्वचालित एटीएस स्क्रीनिंग सिस्टम को पास करने के लिए अपना सीवी कैसे तैयार करें?",
       category: "करियर विकास",
       date: "अगस्त 2026",
     },
     {
+      id: 2,
       title: "बाजार मूल्य को समझना और वास्तविक डेटा के आधार पर वेतन पर बातचीत करना",
       category: "करियर विकास",
       date: "अगस्त 2026",
     },
     {
+      id: 3,
       title: "एकीकृत टीम भर्ती: प्रमुख नियोक्ता पूरी टीमों का अनुबंध क्यों करते हैं",
       category: "भर्ती के रुझान",
       date: "अगस्त 2026",
     },
   ] : [
     {
+      id: 1,
       title: "كيف تجهز سيرتك الذاتية لاجتياز أنظمة الفرز الذكي (ATS)؟",
       category: "التطوير المهني",
       date: "أغسطس 2026",
     },
     {
+      id: 2,
       title: "مفهوم القيمة السوقية وكيف تفاوض على الراتب بناءً على المعطيات",
       category: "إدارة المسار",
       date: "أغسطس 2026",
     },
     {
+      id: 3,
       title: "التوظيف الجماعي: لماذا تفضل الشركات استقطاب فرق متكاملة؟",
       category: "ثقافة التوظيف",
       date: "أغسطس 2026",
@@ -74,7 +84,13 @@ export function CommunitySection() {
             </div>
             <h2 className="text-xl sm:text-2xl font-bold font-heading text-white">{t("public.community.sectionTitle")}</h2>
           </div>
-          <span className="text-xs sm:text-sm text-muted-foreground">{t("public.community.sectionSubtitle")}</span>
+          <Link
+            to="/posts"
+            className="text-xs sm:text-sm text-primary font-bold hover:underline flex items-center gap-1.5 transition-colors"
+          >
+            <span>{language === "ar" ? "تصفح كل المقالات والرؤى" : "Browse All Articles"}</span>
+            <ArrowIcon className="w-4 h-4" />
+          </Link>
         </div>
 
         {/* Compact Knowledge Strip */}
@@ -87,24 +103,26 @@ export function CommunitySection() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.1 }}
             >
-              <GlassCard className="p-6 sm:p-7 flex flex-col justify-between bg-card/40 border-white/5 hover:border-primary/30 transition-all text-start h-full">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="px-2.5 py-1 rounded text-xs font-bold bg-primary/10 border border-primary/20 text-primary">
-                      {art.category}
-                    </span>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5" /> {art.date}
-                    </span>
+              <Link to={`/posts/${art.id}`} className="block h-full group">
+                <GlassCard className="p-6 sm:p-7 flex flex-col justify-between bg-card/40 border-white/5 hover:border-primary/40 group-hover:-translate-y-1 transition-all text-start h-full">
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="px-2.5 py-1 rounded text-xs font-bold bg-primary/10 border border-primary/20 text-primary">
+                        {art.category}
+                      </span>
+                      <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" /> {art.date}
+                      </span>
+                    </div>
+                    <h3 className="text-sm sm:text-base font-bold text-white group-hover:text-primary transition-colors line-clamp-2 leading-relaxed mb-4">{art.title}</h3>
                   </div>
-                  <h3 className="text-sm sm:text-base font-bold text-white line-clamp-2 leading-relaxed mb-4">{art.title}</h3>
-                </div>
 
-                <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs sm:text-sm text-primary font-bold">
-                  <span>{t("public.community.viewBlog")}</span>
-                  <ArrowIcon className="w-4 h-4" />
-                </div>
-              </GlassCard>
+                  <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs sm:text-sm text-primary font-bold">
+                    <span>{t("public.community.viewBlog")}</span>
+                    <ArrowIcon className="w-4 h-4 group-hover:translate-x-[-4px] transition-transform" />
+                  </div>
+                </GlassCard>
+              </Link>
             </motion.div>
           ))}
         </div>
@@ -113,3 +131,4 @@ export function CommunitySection() {
     </section>
   )
 }
+

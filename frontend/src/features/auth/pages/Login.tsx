@@ -7,20 +7,21 @@
 import { useState } from "react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import { motion } from "framer-motion"
-import { Lock, Mail, Eye, EyeOff, Globe, ArrowLeft, ArrowRight, AlertCircle, Loader2 } from "lucide-react"
+import { Lock, Mail, Eye, EyeOff, ArrowLeft, ArrowRight, AlertCircle, Loader2, Sparkles, GraduationCap, UserCheck, Building2, Database, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/glass-card"
+import { LanguageSelector } from "@/components/shared/LanguageSelector"
 import { useAuthStore } from "@/store/auth.store"
 import { authService } from "../services/auth.service"
 import { ROUTES } from "@/config/routes"
 import { useTranslation } from "@/i18n"
-import type { Language } from "@/store/language.store"
+import faedaWhiteLogo from "@/assets/logos/faeda_white_logo.png"
 
 export function Login() {
   const navigate = useNavigate()
   const location = useLocation()
   const loginStore = useAuthStore((state) => state.login)
-  const { t, language, setLanguage, isRTL } = useTranslation()
+  const { t, language, isRTL } = useTranslation()
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -87,9 +88,63 @@ export function Login() {
     }
   }
 
-  const toggleLang = () => {
-    const nextLang: Language = language === "ar" ? "en" : language === "en" ? "hi" : "ar"
-    setLanguage(nextLang)
+  const handleQuickDemoLogin = (role: "candidate" | "company" | "university" | "professor" | "admin") => {
+    if (role === "university") {
+      const demoUser = {
+        id: "univ-demo-kfu",
+        email: "careers@kfu.edu.sa",
+        name: "جامعة الملك فيصل - الأحساء",
+        role: "university" as const,
+      }
+      loginStore(demoUser, "demo-university-token")
+      navigate(ROUTES.UNIVERSITY.DASHBOARD, { replace: true })
+      return
+    }
+
+    if (role === "professor") {
+      const demoUser = {
+        id: "prof-demo-1",
+        email: "k.sulaiman@kfu.edu.sa",
+        name: "د. خالد السليمان (مشرف التدريب التعاوني)",
+        role: "university" as const,
+      }
+      loginStore(demoUser, "demo-professor-token")
+      navigate(ROUTES.UNIVERSITY.COOP, { replace: true })
+      return
+    }
+
+    if (role === "company") {
+      const demoUser = {
+        id: "company-demo-1",
+        email: "hr@aramco-digital.sa",
+        name: "Aramco Digital Solutions",
+        role: "company" as const,
+      }
+      loginStore(demoUser, "demo-company-token")
+      navigate(ROUTES.COMPANY.DASHBOARD, { replace: true })
+      return
+    }
+
+    if (role === "admin") {
+      const demoUser = {
+        id: "admin-demo-1",
+        email: "admin@faeda.jobs",
+        name: "مدير النظام (Admin)",
+        role: "admin" as const,
+      }
+      loginStore(demoUser, "demo-admin-token")
+      navigate(ROUTES.ADMIN.DASHBOARD, { replace: true })
+      return
+    }
+
+    const demoUser = {
+      id: "candidate-demo-1",
+      email: "ahmed.alfarsi@faeda.sa",
+      name: "Ahmed Al-Farsi",
+      role: "candidate" as const,
+    }
+    loginStore(demoUser, "demo-candidate-token")
+    navigate(ROUTES.CANDIDATE.DASHBOARD, { replace: true })
   }
 
   return (
@@ -100,16 +155,7 @@ export function Login() {
         
         {/* Top Header */}
         <div className="flex justify-between items-center w-full mb-6">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={toggleLang}
-            className="rounded-full bg-white/5 border-white/10 text-white hover:bg-white/10 px-4 text-xs gap-1.5"
-          >
-            <Globe className="w-3.5 h-3.5 text-primary" />
-            <span>{language === "ar" ? "English" : language === "en" ? "हिन्दी" : "العربية"}</span>
-          </Button>
+          <LanguageSelector variant="pill" dropdownAlign="start" />
 
           <Link to="/" className="text-xs font-semibold text-muted-foreground hover:text-white transition-colors flex items-center gap-1.5">
             <span>{t("auth.login.backToHome")}</span>
@@ -119,6 +165,16 @@ export function Login() {
 
         {/* Form Container */}
         <div className="w-full max-w-[420px] mx-auto my-auto py-8">
+          <div className="flex justify-center mb-6 lg:hidden">
+            <Link to="/" className="group">
+              <img
+                src={faedaWhiteLogo}
+                alt="Faeda Jobs Logo"
+                className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+              />
+            </Link>
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -233,6 +289,109 @@ export function Login() {
               {t("auth.login.createAccount")}
             </Link>
           </div>
+
+          {/* Quick Demo Access Options */}
+          <div className="pt-5 border-t border-white/10 mt-6 space-y-2">
+            <span className="text-[11px] text-muted-foreground block text-center">
+              {language === "ar" ? "دخول سريع وتجربة فورية للمنظومة:" : language === "hi" ? "त्वरित डेमो अनुभव:" : "Instant Quick Access Demo:"}
+            </span>
+
+            {/* University Portal (KFU Al-Ahsa) */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleQuickDemoLogin("university")}
+              className="w-full rounded-xl border-primary/40 bg-primary/10 hover:bg-primary/20 text-white font-bold text-xs h-10 gap-2"
+            >
+              <GraduationCap className="w-4 h-4 text-secondary" />
+              <span>
+                {language === "ar"
+                  ? "🎓 جامعة الملك فيصل - مؤشرات التوظيف وحملات الرسائل"
+                  : language === "hi"
+                  ? "🎓 किंग फैसल विश्वविद्यालय - रोजगार डैशबोर्ड और थीसिस"
+                  : "🎓 King Faisal University - Employment KPIs & Theses"}
+              </span>
+            </Button>
+
+            {/* Academic Professor Coop Supervision Portal */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleQuickDemoLogin("professor")}
+              className="w-full rounded-xl border-border bg-card/80 hover:bg-card text-white font-bold text-xs h-10 gap-2"
+            >
+              <UserCheck className="w-4 h-4 text-primary" />
+              <span>
+                {language === "ar"
+                  ? "👨‍🏫 دخول المشرف الأكاديمي للتدريب التعاوني (د. خالد السليمان)"
+                  : language === "hi"
+                  ? "👨‍🏫 सहकारी प्रशिक्षण पर्यवेक्षक (डॉ. खालिद अल-सुलेमान)"
+                  : "👨‍🏫 Academic Coop Supervisor Portal (Dr. Khalid Sulaiman)"}
+              </span>
+            </Button>
+
+            {/* 1. Job Seeker (Candidate) */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleQuickDemoLogin("candidate")}
+              className="w-full rounded-xl border-cyan-500/30 bg-cyan-950/20 hover:bg-cyan-900/40 text-cyan-300 hover:text-white font-bold text-xs h-10 gap-2"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <span>
+                {language === "ar"
+                  ? "👤 باحث عن عمل: رؤى السوق والرواتب (Job Seeker)"
+                  : "👤 Job Seeker: Talent & Market Insights Dashboard"}
+              </span>
+            </Button>
+
+            {/* 2. Company (Employer) */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleQuickDemoLogin("company")}
+              className="w-full rounded-xl border-emerald-500/30 bg-emerald-950/20 hover:bg-emerald-900/40 text-emerald-300 hover:text-white font-bold text-xs h-10 gap-2"
+            >
+              <Building2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>
+                {language === "ar"
+                  ? "🏢 المنشأة: تحليلات سوق التوظيف وتكلفة الاستقطاب (Company)"
+                  : "🏢 Company: Hiring Market Insights & Talent Costs"}
+              </span>
+            </Button>
+
+            {/* 3. Market Trends */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate("/market-trends")}
+              className="w-full rounded-xl border-indigo-500/30 bg-indigo-950/20 hover:bg-indigo-900/40 text-indigo-300 hover:text-white font-bold text-xs h-10 gap-2"
+            >
+              <TrendingUp className="w-3.5 h-3.5 text-indigo-400" />
+              <span>
+                {language === "ar"
+                  ? "📈 مؤشرات واتجاهات السوق الإقليمية (Market Trends)"
+                  : "📈 Regional Market Trends & Multi-Filter Analytics"}
+              </span>
+            </Button>
+
+            {/* 4. Admin Portal */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleQuickDemoLogin("admin")}
+              className="w-full rounded-xl border-amber-500/30 bg-amber-950/20 hover:bg-amber-900/40 text-amber-300 hover:text-white font-bold text-xs h-10 gap-2"
+            >
+              <Database className="w-3.5 h-3.5 text-amber-400" />
+              <span>
+                {language === "ar"
+                  ? "⚙️ لوحة إدارة المنصة والنظام (Admin Console)"
+                  : language === "hi"
+                  ? "⚙️ व्यवस्थापक कंसोल (Admin Console)"
+                  : "⚙️ Admin Console: Platform & User Governance"}
+              </span>
+            </Button>
+          </div>
         </div>
 
         {/* Footer info */}
@@ -247,10 +406,13 @@ export function Login() {
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[160px] pointer-events-none" />
 
         <div className="flex items-center gap-3 relative z-10">
-          <div className="w-10 h-10 rounded-xl bg-primary text-primary-foreground font-bold flex items-center justify-center text-xl font-heading">
-            ف
-          </div>
-          <span className="font-heading font-extrabold text-2xl text-white">Faeda Jobs</span>
+          <Link to="/" className="group">
+            <img
+              src={faedaWhiteLogo}
+              alt="Faeda Jobs Logo"
+              className="h-12 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+          </Link>
         </div>
 
         <div className="space-y-4 max-w-md relative z-10">

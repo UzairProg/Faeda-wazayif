@@ -540,5 +540,29 @@ export interface InviteMemberPayload {
   message?: string
 }
 
+export interface CandidateSettingsData {
+  notifications: {
+    emailJobAlerts: boolean
+    applicationUpdates: boolean
+    campaignInvitations: boolean
+    smsAlerts: boolean
+    marketingInsights: boolean
+  }
+  security: {
+    twoFactorEnabled: boolean
+    sessionTimeoutMinutes: number
+  }
+  privacy: {
+    visibility: VisibilityLevel
+    allowRecruiterDirectMessages: boolean
+    shareAnonymousSalaryInsights: boolean
+    hideFromCurrentEmployer: boolean
+  }
+  preferences: {
+    language: string
+    currency: "SAR" | "INR"
+  }
+}
+
 
 

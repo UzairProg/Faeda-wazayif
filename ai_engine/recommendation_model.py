@@ -1,11 +1,17 @@
-from sklearn.metrics.pairwise import cosine_similarity
-from ai_engine.feature_engineering import build_features
+try:
+    from sklearn.metrics.pairwise import cosine_similarity
+    from ai_engine.feature_engineering import build_features
+    SKLEARN_AVAILABLE = True
+except Exception:
+    SKLEARN_AVAILABLE = False
 
 def get_job_recommendations(target_user_id, top_n=3):
-    vectorizer, job_vectors, user_vectors, df_jobs, df_customers = build_features()
+    if not SKLEARN_AVAILABLE:
+        return []
     try:
+        vectorizer, job_vectors, user_vectors, df_jobs, df_customers = build_features()
         user_index = df_customers[df_customers['user_id'] == target_user_id].index[0]
-    except IndexError: 
+    except (IndexError, Exception): 
         return []
     
     similarity_matrix = cosine_similarity(user_vectors, job_vectors)

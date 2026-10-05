@@ -18,6 +18,7 @@ import { ROUTES } from "./config/routes"
 import { PublicLayout } from "./layouts/MainLayout"
 import { CandidateLayout } from "./features/candidate/layouts/CandidateLayout"
 import { CandidateDashboardPage } from "./features/candidate/pages/CandidateDashboardPage"
+import { CandidateMarketValuePage } from "./features/candidate/pages/CandidateMarketValuePage"
 import { CandidateProfilePage } from "./features/candidate/pages/CandidateProfilePage"
 import { CandidateJobsPage } from "./features/candidate/pages/CandidateJobsPage"
 import { CandidateJobDetailPage } from "./features/candidate/pages/CandidateJobDetailPage"
@@ -26,6 +27,8 @@ import { CandidateApplicationDetailPage } from "./features/candidate/pages/Candi
 import { CandidateSavedJobsPage } from "./features/candidate/pages/CandidateSavedJobsPage"
 import { CandidateTeamsPage } from "./features/candidate/pages/CandidateTeamsPage"
 import { CandidateTeamDetailPage } from "./features/candidate/pages/CandidateTeamDetailPage"
+import { CandidateSettingsPage } from "./features/candidate/pages/CandidateSettingsPage"
+import { CandidateCampaignsPage } from "./features/candidate/pages/CandidateCampaignsPage"
 import { CompanyLayout } from "./features/company/layouts/CompanyLayout"
 import { CompanyDashboardPage } from "./features/company/pages/CompanyDashboardPage"
 import { CompanyProfilePage } from "./features/company/pages/CompanyProfilePage"
@@ -33,6 +36,10 @@ import { CompanyJobsPage } from "./features/company/pages/CompanyJobsPage"
 import { CompanyApplicationsPage } from "./features/company/pages/CompanyApplicationsPage"
 import { CompanyTalentPage } from "./features/company/pages/CompanyTalentPage"
 import { CompanyTeamsPage } from "./features/company/pages/CompanyTeamsPage"
+import { CompanyCampaignsPage } from "./features/company/pages/CompanyCampaignsPage"
+import { CompanyCampaignDetailPage } from "./features/company/pages/CompanyCampaignDetailPage"
+import { CompanySettingsPage } from "./features/company/pages/CompanySettingsPage"
+import { CompanyBillingPage } from "./features/company/pages/CompanyBillingPage"
 import { UniversityLayout } from "./features/university/layouts/UniversityLayout"
 import { UniversityDashboardPage } from "./features/university/pages/UniversityDashboardPage"
 import { UniversityProfilePage } from "./features/university/pages/UniversityProfilePage"
@@ -41,12 +48,27 @@ import { UniversityStudentDetailPage } from "./features/university/pages/Univers
 import { UniversityVerificationsPage } from "./features/university/pages/UniversityVerificationsPage"
 import { UniversityDepartmentsPage } from "./features/university/pages/UniversityDepartmentsPage"
 import { UniversityOpportunitiesPage } from "./features/university/pages/UniversityOpportunitiesPage"
+import { UniversityCampaignsPage } from "./features/university/pages/UniversityCampaignsPage"
+import { UniversityIncubatorPage } from "./features/university/pages/UniversityIncubatorPage"
+import { UniversityCoopSupervisionPage } from "./features/university/pages/UniversityCoopSupervisionPage"
+import { UniversityAcademicUpdatesPage } from "./features/university/pages/UniversityAcademicUpdatesPage"
+import { UniversitySettingsPage } from "./features/university/pages/UniversitySettingsPage"
 import { ChatPage } from "./features/chat/pages/ChatPage"
 import { AdminLayout } from "./features/admin/layouts/AdminLayout"
+import { AdminDashboardPage } from "./features/admin/pages/AdminDashboardPage"
+import { AdminUsersPage } from "./features/admin/pages/AdminUsersPage"
+import { AdminJobsPage } from "./features/admin/pages/AdminJobsPage"
+import { AdminAuditLogsPage } from "./features/admin/pages/AdminAuditLogsPage"
+import { AdminReportsPage } from "./features/admin/pages/AdminReportsPage"
+import { AdminCategoriesPage } from "./features/admin/pages/AdminCategoriesPage"
+import { AdminSettingsPage } from "./features/admin/pages/AdminSettingsPage"
+import { MarketTrendsPage } from "./features/market-insights/pages/MarketTrendsPage"
+import { AdminMarketDataPage } from "./features/market-insights/pages/AdminMarketDataPage"
 
 // Guards
 import { AuthGuard } from "./shared/components/guards/AuthGuard"
 import { RoleGuard } from "./shared/components/guards/RoleGuard"
+import { AiChatbotWidget } from "./features/ai-chat/components/AiChatbotWidget"
 
 // Public pages
 import { Home } from "./features/public/pages/Home"
@@ -58,6 +80,9 @@ import { TeamsPage } from "./features/public/pages/TeamsPage"
 import { TeamDetailPage } from "./features/public/pages/TeamDetailPage"
 import { AboutPage } from "./features/public/pages/AboutPage"
 import { ContactPage } from "./features/public/pages/ContactPage"
+import { CandidatePortfolioPage } from "./features/public/pages/CandidatePortfolioPage"
+import { PostsPage } from "./features/public/pages/PostsPage"
+import { PostDetailPage } from "./features/public/pages/PostDetailPage"
 
 // Auth pages
 import { Login } from "./features/auth/pages/Login"
@@ -97,24 +122,10 @@ function App() {
           <Route path="teams/:id" element={<TeamDetailPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
-          <Route
-            path="portfolio/:username"
-            element={
-              <div className="container mx-auto px-4 py-20 text-center">
-                <p className="text-2xl font-bold font-heading text-white mb-3">المعرض المهني</p>
-                <p className="text-muted-foreground">قريباً</p>
-              </div>
-            }
-          />
-          <Route
-            path="posts"
-            element={
-              <div className="container mx-auto px-4 py-20 text-center">
-                <p className="text-2xl font-bold font-heading text-white mb-3">المقالات والرؤى</p>
-                <p className="text-muted-foreground">قريباً</p>
-              </div>
-            }
-          />
+          <Route path="portfolio/:username" element={<CandidatePortfolioPage />} />
+          <Route path="posts" element={<PostsPage />} />
+          <Route path="posts/:id" element={<PostDetailPage />} />
+          <Route path="market-trends" element={<MarketTrendsPage />} />
         </Route>
 
         {/* ── Auth Routes (standalone — no Navbar/Footer) ───── */}
@@ -133,6 +144,7 @@ function App() {
             <Route path="/candidate" element={<CandidateLayout />}>
               <Route index element={<CandidateDashboardPage />} />
               <Route path="dashboard" element={<CandidateDashboardPage />} />
+              <Route path="market-value" element={<CandidateMarketValuePage />} />
               <Route path="profile" element={<CandidateProfilePage />} />
               <Route path="cv" element={<CandidateProfilePage />} />
               <Route path="opportunities" element={<CandidateJobsPage />} />
@@ -144,6 +156,10 @@ function App() {
               <Route path="teams" element={<CandidateTeamsPage />} />
               <Route path="teams/:id" element={<CandidateTeamDetailPage />} />
               <Route path="chat" element={<ChatPage />} />
+              <Route path="settings" element={<CandidateSettingsPage />} />
+              <Route path="campaigns" element={<CandidateCampaignsPage />} />
+              <Route path="coop-training" element={<UniversityCoopSupervisionPage initialPersona="student" />} />
+              <Route path="coop" element={<UniversityCoopSupervisionPage initialPersona="student" />} />
               <Route path="*" element={<Navigate to="/candidate" replace />} />
             </Route>
           </Route>
@@ -158,10 +174,13 @@ function App() {
               <Route path="profile" element={<CompanyProfilePage />} />
               <Route path="jobs" element={<CompanyJobsPage />} />
               <Route path="applications" element={<CompanyApplicationsPage />} />
+              <Route path="campaigns" element={<CompanyCampaignsPage />} />
+              <Route path="campaigns/:id" element={<CompanyCampaignDetailPage />} />
               <Route path="talent" element={<CompanyTalentPage />} />
               <Route path="teams" element={<CompanyTeamsPage />} />
               <Route path="chat" element={<ChatPage />} />
-              <Route path="settings" element={<CompanyProfilePage />} />
+              <Route path="settings" element={<CompanySettingsPage />} />
+              <Route path="billing" element={<CompanyBillingPage />} />
               <Route path="*" element={<Navigate to="/company" replace />} />
             </Route>
           </Route>
@@ -178,8 +197,14 @@ function App() {
               <Route path="students/:id" element={<UniversityStudentDetailPage />} />
               <Route path="verifications" element={<UniversityVerificationsPage />} />
               <Route path="departments" element={<UniversityDepartmentsPage />} />
+              <Route path="academic-updates" element={<UniversityAcademicUpdatesPage />} />
+              <Route path="updates" element={<UniversityAcademicUpdatesPage />} />
               <Route path="opportunities" element={<UniversityOpportunitiesPage />} />
-              <Route path="settings" element={<UniversityProfilePage />} />
+              <Route path="campaigns" element={<UniversityCampaignsPage />} />
+              <Route path="incubator" element={<UniversityIncubatorPage />} />
+              <Route path="coop-supervision" element={<UniversityCoopSupervisionPage />} />
+              <Route path="coop" element={<UniversityCoopSupervisionPage />} />
+              <Route path="settings" element={<UniversitySettingsPage />} />
               <Route path="*" element={<Navigate to="/university" replace />} />
             </Route>
           </Route>
@@ -188,7 +213,18 @@ function App() {
         {/* ── Admin Routes (/admin/*) ────────────────────────── */}
         <Route element={<AuthGuard />}>
           <Route element={<RoleGuard allowedRoles={["admin"]} />}>
-            <Route path="/admin/*" element={<AdminLayout />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboardPage />} />
+              <Route path="dashboard" element={<AdminDashboardPage />} />
+              <Route path="users" element={<AdminUsersPage />} />
+              <Route path="jobs" element={<AdminJobsPage />} />
+              <Route path="audit-logs" element={<AdminAuditLogsPage />} />
+              <Route path="reports" element={<AdminReportsPage />} />
+              <Route path="categories" element={<AdminCategoriesPage />} />
+              <Route path="settings" element={<AdminSettingsPage />} />
+              <Route path="market-data" element={<AdminMarketDataPage />} />
+              <Route path="*" element={<Navigate to="/admin" replace />} />
+            </Route>
           </Route>
         </Route>
 
@@ -213,6 +249,7 @@ function App() {
         />
 
       </Routes>
+      <AiChatbotWidget />
     </Router>
   )
 }
