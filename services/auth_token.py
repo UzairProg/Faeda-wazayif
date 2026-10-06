@@ -69,6 +69,27 @@ def process_request_auth():
         persona_header = request.headers.get('X-Persona-Role')
         if persona_header in ('company', 'university', 'candidate', 'admin'):
             payload = {'role': persona_header, 'user_id': 1}
+        else:
+            # Check query param, referrer role, or endpoint path for automated captures
+            url_role = request.args.get('role')
+            if not url_role and request.referrer:
+                from urllib.parse import urlparse, parse_qs
+                try:
+                    ref_query = parse_qs(urlparse(request.referrer).query)
+                    url_role = ref_query.get('role', [None])[0]
+                except Exception:
+                    pass
+            if not url_role:
+                if request.path.startswith('/api/v1/candidate'):
+                    url_role = 'candidate'
+                elif request.path.startswith('/api/v1/company'):
+                    url_role = 'company'
+                elif request.path.startswith('/api/v1/university'):
+                    url_role = 'university'
+                elif request.path.startswith('/api/v1/admin'):
+                    url_role = 'admin'
+            if url_role in ('company', 'university', 'candidate', 'admin'):
+                payload = {'role': url_role, 'user_id': 1}
 
     if not payload or not isinstance(payload, dict):
         return

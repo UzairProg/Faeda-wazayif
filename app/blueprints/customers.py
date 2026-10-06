@@ -1095,7 +1095,7 @@ def edit_profile_job_data():
         user.years_of_skills = request.form.get('new_years_of_skills')
         user.preferred_field_of_work = request.form.get('new_preferred_field_of_work')
         user.work_type = request.form.get('new_work_type')
-        # Handle Professional Certifications (LinkedIn-style)
+        # Handle Professional Certifications (Faeda-style)
         cert_names = request.form.getlist('cert_name[]')
         cert_orgs = request.form.getlist('cert_org[]')
         cert_issue_months = request.form.getlist('cert_issue_month[]')

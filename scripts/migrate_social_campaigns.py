@@ -1,6 +1,6 @@
 # ==============================================================================
 # scripts/migrate_social_campaigns.py
-# Database migration and seeding for LinkedIn/Instagram-style Social Campaigns
+# Database migration and seeding for Faeda-Style Social Campaigns
 # ==============================================================================
 import os
 import sys

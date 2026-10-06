@@ -54,7 +54,8 @@ def create_app():
         from services.campaign import (
             Campaign, CampaignCandidate, CampaignJob,
             CampaignLike, CampaignComment, CampaignShare,
-            CampaignSave, CampaignView, Notification
+            CampaignSave, CampaignView, Notification,
+            CampaignContent
         )
         from services.market_insights import MarketInsight, CandidateMarketInsight
         

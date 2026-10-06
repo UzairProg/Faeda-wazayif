@@ -1,19 +1,21 @@
 # ==============================================================================
 # app/blueprints/campaigns_v1.py
 # ==============================================================================
-# Comprehensive REST API Blueprint for LinkedIn-Style Marketing & Recruitment Campaigns
+# Comprehensive REST API Blueprint for Faeda-Style Marketing & Recruitment Campaigns
 # Includes complete Social Interactions: Like, Comment, Share, Save, Notifications & Analytics
 # ==============================================================================
 
+import os
 from datetime import datetime
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, current_app
 from sqlalchemy import desc, or_, and_, func
 
 from app import db
 from services.campaign import (
     Campaign, CampaignCandidate, CampaignJob,
     CampaignLike, CampaignComment, CampaignShare,
-    CampaignSave, CampaignView, Notification
+    CampaignSave, CampaignView, Notification,
+    CampaignContent
 )
 from services.company import Company
 from services.customer import Customers
@@ -513,6 +515,22 @@ def create_campaign_post():
 
     db.session.add(c)
     db.session.commit()
+
+    # Check if document / PDF content is attached
+    doc_url = data.get('documentUrl') or data.get('pdfUrl') or (data.get('coverImage') if data.get('mediaType') == 'document' else None)
+    if doc_url or data.get('mediaType') == 'document':
+        c.media_type = 'document'
+        content_item = CampaignContent(
+            campaign_id=c.id,
+            content_type='document',
+            title=data.get('documentTitle') or c.title,
+            description=data.get('documentDescription') or c.tagline,
+            file_url=doc_url or "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            media_type='application/pdf',
+            display_order=0
+        )
+        db.session.add(content_item)
+        db.session.commit()
 
     return jsonify({
         "success": True,
@@ -1232,3 +1250,165 @@ def respond_invite(campaign_id):
         "message": "تم قبول الدعوة بنجاح!" if action == "accept" else "تم الاعتذار عن الدعوة.",
         "stage": m.stage if m else "replied"
     }), 200
+
+
+# ── 12. Campaign Contents Management (CRUD) ──────────────────────────────────
+
+@campaigns_v1_bp.route('/api/v1/campaigns/<int:campaign_id>/contents', methods=['GET'])
+def get_campaign_contents(campaign_id):
+    """Fetch all rich content items attached to a specific campaign."""
+    camp = Campaign.query.get(campaign_id)
+    if not camp:
+        return jsonify({"success": False, "error": "Campaign not found"}), 404
+
+    items = camp.contents.order_by(CampaignContent.display_order.asc(), CampaignContent.created_at.asc()).all()
+    return jsonify({
+        "success": True,
+        "campaign_id": campaign_id,
+        "contents": [item.to_dict() for item in items]
+    }), 200
+
+
+@campaigns_v1_bp.route('/api/v1/campaigns/<int:campaign_id>/contents', methods=['POST'])
+def add_campaign_content(campaign_id):
+    """Add a new rich content block (text, image, video, document, banner) to a campaign."""
+    camp = Campaign.query.get(campaign_id)
+    if not camp:
+        return jsonify({"success": False, "error": "Campaign not found"}), 404
+
+    data = request.get_json() or {}
+    
+    # Determine display order
+    explicit_order = data.get('display_order')
+    if explicit_order is None:
+        explicit_order = data.get('displayOrder')
+    if explicit_order is None:
+        last_item = camp.contents.order_by(CampaignContent.display_order.desc()).first()
+        explicit_order = (last_item.display_order + 1) if last_item else 0
+
+    content_item = CampaignContent(
+        campaign_id=campaign_id,
+        content_type=data.get('content_type') or data.get('contentType') or 'text',
+        title=data.get('title'),
+        description=data.get('description'),
+        text_content=data.get('text_content') or data.get('textContent'),
+        file_url=data.get('file_url') or data.get('fileUrl'),
+        media_type=data.get('media_type') or data.get('mediaType'),
+        display_order=int(explicit_order)
+    )
+
+    db.session.add(content_item)
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "message": "Campaign content created successfully",
+        "content": content_item.to_dict()
+    }), 201
+
+
+@campaigns_v1_bp.route('/api/v1/campaigns/<int:campaign_id>/contents/<int:content_id>', methods=['PUT', 'PATCH'])
+def update_campaign_content(campaign_id, content_id):
+    """Update an existing campaign content block."""
+    content_item = CampaignContent.query.filter_by(id=content_id, campaign_id=campaign_id).first()
+    if not content_item:
+        return jsonify({"success": False, "error": "Content item not found"}), 404
+
+    data = request.get_json() or {}
+
+    if 'content_type' in data or 'contentType' in data:
+        content_item.content_type = data.get('content_type') or data.get('contentType')
+    if 'title' in data:
+        content_item.title = data.get('title')
+    if 'description' in data:
+        content_item.description = data.get('description')
+    if 'text_content' in data or 'textContent' in data:
+        content_item.text_content = data.get('text_content') or data.get('textContent')
+    if 'file_url' in data or 'fileUrl' in data:
+        content_item.file_url = data.get('file_url') or data.get('fileUrl')
+    if 'media_type' in data or 'mediaType' in data:
+        content_item.media_type = data.get('media_type') or data.get('mediaType')
+    if 'display_order' in data or 'displayOrder' in data:
+        order_val = data.get('display_order') if 'display_order' in data else data.get('displayOrder')
+        content_item.display_order = int(order_val)
+
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "message": "Campaign content updated successfully",
+        "content": content_item.to_dict()
+    }), 200
+
+
+@campaigns_v1_bp.route('/api/v1/campaigns/<int:campaign_id>/contents/<int:content_id>', methods=['DELETE'])
+def delete_campaign_content(campaign_id, content_id):
+    """Delete a campaign content block."""
+    content_item = CampaignContent.query.filter_by(id=content_id, campaign_id=campaign_id).first()
+    if not content_item:
+        return jsonify({"success": False, "error": "Content item not found"}), 404
+
+    db.session.delete(content_item)
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "message": "Campaign content deleted successfully"
+    }), 200
+
+
+@campaigns_v1_bp.route('/api/v1/campaigns/<int:campaign_id>/contents/reorder', methods=['POST'])
+def reorder_campaign_contents(campaign_id):
+    """Batch reorder campaign content blocks."""
+    camp = Campaign.query.get(campaign_id)
+    if not camp:
+        return jsonify({"success": False, "error": "Campaign not found"}), 404
+
+    data = request.get_json() or {}
+    items = data.get('items', [])  # list of {id, display_order}
+
+    for it in items:
+        cid = it.get('id')
+        order = it.get('display_order') if 'display_order' in it else it.get('displayOrder')
+        if cid is not None and order is not None:
+            CampaignContent.query.filter_by(id=cid, campaign_id=campaign_id).update({"display_order": int(order)})
+
+    db.session.commit()
+
+    updated = camp.contents.order_by(CampaignContent.display_order.asc(), CampaignContent.created_at.asc()).all()
+    return jsonify({
+        "success": True,
+        "message": "Contents reordered successfully",
+        "contents": [item.to_dict() for item in updated]
+    }), 200
+
+
+@campaigns_v1_bp.route('/api/v1/campaigns/upload-document', methods=['POST'])
+def upload_campaign_document():
+    """Upload a PDF brochure or document to attach to a post or campaign."""
+    if 'file' not in request.files:
+        return jsonify({"success": False, "error": "No file uploaded"}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"success": False, "error": "Empty filename"}), 400
+
+    filename = file.filename
+    import time
+    from werkzeug.utils import secure_filename
+    clean_name = secure_filename(filename) or "document.pdf"
+    unique_name = f"{int(time.time())}_{clean_name}"
+
+    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'campaigns', 'documents')
+    os.makedirs(upload_folder, exist_ok=True)
+    file_path = os.path.join(upload_folder, unique_name)
+    file.save(file_path)
+
+    relative_url = f"/static/uploads/campaigns/documents/{unique_name}"
+    return jsonify({
+        "success": True,
+        "file_url": relative_url,
+        "url": relative_url,
+        "filename": unique_name,
+        "original_name": filename,
+        "media_type": "application/pdf"
+    }), 201

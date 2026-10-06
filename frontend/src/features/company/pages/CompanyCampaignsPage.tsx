@@ -1,7 +1,7 @@
 /**
  * features/company/pages/CompanyCampaignsPage.tsx
  *
- * LinkedIn Recruiter-style Hiring & Recruitment Campaigns Command Center.
+ * Faeda-style Hiring & Recruitment Campaigns Command Center.
  * Enables companies to define target talent personas, launch campaigns,
  * track outreach funnels, and manage talent pipelines.
  */

@@ -282,3 +282,145 @@ export interface AdminBenchmarkItem {
   data_date: string
   last_updated: string
 }
+
+// ── LinkedIn Profile Analysis & Optimization Types ─────────────────────────
+export interface LinkedInSectionAudit {
+  score: number
+  status: "good" | "warning" | "critical"
+  current_text?: string
+  character_count?: number
+  word_count?: number
+  action_verbs_found?: number
+  total_skills_count?: number
+  matched_skills?: string[]
+  missing_skills?: string[]
+  issues_ar: string[]
+  issues_en: string[]
+  issues_hi: string[]
+  recommendation_ar: string
+  recommendation_en: string
+  recommendation_hi: string
+}
+
+export interface FaedaSectionAudit {
+  score: number
+  status: "good" | "warning" | "critical"
+  current_text?: string
+  character_count?: number
+  word_count?: number
+  action_verbs_found?: number
+  total_skills_count?: number
+  matched_skills?: string[]
+  missing_skills?: string[]
+  shortlist_multiplier?: string
+  recruiter_reach_multiplier?: string
+  issues_ar: string[]
+  issues_en: string[]
+  issues_hi: string[]
+  recommendation_ar: string
+  recommendation_en: string
+  recommendation_hi: string
+}
+
+export type LinkedInSectionAudit = FaedaSectionAudit
+
+export interface FaedaAIRewriteHeadline {
+  style: string
+  text_ar: string
+  text_en: string
+  text_hi: string
+  focus: string
+}
+
+export type LinkedInAIRewriteHeadline = FaedaAIRewriteHeadline
+
+export interface FaedaChecklistItem {
+  id: string
+  completed: boolean
+  label_ar: string
+  label_en: string
+  label_hi: string
+  impact: string
+}
+
+export type LinkedInChecklistItem = FaedaChecklistItem
+
+export interface FaedaProfileAnalysisResult {
+  success: boolean
+  candidate_name?: string
+  username?: string
+  profile_url?: string
+  role: string
+  location: string
+  overall_score: number
+  all_star_rating: "Beginner" | "Intermediate" | "Advanced" | "All-Star"
+  percentile_rank: string
+  ai_powered_by?: string
+  sections: {
+    headline: FaedaSectionAudit
+    about: FaedaSectionAudit
+    experience: FaedaSectionAudit
+    skills: FaedaSectionAudit
+    visibility_seo: FaedaSectionAudit
+    recruiter_visibility?: FaedaSectionAudit
+  }
+  market_benchmark?: {
+    current_estimated_salary: string
+    median_salary_sar: number
+    optimized_salary_potential: string
+    estimated_monthly_upside_sar: number
+    benchmark_currency: string
+    benchmark_period: string
+    data_source: string
+    disclaimer_en: string
+    disclaimer_ar: string
+    disclaimer_hi: string
+  }
+  market_impact: {
+    current_estimated_salary: string
+    optimized_salary_potential: string
+    monthly_salary_boost_sar: number
+    search_appearances_multiplier: string
+    recruiter_inmail_multiplier: string
+    matched_high_demand_skills: string[]
+    missing_high_demand_skills: string[]
+  }
+  strengths?: Array<{
+    title_ar: string
+    title_en: string
+    title_hi: string
+  }>
+  weaknesses?: Array<{
+    title_ar: string
+    title_en: string
+    title_hi: string
+  }>
+  action_plan?: Array<{
+    step: number
+    title_ar: string
+    title_en: string
+    title_hi: string
+    impact: string
+    priority: "High" | "Medium" | "Low"
+  }>
+  ai_rewrites: {
+    headlines: FaedaAIRewriteHeadline[]
+    about_bio: {
+      text_ar: string
+      text_en: string
+      text_hi: string
+    }
+  }
+  checklist: FaedaChecklistItem[]
+  summary_insights?: {
+    strengths_ar: string[]
+    strengths_en: string[]
+    strengths_hi: string[]
+    key_improvement_ar: string
+    key_improvement_en: string
+    key_improvement_hi: string
+  }
+}
+
+export type LinkedInAnalysisResult = FaedaProfileAnalysisResult
+

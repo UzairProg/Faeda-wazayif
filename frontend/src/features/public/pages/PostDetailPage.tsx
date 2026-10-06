@@ -29,12 +29,15 @@ import {
   CornerDownLeft,
   Edit2,
   Trash2,
+  FileText,
+  Download,
 } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
 import { postsService } from "../services/posts.service"
 import { CampaignShareModal } from "../components/CampaignShareModal"
 import { CampaignAnalyticsModal } from "../components/CampaignAnalyticsModal"
+import { CampaignContentsSection } from "../components/CampaignContentsSection"
 import type { PostArticle, PostComment } from "../types/posts.types"
 import { ROUTES } from "@/config/routes"
 import { useTranslation } from "@/i18n"
@@ -417,6 +420,40 @@ export function PostDetailPage() {
           />
         </div>
 
+        {/* ── Document / PDF Action Banner (PDF Post) ───────────────── */}
+        {(localizedPost.mediaType === "document" || localizedPost.documentUrl) && (
+          <GlassCard className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-500/15 border-amber-500/30 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+            <div className="flex items-center gap-4 min-w-0">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/20">
+                <FileText className="w-7 h-7" />
+              </div>
+              <div className="space-y-1 min-w-0">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider block w-fit">
+                  PDF Document Post 📄
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-white truncate">
+                  {localizedPost.documentTitle || localizedPost.title}
+                </h3>
+                <p className="text-xs text-amber-200/70">
+                  {language === "ar"
+                    ? "تم إرفاق كتيب ومستند رسمي بصيغة PDF مع هذا المنشور للقراءة والتحميل."
+                    : "An official PDF document is attached to this post for reading and download."}
+                </p>
+              </div>
+            </div>
+
+            <a
+              href={localizedPost.documentUrl || "#"}
+              target="_blank"
+              rel="noreferrer"
+              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-amber-500/25 shrink-0 transition-transform hover:scale-105"
+            >
+              <Download className="w-4 h-4" />
+              <span>{language === "ar" ? "قراءة وتحميل ملف PDF" : "View / Download PDF"}</span>
+            </a>
+          </GlassCard>
+        )}
+
         {/* ── Article Body Content ─────────────────────────────────── */}
         <GlassCard className="p-6 sm:p-10 md:p-12 bg-card/40 border-white/5 rounded-3xl shadow-xl space-y-6">
           <div className="prose prose-invert max-w-none text-slate-200 text-sm sm:text-base leading-relaxed space-y-6 whitespace-pre-line font-normal">
@@ -436,6 +473,11 @@ export function PostDetailPage() {
                 </span>
               ))}
             </div>
+          )}
+
+          {/* Campaign Contents & Attached Media (campaign_contents) */}
+          {localizedPost.contents && localizedPost.contents.length > 0 && (
+            <CampaignContentsSection contents={localizedPost.contents} />
           )}
 
           {/* Interaction Bar */}

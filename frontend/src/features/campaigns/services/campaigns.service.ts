@@ -1,7 +1,7 @@
 /**
  * features/campaigns/services/campaigns.service.ts
  *
- * REST API client service for LinkedIn-style Hiring & Recruitment Campaigns.
+ * REST API client service for Faeda-style Hiring & Recruitment Campaigns.
  * Provides offline/development fallbacks ensuring high resilience.
  */
 import { apiClient as api } from "@/lib/api-client"
@@ -12,6 +12,7 @@ import type {
   CampaignStage,
   CreateCampaignPayload,
   CandidateInvite,
+  CampaignContent,
 } from "../types/campaign.types"
 
 const FALLBACK_CAMPAIGNS: Campaign[] = [
@@ -241,7 +242,7 @@ export const campaignsService = {
   },
 
   /**
-   * Create a new LinkedIn-style hiring campaign.
+   * Create a new Faeda-style hiring campaign.
    */
   async createCampaign(payload: CreateCampaignPayload): Promise<Campaign> {
     try {
@@ -420,5 +421,70 @@ export const campaignsService = {
       message: action === "accept" ? "Invitation accepted!" : "Invitation declined.",
       stage: action === "accept" ? "replied" : "rejected",
     }
+  },
+
+  /**
+   * Get all rich content blocks for a campaign.
+   */
+  async getCampaignContents(campaignId: number | string): Promise<CampaignContent[]> {
+    try {
+      const { data } = await api.get<{ success: boolean; contents: CampaignContent[] }>(
+        `/api/v1/campaigns/${campaignId}/contents`
+      )
+      if (data?.contents) return data.contents
+    } catch {
+      // fallback
+    }
+    return []
+  },
+
+  /**
+   * Add a new content block to a campaign.
+   */
+  async addCampaignContent(campaignId: number | string, payload: Partial<CampaignContent>): Promise<CampaignContent | null> {
+    const { data } = await api.post<{ success: boolean; content: CampaignContent }>(
+      `/api/v1/campaigns/${campaignId}/contents`,
+      payload
+    )
+    return data?.content || null
+  },
+
+  /**
+   * Update a content block.
+   */
+  async updateCampaignContent(
+    campaignId: number | string,
+    contentId: number | string,
+    payload: Partial<CampaignContent>
+  ): Promise<CampaignContent | null> {
+    const { data } = await api.put<{ success: boolean; content: CampaignContent }>(
+      `/api/v1/campaigns/${campaignId}/contents/${contentId}`,
+      payload
+    )
+    return data?.content || null
+  },
+
+  /**
+   * Delete a content block.
+   */
+  async deleteCampaignContent(campaignId: number | string, contentId: number | string): Promise<boolean> {
+    const { data } = await api.delete<{ success: boolean }>(
+      `/api/v1/campaigns/${campaignId}/contents/${contentId}`
+    )
+    return Boolean(data?.success)
+  },
+
+  /**
+   * Reorder campaign content blocks.
+   */
+  async reorderCampaignContents(
+    campaignId: number | string,
+    items: { id: number; display_order: number }[]
+  ): Promise<CampaignContent[]> {
+    const { data } = await api.post<{ success: boolean; contents: CampaignContent[] }>(
+      `/api/v1/campaigns/${campaignId}/contents/reorder`,
+      { items }
+    )
+    return data?.contents || []
   },
 }

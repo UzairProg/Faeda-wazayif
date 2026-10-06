@@ -16,6 +16,7 @@ from services.market_insights import MarketInsight, CandidateMarketInsight
 
 
 # Default seed benchmarks for regional tech, engineering, and digital roles
+# Classification: Internal statistical estimation benchmark calibrated for Saudi private tech sector.
 DEFAULT_BENCHMARKS = [
     {
         "role": "Full Stack Developer",
@@ -33,8 +34,14 @@ DEFAULT_BENCHMARKS = [
         "demand_level": "High",
         "talent_availability": "Moderate",
         "hiring_competition": "High",
-        "source": "Saudi Tech Salary Survey 2026",
-        "source_url": "https://faeda.sa/benchmarks/tech-2026",
+        "source": "Faeda Internal Estimated Benchmark",
+        "source_name": "Faeda Internal Estimated Benchmark",
+        "source_url": "https://faeda.sa/benchmarks",
+        "provider": "Faeda Research & Estimation Engine",
+        "published_date": "2026-10-02",
+        "last_updated": "2026-10-02",
+        "methodology": "Internal statistical estimation model calibrated for Saudi tech roles",
+        "data_status": "internal_estimated_benchmark",
         "data_date": "2026-10-02",
         "is_demo": True
     },
@@ -54,8 +61,14 @@ DEFAULT_BENCHMARKS = [
         "demand_level": "High",
         "talent_availability": "High",
         "hiring_competition": "Medium",
-        "source": "Market Salary Dataset",
-        "source_url": "https://faeda.sa/benchmarks/frontend-2026",
+        "source": "Faeda Internal Estimated Benchmark",
+        "source_name": "Faeda Internal Estimated Benchmark",
+        "source_url": "https://faeda.sa/benchmarks",
+        "provider": "Faeda Research & Estimation Engine",
+        "published_date": "2026-10-02",
+        "last_updated": "2026-10-02",
+        "methodology": "Internal statistical estimation model calibrated for Saudi tech roles",
+        "data_status": "internal_estimated_benchmark",
         "data_date": "2026-10-02",
         "is_demo": True
     },
@@ -75,8 +88,14 @@ DEFAULT_BENCHMARKS = [
         "demand_level": "Critical",
         "talent_availability": "Scarce",
         "hiring_competition": "High",
-        "source": "Vision 2030 Cloud Infrastructure Survey",
-        "source_url": "https://faeda.sa/benchmarks/cloud-2026",
+        "source": "Faeda Internal Estimated Benchmark",
+        "source_name": "Faeda Internal Estimated Benchmark",
+        "source_url": "https://faeda.sa/benchmarks",
+        "provider": "Faeda Research & Estimation Engine",
+        "published_date": "2026-10-02",
+        "last_updated": "2026-10-02",
+        "methodology": "Internal statistical estimation model calibrated for Saudi tech roles",
+        "data_status": "internal_estimated_benchmark",
         "data_date": "2026-10-02",
         "is_demo": True
     },
@@ -96,8 +115,14 @@ DEFAULT_BENCHMARKS = [
         "demand_level": "Critical",
         "talent_availability": "Very Scarce",
         "hiring_competition": "High",
-        "source": "National Cybersecurity Benchmark",
-        "source_url": "https://faeda.sa/benchmarks/cyber-2026",
+        "source": "Faeda Internal Estimated Benchmark",
+        "source_name": "Faeda Internal Estimated Benchmark",
+        "source_url": "https://faeda.sa/benchmarks",
+        "provider": "Faeda Research & Estimation Engine",
+        "published_date": "2026-10-02",
+        "last_updated": "2026-10-02",
+        "methodology": "Internal statistical estimation model calibrated for Saudi tech roles",
+        "data_status": "internal_estimated_benchmark",
         "data_date": "2026-10-02",
         "is_demo": True
     },
@@ -117,8 +142,14 @@ DEFAULT_BENCHMARKS = [
         "demand_level": "Critical",
         "talent_availability": "Scarce",
         "hiring_competition": "High",
-        "source": "SDAIA Regional AI Talent Index",
-        "source_url": "https://faeda.sa/benchmarks/ai-2026",
+        "source": "Faeda Internal Estimated Benchmark",
+        "source_name": "Faeda Internal Estimated Benchmark",
+        "source_url": "https://faeda.sa/benchmarks",
+        "provider": "Faeda Research & Estimation Engine",
+        "published_date": "2026-10-02",
+        "last_updated": "2026-10-02",
+        "methodology": "Internal statistical estimation model calibrated for Saudi tech roles",
+        "data_status": "internal_estimated_benchmark",
         "data_date": "2026-10-02",
         "is_demo": True
     },
@@ -138,8 +169,14 @@ DEFAULT_BENCHMARKS = [
         "demand_level": "High",
         "talent_availability": "Moderate",
         "hiring_competition": "Medium",
-        "source": "Fintech Design Talent Index",
-        "source_url": "https://faeda.sa/benchmarks/design-2026",
+        "source": "Faeda Internal Estimated Benchmark",
+        "source_name": "Faeda Internal Estimated Benchmark",
+        "source_url": "https://faeda.sa/benchmarks",
+        "provider": "Faeda Research & Estimation Engine",
+        "published_date": "2026-10-02",
+        "last_updated": "2026-10-02",
+        "methodology": "Internal statistical estimation model calibrated for Saudi tech roles",
+        "data_status": "internal_estimated_benchmark",
         "data_date": "2026-10-02",
         "is_demo": True
     },
@@ -159,8 +196,14 @@ DEFAULT_BENCHMARKS = [
         "demand_level": "High",
         "talent_availability": "Moderate",
         "hiring_competition": "Medium",
-        "source": "Manufacturing Enterprise Benchmark",
-        "source_url": "https://faeda.sa/benchmarks/erp-2026",
+        "source": "Faeda Internal Estimated Benchmark",
+        "source_name": "Faeda Internal Estimated Benchmark",
+        "source_url": "https://faeda.sa/benchmarks",
+        "provider": "Faeda Research & Estimation Engine",
+        "published_date": "2026-10-02",
+        "last_updated": "2026-10-02",
+        "methodology": "Internal statistical estimation model calibrated for Saudi tech roles",
+        "data_status": "internal_estimated_benchmark",
         "data_date": "2026-10-02",
         "is_demo": True
     }
@@ -188,13 +231,13 @@ class SalaryDataProvider:
 class DemoSalaryDataProvider(SalaryDataProvider):
     """
     Transparent sample & internal benchmark data provider.
-    Never invents real-time data; clearly labels datasets as 'Demo Data' / 'Sample Benchmark'.
-    Uses database records from MarketInsight when present, falling back to curated Vision 2030 benchmarks.
+    Never invents real-time data; clearly labels datasets as 'Faeda Internal Estimated Benchmark'.
+    Uses database records from MarketInsight when present, falling back to curated internal benchmarks.
     """
 
     def __init__(self):
-        self.provider_name = "Market Salary Dataset (Demo Benchmark)"
-        self.provider_status = "active_demo"
+        self.provider_name = "Faeda Internal Estimated Benchmark"
+        self.provider_status = "internal_estimated_benchmark"
         self.is_demo = True
         self.data_date = "2026-10-02"
         self.last_updated = "2026-10-02"
@@ -221,8 +264,13 @@ class DemoSalaryDataProvider(SalaryDataProvider):
                         talent_availability=b["talent_availability"],
                         hiring_competition=b["hiring_competition"],
                         source=b["source"],
-                        source_url=b["source_url"],
-                        is_demo=True,
+                        source_name=b.get("source_name", b["source"]),
+                        source_url=b.get("source_url", "https://faeda.sa/benchmarks"),
+                        provider=b.get("provider", "Faeda Research & Estimation Engine"),
+                        published_date=b.get("published_date", b["data_date"]),
+                        methodology=b.get("methodology", "Internal statistical estimation model calibrated for Saudi tech roles"),
+                        data_status=b.get("data_status", "internal_estimated_benchmark"),
+                        is_demo=b.get("is_demo", True),
                         data_date=b["data_date"]
                     )
                     db.session.add(row)
@@ -282,6 +330,13 @@ class DemoSalaryDataProvider(SalaryDataProvider):
             {"location": "Remote / Flexible", "avg_salary": round(avg_salary * 0.95), "difference_pct": "-5%", "cost_of_living_index": "Flexible"},
         ]
 
+        eff_source_name = getattr(match, 'source_name', None) or (match.source if match else "Faeda Internal Estimated Benchmark")
+        eff_provider = getattr(match, 'provider', None) or "Faeda Research & Estimation Engine"
+        eff_published = getattr(match, 'published_date', None) or (match.data_date if match else self.data_date)
+        eff_methodology = getattr(match, 'methodology', None) or "Internal statistical estimation model calibrated for Saudi tech roles"
+        eff_status = getattr(match, 'data_status', None) or ("internal_estimated_benchmark" if (match and match.is_demo) else "verified_dataset")
+        eff_is_demo = bool(match.is_demo) if match else True
+
         return {
             "role": role or (match.role if match else "Full Stack Developer"),
             "specialization": specialization or (match.specialization if match else "Software Engineering"),
@@ -296,12 +351,19 @@ class DemoSalaryDataProvider(SalaryDataProvider):
             "demand_level": match.demand_level if match else "High",
             "talent_availability": match.talent_availability if match else "Moderate",
             "hiring_competition": match.hiring_competition if match else "Medium",
-            "data_source": match.source if match else self.provider_name,
-            "source_url": match.source_url if match else "https://faeda.sa/benchmarks",
-            "data_date": match.data_date if match else self.data_date,
+            # Complete 9 Authenticity & Metadata Fields:
+            "source": eff_source_name,
+            "source_name": eff_source_name,
+            "source_url": match.source_url if match and match.source_url else "https://faeda.sa/benchmarks",
+            "provider": eff_provider,
+            "published_date": eff_published,
+            "data_date": eff_published,
             "last_updated": match.last_updated.strftime("%Y-%m-%d") if match and match.last_updated else self.last_updated,
-            "is_demo": True,
-            "disclaimer": "Sample / Demo Benchmark Dataset. Clearly labeled for demonstration purposes."
+            "methodology": eff_methodology,
+            "data_status": eff_status,
+            "is_demo": eff_is_demo,
+            "data_source": eff_source_name,
+            "disclaimer": "Internal estimated benchmark based on statistical modeling. Not an official government survey or guaranteed salary offer."
         }
 
     def get_skill_insights(self, skills: List[str]) -> List[Dict[str, Any]]:
