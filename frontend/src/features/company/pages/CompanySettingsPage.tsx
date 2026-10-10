@@ -71,20 +71,74 @@ function SelectRow({ icon: Icon, label, value, options, onChange }: {
   )
 }
 
+interface CompanyNotificationSettings {
+  newApplications: boolean
+  applicationUpdates: boolean
+  campaignAlerts: boolean
+  messageAlerts: boolean
+  marketInsights: boolean
+}
+
+interface CompanyPrivacySettings {
+  profileVisibility: string
+  allowDirectMessages: boolean
+  shareAnalytics: boolean
+}
+
+interface CompanySecuritySettings {
+  twoFactor: boolean
+  sessionTimeout: number
+}
+
+interface CompanyPrefSettings {
+  language: string
+  currency: string
+}
+
+interface PasswordFormState {
+  current: string
+  next: string
+  confirm: string
+}
+
 export function CompanySettingsPage() {
   const { language } = useTranslation()
   const L = (ar: string, en: string) => language === "ar" ? ar : en
 
-  const [notif, setNotif] = useState({
-    newApplications: true, applicationUpdates: true, campaignAlerts: true,
-    messageAlerts: true, marketInsights: false,
+  const [notif, setNotif] = useState<CompanyNotificationSettings>(() => {
+    try {
+      const saved = localStorage.getItem("faeda_company_settings")
+      if (saved) return JSON.parse(saved).notif
+    } catch {}
+    return {
+      newApplications: true, applicationUpdates: true, campaignAlerts: true,
+      messageAlerts: true, marketInsights: false,
+    }
   })
-  const [privacy, setPrivacy] = useState({
-    profileVisibility: "public", allowDirectMessages: true, shareAnalytics: false,
+  const [privacy, setPrivacy] = useState<CompanyPrivacySettings>(() => {
+    try {
+      const saved = localStorage.getItem("faeda_company_settings")
+      if (saved) return JSON.parse(saved).privacy
+    } catch {}
+    return {
+      profileVisibility: "public", allowDirectMessages: true, shareAnalytics: false,
+    }
   })
-  const [security, setSecurity] = useState({ twoFactor: false, sessionTimeout: 60 })
-  const [prefs, setPrefs] = useState({ language: language || "ar", currency: "SAR" })
-  const [pwdForm, setPwdForm] = useState({ current: "", next: "", confirm: "" })
+  const [security, setSecurity] = useState<CompanySecuritySettings>(() => {
+    try {
+      const saved = localStorage.getItem("faeda_company_settings")
+      if (saved) return JSON.parse(saved).security
+    } catch {}
+    return { twoFactor: false, sessionTimeout: 60 }
+  })
+  const [prefs, setPrefs] = useState<CompanyPrefSettings>(() => {
+    try {
+      const saved = localStorage.getItem("faeda_company_settings")
+      if (saved) return JSON.parse(saved).prefs
+    } catch {}
+    return { language: language || "ar", currency: "SAR" }
+  })
+  const [pwdForm, setPwdForm] = useState<PasswordFormState>({ current: "", next: "", confirm: "" })
   const [saving, setSaving] = useState(false)
   const [pwdSaving, setPwdSaving] = useState(false)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
@@ -92,7 +146,10 @@ export function CompanySettingsPage() {
 
   const handleSave = async () => {
     setSaving(true)
-    await new Promise(r => setTimeout(r, 800))
+    try {
+      localStorage.setItem("faeda_company_settings", JSON.stringify({ notif, privacy, security, prefs }))
+    } catch {}
+    await new Promise(r => setTimeout(r, 600))
     setSaving(false)
     setSuccessMsg(L("تم حفظ الإعدادات بنجاح", "Settings saved successfully"))
     setTimeout(() => setSuccessMsg(null), 4000)

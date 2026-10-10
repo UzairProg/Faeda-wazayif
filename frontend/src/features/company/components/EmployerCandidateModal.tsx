@@ -12,6 +12,7 @@ import {
   Award,
   FolderGit2,
   MessageSquare,
+  Download,
 } from "lucide-react"
 import type { CompanyTalentDetail } from "../types/company.types"
 import { ModalPortal } from "@/shared/components/ui/ModalPortal"
@@ -258,6 +259,19 @@ export const EmployerCandidateModal: React.FC<EmployerCandidateModalProps> = ({
           </span>
 
           <div className="flex items-center gap-2 ms-auto">
+            {candidate.cvUrl && (
+              <a
+                href={candidate.cvUrl}
+                target="_blank"
+                rel="noreferrer"
+                download
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-bold transition-all shadow-sm"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>{isRtl ? "تحميل السيرة الذاتية" : "Download CV"}</span>
+              </a>
+            )}
+
             <Link
               to={`${ROUTES.COMPANY.CHAT}?new=true&type=CANDIDATE_COMPANY&targetId=${candidate.id}&contextType=direct&contextId=${candidate.id}&subject=${encodeURIComponent('محادثة مع ' + candidate.name)}`}
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-md shadow-emerald-950/30 transition-all hover:scale-105"

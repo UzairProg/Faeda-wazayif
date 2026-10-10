@@ -4,6 +4,7 @@ import { useTranslation } from "@/i18n"
 import { useCompanyApplications } from "../hooks/useCompanyApplications"
 import { useCompanyJobs } from "../hooks/useCompanyJobs"
 import { useCompanyActions } from "../hooks/useCompanyActions"
+import { companyService } from "../services/company.service"
 import { ApplicationCard } from "../components/ApplicationCard"
 import { ApplicationStatusModal } from "../components/ApplicationStatusModal"
 import { EmployerCandidateModal } from "../components/EmployerCandidateModal"
@@ -66,6 +67,18 @@ export function CompanyApplicationsPage() {
       note,
     })
     setSelectedAppForStatus(null)
+  }
+
+  const handleViewCandidate = async (app: CompanyApplicationItem) => {
+    setSelectedCandidate(app.candidate as any)
+    try {
+      const fullApp = await companyService.getApplicationDetail(app.id)
+      if (fullApp?.candidate) {
+        setSelectedCandidate(fullApp.candidate)
+      }
+    } catch {
+      // fallback to app.candidate snapshot
+    }
   }
 
   const pipelineStages = [
@@ -185,7 +198,7 @@ export function CompanyApplicationsPage() {
             <ApplicationCard
               key={app.id}
               application={app}
-              onViewCandidate={(a) => setSelectedCandidate(a.candidate as any)}
+              onViewCandidate={handleViewCandidate}
               onChangeStatus={(a) => setSelectedAppForStatus(a)}
               isRtl={isRTL}
             />

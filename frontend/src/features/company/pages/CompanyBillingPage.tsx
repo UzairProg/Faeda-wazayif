@@ -86,8 +86,9 @@ export function CompanyBillingPage() {
   const { language } = useTranslation()
   const L = (ar: string, en: string) => language === "ar" ? ar : en
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly")
-  const [currentPlan] = useState("professional")
+  const [currentPlan, setCurrentPlan] = useState("professional")
   const [upgrading, setUpgrading] = useState<string | null>(null)
+  const [upgradeSuccess, setUpgradeSuccess] = useState<string | null>(null)
 
   const handleUpgrade = async (planId: string) => {
     if (planId === "enterprise") {
@@ -95,8 +96,11 @@ export function CompanyBillingPage() {
       return
     }
     setUpgrading(planId)
-    await new Promise(r => setTimeout(r, 1200))
+    await new Promise(r => setTimeout(r, 1000))
+    setCurrentPlan(planId)
     setUpgrading(null)
+    setUpgradeSuccess(planId)
+    setTimeout(() => setUpgradeSuccess(null), 4000)
   }
 
   const activePlan = PLANS.find(p => p.id === currentPlan)!
@@ -113,6 +117,13 @@ export function CompanyBillingPage() {
           {L("تحكم في باقة الاشتراك والمدفوعات لمنشأتك.", "Manage your company subscription plan and payment history.")}
         </p>
       </div>
+
+      {upgradeSuccess && (
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
+          <span>{L("تمت ترقية وتفعيل باقة منشأتك بنجاح!", "Your employer plan was upgraded and activated successfully!")}</span>
+        </div>
+      )}
 
       {/* Current Plan Card */}
       <div className="rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/10 via-card/80 to-accent/5 backdrop-blur-md p-5 relative overflow-hidden">

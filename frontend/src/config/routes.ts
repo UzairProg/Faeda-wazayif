@@ -114,5 +114,6 @@ export const ROUTES = {
     CATEGORIES: "/admin/categories",
     SETTINGS: "/admin/settings",
     MARKET_DATA: "/admin/market-data",
+    HIRED_CANDIDATES: "/admin/hired-candidates",
   },
 } as const

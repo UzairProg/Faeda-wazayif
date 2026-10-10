@@ -204,3 +204,89 @@ export interface AdminCategoriesResponse {
   job_types: AdminFilterItem[]
 }
 
+export interface AdminHiredCandidate {
+  id: string
+  candidateName: string
+  candidateEmail: string
+  candidateAvatar?: string
+  studentIdNumber?: string
+  university: string
+  major: string
+  degreeLevel: string
+  hiredJobTitle: string
+  companyName: string
+  companyIndustry: string
+  salaryMonthly: number
+  currency: string
+  salaryPackageAnnual: number
+  city: string
+  country: string
+  countryCode: string
+  employmentType: string
+  hiredDate: string
+  verificationStatus: "verified" | "under_review" | "certified"
+  supervisorName?: string
+  hrContact?: string
+  saudiNational: boolean
+  basicSalary: number
+  housingAllowance: number
+  transportAllowance: number
+  benefits: string[]
+}
+
+export interface AdminHiredCandidatesResponse {
+  success: boolean
+  items: AdminHiredCandidate[]
+  total: number
+  page?: number
+  per_page?: number
+  stats?: {
+    totalHired: number
+    avgSalary: number
+    topCity: string
+    topMajor: string
+    saudizationRate: number
+  }
+  data_status?: string
+}
+
+export interface AdminCompany {
+  id: number
+  name: string
+  company_english_name: string
+  company_arabic_name?: string
+  email?: string
+  mobile?: string
+  hr_name?: string
+  hr_email?: string
+  hr_mobile?: string
+  location?: string
+  company_field?: string
+  company_size?: string
+  company_type?: string
+  commercial_register?: string
+  company_website?: string
+  about_arabic?: string
+  status: "active" | "suspended" | "banned"
+  is_verified: boolean
+  verified_at?: string | null
+  created_at?: string | null
+  logo?: string | null
+  jobs_count: number
+}
+
+export interface AdminCompaniesResponse {
+  success: boolean
+  companies: AdminCompany[]
+  total: number
+  page: number
+  per_page: number
+  total_pages: number
+  stats?: {
+    total_companies: number
+    verified_companies: number
+    pending_companies: number
+    total_jobs: number
+  }
+}
+

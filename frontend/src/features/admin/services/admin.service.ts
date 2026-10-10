@@ -14,6 +14,8 @@ import type {
   AdminSettingsResponse,
   AdminTicketsResponse,
   AdminCategoriesResponse,
+  AdminHiredCandidatesResponse,
+  AdminCompaniesResponse,
 } from "../types/admin.types"
 
 class AdminService {
@@ -242,6 +244,52 @@ class AdminService {
     )
     return data
   }
+
+  /** Fetch real hired candidates analytics from backend */
+  async getHiredCandidates(params?: {
+    q?: string
+    city?: string
+    country?: string
+    major?: string
+    university?: string
+    employment_type?: string
+    salary_range?: string
+    page?: number
+    per_page?: number
+  }): Promise<AdminHiredCandidatesResponse> {
+    const { data } = await apiClient.get<AdminHiredCandidatesResponse>(
+      API_CONFIG.ENDPOINTS.ADMIN.HIRED_CANDIDATES,
+      { params }
+    )
+    return data
+  }
+
+  /** Fetch registered companies directory with verification status and KPIs */
+  async getCompanies(params?: {
+    verified?: string
+    q?: string
+    page?: number
+    per_page?: number
+  }): Promise<AdminCompaniesResponse> {
+    const { data } = await apiClient.get<AdminCompaniesResponse>(
+      API_CONFIG.ENDPOINTS.ADMIN.COMPANIES,
+      { params }
+    )
+    return data
+  }
+
+  /** Direct verify/approve or revoke verification for a company */
+  async verifyCompanyDirect(
+    companyId: number | string,
+    is_verified: boolean
+  ): Promise<{ success: boolean; message: string; company_id: number; is_verified: boolean }> {
+    const { data } = await apiClient.patch(
+      API_CONFIG.ENDPOINTS.ADMIN.COMPANY_VERIFY(companyId),
+      { is_verified }
+    )
+    return data
+  }
 }
 
 export const adminService = new AdminService()
+

@@ -7,7 +7,7 @@ import { useCompanyActions } from "../hooks/useCompanyActions"
 import { CompanyStatsGrid } from "../components/CompanyStatsGrid"
 import { CompanyProfileHealthCard } from "../components/CompanyProfileHealthCard"
 import { HiringMarketInsightsSection } from "../../market-insights/components/HiringMarketInsightsSection"
-import { DEFAULT_COMPANY_DASHBOARD } from "../services/company.service"
+import { companyService, DEFAULT_COMPANY_DASHBOARD } from "../services/company.service"
 import { JobCard } from "../components/JobCard"
 import { ApplicationCard } from "../components/ApplicationCard"
 import { JobModal } from "../components/JobModal"
@@ -57,6 +57,18 @@ export function CompanyDashboardPage() {
       note,
     })
     setSelectedAppForStatus(null)
+  }
+
+  const handleViewCandidate = async (app: CompanyApplicationItem) => {
+    setSelectedCandidate(app.candidate as any)
+    try {
+      const fullApp = await companyService.getApplicationDetail(app.id)
+      if (fullApp?.candidate) {
+        setSelectedCandidate(fullApp.candidate)
+      }
+    } catch {
+      // fallback
+    }
   }
 
   const handleDeleteJob = async (jobId: number) => {
@@ -203,7 +215,7 @@ export function CompanyDashboardPage() {
                 <ApplicationCard
                   key={app.id}
                   application={app as any}
-                  onViewCandidate={(a) => setSelectedCandidate(a.candidate as any)}
+                  onViewCandidate={handleViewCandidate}
                   onChangeStatus={(a) => setSelectedAppForStatus(a)}
                   isRtl={isRTL}
                 />

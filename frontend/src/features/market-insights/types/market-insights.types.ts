@@ -322,8 +322,6 @@ export interface FaedaSectionAudit {
   recommendation_hi: string
 }
 
-export type LinkedInSectionAudit = FaedaSectionAudit
-
 export interface FaedaAIRewriteHeadline {
   style: string
   text_ar: string
@@ -372,6 +370,8 @@ export interface FaedaProfileAnalysisResult {
     benchmark_currency: string
     benchmark_period: string
     data_source: string
+    source_name?: string
+    last_updated?: string
     disclaimer_en: string
     disclaimer_ar: string
     disclaimer_hi: string

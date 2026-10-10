@@ -2696,13 +2696,15 @@ def api_get_candidate_dashboard():
     if not cust:
         auth_header = request.headers.get('Authorization', '')
         if auth_header.startswith('Bearer '):
-            cust = Customers.query.first()
+            from services.auth_token import verify_jwt_token
+            token = auth_header[7:].strip()
+            payload = verify_jwt_token(token)
+            if payload and payload.get('role') == 'candidate':
+                cand_id = payload.get('user_id') or payload.get('id')
+                cust = Customers.query.get(cand_id)
 
     if not cust:
-        cust = Customers.query.first()
-
-    if not cust:
-        return jsonify({"message": "لم يتم العثور على بيانات المرشح"}), 404
+        return jsonify({"message": "يجب تسجيل الدخول كمرشح للوصول إلى لوحة التحكم"}), 401
         
     dashboard_data = build_candidate_dashboard_dict(cust)
     return jsonify(dashboard_data)

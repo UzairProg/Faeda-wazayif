@@ -17,7 +17,7 @@ import type {
   UniversityGraduateInsight,
   MarketTrendsData,
   AdminBenchmarkItem,
-  LinkedInAnalysisResult,
+  FaedaProfileAnalysisResult,
 } from "../types/market-insights.types"
 
 // Curated regional tech benchmarks

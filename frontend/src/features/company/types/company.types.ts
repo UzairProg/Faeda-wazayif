@@ -37,6 +37,7 @@ export interface CompanyProfile {
   arabicName: string
   englishName: string
   faedaName: string
+  commercialRegister?: string
   email: string
   mobile: string
   descriptionAr: string
@@ -196,6 +197,7 @@ export interface UpdateCompanyProfilePayload {
   arabicName?: string
   englishName?: string
   faedaName?: string
+  commercialRegister?: string
   descriptionAr?: string
   descriptionEn?: string
   country?: string

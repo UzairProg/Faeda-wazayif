@@ -48,10 +48,11 @@ def get_authenticated_university():
         if uni and uni.status != 'suspended':
             return uni, None
 
-    # In development / demo environment, fallback to active university
-    primary_uni = University.query.filter_by(status='active').first()
-    if primary_uni:
-        return primary_uni, None
+    # In development / demo environment (when not in strict test mode), fallback to active university
+    if not current_app.config.get('TESTING') and not session.get('user_id') and not session.get('company_id'):
+        primary_uni = University.query.filter_by(status='active').first()
+        if primary_uni:
+            return primary_uni, None
 
     return None, (jsonify({
         "error": "Unauthorized",

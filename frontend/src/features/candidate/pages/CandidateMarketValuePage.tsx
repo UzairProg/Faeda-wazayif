@@ -1361,16 +1361,16 @@ export function CandidateMarketValuePage() {
         isOpen={isOptimizerModalOpen}
         onClose={() => setIsOptimizerModalOpen(false)}
         initialData={{
-          candidate_name: candidate?.fullname || "",
-          role: specializationName || candidate?.preferred_field_of_work || "Full Stack Developer",
-          headline: candidate?.about ? candidate.about.slice(0, 100) : "",
+          candidate_name: (candidate as any)?.fullname || candidate?.name || "",
+          role: specializationName || (candidate as any)?.preferred_field_of_work || "Full Stack Developer",
+          headline: candidate?.about ? candidate.about.slice(0, 100) : (candidate?.headline || ""),
           about: candidate?.about || "",
-          skills: candidate?.skills || ["React", "TypeScript", "Node.js", "Python", "Docker"],
-          experienceYears: candidate?.years_of_skills ?? simExpYears,
-          location: candidate?.city ? `${candidate.city}, Saudi Arabia` : (candidate?.country || "Riyadh, Saudi Arabia"),
-          education: candidate?.educational_qualification || "",
-          certifications: candidate?.certifications_list || [],
-          projects: candidate?.projects || [],
+          skills: (candidate as any)?.skills || ["React", "TypeScript", "Node.js", "Python", "Docker"],
+          experienceYears: typeof (candidate as any)?.years_of_skills === "number" ? (candidate as any).years_of_skills : simExpYears,
+          location: (candidate as any)?.city ? `${(candidate as any).city}, Saudi Arabia` : (candidate?.location || candidate?.country || "Riyadh, Saudi Arabia"),
+          education: (candidate as any)?.educational_qualification || "",
+          projects_count: ((candidate as any)?.projects || []).length,
+          certifications_count: ((candidate as any)?.certifications_list || []).length,
         }}
       />
     </div>
