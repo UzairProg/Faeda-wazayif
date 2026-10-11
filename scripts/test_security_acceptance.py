@@ -231,6 +231,20 @@ class TestSecurityAcceptance(unittest.TestCase):
         res = self.client.get('/api/v1/chat/conversations')
         self.assertEqual(res.status_code, 401)
 
+        res = self.client.get('/api/v1/company/campaigns')
+        self.assertEqual(res.status_code, 401)
+
+        res = self.client.get('/api/v1/candidate/campaign-invites')
+        self.assertEqual(res.status_code, 401)
+
+        # Explicitly verify that development persona headers & role query params return 401
+        for role in ['company', 'university', 'candidate']:
+            endpoint = f'/api/v1/{role}/dashboard'
+            res_hdr = self.client.get(endpoint, headers={'X-Persona-Role': role})
+            self.assertEqual(res_hdr.status_code, 401, f"Expected 401 for {endpoint} with X-Persona-Role, got {res_hdr.status_code}")
+            res_query = self.client.get(f'{endpoint}?role={role}')
+            self.assertEqual(res_query.status_code, 401, f"Expected 401 for {endpoint}?role={role}, got {res_query.status_code}")
+
     def test_02_role_mismatch_isolation(self):
         """Candidate cannot access Company/University APIs, and vice versa."""
         self.login_candidate_1()
@@ -296,6 +310,81 @@ class TestSecurityAcceptance(unittest.TestCase):
             self.assertNotIn('mobile', cand)
             self.assertNotIn('phone', cand)
 
+    def test_07_production_secret_key_enforcement(self):
+        """Production deployment strictly requires a secure, non-default SECRET_KEY."""
+        import os
+        old_env = os.environ.get('FLASK_ENV')
+        old_secret = os.environ.get('SECRET_KEY')
+        try:
+            os.environ['FLASK_ENV'] = 'production'
+            os.environ['SECRET_KEY'] = 'default-secret-key-for-dev'
+            with self.assertRaises(RuntimeError):
+                create_app()
+
+            os.environ['SECRET_KEY'] = 'faeda-jobs-secret-key-2026'
+            with self.assertRaises(RuntimeError):
+                create_app()
+
+            os.environ['SECRET_KEY'] = 'a-truly-random-secure-production-secret-key-987654321'
+            prod_app = create_app()
+            self.assertIsNotNone(prod_app)
+            self.assertEqual(prod_app.config['SECRET_KEY'], 'a-truly-random-secure-production-secret-key-987654321')
+        finally:
+            if old_env is not None:
+                os.environ['FLASK_ENV'] = old_env
+            else:
+                os.environ.pop('FLASK_ENV', None)
+            if old_secret is not None:
+                os.environ['SECRET_KEY'] = old_secret
+            else:
+                os.environ.pop('SECRET_KEY', None)
+
+    def test_08_csrf_protection_suite(self):
+        """Verify CSRF token endpoint, enforcement on stateful requests, and Bearer exemption."""
+        from services.auth_token import generate_auth_token
+        test_app = create_app()
+        test_app.config['TESTING'] = True
+        test_app.config['WTF_CSRF_ENABLED'] = True
+
+        with test_app.test_client() as client:
+            # 1. Fetch CSRF token endpoint
+            token_res = client.get('/api/v1/auth/csrf-token')
+            self.assertEqual(token_res.status_code, 200)
+            token_data = token_res.get_json()
+            self.assertIn('csrf_token', token_data)
+            csrf_token = token_data['csrf_token']
+            self.assertTrue(len(csrf_token) > 10)
+
+            # 2. Stateful POST without CSRF token -> Blocked (400 Bad Request)
+            blocked_res = client.post('/login', data={'email': 'anyone@example.com', 'password': 'pass'})
+            self.assertEqual(blocked_res.status_code, 400)
+
+            # 3. Stateful POST with X-CSRF-TOKEN header -> Accepted (passes CSRF check)
+            header_res = client.post(
+                '/login',
+                data={'email': 'anyone@example.com', 'password': 'pass'},
+                headers={'X-CSRF-TOKEN': csrf_token}
+            )
+            self.assertNotEqual(header_res.status_code, 400)
+
+            # 4. Stateful POST with form csrf_token input -> Accepted (passes CSRF check)
+            form_res = client.post(
+                '/login',
+                data={'email': 'anyone@example.com', 'password': 'pass', 'csrf_token': csrf_token}
+            )
+            self.assertNotEqual(form_res.status_code, 400)
+
+            # 5. Stateless API POST with Authorization: Bearer <token> -> Exempted from CSRF
+            bearer_token = generate_auth_token({'id': self.cand1_id, 'role': 'candidate'})
+            bearer_res = client.post(
+                '/api/v1/candidate/profile/projects',
+                headers={'Authorization': f'Bearer {bearer_token}'},
+                json={'project_name': 'CSRF Exempt Test Project', 'description': 'Security verification'}
+            )
+            # Should not be blocked by CSRF (status should be 200)
+            self.assertEqual(bearer_res.status_code, 200)
+
 
 if __name__ == '__main__':
     unittest.main()
+

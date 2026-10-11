@@ -32,8 +32,8 @@ def allowed_file(filename):
 
 def get_authenticated_university():
     """
-    Derive authenticated university identity from session.
-    Provides reliable fallback to primary accredited university (King Faisal / KSU) in development/demo mode.
+    Derive authenticated university identity from session or Bearer token.
+    Strictly requires authentication; unauthenticated requests receive 401.
     """
     uni_id = session.get('university_id')
     if uni_id:
@@ -42,17 +42,24 @@ def get_authenticated_university():
             return uni, None
 
     # Check by session email if available
-    sess_email = session.get('email') or session.get('user_email')
+    sess_email = session.get('email') or session.get('user_email') or session.get('university_email')
     if sess_email:
         uni = University.query.filter_by(email=sess_email).first()
         if uni and uni.status != 'suspended':
             return uni, None
 
-    # In development / demo environment (when not in strict test mode), fallback to active university
-    if not current_app.config.get('TESTING') and not session.get('user_id') and not session.get('company_id'):
-        primary_uni = University.query.filter_by(status='active').first()
-        if primary_uni:
-            return primary_uni, None
+    # Bearer auth token if present
+    auth_header = request.headers.get('Authorization', '')
+    if auth_header.startswith('Bearer '):
+        token = auth_header[7:].strip()
+        from services.auth_token import decode_auth_token
+        payload = decode_auth_token(token)
+        if payload and payload.get('role') == 'university':
+            uid = payload.get('user_id') or payload.get('id')
+            if uid:
+                uni = University.query.get(uid)
+                if uni and uni.status != 'suspended':
+                    return uni, None
 
     return None, (jsonify({
         "error": "Unauthorized",
@@ -287,7 +294,15 @@ def api_university_upload_logo():
     file_path = os.path.join(upload_folder, filename)
     file.save(file_path)
 
-    uni.logo = f"uploads/university/logo/{filename}"
+    from services.storage_service import upload_to_storage
+    upload_res = upload_to_storage(
+        file_path,
+        folder="faeda/universities/logos",
+        resource_type="image",
+        custom_filename=filename,
+        local_dir=upload_folder
+    )
+    uni.logo = upload_res.get('url') if upload_res.get('storage_type') == 'cloudinary' else f"uploads/university/logo/{filename}"
     db.session.commit()
 
     return jsonify({

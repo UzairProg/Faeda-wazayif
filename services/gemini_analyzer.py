@@ -12,7 +12,7 @@ from typing import Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6IadEdmhoA7mNfRLiDPwUMQNkZeJLVHWIepgU8p3XmDcg")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
 GEMINI_MODELS = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]
 
 

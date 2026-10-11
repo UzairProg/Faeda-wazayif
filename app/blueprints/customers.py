@@ -589,6 +589,8 @@ def apply_for_job(job_id):
 # Route to serve user images
 @customer.route('/download_image/<filename>')
 def download_image(filename):
+    if filename and (filename.startswith('http://') or filename.startswith('https://')):
+        return redirect(filename)
     return send_from_directory('static/uploads/customers/images', filename)
 
 
@@ -1719,6 +1721,25 @@ def browse_teams():
 # REST API v1 — CANDIDATE WORKSPACE & AUTH IDENTITY
 # ==============================================================================
 
+@customer.route('/api/v1/auth/csrf-token', methods=['GET'])
+def api_csrf_token():
+    """Return CSRF token for SPA clients / AJAX requests."""
+    from flask_wtf.csrf import generate_csrf
+    token = generate_csrf()
+    resp = jsonify({
+        "success": True,
+        "csrf_token": token
+    })
+    resp.set_cookie(
+        'XSRF-TOKEN',
+        token,
+        samesite=current_app.config.get('SESSION_COOKIE_SAMESITE', 'Lax'),
+        secure=current_app.config.get('SESSION_COOKIE_SECURE', False),
+        httponly=False
+    )
+    return resp
+
+
 @customer.route('/api/v1/auth/me', methods=['GET'])
 def api_auth_me():
     """Return authenticated user identity & active role."""
@@ -1872,7 +1893,15 @@ def api_update_candidate_identity():
             filename = secure_filename(f"user_{cust.id}_{int(datetime.utcnow().timestamp())}_{file.filename}")
             file_path = os.path.join(upload_dir, filename)
             file.save(file_path)
-            cust.img = filename
+            from services.storage_service import upload_to_storage
+            upload_res = upload_to_storage(
+                file_path,
+                folder="faeda/avatars",
+                resource_type="image",
+                custom_filename=filename,
+                local_dir=upload_dir
+            )
+            cust.img = upload_res.get('url') if upload_res.get('storage_type') == 'cloudinary' else filename
 
     try:
         log_profile_update(cust, 'تحديث البيانات الشخصية')
@@ -2272,7 +2301,15 @@ def api_upload_candidate_cv():
     filename = secure_filename(f"cv_{cust.id}_{int(datetime.utcnow().timestamp())}_{file.filename}")
     file_path = os.path.join(upload_cv_dir, filename)
     file.save(file_path)
-    cust.cv = filename
+    from services.storage_service import upload_to_storage
+    upload_res = upload_to_storage(
+        file_path,
+        folder="faeda/cvs",
+        resource_type="raw",
+        custom_filename=filename,
+        local_dir=upload_cv_dir
+    )
+    cust.cv = upload_res.get('url') if upload_res.get('storage_type') == 'cloudinary' else filename
 
     # Run ATS parsing safely
     extracted_data = {}
@@ -2318,6 +2355,9 @@ def api_download_candidate_cv():
     cust = Customers.query.get(session['user_id'])
     if not cust or not cust.cv:
         return jsonify({"message": "لا توجد سيرة ذاتية مرفوعة"}), 404
+
+    if cust.cv.startswith('http://') or cust.cv.startswith('https://'):
+        return redirect(cust.cv)
 
     upload_cv_dir = current_app.config.get('UPLOAD_CUSTOMERS_CV')
     return send_from_directory(upload_cv_dir, cust.cv, as_attachment=True)

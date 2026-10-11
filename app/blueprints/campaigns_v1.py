@@ -87,45 +87,51 @@ def get_current_user_identity():
 
     # 1. Candidate session
     if session.get('session_customer') or session.get('user_id'):
-        cand_id = session.get('user_id') or 1
-        cand = Customers.query.get(cand_id)
-        return {
-            "user_type": "candidate",
-            "user_id": cand.id if cand else cand_id,
-            "name": cand.fullname if (cand and cand.fullname) else "عمر المنصور (باحث عن عمل)",
-            "avatar": f"/download_image/{cand.img}" if (cand and cand.img) else "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
-            "title": cand.preferred_field_of_work if (cand and cand.preferred_field_of_work) else "مهندس برمجيات وذكاء اصطناعي",
-            "username": cand.user_id if (cand and cand.user_id) else f"candidate-{cand_id}",
-            "is_admin": False
-        }
+        cand_id = session.get('user_id')
+        if cand_id:
+            cand = Customers.query.get(cand_id)
+            if cand:
+                return {
+                    "user_type": "candidate",
+                    "user_id": cand.id,
+                    "name": cand.fullname or "عمر المنصور (باحث عن عمل)",
+                    "avatar": f"/download_image/{cand.img}" if cand.img else "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
+                    "title": cand.preferred_field_of_work or "مهندس برمجيات وذكاء اصطناعي",
+                    "username": cand.user_id or f"candidate-{cand.id}",
+                    "is_admin": False
+                }
 
     # 2. Company session
     if session.get('session_company') or session.get('company_id'):
-        comp_id = session.get('company_id') or 1
-        comp = Company.query.get(comp_id)
-        return {
-            "user_type": "company",
-            "user_id": comp.id if comp else comp_id,
-            "name": comp.company_arabic_name or comp.company_english_name if comp else "أرامكو الرقمية (شركة)",
-            "avatar": f"/download_image/{comp.company_logo}" if (comp and comp.company_logo) else "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&h=150&fit=crop",
-            "title": comp.company_field if (comp and comp.company_field) else "إدارة استقطاب المواهب والتوظيف الوطني",
-            "username": f"company-{comp_id}",
-            "is_admin": False
-        }
+        comp_id = session.get('company_id')
+        if comp_id:
+            comp = Company.query.get(comp_id)
+            if comp:
+                return {
+                    "user_type": "company",
+                    "user_id": comp.id,
+                    "name": comp.company_arabic_name or comp.company_english_name or "أرامكو الرقمية (شركة)",
+                    "avatar": f"/download_image/{comp.company_logo}" if comp.company_logo else "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&h=150&fit=crop",
+                    "title": comp.company_field or "إدارة استقطاب المواهب والتوظيف الوطني",
+                    "username": f"company-{comp.id}",
+                    "is_admin": False
+                }
 
     # 3. University session
     if session.get('session_university') or session.get('university_id'):
-        univ_id = session.get('university_id') or 1
-        univ = University.query.get(univ_id)
-        return {
-            "user_type": "university",
-            "user_id": univ.id if univ else univ_id,
-            "name": univ.name_ar or univ.name_en if univ else "جامعة الملك فيصل (جامعة)",
-            "avatar": f"/download_image/{univ.logo}" if (univ and univ.logo) else "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=150&h=150&fit=crop",
-            "title": univ.institution_type if (univ and univ.institution_type) else "وكالة الشؤون الأكاديمية والبحث العلمي",
-            "username": f"univ-{univ_id}",
-            "is_admin": False
-        }
+        univ_id = session.get('university_id')
+        if univ_id:
+            univ = University.query.get(univ_id)
+            if univ:
+                return {
+                    "user_type": "university",
+                    "user_id": univ.id,
+                    "name": univ.name_ar or univ.name_en or "جامعة الملك فيصل (جامعة)",
+                    "avatar": f"/download_image/{univ.logo}" if univ.logo else "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=150&h=150&fit=crop",
+                    "title": univ.institution_type or "وكالة الشؤون الأكاديمية والبحث العلمي",
+                    "username": f"univ-{univ.id}",
+                    "is_admin": False
+                }
 
     # 4. Admin session
     if session.get('admin_id'):
@@ -1042,14 +1048,23 @@ def get_current_company():
     comp_id = session.get('company_id')
     if comp_id:
         return Company.query.get(comp_id)
-    return Company.query.first()
+    auth_header = request.headers.get('Authorization', '')
+    if auth_header.startswith('Bearer '):
+        token = auth_header[7:].strip()
+        from services.auth_token import decode_auth_token
+        payload = decode_auth_token(token)
+        if payload and payload.get('role') == 'company':
+            cid = payload.get('user_id') or payload.get('id')
+            if cid:
+                return Company.query.get(cid)
+    return None
 
 
 @campaigns_v1_bp.route('/api/v1/company/campaigns', methods=['GET'])
 def get_company_campaigns():
     comp = get_current_company()
     if not comp:
-        return jsonify({"campaigns": []}), 200
+        return jsonify({"error": "Unauthorized", "message": "Company authentication required"}), 401
 
     campaigns = Campaign.query.filter(
         or_(Campaign.company_id == comp.id, Campaign.account_type == 'company')
@@ -1063,6 +1078,10 @@ def get_company_campaigns():
 
 @campaigns_v1_bp.route('/api/v1/company/campaigns/<int:campaign_id>', methods=['GET'])
 def get_company_campaign_detail(campaign_id):
+    comp = get_current_company()
+    if not comp:
+        return jsonify({"error": "Unauthorized", "message": "Company authentication required"}), 401
+
     c = Campaign.query.get(campaign_id)
     if not c:
         return jsonify({"error": "Campaign not found"}), 404
@@ -1171,6 +1190,9 @@ def run_talent_scan(campaign_id):
 
 @campaigns_v1_bp.route('/api/v1/company/campaigns/<int:campaign_id>/outreach', methods=['POST'])
 def send_outreach(campaign_id):
+    comp = get_current_company()
+    if not comp:
+        return jsonify({"error": "Unauthorized", "message": "Company authentication required"}), 401
     data = request.get_json() or {}
     cids = data.get('candidate_ids', [])
     count = 0
@@ -1190,6 +1212,9 @@ def send_outreach(campaign_id):
 
 @campaigns_v1_bp.route('/api/v1/company/campaigns/<int:campaign_id>/candidates/<int:candidate_id>/stage', methods=['PATCH'])
 def update_candidate_stage(campaign_id, candidate_id):
+    comp = get_current_company()
+    if not comp:
+        return jsonify({"error": "Unauthorized", "message": "Company authentication required"}), 401
     data = request.get_json() or {}
     stage = data.get('stage')
     notes = data.get('notes')
@@ -1213,7 +1238,18 @@ def update_candidate_stage(campaign_id, candidate_id):
 
 @campaigns_v1_bp.route('/api/v1/candidate/campaign-invites', methods=['GET'])
 def get_candidate_invites():
-    cust_id = session.get('customer_id') or session.get('user_id') or 1
+    cust_id = session.get('customer_id') or session.get('user_id')
+    if not cust_id:
+        auth_header = request.headers.get('Authorization', '')
+        if auth_header.startswith('Bearer '):
+            token = auth_header[7:].strip()
+            from services.auth_token import decode_auth_token
+            payload = decode_auth_token(token)
+            if payload and payload.get('role') == 'candidate':
+                cust_id = payload.get('user_id') or payload.get('id')
+    if not cust_id:
+        return jsonify({"error": "Unauthorized", "message": "Candidate authentication required"}), 401
+
     memberships = CampaignCandidate.query.filter_by(customer_id=cust_id).all()
     invites = []
     for m in memberships:
@@ -1238,7 +1274,18 @@ def get_candidate_invites():
 
 @campaigns_v1_bp.route('/api/v1/candidate/campaign-invites/<int:campaign_id>/respond', methods=['POST'])
 def respond_invite(campaign_id):
-    cust_id = session.get('customer_id') or session.get('user_id') or 1
+    cust_id = session.get('customer_id') or session.get('user_id')
+    if not cust_id:
+        auth_header = request.headers.get('Authorization', '')
+        if auth_header.startswith('Bearer '):
+            token = auth_header[7:].strip()
+            from services.auth_token import decode_auth_token
+            payload = decode_auth_token(token)
+            if payload and payload.get('role') == 'candidate':
+                cust_id = payload.get('user_id') or payload.get('id')
+    if not cust_id:
+        return jsonify({"error": "Unauthorized", "message": "Candidate authentication required"}), 401
+
     data = request.get_json() or {}
     action = data.get('action')  # 'accept' or 'decline'
     m = CampaignCandidate.query.filter_by(campaign_id=campaign_id, customer_id=cust_id).first()
