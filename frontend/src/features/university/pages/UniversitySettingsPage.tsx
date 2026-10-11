@@ -4,8 +4,9 @@
  * University / Academic Institution Settings — Notifications, Privacy, Security, Preferences.
  * Matches the existing Faeda dark design system (University layout style).
  */
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTranslation } from "@/i18n"
+import { universityService } from "../services/university.service"
 import {
   Bell, Shield, Eye, Globe, Lock, Save,
   Loader2, AlertCircle, MessageSquare, Clock,
@@ -86,30 +87,69 @@ export function UniversitySettingsPage() {
   const [saving, setSaving] = useState(false)
   const [pwdSaving, setPwdSaving] = useState(false)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [pwdMsg, setPwdMsg] = useState<{ text: string; ok: boolean } | null>(null)
+
+  useEffect(() => {
+    universityService.getSettings()
+      .then((res) => {
+        if (res.success && res.settings) {
+          if (res.settings.notifications) setNotif(res.settings.notifications)
+          if (res.settings.privacy) setPrivacy(res.settings.privacy)
+          if (res.settings.security) setSecurity(res.settings.security)
+          if (res.settings.preferences) setPrefs(res.settings.preferences)
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   const handleSave = async () => {
     setSaving(true)
-    await new Promise(r => setTimeout(r, 800))
-    setSaving(false)
-    setSuccessMsg(L("تم حفظ إعدادات المؤسسة بنجاح", "Institution settings saved successfully"))
-    setTimeout(() => setSuccessMsg(null), 4000)
+    setErrorMsg(null)
+    try {
+      await universityService.updateSettings({
+        notifications: notif,
+        privacy,
+        security,
+        preferences: prefs,
+      })
+      setSuccessMsg(L("تم حفظ إعدادات المؤسسة بنجاح", "Institution settings saved successfully"))
+      setTimeout(() => setSuccessMsg(null), 4000)
+    } catch {
+      setErrorMsg(L("حدث خطأ أثناء حفظ الإعدادات", "Failed to save settings"))
+      setTimeout(() => setErrorMsg(null), 4000)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handlePwd = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (pwdForm.next !== pwdForm.confirm) {
-      setPwdMsg({ text: L("كلمتا المرور غير متطابقتين", "Passwords do not match"), ok: false }); return
+    if (!pwdForm.current) {
+      setPwdMsg({ text: L("يرجى إدخال كلمة المرور الحالية", "Please enter current password"), ok: false })
+      return
     }
-    if (pwdForm.next.length < 8) {
-      setPwdMsg({ text: L("8 أحرف على الأقل", "At least 8 characters"), ok: false }); return
+    if (pwdForm.next !== pwdForm.confirm) {
+      setPwdMsg({ text: L("كلمتا المرور غير متطابقتين", "Passwords do not match"), ok: false })
+      return
+    }
+    if (pwdForm.next.length < 6) {
+      setPwdMsg({ text: L("6 أحرف على الأقل", "At least 6 characters"), ok: false })
+      return
     }
     setPwdSaving(true)
-    await new Promise(r => setTimeout(r, 800))
-    setPwdSaving(false)
-    setPwdMsg({ text: L("تم تحديث كلمة المرور", "Password updated"), ok: true })
-    setPwdForm({ current: "", next: "", confirm: "" })
-    setTimeout(() => setPwdMsg(null), 4000)
+    setPwdMsg(null)
+    try {
+      await universityService.changePassword(pwdForm.current, pwdForm.next)
+      setPwdMsg({ text: L("تم تحديث كلمة المرور بنجاح", "Password updated successfully"), ok: true })
+      setPwdForm({ current: "", next: "", confirm: "" })
+      setTimeout(() => setPwdMsg(null), 4000)
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || L("كلمة المرور الحالية غير صحيحة", "Current password is incorrect")
+      setPwdMsg({ text: msg, ok: false })
+    } finally {
+      setPwdSaving(false)
+    }
   }
 
   return (
@@ -134,6 +174,12 @@ export function UniversitySettingsPage() {
       {successMsg && (
         <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium">
           <CheckCircle2 className="w-4 h-4 shrink-0" />{successMsg}
+        </div>
+      )}
+
+      {errorMsg && (
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+          <AlertCircle className="w-4 h-4 shrink-0" />{errorMsg}
         </div>
       )}
 

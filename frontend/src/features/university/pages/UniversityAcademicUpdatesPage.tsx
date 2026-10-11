@@ -178,23 +178,45 @@ export function UniversityAcademicUpdatesPage() {
     }
   }
 
-  const handleCreateSubmit = (e: React.FormEvent) => {
+  const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.title.trim() || !formData.description.trim()) return
 
-    const newUpdate: AcademicUpdateItem = {
-      id: Date.now(),
-      title_ar: formData.title,
-      title_en: formData.title,
-      category: formData.category,
-      department: formData.department,
-      date: new Date().toISOString().split("T")[0],
-      description_ar: formData.description,
-      description_en: formData.description,
-      image: formData.image || "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&fit=crop",
+    try {
+      const res = await universityService.createAcademicUpdate({
+        title: formData.title,
+        category: formData.category,
+        department: formData.department,
+        description: formData.description,
+        image: formData.image || undefined,
+      })
+      const createdItem: AcademicUpdateItem = res?.update || {
+        id: Date.now(),
+        title_ar: formData.title,
+        title_en: formData.title,
+        category: formData.category,
+        department: formData.department,
+        date: new Date().toISOString().split("T")[0],
+        description_ar: formData.description,
+        description_en: formData.description,
+        image: formData.image || "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&fit=crop",
+      }
+      setUpdates([createdItem, ...updates])
+    } catch {
+      const fallbackItem: AcademicUpdateItem = {
+        id: Date.now(),
+        title_ar: formData.title,
+        title_en: formData.title,
+        category: formData.category,
+        department: formData.department,
+        date: new Date().toISOString().split("T")[0],
+        description_ar: formData.description,
+        description_en: formData.description,
+        image: formData.image || "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&fit=crop",
+      }
+      setUpdates([fallbackItem, ...updates])
     }
 
-    setUpdates([newUpdate, ...updates])
     setIsModalOpen(false)
     setFormData({
       title: "",

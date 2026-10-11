@@ -305,6 +305,61 @@ class TestUniversityWorkspaceSuite(unittest.TestCase):
         cross_student_res = self.client.get(f'/api/v1/university/students/{self.cand_id}')
         self.assertEqual(cross_student_res.status_code, 403, "Cross-university student access must return 403")
 
+    def test_06_university_settings_and_academic_updates(self):
+        """Verify settings GET/PUT, password change with verification, and academic updates feed & publish."""
+        # 1. Login as KSU
+        self.client.post('/login', json={
+            "email": "test_ksu@ksu.edu.sa",
+            "password": "ksu_secure_pass_123"
+        })
+
+        # 2. Settings GET & PUT
+        s_get = self.client.get('/api/v1/university/settings')
+        self.assertEqual(s_get.status_code, 200)
+        s_data = s_get.get_json()
+        self.assertTrue(s_data.get("success"))
+        self.assertIn("settings", s_data)
+        self.assertIn("notifications", s_data["settings"])
+
+        s_put = self.client.put('/api/v1/university/settings', json={
+            "privacy": {"profileVisibility": "public"}
+        })
+        self.assertEqual(s_put.status_code, 200)
+        self.assertTrue(s_put.get_json().get("success"))
+
+        # 3. Change password verification
+        bad_pwd = self.client.post('/api/v1/university/change-password', json={
+            "current_password": "WrongPassword123!",
+            "new_password": "NewValidPassword123!"
+        })
+        self.assertEqual(bad_pwd.status_code, 400)
+        self.assertFalse(bad_pwd.get_json().get("success"))
+
+        good_pwd = self.client.post('/api/v1/university/change-password', json={
+            "current_password": "ksu_secure_pass_123",
+            "new_password": "ksu_secure_pass_123"
+        })
+        self.assertEqual(good_pwd.status_code, 200)
+        self.assertTrue(good_pwd.get_json().get("success"))
+
+        # 4. Academic updates GET and POST
+        up_get = self.client.get('/api/v1/university/academic-updates')
+        self.assertEqual(up_get.status_code, 200)
+        up_data = up_get.get_json()
+        self.assertTrue(up_data.get("success"))
+        self.assertGreaterEqual(len(up_data.get("updates", [])), 4)
+
+        up_post = self.client.post('/api/v1/university/academic-updates', json={
+            "title": "تدشين معمل الروبوتات والذكاء الاصطناعي",
+            "category": "curriculum",
+            "department": "كلية علوم الحاسب",
+            "description": "تم افتتاح المعمل التخصصي لتدريب الطلاب على النظم المدمجة والأتمتة الصناعية."
+        })
+        self.assertEqual(up_post.status_code, 201)
+        self.assertTrue(up_post.get_json().get("success"))
+        self.assertIn("update", up_post.get_json())
+
 
 if __name__ == '__main__':
     unittest.main()
+

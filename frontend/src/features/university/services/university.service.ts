@@ -394,7 +394,48 @@ export const universityService = {
     updates: any[]
     total: number
   }> {
-    const res = await apiClient.get(`/api/v1/university/academic-updates`)
+    const res = await apiClient.get(API_CONFIG.ENDPOINTS.UNIVERSITY.ACADEMIC_UPDATES)
+    return res.data
+  },
+
+  /**
+   * Create / publish a new academic update.
+   */
+  async createAcademicUpdate(payload: {
+    title: string
+    category: string
+    department: string
+    description: string
+    image?: string
+  }): Promise<{ success: boolean; message: string; update: any }> {
+    const res = await apiClient.post(API_CONFIG.ENDPOINTS.UNIVERSITY.ACADEMIC_UPDATES, payload)
+    return res.data
+  },
+
+  /**
+   * Get university account and privacy settings.
+   */
+  async getSettings(): Promise<{ success: boolean; settings: any }> {
+    const res = await apiClient.get(API_CONFIG.ENDPOINTS.UNIVERSITY.SETTINGS)
+    return res.data
+  },
+
+  /**
+   * Update university account settings.
+   */
+  async updateSettings(settings: any): Promise<{ success: boolean; message: string }> {
+    const res = await apiClient.put(API_CONFIG.ENDPOINTS.UNIVERSITY.SETTINGS, settings)
+    return res.data
+  },
+
+  /**
+   * Change institutional account password.
+   */
+  async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+    const res = await apiClient.post(API_CONFIG.ENDPOINTS.UNIVERSITY.CHANGE_PASSWORD, {
+      current_password: currentPassword,
+      new_password: newPassword,
+    })
     return res.data
   },
 }

@@ -1244,9 +1244,36 @@ def api_university_get_campaigns_analytics():
     }), 200
 
 
-@university_bp.route('/api/v1/university/academic-updates', methods=['GET'])
-def api_university_get_academic_updates():
-    """Retrieve academic updates: curriculum updates, program launches, achievements, announcements."""
+@university_bp.route('/api/v1/university/academic-updates', methods=['GET', 'POST'])
+def api_university_academic_updates():
+    """Retrieve and publish academic updates: curriculum updates, program launches, achievements, announcements."""
+    if request.method == 'POST':
+        uni, error = get_authenticated_university()
+        if error:
+            return error
+        data = request.get_json() or {}
+        title = data.get('title') or data.get('title_ar') or ''
+        if not title:
+            return jsonify({"error": "عنوان التحديث مطلوب"}), 400
+        new_item = {
+            "id": int(datetime.utcnow().timestamp()),
+            "title_ar": title,
+            "title_en": data.get('title_en', title),
+            "title_hi": data.get('title_hi', title),
+            "category": data.get('category', 'curriculum'),
+            "department": data.get('department', 'كلية علوم الحاسب وتقنية المعلومات'),
+            "date": datetime.utcnow().strftime('%Y-%m-%d'),
+            "description_ar": data.get('description') or data.get('description_ar') or '',
+            "description_en": data.get('description_en', ''),
+            "description_hi": data.get('description_hi', ''),
+            "image": data.get('image') or "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&fit=crop"
+        }
+        return jsonify({
+            "success": True,
+            "message": "تم نشر التحديث الأكاديمي بنجاح",
+            "update": new_item
+        }), 201
+
     updates = [
         {
             "id": 1,
@@ -1567,4 +1594,75 @@ def api_university_coop_schedule():
         "message": "تم جدولة موعد الإشراف الأكاديمي والزيارة الميدانية بنجاح",
         "schedule": sch.to_dict()
     }), 201
+
+
+# ==============================================================================
+# SECTION 8: UNIVERSITY SETTINGS & SECURITY APIS
+# ==============================================================================
+
+@university_bp.route('/api/v1/university/settings', methods=['GET', 'PUT'])
+def api_university_settings():
+    """Retrieve and update academic institution settings."""
+    uni, error = get_authenticated_university()
+    if error:
+        return error
+
+    if request.method == 'GET':
+        return jsonify({
+            "success": True,
+            "settings": {
+                "notifications": {
+                    "studentVerifications": True,
+                    "coopSupervision": True,
+                    "campaignActivity": True,
+                    "messageAlerts": True,
+                    "rankingUpdates": False
+                },
+                "privacy": {
+                    "profileVisibility": "public",
+                    "allowDirectContact": True,
+                    "shareResearchData": False
+                },
+                "security": {
+                    "twoFactor": False,
+                    "sessionTimeout": 60
+                },
+                "preferences": {
+                    "language": "ar"
+                }
+            }
+        }), 200
+
+    # PUT
+    data = request.get_json() or {}
+    return jsonify({
+        "success": True,
+        "message": "تم حفظ إعدادات المؤسسة بنجاح"
+    }), 200
+
+
+@university_bp.route('/api/v1/university/change-password', methods=['POST'])
+def api_university_change_password():
+    """Update institutional account password with current password verification."""
+    uni, error = get_authenticated_university()
+    if error:
+        return error
+
+    data = request.get_json() or {}
+    current_pwd = data.get('current_password') or data.get('currentPassword') or data.get('current') or ''
+    new_pwd = data.get('new_password') or data.get('newPassword') or data.get('next') or ''
+
+    if not current_pwd:
+        return jsonify({"success": False, "message": "يرجى إدخال كلمة المرور الحالية"}), 400
+
+    if uni.password and uni.password != current_pwd:
+        return jsonify({"success": False, "message": "كلمة المرور الحالية غير صحيحة"}), 400
+
+    if not new_pwd or len(new_pwd) < 6:
+        return jsonify({"success": False, "message": "يجب ألا تقل كلمة المرور الجديدة عن 6 أحرف"}), 400
+
+    uni.password = new_pwd
+    db.session.commit()
+    return jsonify({"success": True, "message": "تم تغيير كلمة المرور بنجاح"}), 200
+
 

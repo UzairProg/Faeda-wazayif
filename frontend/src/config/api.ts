@@ -146,6 +146,9 @@ export const API_CONFIG = {
       COOP_SUPERVISION: "/api/v1/university/coop-supervision",
       COOP_EVALUATION: (id: string | number) => `/api/v1/university/coop-supervision/${id}/evaluation`,
       COOP_SCHEDULE: "/api/v1/university/coop-schedule",
+      SETTINGS: "/api/v1/university/settings",
+      CHANGE_PASSWORD: "/api/v1/university/change-password",
+      ACADEMIC_UPDATES: "/api/v1/university/academic-updates",
     },
     CHAT: {
       CONVERSATIONS: "/api/v1/chat/conversations",

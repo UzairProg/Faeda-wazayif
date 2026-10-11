@@ -4266,11 +4266,7 @@ def api_candidate_settings():
     if 'session_customer' in session and 'user_id' in session:
         cust = Customers.query.get(session['user_id'])
     if not cust:
-        auth_header = request.headers.get('Authorization', '')
-        if auth_header.startswith('Bearer '):
-            cust = Customers.query.first()
-    if not cust:
-        cust = Customers.query.first()
+        return jsonify({"error": "غير مصرح به", "message": "يرجى تسجيل الدخول للوصول للإعدادات"}), 401
         
     if request.method == 'GET':
         return jsonify({
@@ -4308,24 +4304,26 @@ def api_candidate_settings():
 
 @customer.route('/api/v1/candidate/change-password', methods=['POST'])
 def api_candidate_change_password():
-    data = request.get_json() or {}
-    new_pwd = data.get('newPassword', '')
-    
     cust = None
     if 'session_customer' in session and 'user_id' in session:
         cust = Customers.query.get(session['user_id'])
     if not cust:
-        auth_header = request.headers.get('Authorization', '')
-        if auth_header.startswith('Bearer '):
-            cust = Customers.query.first()
-    if not cust:
-        cust = Customers.query.first()
-        
+        return jsonify({"error": "غير مصرح به", "message": "يرجى تسجيل الدخول لتغيير كلمة المرور"}), 401
+
+    data = request.get_json() or {}
+    current_pwd = data.get('current_password') or data.get('currentPassword') or data.get('current') or ''
+    new_pwd = data.get('new_password') or data.get('newPassword') or data.get('next') or ''
+
+    if not current_pwd:
+        return jsonify({"success": False, "message": "يرجى إدخال كلمة المرور الحالية"}), 400
+
+    if cust.password != current_pwd:
+        return jsonify({"success": False, "message": "كلمة المرور الحالية غير صحيحة"}), 400
+
     if not new_pwd or len(new_pwd) < 6:
         return jsonify({"success": False, "message": "يجب ألا تقل كلمة المرور الجديدة عن 6 أحرف"}), 400
-        
-    if cust:
-        cust.password = new_pwd
-        db.session.commit()
-        
+
+    cust.password = new_pwd
+    db.session.commit()
     return jsonify({"success": True, "message": "تم تغيير كلمة المرور بنجاح"})
+
