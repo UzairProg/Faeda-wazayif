@@ -1,4 +1,4 @@
-const key = "AQ.Ab8RN6IadEdmhoA7mNfRLiDPwUMQNkZeJLVHWIepgU8p3XmDcg";
+const key = process.env.GEMINI_API_KEY || "";
 const models = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-1.5-pro", "gemini-2.5-flash"];
 
 async function check() {
