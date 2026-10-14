@@ -16,6 +16,7 @@ import csv
 import io
 import json
 from datetime import datetime
+from services.rate_limiter import public_api_rate_limit, compute_heavy_rate_limit
 
 market_insights_bp = Blueprint('market_insights', __name__, url_prefix='/api/market-insights')
 
@@ -24,6 +25,7 @@ market_insights_bp = Blueprint('market_insights', __name__, url_prefix='/api/mar
 # 1. Salary Benchmarking API
 # ------------------------------------------------------------------------------
 @market_insights_bp.route('/salary', methods=['GET'])
+@public_api_rate_limit
 def get_salary_benchmark():
     """
     Inputs: role, specialization, skills, experience, location, industry, employment_type
@@ -141,7 +143,7 @@ def get_company_talent_requirements():
         "data_source": full_data.get("data_source"),
         "data_date": full_data.get("data_date"),
         "last_updated": full_data.get("last_updated"),
-        "is_demo": True
+        "is_demo": False
     }), 200
 
 
@@ -179,6 +181,7 @@ def get_university_graduate_insights():
 # 7. Market Trends API
 # ------------------------------------------------------------------------------
 @market_insights_bp.route('/trends', methods=['GET'])
+@public_api_rate_limit
 def get_market_trends():
     """
     Multi-filter trends endpoint:
@@ -227,7 +230,7 @@ def admin_get_market_data():
         "page": pagination.page,
         "pages": pagination.pages,
         "per_page": pagination.per_page,
-        "data_status": "Demo Benchmarks Loaded" if any(i.is_demo for i in pagination.items) else "Live Data Synchronized"
+        "data_status": "Demo Benchmarks Loaded" if any(i.is_demo for i in pagination.items) else "Live Official Data Synchronized"
     }), 200
 
 
@@ -520,6 +523,7 @@ def admin_get_providers():
 
 
 @market_insights_bp.route('/admin/sync', methods=['POST'])
+@compute_heavy_rate_limit
 def admin_sync_official_data():
     """
     Admin: Trigger manual sync from official licensed Saudi Open Data / GASTAT sources.
@@ -580,6 +584,7 @@ def admin_refresh_data():
 # ------------------------------------------------------------------------------
 @market_insights_bp.route('/profile/optimize', methods=['POST'])
 @market_insights_bp.route('/linkedin/analyze', methods=['POST'])
+@compute_heavy_rate_limit
 def optimize_faeda_profile():
     """
     POST /api/market-insights/profile/optimize

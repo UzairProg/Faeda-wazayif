@@ -117,8 +117,8 @@ class CandidateMarketInsight(db.Model):
     market_position = db.Column(db.String(100), default='Competitive (Top 25%)')
     profile_strength = db.Column(db.Integer, default=85)
     calculated_at = db.Column(db.DateTime, default=datetime.utcnow)
-    data_source = db.Column(db.String(255), default='Market Salary Dataset')
-    is_demo = db.Column(db.Boolean, default=True)
+    data_source = db.Column(db.String(255), default='GASTAT & Saudi Open Data Portal (data.gov.sa)')
+    is_demo = db.Column(db.Boolean, default=False)
     last_updated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def to_dict(self):

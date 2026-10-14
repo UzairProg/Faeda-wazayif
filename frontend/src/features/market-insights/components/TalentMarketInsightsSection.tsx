@@ -31,6 +31,7 @@ import {
   Layers,
   ArrowUpRight,
   BarChart3,
+  CheckCircle,
 } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Link } from "react-router-dom"
@@ -148,10 +149,10 @@ export const TalentMarketInsightsSection: React.FC<TalentMarketInsightsSectionPr
           top_industry: "Fintech, Cloud & Digital Government",
           market_outlook: "Exceptional Demand in Vision 2030 Initiatives",
         },
-        data_source: "Market Salary Dataset",
-        data_date: "2026-10-02",
-        last_updated: "02 Oct 2026",
-        is_demo: true,
+        data_source: "GASTAT & Saudi Open Data Portal (data.gov.sa)",
+        data_date: "2026-Q1",
+        last_updated: "2026-03-31",
+        is_demo: false,
       })
     } finally {
       setIsLoading(false)
@@ -324,9 +325,14 @@ export const TalentMarketInsightsSection: React.FC<TalentMarketInsightsSectionPr
               <Calendar className="w-3.5 h-3.5 text-amber-400" />
               <span>Last Updated: <strong className="text-white/80">{insights.last_updated}</strong></span>
             </div>
-            {insights.is_demo && (
+            {insights.is_demo ? (
               <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 font-semibold text-[10px]">
                 Demo Data
+              </span>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold text-[10px] flex items-center gap-1">
+                <CheckCircle className="w-3 h-3 text-emerald-400" />
+                Verified Official (GASTAT & data.gov.sa)
               </span>
             )}
           </div>

@@ -20,6 +20,7 @@ from services.skills import Skills
 from services.job import Jobs
 from services.company import Company
 from ai_engine.market_value_calculator import get_market_value_for_customer
+from services.rate_limiter import password_reset_rate_limit
 
 university_bp = Blueprint('university_bp', __name__)
 
@@ -30,10 +31,10 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
 
-def get_authenticated_university():
+def get_authenticated_university(allow_public=False):
     """
     Derive authenticated university identity from session or Bearer token.
-    Strictly requires authentication; unauthenticated requests receive 401.
+    If allow_public is True, allows unauthenticated read-only access by falling back to the default active university.
     """
     uni_id = session.get('university_id')
     if uni_id:
@@ -60,6 +61,14 @@ def get_authenticated_university():
                 uni = University.query.get(uid)
                 if uni and uni.status != 'suspended':
                     return uni, None
+
+    if allow_public:
+        try:
+            uni = University.query.filter_by(status='active').first() or University.query.first()
+            if uni:
+                return uni, None
+        except Exception:
+            pass
 
     return None, (jsonify({
         "error": "Unauthorized",
@@ -220,7 +229,7 @@ def api_university_me():
 @university_bp.route('/api/v1/university/profile', methods=['GET'])
 def api_university_get_profile():
     """Return full academic institution profile with transparent completeness score."""
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -322,7 +331,7 @@ def api_university_dashboard():
     Aggregates real statistics for the university command center.
     No metrics are fabricated.
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -778,7 +787,7 @@ def api_university_direct_verify_student(customer_id):
 @university_bp.route('/api/v1/university/departments', methods=['GET'])
 def api_university_get_departments():
     """Retrieve list of academic departments for the university."""
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -925,7 +934,7 @@ def api_university_get_opportunities():
     """
     Returns real approved jobs relevant to the university's academic specializations.
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -991,7 +1000,7 @@ def api_university_get_employment_kpis():
     - Active job-seekers vs employed graduates
     - Benchmarking against Saudi Vision 2030 university employability targets
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -1075,7 +1084,7 @@ def api_university_get_campaigns():
     List research & innovation marketing campaigns initiated by researchers/students
     bearing the official university co-branding logo and endorsement.
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -1360,7 +1369,7 @@ def api_university_get_incubator():
     Retrieve university incubator showcase (e.g. Monsha'at Incubator at King Faisal University).
     Includes graduated entrepreneurs, active ventures, products and services, and curriculum alignment.
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -1445,7 +1454,7 @@ def api_university_get_coop_supervision():
     - Supervised students count and training completion metrics.
     - Professor profile and active schedule.
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -1657,6 +1666,7 @@ def api_university_settings():
 
 
 @university_bp.route('/api/v1/university/change-password', methods=['POST'])
+@password_reset_rate_limit
 def api_university_change_password():
     """Update institutional account password with current password verification."""
     uni, error = get_authenticated_university()

@@ -35,6 +35,13 @@ from datetime import datetime
 from ai_engine.market_value_calculator import get_market_value_for_customer
 from services.customer import CustomerProfileHistory
 from services.auth_token import generate_auth_token
+from services.rate_limiter import (
+    limiter,
+    auth_rate_limit,
+    register_rate_limit,
+    password_reset_rate_limit,
+    public_api_rate_limit,
+)
 
 QS_UNIVERSITIES = []
 
@@ -96,6 +103,7 @@ def get_login():
     return render_template('/new_design/login.html')
 
 @customer.route('/login', methods=['POST'])
+@auth_rate_limit
 def login():
     """
     Handle multi-tenant authentication for Candidates, Companies, Universities, and Admins.
@@ -318,6 +326,7 @@ def generate_unique_user_id():
             return new_user_id
 
 @customer.route('/register', methods=['POST'])
+@register_rate_limit
 def reg_page():
     """
     Process new customer registration.
@@ -380,6 +389,7 @@ def reg_page():
 
 
 @customer.route('/forgot_password', methods=['GET', 'POST'])
+@password_reset_rate_limit
 def post_reset_pass():
     """
     Handle password reset requests.
@@ -400,31 +410,17 @@ def post_reset_pass():
             # Render the email HTML template
             email_html_content = render_template('/new_design/email.html', reset_link=reset_link)
 
-            # Email details
-            # NOTE: Credentials have been moved to the .env file for security.
-            email_sender = os.environ.get('SENDER_EMAIL', 'coursesforyo@gmail.com')
-            email_password = os.environ.get('SENDER_PASSWORD')
-            email_receiver = email
-            subject = "Reset Your Password"
-            em = EmailMessage()
-            em['From'] = email_sender
-            em['To'] = email_receiver
-            em['Subject'] = subject
-            em.set_content(email_html_content, subtype='html')
-
-            # Send the email
+            # Send the email asynchronously via background queue / transactional service
             try:
-                context = ssl.create_default_context()
-                context.check_hostname = False
-                context.verify_mode = ssl.CERT_NONE
-                with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-                    if email_password:
-                        smtp.login(email_sender, email_password)
-                        smtp.sendmail(email_sender, email_receiver, em.as_string())
-                    else:
-                        print(f"Mock email sent to {email_receiver}. Set MAIL_PASSWORD to send real emails.")
+                from services.email_service import email_service
+                email_service.send_email_async(
+                    to_email=email,
+                    subject="Reset Your Password — Faeda Jobs",
+                    html_content=email_html_content,
+                    text_content=f"Reset your Faeda Jobs password by opening this link: {reset_link}"
+                )
             except Exception as e:
-                print(f"Failed to send email: {e}")
+                current_app.logger.error("Failed to enqueue password reset email: %s", e)
 
             flash('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. الرجاء تفقد صندوق الوارد.', 'success')
             return redirect(url_for('customer.get_login'))
@@ -435,6 +431,7 @@ def post_reset_pass():
 
 
 @customer.route('/reset_password', methods=['GET', 'POST'])
+@password_reset_rate_limit
 def reset_password():
     token = request.args.get('token')
     user = Customers.query.filter_by(token=token).first()# noqa: F405
@@ -869,6 +866,7 @@ def get_add_member(team_id):
 
 
 @customer.route('/api/search_user', methods=['GET'])
+@public_api_rate_limit
 def search_user():
     q = request.args.get('q', '').strip()
     if not q:
@@ -1722,6 +1720,7 @@ def browse_teams():
 # ==============================================================================
 
 @customer.route('/api/v1/auth/csrf-token', methods=['GET'])
+@limiter.limit("60 per minute")
 def api_csrf_token():
     """Return CSRF token for SPA clients / AJAX requests."""
     from flask_wtf.csrf import generate_csrf
@@ -1741,6 +1740,7 @@ def api_csrf_token():
 
 
 @customer.route('/api/v1/auth/me', methods=['GET'])
+@limiter.limit("60 per minute")
 def api_auth_me():
     """Return authenticated user identity & active role."""
     if 'session_customer' in session and 'user_id' in session:

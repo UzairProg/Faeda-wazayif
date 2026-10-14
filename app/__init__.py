@@ -35,6 +35,9 @@ def create_app():
     from services.csrf_protect import init_csrf
     csrf = init_csrf(app)
 
+    from services.rate_limiter import init_rate_limiter
+    rate_limiter = init_rate_limiter(app)
+
     CORS(
         app,
         resources={r"/*": {"origins": [r"^https?://.*"]}},
@@ -185,6 +188,10 @@ def create_app():
         @app.errorhandler(500)
         @app.errorhandler(Exception)
         def handle_internal_error(error):
+            from werkzeug.exceptions import HTTPException
+            if isinstance(error, HTTPException) and error.code != 500:
+                return error
+
             from flask import jsonify
             origin = os.environ.get('FRONTEND_ORIGIN', 'http://localhost:5173')
             response = jsonify({
@@ -193,6 +200,7 @@ def create_app():
             })
             response.status_code = 500
             response.headers["Access-Control-Allow-Origin"] = origin
+            return response
         # Initialize Market Data Background Scheduler (30-day recurring updates)
         try:
             from services.market_data_scheduler import init_market_data_scheduler

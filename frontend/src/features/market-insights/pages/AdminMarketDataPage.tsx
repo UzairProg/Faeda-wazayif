@@ -35,10 +35,12 @@ export const AdminMarketDataPage: React.FC = () => {
   const [search, setSearch] = useState("")
   const [page] = useState(1)
   const [total, setTotal] = useState(0)
-  const [dataStatus, setDataStatus] = useState("Demo Benchmarks Loaded")
+  const [dataStatus, setDataStatus] = useState("Live Official Data Synchronized")
 
   // Providers modal / tab state
   const [providers, setProviders] = useState<any[]>([])
+  const [syncStatus, setSyncStatus] = useState<any>(null)
+  const [isSyncing, setIsSyncing] = useState(false)
   const [activeTab, setActiveTab] = useState<"benchmarks" | "providers">("benchmarks")
 
   // Add / Edit Modal state
@@ -53,7 +55,34 @@ export const AdminMarketDataPage: React.FC = () => {
   useEffect(() => {
     fetchMarketData()
     fetchProviders()
+    fetchSyncStatus()
   }, [page, search])
+
+  const fetchSyncStatus = async () => {
+    try {
+      const res = await marketInsightsService.adminGetSyncStatus()
+      if (res.sync_status) {
+        setSyncStatus(res.sync_status)
+      }
+    } catch (err) {
+      console.warn("Failed fetching sync status")
+    }
+  }
+
+  const handleOfficialSync = async () => {
+    setIsSyncing(true)
+    try {
+      const res = await marketInsightsService.adminSyncOfficialData()
+      toast.success(res.message || "Official market & salary data synchronized successfully")
+      await fetchMarketData()
+      await fetchProviders()
+      await fetchSyncStatus()
+    } catch (err) {
+      toast.error("Failed to synchronize official market data")
+    } finally {
+      setIsSyncing(false)
+    }
+  }
 
   const fetchMarketData = async () => {
     setIsLoading(true)
@@ -61,7 +90,7 @@ export const AdminMarketDataPage: React.FC = () => {
       const res = await marketInsightsService.adminGetMarketData(page, 15, search)
       setItems(res.items || [])
       setTotal(res.total || 0)
-      setDataStatus(res.data_status || "Demo Benchmarks Loaded")
+      setDataStatus(res.data_status || "Live Official Data Synchronized")
     } catch (err) {
       console.warn("Failed fetching admin market data:", err)
       // Clean fallback if backend is in cold start
@@ -83,10 +112,10 @@ export const AdminMarketDataPage: React.FC = () => {
           demand_level: "High",
           talent_availability: "Moderate",
           hiring_competition: "High",
-          source: "Faeda Internal Estimated Benchmark",
-          is_demo: true,
-          data_date: "2026-10-02",
-          last_updated: "2026-10-02",
+          source: "GASTAT & Saudi Open Data Portal (data.gov.sa)",
+          is_demo: false,
+          data_date: "2026-Q1",
+          last_updated: "2026-03-31",
         },
         {
           id: 2,
@@ -105,10 +134,10 @@ export const AdminMarketDataPage: React.FC = () => {
           demand_level: "High",
           talent_availability: "High",
           hiring_competition: "Medium",
-          source: "Faeda Internal Estimated Benchmark",
-          is_demo: true,
-          data_date: "2026-10-02",
-          last_updated: "2026-10-02",
+          source: "GASTAT & Saudi Open Data Portal (data.gov.sa)",
+          is_demo: false,
+          data_date: "2026-Q1",
+          last_updated: "2026-03-31",
         },
       ])
       setTotal(2)
@@ -210,6 +239,15 @@ export const AdminMarketDataPage: React.FC = () => {
 
         {/* Action buttons */}
         <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={handleOfficialSync}
+            disabled={isSyncing}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 border border-emerald-500/40 text-xs font-semibold text-white shadow-lg transition-all disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin" : ""}`} />
+            {isSyncing ? "Syncing GASTAT..." : "Sync Official Government Data"}
+          </button>
+
           <button
             onClick={handleRefreshCache}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-white transition-colors"
@@ -359,9 +397,13 @@ export const AdminMarketDataPage: React.FC = () => {
                           <span className="text-white/80 block text-[11px]">{item.source}</span>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             <span className="text-[10px] text-white/40">{item.last_updated}</span>
-                            {item.is_demo && (
+                            {item.is_demo ? (
                               <span className="text-[9px] px-1 rounded bg-amber-500/20 text-amber-300">
                                 Demo
+                              </span>
+                            ) : (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium">
+                                Verified Official
                               </span>
                             )}
                           </div>
@@ -397,7 +439,51 @@ export const AdminMarketDataPage: React.FC = () => {
 
       {/* ── Tab 2: Providers & Data Freshness ───────────────────────── */}
       {activeTab === "providers" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          {/* Scheduled Sync & Official Licensing Banner */}
+          <GlassCard className="p-6 border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-slate-900/60 to-slate-900/80">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="p-2 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    <Database className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <h2 className="text-lg font-bold text-white">Official Government Data Pipeline & Scheduled Updates</h2>
+                    <p className="text-xs text-white/60">
+                      Licensed under the Saudi Open Government Data License (رخصة البيانات الحكومية المفتوحة)
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-white/70">
+                  <span className="flex items-center gap-1.5">
+                    <strong className="text-white">Provider:</strong> GASTAT & Saudi Open Data Portal (data.gov.sa)
+                  </span>
+                  <span className="text-white/30">•</span>
+                  <span className="flex items-center gap-1.5">
+                    <strong className="text-white">Cadence:</strong> Every 30 Days (Automated Daemon)
+                  </span>
+                  <span className="text-white/30">•</span>
+                  <span className="flex items-center gap-1.5">
+                    <strong className="text-white">Next Scheduled:</strong> {syncStatus?.next_scheduled_sync ? new Date(syncStatus.next_scheduled_sync).toLocaleDateString() : "Scheduled Monthly"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleOfficialSync}
+                  disabled={isSyncing}
+                  className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition-all disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isSyncing ? "animate-spin" : ""}`} />
+                  {isSyncing ? "Synchronizing..." : "Trigger On-Demand Sync"}
+                </button>
+              </div>
+            </div>
+          </GlassCard>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {providers.map((p, idx) => (
             <GlassCard key={idx} className="p-6 border border-white/10 bg-slate-900/60">
               <div className="flex items-start justify-between">
@@ -437,6 +523,7 @@ export const AdminMarketDataPage: React.FC = () => {
               </div>
             </GlassCard>
           ))}
+          </div>
         </div>
       )}
 

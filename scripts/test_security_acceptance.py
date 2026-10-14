@@ -171,6 +171,8 @@ class TestSecurityAcceptance(unittest.TestCase):
             db.session.query(Conversation).filter_by(id=cls.conv1_id).delete()
             db.session.execute(customer_jobs.delete().filter(customer_jobs.c.customer_id.in_(["sec_cand_1", "sec_cand_2"])))
             db.session.query(Jobs).filter(Jobs.company_id.in_([cls.comp1_id, cls.comp2_id])).delete()
+            from services.customer import CustomerProfileHistory
+            db.session.query(CustomerProfileHistory).filter(CustomerProfileHistory.customer_id.in_([cls.cand1_id, cls.cand2_id])).delete()
             db.session.query(Customers).filter(Customers.id.in_([cls.cand1_id, cls.cand2_id])).delete()
             db.session.query(Company).filter(Company.id.in_([cls.comp1_id, cls.comp2_id])).delete()
             db.session.query(University).filter(University.id.in_([cls.uni1_id, cls.uni2_id])).delete()

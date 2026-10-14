@@ -1429,3 +1429,21 @@ def get_hired_candidates(admin):
             "success": False,
             "message": f"حدث خطأ أثناء جلب بيانات التوظيف: {str(e)}"
         }), 500
+
+
+# ─────────────────────────────────────────────────────────────
+# Security & Rate Limiting Audit API
+# ─────────────────────────────────────────────────────────────
+@admin_v1_bp.route('/security/rate-limits', methods=['GET'])
+def get_rate_limiting_status():
+    """
+    Returns active API rate limiting policies, storage backend, and security status.
+    Accessible to administrators for system diagnostics and compliance auditing.
+    """
+    from services.rate_limiter import get_rate_limiter_status
+    status = get_rate_limiter_status()
+    return jsonify({
+        "success": True,
+        "security_policy": "OWASP API Security Top 10 — API4 Rate Limiting & DoS Protection",
+        "data": status
+    }), 200
