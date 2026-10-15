@@ -13,6 +13,9 @@ export interface RegisterDTO {
   email: string
   password: string
   organizationName?: string
+  universityNameEn?: string
+  institutionType?: string
+  location?: string
 }
 
 export interface AuthUser {

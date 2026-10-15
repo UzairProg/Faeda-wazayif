@@ -15,6 +15,7 @@ export const API_CONFIG = {
     AUTH: {
       LOGIN: "/login",
       REGISTER: "/register",
+      REGISTER_UNIVERSITY: "/api/v1/university/register",
       LOGOUT: "/logout",
       FORGOT_PASSWORD: "/forgot_password",
       RESET_PASSWORD: "/reset_password",

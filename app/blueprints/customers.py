@@ -337,6 +337,50 @@ def reg_page():
         flash('لتسجيل حساب منشأة، يرجى استخدام بوابة تسجيل المنشآت.', 'warning')
         return redirect(url_for('company_panel.company_login'))
 
+    # Handle university registration
+    if acc_type == "university":
+        if University.query.filter_by(email=email).first() or Customers.get_by_email(email) or Company.get_by_email(company_email=email):
+            if request.is_json:
+                return jsonify({"success": False, "message": "البريد الإلكتروني مسجل بالفعل"}), 409
+            flash('عذرا هذا المستخدم موجود بالفعل', 'error')
+            return render_template('/new_design/register.html', error=True)
+
+        new_uni = University(
+            name_ar=full_name.strip() or email.split('@')[0],
+            email=email.strip().lower(),
+            password=password,
+            location="المملكة العربية السعودية",
+            is_verified=True,
+            status="active"
+        )
+        db.session.add(new_uni)
+        db.session.commit()
+        session['session_university'] = True
+        session['show_banner'] = True
+        session['university_id'] = new_uni.id
+        session['university_email'] = new_uni.email
+
+        token = generate_auth_token({
+            "id": new_uni.id,
+            "user_id": new_uni.id,
+            "university_id": new_uni.id,
+            "email": new_uni.email,
+            "role": "university"
+        })
+
+        if request.is_json:
+            return jsonify({
+                "success": True,
+                "message": "تم إنشاء حساب المؤسسة التعليمية بنجاح",
+                "token": token,
+                "role": "university",
+                "user": {"id": new_uni.id, "name": new_uni.name_ar, "email": new_uni.email, "role": "university"},
+                "redirect_url": "/university"
+            }), 201
+
+        flash('تم إنشاء حساب المؤسسة التعليمية بنجاح', 'success')
+        return redirect('/university')
+
     # Validation check
     if not all([full_name, email, mobile, password, acc_type]):
         flash('يجب ملئ جميع الحقول ', 'error')

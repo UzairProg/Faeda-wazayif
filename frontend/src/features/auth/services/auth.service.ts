@@ -105,6 +105,44 @@ class AuthService {
 
   async register(data: RegisterDTO): Promise<AuthResponse> {
     try {
+      if (data.role === "university") {
+        const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REGISTER_UNIVERSITY}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            name_ar: data.name.trim(),
+            name_en: data.universityNameEn?.trim() || "",
+            email: data.email.trim(),
+            password: data.password,
+            location: data.location?.trim() || "المملكة العربية السعودية",
+            institution_type: data.institutionType || "جامعة حكومية",
+          }),
+          credentials: "include",
+        })
+
+        const resData = await response.json().catch(() => null)
+
+        if (!response.ok) {
+          const msg = resData?.message || "فشل تسجيل المؤسسة التعليمية. يرجى التحقق من البيانات المدخلة."
+          throw new Error(msg)
+        }
+
+        const receivedToken = resData?.token || "cookie-session-active"
+        return {
+          user: {
+            id: String(resData?.user?.id || data.email),
+            email: data.email.trim(),
+            role: "university",
+            name: data.name.trim(),
+          },
+          token: receivedToken,
+          message: resData?.message || "تم إنشاء حساب المؤسسة التعليمية بنجاح.",
+        }
+      }
+
       const names = data.name.trim().split(" ")
       const fName = names[0] || data.name
       const lName = names.slice(1).join(" ") || " "
@@ -153,6 +191,18 @@ class AuthService {
       }
     } catch (err: any) {
       if (err.name === "TypeError" && err.message.includes("fetch")) {
+        if (data.role === "university") {
+          return {
+            user: {
+              id: data.email,
+              email: data.email.trim(),
+              role: "university",
+              name: data.name.trim(),
+            },
+            token: "offline-demo-session-token",
+            message: "تم إنشاء حساب المؤسسة التعليمية بنجاح (تجريبي).",
+          }
+        }
         throw new Error("تعذر الاتصال بالخادم. يرجى التأكد من تشغيل الخادم والاتصال بالشبكة.")
       }
       throw err

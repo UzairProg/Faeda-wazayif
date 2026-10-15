@@ -36,3 +36,8 @@ repo_context.txt
 
 # References
 References/
+scripts/
+.cdp_profile/
+.cdp_profile_all/
+.cdp_profile_flawless/
+docs/

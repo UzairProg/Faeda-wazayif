@@ -19,6 +19,7 @@ from services.customer import Customers, CustomerProject, CustomerCertification
 from services.skills import Skills
 from services.job import Jobs
 from services.company import Company
+from services.auth_token import generate_auth_token
 from ai_engine.market_value_calculator import get_market_value_for_customer
 
 university_bp = Blueprint('university_bp', __name__)
@@ -194,6 +195,102 @@ def serialize_student_academic_summary(cand: Customers, uni: University):
 # ==============================================================================
 # AUTHENTICATION & IDENTITY APIS
 # ==============================================================================
+
+@university_bp.route('/api/v1/university/register', methods=['POST'])
+def api_university_register():
+    """Register a new educational institution / university account."""
+    if request.is_json:
+        data = request.get_json() or {}
+    else:
+        data = request.form.to_dict() or {}
+
+    name_ar = str(data.get('name_ar') or data.get('name') or data.get('university_name') or '').strip()
+    name_en = str(data.get('name_en') or data.get('universityNameEn') or '').strip() or None
+    email = str(data.get('email') or '').strip().lower()
+    password = str(data.get('password') or '')
+    location = str(data.get('location') or 'المملكة العربية السعودية').strip()
+    institution_type = str(data.get('institution_type') or data.get('institutionType') or 'جامعة حكومية').strip()
+    website = str(data.get('website') or '').strip() or None
+    phone = str(data.get('phone') or '').strip() or None
+
+    if not name_ar:
+        return jsonify({"success": False, "message": "يرجى إدخال اسم الجامعة أو المؤسسة التعليمية بالعربية"}), 400
+
+    if not email or '@' not in email:
+        return jsonify({"success": False, "message": "يرجى إدخال بريد إلكتروني صحيح"}), 400
+
+    if not password or len(password) < 8:
+        return jsonify({"success": False, "message": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل"}), 400
+
+    # Ensure email is unique across platform
+    if University.query.filter_by(email=email).first():
+        return jsonify({"success": False, "message": "البريد الإلكتروني مسجل بالفعل لمؤسسة تعليمية أخرى"}), 409
+
+    if Customers.query.filter_by(email=email).first() or Company.query.filter_by(company_email=email).first():
+        return jsonify({"success": False, "message": "البريد الإلكتروني مستخدم لحساب آخر في المنصة"}), 409
+
+    try:
+        new_uni = University(
+            name_ar=name_ar,
+            name_en=name_en,
+            email=email,
+            password=password,
+            location=location,
+            country="المملكة العربية السعودية",
+            website=website,
+            institution_type=institution_type,
+            phone=phone,
+            is_verified=True,
+            status="active"
+        )
+        db.session.add(new_uni)
+        db.session.commit()
+
+        # Add initial academic department for the new university
+        default_dept = UniversityDepartment(
+            university_id=new_uni.id,
+            name_ar="كلية علوم الحاسب والمعلومات",
+            name_en="College of Computer & Information Sciences",
+            faculty="كلية علوم الحاسب والمعلومات",
+            degree_levels="بكالوريوس, ماجستير",
+            description="القسم الأكاديمي الرئيسي لعلوم الحاسب وتقنية المعلومات"
+        )
+        db.session.add(default_dept)
+        db.session.commit()
+
+        # Establish active session
+        session['session_university'] = True
+        session['show_banner'] = True
+        session['university_id'] = new_uni.id
+        session['university_email'] = new_uni.email
+
+        token = generate_auth_token({
+            "id": new_uni.id,
+            "user_id": new_uni.id,
+            "university_id": new_uni.id,
+            "email": new_uni.email,
+            "role": "university"
+        })
+
+        return jsonify({
+            "success": True,
+            "message": "تم إنشاء حساب المؤسسة التعليمية بنجاح",
+            "role": "university",
+            "token": token,
+            "user": {
+                "id": new_uni.id,
+                "university_id": new_uni.id,
+                "name": new_uni.name_ar,
+                "email": new_uni.email,
+                "logo": new_uni.logo or "",
+                "role": "university"
+            },
+            "redirect_url": "/university"
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "message": f"حدث خطأ أثناء إنشاء الحساب: {str(e)}"}), 500
+
 
 @university_bp.route('/api/v1/university/me', methods=['GET'])
 def api_university_me():

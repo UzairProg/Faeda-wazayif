@@ -7,7 +7,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
-import { UserPlus, Mail, Lock, User, Building2, Eye, EyeOff, Globe, ArrowLeft, ArrowRight, AlertCircle, Loader2, ChevronRight, ChevronLeft } from "lucide-react"
+import { UserPlus, Mail, Lock, User, Building2, GraduationCap, MapPin, Eye, EyeOff, Globe, ArrowLeft, ArrowRight, AlertCircle, Loader2, ChevronRight, ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/glass-card"
 import { RoleSelector } from "../components/RoleSelector"
@@ -29,6 +29,9 @@ export function Register() {
 
   const [fullName, setFullName] = useState("")
   const [companyName, setCompanyName] = useState("")
+  const [universityNameAr, setUniversityNameAr] = useState("")
+  const [universityNameEn, setUniversityNameEn] = useState("")
+  const [location, setLocation] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -58,6 +61,11 @@ export function Register() {
     e.preventDefault()
     setErrorMessage(null)
 
+    if (!selectedRole) {
+      setErrorMessage(t("auth.errors.requiredRole"))
+      return
+    }
+
     if (selectedRole === "candidate" && !fullName.trim()) {
       setErrorMessage(t("auth.errors.requiredName"))
       return
@@ -65,6 +73,11 @@ export function Register() {
 
     if (selectedRole === "company" && !companyName.trim()) {
       setErrorMessage(t("auth.errors.requiredOrgName"))
+      return
+    }
+
+    if (selectedRole === "university" && !universityNameAr.trim()) {
+      setErrorMessage(t("auth.errors.requiredUniversityName") || "يرجى إدخال اسم الجامعة أو المؤسسة التعليمية.")
       return
     }
 
@@ -86,16 +99,28 @@ export function Register() {
     setIsLoading(true)
 
     try {
-      const nameToSubmit = selectedRole === "candidate" ? fullName.trim() : companyName.trim()
-      const roleToSubmit = selectedRole === "company" ? "company" : "candidate"
+      let nameToSubmit = fullName.trim()
+      if (selectedRole === "company") nameToSubmit = companyName.trim()
+      if (selectedRole === "university") nameToSubmit = universityNameAr.trim()
+
       const res = await authService.register({
         name: nameToSubmit,
         email: email.trim(),
         password,
-        role: roleToSubmit,
+        role: selectedRole,
+        universityNameEn: universityNameEn.trim(),
+        location: location.trim(),
+        organizationName: selectedRole === "company" ? companyName.trim() : (selectedRole === "university" ? universityNameAr.trim() : undefined),
       })
       loginStore(res.user, res.token)
-      navigate(ROUTES.PUBLIC.HOME, { replace: true })
+
+      if (selectedRole === "university") {
+        navigate(ROUTES.UNIVERSITY.ROOT, { replace: true })
+      } else if (selectedRole === "company") {
+        navigate(ROUTES.COMPANY.ROOT, { replace: true })
+      } else {
+        navigate(ROUTES.CANDIDATE.PROFILE, { replace: true })
+      }
     } catch (err: any) {
       setErrorMessage(err.message || t("auth.errors.generic"))
     } finally {
@@ -221,7 +246,7 @@ export function Register() {
                     <User className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
                   </div>
                 </div>
-              ) : (
+              ) : selectedRole === "company" ? (
                 <div className="space-y-1.5">
                   <label htmlFor="reg-company" className="text-xs font-bold text-white block">
                     {t("auth.form.companyName")} <span className="text-rose-400">*</span>
@@ -237,6 +262,63 @@ export function Register() {
                       className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60"
                     />
                     <Building2 className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label htmlFor="reg-uni-ar" className="text-xs font-bold text-white block">
+                      {t("auth.form.universityNameAr")} <span className="text-rose-400">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="reg-uni-ar"
+                        type="text"
+                        required
+                        value={universityNameAr}
+                        onChange={(e) => setUniversityNameAr(e.target.value)}
+                        placeholder={t("auth.form.universityNameArPlaceholder")}
+                        className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60"
+                      />
+                      <GraduationCap className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label htmlFor="reg-uni-en" className="text-xs font-bold text-white block">
+                        {t("auth.form.universityNameEn")}
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="reg-uni-en"
+                          type="text"
+                          dir="ltr"
+                          value={universityNameEn}
+                          onChange={(e) => setUniversityNameEn(e.target.value)}
+                          placeholder={t("auth.form.universityNameEnPlaceholder")}
+                          className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60 text-start"
+                        />
+                        <Globe className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label htmlFor="reg-uni-loc" className="text-xs font-bold text-white block">
+                        {t("auth.form.location")}
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="reg-uni-loc"
+                          type="text"
+                          value={location}
+                          onChange={(e) => setLocation(e.target.value)}
+                          placeholder={t("auth.form.locationPlaceholder")}
+                          className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60"
+                        />
+                        <MapPin className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
