@@ -45,6 +45,10 @@ export const ROUTES = {
   PORTFOLIO: {
     PUBLIC: (username: string) => `/portfolio/${username}`,
   },
+  UNIVERSITIES: {
+    LIST: "/universities",
+    DETAIL: (id: string | number) => `/universities/${id}`,
+  },
   POSTS: {
     LIST: "/posts",
     DETAIL: (id: string) => `/posts/${id}`,

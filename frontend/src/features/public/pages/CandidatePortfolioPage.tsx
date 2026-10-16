@@ -31,15 +31,22 @@ import {
   Calendar,
   Lock,
   Edit3,
+  Newspaper,
+  UserPlus,
+  Heart,
+  MessageSquare,
+  Eye,
 } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
 import { portfolioService } from "../services/portfolio.service"
+import { postsService } from "../services/posts.service"
 import type { CandidatePublicPortfolio, CandidateContactPayload } from "../types/portfolio.types"
+import type { PostArticle } from "../types/posts.types"
 import { ROUTES } from "@/config/routes"
 import { useTranslation } from "@/i18n"
 import { useAuthStore } from "@/store/auth.store"
-import { getLocalizedPortfolio } from "@/lib/localization.utils"
+import { getLocalizedPortfolio, formatLocalizedNumber } from "@/lib/localization.utils"
 import toast from "react-hot-toast"
 
 
@@ -51,7 +58,11 @@ export function CandidatePortfolioPage() {
 
   const [portfolio, setPortfolio] = useState<CandidatePublicPortfolio | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<"overview" | "projects" | "skills" | "credentials">("overview")
+  const [activeTab, setActiveTab] = useState<"overview" | "projects" | "skills" | "credentials" | "posts">("overview")
+  const [candidatePosts, setCandidatePosts] = useState<PostArticle[]>([])
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false)
+  const [isFollowingCandidate, setIsFollowingCandidate] = useState(false)
+  const [followersCount, setFollowersCount] = useState(86)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [isSubmittingInquiry, setIsSubmittingInquiry] = useState(false)
 
@@ -84,6 +95,43 @@ export function CandidatePortfolioPage() {
       isMounted = false
     }
   }, [username])
+
+  useEffect(() => {
+    if (!portfolio) return
+    setIsLoadingPosts(true)
+    postsService
+      .getUserPublishedCampaigns("candidate", portfolio.id)
+      .then((res) => {
+        if (res.campaigns && res.campaigns.length > 0) {
+          setCandidatePosts(res.campaigns)
+        } else {
+          postsService
+            .getPosts({ accountType: "candidate", pageSize: 6 })
+            .then((all) => {
+              setCandidatePosts(all.posts.slice(0, 3))
+            })
+            .catch(() => setCandidatePosts([]))
+        }
+      })
+      .catch(() => setCandidatePosts([]))
+      .finally(() => setIsLoadingPosts(false))
+  }, [portfolio])
+
+  const handleToggleFollow = () => {
+    if (isFollowingCandidate) {
+      setIsFollowingCandidate(false)
+      setFollowersCount((prev) => Math.max(0, prev - 1))
+      toast(language === "ar" ? "تم إلغاء متابعة الكفاءة" : "Unfollowed candidate", { icon: "ℹ️" })
+    } else {
+      setIsFollowingCandidate(true)
+      setFollowersCount((prev) => prev + 1)
+      toast.success(
+        language === "ar"
+          ? "أنت الآن تتابع هذه الكفاءة! ستظهر منشوراتها وتحديثاتها في شبكتك"
+          : "You are now following this candidate! Their updates will appear in your network."
+      )
+    }
+  }
 
   const handleShare = () => {
     const url = window.location.href
@@ -329,13 +377,29 @@ export function CandidatePortfolioPage() {
                   </Button>
                 </Link>
               ) : (
-                <Button
-                  onClick={() => setIsContactModalOpen(true)}
-                  className="rounded-xl px-5 py-2.5 bg-primary hover:bg-primary/90 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>{language === "ar" ? "تقديم عرض وظيفي / تواصل" : language === "hi" ? "नौकरी का प्रस्ताव / संपर्क" : "Send Opportunity"}</span>
-                </Button>
+                <>
+                  <Button
+                    onClick={handleToggleFollow}
+                    variant={isFollowingCandidate ? "outline" : "default"}
+                    className={`rounded-xl px-4 py-2.5 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all ${
+                      isFollowingCandidate
+                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
+                        : "bg-white/10 hover:bg-white/20 text-white"
+                    }`}
+                  >
+                    {isFollowingCandidate ? <UserCheck className="w-4 h-4 text-emerald-400" /> : <UserPlus className="w-4 h-4" />}
+                    <span>{isFollowingCandidate ? (language === "ar" ? "تتابع الكفاءة" : "Following") : (language === "ar" ? "متابعة" : "Follow")}</span>
+                    <span className="text-[11px] font-mono opacity-70">({formatLocalizedNumber(followersCount, language)})</span>
+                  </Button>
+
+                  <Button
+                    onClick={() => setIsContactModalOpen(true)}
+                    className="rounded-xl px-5 py-2.5 bg-primary hover:bg-primary/90 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>{language === "ar" ? "تقديم عرض وظيفي / تواصل" : language === "hi" ? "नौकरी का प्रस्ताव / संपर्क" : "Send Opportunity"}</span>
+                  </Button>
+                </>
               )}
 
               {currentPortfolio.cvUrl && (
@@ -410,6 +474,7 @@ export function CandidatePortfolioPage() {
         <div className="flex items-center gap-2 border-b border-white/10 pb-1 overflow-x-auto scrollbar-none">
           {[
             { id: "overview", label: language === "ar" ? "نظرة عامة والنبذة" : language === "hi" ? "अवलोकन और सारांश" : "Overview" },
+            { id: "posts", label: `${language === "ar" ? "المنشورات والأفكار" : language === "hi" ? "पोस्ट्स आणि विचार" : "Posts & Thoughts"} (${candidatePosts.length})` },
             { id: "projects", label: `${language === "ar" ? "المشاريع والأعمال" : language === "hi" ? "प्रोजेक्ट्स और कार्य" : "Projects"} (${currentPortfolio.projects?.length || 0})` },
             { id: "skills", label: `${language === "ar" ? "المهارات واللغات" : language === "hi" ? "कौशल और भाषाएँ" : "Skills"} (${currentPortfolio.skills?.length || 0})` },
             { id: "credentials", label: `${language === "ar" ? "الشهادات والتعليم" : language === "hi" ? "प्रमाणपत्र और शिक्षा" : "Credentials"} (${currentPortfolio.certifications?.length || 0})` },
@@ -719,6 +784,139 @@ export function CandidatePortfolioPage() {
                   <p className="text-sm text-muted-foreground">{language === "ar" ? "لا توجد شهادات مسجلة." : language === "hi" ? "कोई प्रमाणपत्र नहीं जोड़ा गया है।" : "No certifications added."}</p>
                 )}
               </GlassCard>
+            </motion.div>
+          )}
+
+          {/* ── Tab: Posts & Thoughts ─────────────────────────────── */}
+          {activeTab === "posts" && (
+            <motion.div
+              key="tab-posts"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="space-y-6"
+            >
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <h3 className="text-lg font-bold font-heading text-white flex items-center gap-2">
+                    <Newspaper className="w-5 h-5 text-primary" />
+                    <span>{language === "ar" ? "منشورات ومشاركات الكفاءة المهنية" : language === "hi" ? "उम्मीदवार की पोस्ट और विचार" : "Candidate Posts & Activity"}</span>
+                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-primary/20 border border-primary/30 text-primary">
+                      {formatLocalizedNumber(candidatePosts.length, language)}
+                    </span>
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {language === "ar"
+                      ? "المقالات، تجارب العمل، والإنجازات التي يشاركها المرشح مع شبكة فائدة المهنية"
+                      : "Articles, project showcases, and thought leadership shared by the candidate"}
+                  </p>
+                </div>
+
+                <Link to={ROUTES.POSTS.LIST}>
+                  <Button variant="ghost" size="sm" className="text-xs text-primary hover:text-primary/80 gap-1">
+                    <span>{language === "ar" ? "استكشاف شبكة المنشورات" : "Explore Posts"}</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </Button>
+                </Link>
+              </div>
+
+              {isLoadingPosts ? (
+                <div className="space-y-4">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="h-40 rounded-2xl bg-white/5 animate-pulse border border-white/5" />
+                  ))}
+                </div>
+              ) : candidatePosts.length > 0 ? (
+                <div className="space-y-4">
+                  {candidatePosts.map((post) => (
+                    <GlassCard
+                      key={post.id}
+                      className="p-6 bg-card/50 backdrop-blur-md border-white/10 hover:border-primary/40 transition-all rounded-2xl shadow-xl space-y-4"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl overflow-hidden bg-primary/20 border border-primary/30 flex items-center justify-center font-bold text-white shrink-0">
+                            {post.author.avatar ? (
+                              <img src={post.author.avatar} alt={post.author.name} className="w-full h-full object-cover" />
+                            ) : (
+                              currentPortfolio.fullName.charAt(0)
+                            )}
+                          </div>
+                          <div>
+                            <span className="font-bold text-white text-sm block">{post.author.name}</span>
+                            <span className="text-[11px] text-muted-foreground">
+                              {new Date(post.publishedAt).toLocaleDateString(language === "ar" ? "ar-SA" : "en-US", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                            </span>
+                          </div>
+                        </div>
+
+                        <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
+                          {post.category}
+                        </span>
+                      </div>
+
+                      <div>
+                        <Link to={ROUTES.POSTS.DETAIL(String(post.id))}>
+                          <h4 className="text-base sm:text-lg font-bold text-white hover:text-primary transition-colors leading-snug">
+                            {post.title}
+                          </h4>
+                        </Link>
+                        <p className="text-xs sm:text-sm text-slate-300 mt-1.5 line-clamp-3 leading-relaxed">
+                          {post.summary || post.content}
+                        </p>
+                      </div>
+
+                      {post.coverImage && (
+                        <div className="rounded-xl overflow-hidden max-h-52 border border-white/10">
+                          <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" />
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between pt-3 border-t border-white/10 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-4">
+                          <span className="flex items-center gap-1.5 text-rose-400">
+                            <Heart className="w-4 h-4 fill-rose-400/20" />
+                            <span>{formatLocalizedNumber(post.likes, language)}</span>
+                          </span>
+                          <span className="flex items-center gap-1.5 text-blue-400">
+                            <MessageSquare className="w-4 h-4" />
+                            <span>{formatLocalizedNumber(post.comments?.length || 0, language)}</span>
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <Eye className="w-4 h-4" />
+                            <span>{formatLocalizedNumber(post.views, language)}</span>
+                          </span>
+                        </div>
+
+                        <Link to={ROUTES.POSTS.DETAIL(String(post.id))}>
+                          <Button size="sm" variant="outline" className="rounded-xl border-white/10 bg-white/5 hover:bg-primary hover:text-white text-xs gap-1.5">
+                            <span>{language === "ar" ? "عرض التفاصيل" : "View Post"}</span>
+                            <ChevronIcon className="w-3.5 h-3.5" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </GlassCard>
+                  ))}
+                </div>
+              ) : (
+                <GlassCard className="p-8 text-center bg-card/40 border-white/5 rounded-2xl space-y-3">
+                  <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground mx-auto">
+                    <Newspaper className="w-6 h-6 opacity-60" />
+                  </div>
+                  <h4 className="text-base font-bold text-white">
+                    {language === "ar" ? "لا توجد منشورات حتى الآن" : "No posts yet"}
+                  </h4>
+                  <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                    {language === "ar"
+                      ? "عندما ينشر المرشح أفكاراً أو مشاريع في الشبكة المهنية، ستظهر هنا مباشرة."
+                      : "When the candidate shares insights or projects, they will be showcased here."}
+                  </p>
+                </GlassCard>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

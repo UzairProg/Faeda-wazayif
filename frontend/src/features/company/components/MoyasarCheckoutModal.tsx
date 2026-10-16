@@ -97,7 +97,6 @@ export function MoyasarCheckoutModal({
 
   const basePrice = billingCycle === "yearly" ? plan.price_yearly : plan.price_monthly
   const subtotal = Math.round(basePrice * 100) / 100
-  const vatAmount = 0.00
   const totalAmount = subtotal
 
   // Format Card Number input

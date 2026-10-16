@@ -85,6 +85,7 @@ import { ContactPage } from "./features/public/pages/ContactPage"
 import { CandidatePortfolioPage } from "./features/public/pages/CandidatePortfolioPage"
 import { PostsPage } from "./features/public/pages/PostsPage"
 import { PostDetailPage } from "./features/public/pages/PostDetailPage"
+import { UniversityDetailPage } from "./features/public/pages/UniversityDetailPage"
 
 // Auth pages
 import { Login } from "./features/auth/pages/Login"
@@ -125,6 +126,7 @@ function App() {
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="portfolio/:username" element={<CandidatePortfolioPage />} />
+          <Route path="universities/:id" element={<UniversityDetailPage />} />
           <Route path="posts" element={<PostsPage />} />
           <Route path="posts/:id" element={<PostDetailPage />} />
           <Route path="market-trends" element={<MarketTrendsPage />} />

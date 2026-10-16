@@ -114,9 +114,9 @@ export function TaxInvoiceModal({ isOpen, onClose, invoice }: TaxInvoiceModalPro
   }
 
   const invoiceDate = invoice.date || "2026-10-15"
-  const isVatRegistered = Boolean(invoice.vat_registered && invoice.company_vat_number)
+  const isVatRegistered = Boolean((invoice as any).vat_registered && (invoice as any).company_vat_number)
   const vatNumberDisplay = isVatRegistered
-    ? invoice.company_vat_number
+    ? (invoice as any).company_vat_number
     : L("غير مسجل لعدم بلوغ الحد الإلزامي (Non-VAT Registered)", "Non-VAT Registered (Below Threshold)")
   const crNumber = "1010782941"
 

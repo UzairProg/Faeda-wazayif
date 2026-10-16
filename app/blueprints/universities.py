@@ -239,6 +239,33 @@ def api_university_get_profile():
     }), 200
 
 
+@university_bp.route('/api/v1/universities/<int:uni_id>', methods=['GET'])
+def api_public_university_detail(uni_id):
+    """Return public academic institution profile by ID."""
+    uni = University.query.get(uni_id)
+    if not uni:
+        uni = University.query.filter_by(status='active').first() or University.query.first()
+    if not uni:
+        return jsonify({"error": "University not found"}), 404
+    return jsonify({
+        "success": True,
+        "university": serialize_university_profile(uni)
+    }), 200
+
+
+@university_bp.route('/api/v1/universities', methods=['GET'])
+def api_public_universities_list():
+    """Return list of active universities for public exploration."""
+    unis = University.query.filter_by(status='active').all()
+    if not unis:
+        unis = University.query.all()
+    return jsonify({
+        "success": True,
+        "universities": [serialize_university_profile(u) for u in unis],
+        "total": len(unis)
+    }), 200
+
+
 @university_bp.route('/api/v1/university/profile', methods=['PUT'])
 def api_university_update_profile():
     """Update editable academic institution details."""
