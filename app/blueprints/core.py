@@ -28,6 +28,35 @@ def home():
     })
 
 
+@core_bp.route('/assets/<path:path>')
+def serve_frontend_assets(path):
+    """Serve compiled frontend assets (JS, CSS, images)."""
+    base_dir = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    assets_dir = os.path.join(base_dir, 'frontend', 'dist', 'assets')
+    from flask import send_from_directory
+    return send_from_directory(assets_dir, path)
+
+
+@core_bp.route('/candidate', defaults={'path': ''})
+@core_bp.route('/candidate/<path:path>')
+@core_bp.route('/company/billing')
+@core_bp.route('/company', defaults={'path': ''})
+@core_bp.route('/company/<path:path>')
+@core_bp.route('/university', defaults={'path': ''})
+@core_bp.route('/university/<path:path>')
+@core_bp.route('/auth', defaults={'path': ''})
+@core_bp.route('/auth/<path:path>')
+def serve_unified_spa(path=''):
+    """Unified Single-Page Application (SPA) client router fallback."""
+    base_dir = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    frontend_dist = os.path.join(base_dir, 'frontend', 'dist')
+    if os.path.exists(os.path.join(frontend_dist, 'index.html')):
+        from flask import send_from_directory
+        return send_from_directory(frontend_dist, 'index.html')
+    return redirect('/')
+
+
+
 @core_bp.route('/news')
 def news():
     """

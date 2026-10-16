@@ -87,6 +87,7 @@ def create_app():
         from app.blueprints.universities import university_bp
         from app.blueprints.campaigns_v1 import campaigns_v1_bp
         from app.blueprints.market_insights import market_insights_bp
+        from app.blueprints.billing_v1 import billing_v1_bp
         
         app.register_blueprint(core_bp)
         app.register_blueprint(customer)
@@ -101,6 +102,7 @@ def create_app():
         app.register_blueprint(university_bp)
         app.register_blueprint(campaigns_v1_bp)
         app.register_blueprint(market_insights_bp)
+        app.register_blueprint(billing_v1_bp)
         
         from services.team_offer import TeamOffer
         from services.auth_token import process_request_auth
@@ -119,7 +121,7 @@ def create_app():
                 allowed_list = [o.strip() for o in allowed_env.split(',') if o.strip()]
                 is_allowed = (
                     app.debug or 
-                    current_app.config.get('TESTING') or 
+                    app.config.get('TESTING') or 
                     not allowed_list or 
                     origin in allowed_list or 
                     'localhost' in origin or 

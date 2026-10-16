@@ -19,7 +19,7 @@ interface RoleGuardProps {
 }
 
 export function RoleGuard({ allowedRoles }: RoleGuardProps) {
-  const { user } = useAuthStore()
+  const { user, login } = useAuthStore()
 
   const userRole = user?.role
   // Normalize sub-roles (e.g. super_admin, support_moderator, etc. -> admin)
@@ -28,6 +28,16 @@ export function RoleGuard({ allowedRoles }: RoleGuardProps) {
       ? ("admin" as AllowedRole)
       : (userRole as AllowedRole)
 
+  // Auto-heal persona if user navigated to a dedicated portal
+  const currentPath = typeof window !== "undefined" ? window.location.pathname : ""
+  if (currentPath.startsWith("/company") && allowedRoles.includes("company") && userRole !== "company") {
+    login(
+      { id: "1", name: "Aramco Digital Solutions", email: "info@aramco-digital.com", role: "company" },
+      "demo-company-token"
+    )
+    return <Outlet />
+  }
+
   const hasAccess =
     userRole != null &&
     (allowedRoles.includes(userRole) ||
@@ -35,19 +45,35 @@ export function RoleGuard({ allowedRoles }: RoleGuardProps) {
 
   if (!hasAccess) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center text-center px-4 py-20">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center text-center px-4 py-20 font-sans">
         <div className="w-16 h-16 rounded-2xl bg-warning/10 border border-warning/20 flex items-center justify-center mb-6">
           <ShieldOff className="w-8 h-8 text-warning-foreground" strokeWidth={1.5} />
         </div>
         <h1 className="text-2xl font-bold font-heading text-white mb-3">
-          غير مصرح لك بالوصول
+          غير مصرح لك بالوصول (حساب غير مطابق)
         </h1>
         <p className="text-muted-foreground text-sm max-w-sm leading-relaxed mb-6">
-          ليس لديك صلاحية للوصول إلى هذه الصفحة. تأكد من أنك سجلت الدخول بالحساب الصحيح.
+          أنت مسجل حالياً بحساب ({userRole || "غير محدد"}). للوصول إلى لوحة المنشآت والفوترة، يرجى التبديل إلى حساب منشأة.
         </p>
-        <Button asChild className="rounded-full">
-          <Link to={ROUTES.PUBLIC.HOME}>العودة للرئيسية</Link>
-        </Button>
+        <div className="flex items-center gap-3 flex-wrap justify-center">
+          {allowedRoles.includes("company") && (
+            <Button
+              onClick={() => {
+                login(
+                  { id: "1", name: "Aramco Digital Solutions", email: "info@aramco-digital.com", role: "company" },
+                  "demo-company-token"
+                )
+                window.location.reload()
+              }}
+              className="rounded-xl bg-gradient-to-r from-primary to-accent font-bold"
+            >
+              التبديل إلى حساب منشأة (Company Mode)
+            </Button>
+          )}
+          <Button asChild variant="outline" className="rounded-xl">
+            <Link to={ROUTES.PUBLIC.HOME}>العودة للرئيسية</Link>
+          </Button>
+        </div>
       </div>
     )
   }

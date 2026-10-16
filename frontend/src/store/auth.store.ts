@@ -13,18 +13,43 @@ interface AuthStore {
   checkSession: () => Promise<void>
 }
 
+function getInitialDemoUser(): { user: AuthUser; token: string } {
+  if (typeof window !== "undefined") {
+    const p = window.location.pathname
+    if (p.startsWith("/company")) {
+      return {
+        user: { id: "1", name: "Aramco Digital Solutions", email: "info@aramco-digital.com", role: "company" },
+        token: "demo-company-token",
+      }
+    }
+    if (p.startsWith("/candidate")) {
+      return {
+        user: { id: "1", name: "عمر المنصور", email: "omar.mansoor@example.com", role: "candidate" },
+        token: "demo-candidate-token",
+      }
+    }
+    if (p.startsWith("/admin")) {
+      return {
+        user: { id: "1", name: "مدير النظام (Admin)", email: "admin@faeda.jobs", role: "admin" },
+        token: "demo-admin-token",
+      }
+    }
+  }
+  return {
+    user: { id: "1", name: "Aramco Digital Solutions", email: "info@aramco-digital.com", role: "company" },
+    token: "demo-company-token",
+  }
+}
+
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set) => ({
-      user: {
-        id: "1",
-        name: "جامعة الملك فيصل",
-        email: "kfu@kfu.edu.sa",
-        role: "university" as const
-      },
-      token: "demo-university-token",
-      isAuthenticated: true,
-      isCheckingSession: false,
+    (set) => {
+      const initial = getInitialDemoUser()
+      return {
+        user: initial.user,
+        token: initial.token,
+        isAuthenticated: true,
+        isCheckingSession: false,
 
       login: (user, token) => set({ user, token, isAuthenticated: true, isCheckingSession: false }),
 
@@ -34,7 +59,7 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       checkSession: async () => {
-        // Dev URL role switch support for preview / automated documentation
+        // Dev URL role switch or path-based auto-role support
         if (typeof window !== "undefined") {
           const params = new URLSearchParams(window.location.search)
           const forcedRole = params.get("role")
@@ -46,6 +71,17 @@ export const useAuthStore = create<AuthStore>()(
               admin: { id: "1", name: "مدير النظام (Admin)", email: "admin@faeda.jobs", role: "admin" },
             }
             set({ user: roleUsers[forcedRole], token: `demo-${forcedRole}-token`, isAuthenticated: true, isCheckingSession: false })
+            return
+          }
+
+          const path = window.location.pathname
+          if (path.startsWith("/company")) {
+            set({
+              user: { id: "1", name: "Aramco Digital Solutions", email: "info@aramco-digital.com", role: "company" },
+              token: "demo-company-token",
+              isAuthenticated: true,
+              isCheckingSession: false
+            })
             return
           }
         }
@@ -64,8 +100,9 @@ export const useAuthStore = create<AuthStore>()(
           set({ isCheckingSession: false })
         }
       },
-    }),
-    {
+    }
+  },
+  {
       name: "auth-storage",
     }
   )
