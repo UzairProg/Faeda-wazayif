@@ -17,12 +17,17 @@ import { WorkPreferencesSection } from "../components/WorkPreferencesSection"
 import { VisibilitySection } from "../components/VisibilitySection"
 import { UserPublishedCampaignsSection } from "@/features/public/components/UserPublishedCampaignsSection"
 import { OnboardingWizardModal } from "../components/OnboardingWizardModal"
+import { FaedaProfileOptimizerModal } from "../components/FaedaProfileOptimizerModal"
+import { GlassCard } from "@/components/ui/glass-card"
+import { Button } from "@/components/ui/button"
+import { Sparkles, ArrowRight, ArrowLeft, ShieldCheck } from "lucide-react"
 import { LoadingState } from "@/shared/components/states/LoadingState"
 import { ErrorState } from "@/shared/components/states/ErrorState"
 import { useTranslation } from "@/i18n"
 
 export function CandidateProfilePage() {
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false)
+  const [isOptimizerModalOpen, setIsOptimizerModalOpen] = useState(false)
   const [searchParams] = useSearchParams()
   const { language } = useTranslation()
   const L = (ar: string, en: string, hi?: string) =>
@@ -156,6 +161,48 @@ export function CandidateProfilePage() {
         onActionClick={handleCompletenessAction}
       />
 
+      {/* 2.5 Faeda Profile AI Audit & Optimization Banner */}
+      <GlassCard className="p-5 sm:p-6 bg-gradient-to-r from-slate-900 via-cyan-950/40 to-slate-900 border-cyan-500/30 shadow-xl rounded-2xl relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 via-teal-600 to-emerald-400 p-0.5 shadow-lg shadow-cyan-500/20 shrink-0 flex items-center justify-center">
+              <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                <ShieldCheck className="w-6 h-6 text-cyan-400" />
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-white">
+                  {L("مطور ومحلل ملف فائدة الذكي", "Faeda Profile Optimizer & Saudi Tech Benchmark", "फायदा प्रोफाइल ऑप्टिमाइज़र")}
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  All-Star Audit
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                {L(
+                  "تحسين ملفك المهني على منصة فائدة لمطابقة متطلبات السوق السعودي والخليجي 2026 وزيادة فرص التوظيف والمقابلات.",
+                  "Optimize your Faeda profile for Saudi and GCC career opportunities. Audit headline, summary, and skills against 2026 tech benchmarks.",
+                  "सऊदी और जीसीसी नौकरी बाजार के लिए अपनी फायदा प्रोफाइल को अनुकूलित करें।"
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0 self-end md:self-center">
+            <Button
+              onClick={() => setIsOptimizerModalOpen(true)}
+              className="text-xs font-bold bg-gradient-to-r from-cyan-600 via-teal-600 to-emerald-500 hover:from-cyan-500 hover:to-emerald-400 text-white shadow-lg shadow-cyan-600/30 gap-2 rounded-xl"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{L("تحسين ملف فائدة الآن", "Optimize Faeda Profile", "फायदा प्रोफाइल सुधारें")}</span>
+              {language === "ar" ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
+            </Button>
+          </div>
+        </div>
+      </GlassCard>
+
       {/* 3. About / Summary */}
       <div id="about-section">
         <AboutSection
@@ -256,6 +303,40 @@ export function CandidateProfilePage() {
         onUploadCV={uploadCV.mutateAsync}
         onUpdatePreferences={updatePreferences.mutateAsync}
         onUpdateVisibility={updateVisibility.mutateAsync}
+      />
+
+      {/* AI Faeda Profile Optimizer Modal */}
+      <FaedaProfileOptimizerModal
+        isOpen={isOptimizerModalOpen}
+        onClose={() => setIsOptimizerModalOpen(false)}
+        initialData={{
+          candidate_name: profile.fullname,
+          role: profile.preferred_field_of_work || "Full Stack Developer",
+          headline: profile.about ? profile.about.slice(0, 100) : "",
+          about: profile.about || "",
+          skills: profile.skills || [],
+          experienceYears: profile.years_of_skills ? parseInt(profile.years_of_skills, 10) || 3 : 3,
+          location: [profile.government, profile.country].filter(Boolean).join("، ") || "الرياض، المملكة العربية السعودية",
+          education: profile.educational_qualification || profile.university,
+          projects_count: profile.projects?.length || 0,
+          certifications_count: profile.certifications?.length || 0,
+          has_cv: Boolean(profile.cv),
+        }}
+        onApplyHeadline={async (newHeadline) => {
+          await updateAbout.mutateAsync({ about: newHeadline })
+          refetch()
+        }}
+        onApplyAbout={async (newAbout) => {
+          await updateAbout.mutateAsync({ about: newAbout })
+          refetch()
+        }}
+        onAddSkill={async (newSkill) => {
+          const currentSkills = profile.skills || []
+          if (!currentSkills.includes(newSkill)) {
+            await updateSkills.mutateAsync({ skills: [...currentSkills, newSkill] })
+            refetch()
+          }
+        }}
       />
     </div>
   )

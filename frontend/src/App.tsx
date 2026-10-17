@@ -64,6 +64,8 @@ import { AdminCategoriesPage } from "./features/admin/pages/AdminCategoriesPage"
 import { AdminSettingsPage } from "./features/admin/pages/AdminSettingsPage"
 import { MarketTrendsPage } from "./features/market-insights/pages/MarketTrendsPage"
 import { AdminMarketDataPage } from "./features/market-insights/pages/AdminMarketDataPage"
+import { AdminHiredCandidatesPage } from "./features/admin/pages/AdminHiredCandidatesPage"
+import { AdminCompaniesPage } from "./features/admin/pages/AdminCompaniesPage"
 
 // Guards
 import { AuthGuard } from "./shared/components/guards/AuthGuard"
@@ -83,6 +85,7 @@ import { ContactPage } from "./features/public/pages/ContactPage"
 import { CandidatePortfolioPage } from "./features/public/pages/CandidatePortfolioPage"
 import { PostsPage } from "./features/public/pages/PostsPage"
 import { PostDetailPage } from "./features/public/pages/PostDetailPage"
+import { UniversityDetailPage } from "./features/public/pages/UniversityDetailPage"
 
 // Auth pages
 import { Login } from "./features/auth/pages/Login"
@@ -123,6 +126,7 @@ function App() {
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="portfolio/:username" element={<CandidatePortfolioPage />} />
+          <Route path="universities/:id" element={<UniversityDetailPage />} />
           <Route path="posts" element={<PostsPage />} />
           <Route path="posts/:id" element={<PostDetailPage />} />
           <Route path="market-trends" element={<MarketTrendsPage />} />
@@ -217,12 +221,15 @@ function App() {
               <Route index element={<AdminDashboardPage />} />
               <Route path="dashboard" element={<AdminDashboardPage />} />
               <Route path="users" element={<AdminUsersPage />} />
+              <Route path="companies" element={<AdminCompaniesPage />} />
               <Route path="jobs" element={<AdminJobsPage />} />
               <Route path="audit-logs" element={<AdminAuditLogsPage />} />
               <Route path="reports" element={<AdminReportsPage />} />
               <Route path="categories" element={<AdminCategoriesPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
               <Route path="market-data" element={<AdminMarketDataPage />} />
+              <Route path="hired-candidates" element={<AdminHiredCandidatesPage />} />
+              <Route path="placements" element={<AdminHiredCandidatesPage />} />
               <Route path="*" element={<Navigate to="/admin" replace />} />
             </Route>
           </Route>

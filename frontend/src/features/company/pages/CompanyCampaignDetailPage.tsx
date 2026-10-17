@@ -1,7 +1,7 @@
 /**
  * features/company/pages/CompanyCampaignDetailPage.tsx
  *
- * LinkedIn Recruiter-style Talent Pipeline & AI Sourcing Command Board.
+ * Faeda-style Talent Pipeline & AI Sourcing Command Board.
  * Features:
  *   - AI Talent Pool with real-time match scoring (65% - 98%)
  *   - 1-Click InMail Outreach modal sending messages to Faeda Chat
@@ -24,12 +24,14 @@ import {
   Loader2,
   X,
   Layers,
+  FileText,
 } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
 import { ModalPortal } from "@/shared/components/ui/ModalPortal"
 import { useTranslation } from "@/i18n"
 import { campaignsService } from "@/features/campaigns/services/campaigns.service"
+import { CampaignContentsManager } from "@/features/campaigns/components/CampaignContentsManager"
 import type {
   CampaignCandidate,
   CampaignStage,
@@ -50,7 +52,7 @@ export function CompanyCampaignDetailPage() {
   const { language, isRTL } = useTranslation()
   const queryClient = useQueryClient()
 
-  const [activeTab, setActiveTab] = useState<"pool" | "pipeline" | "settings">("pool")
+  const [activeTab, setActiveTab] = useState<"pool" | "pipeline" | "contents" | "settings">("pool")
   const [selectedCandidateIds, setSelectedCandidateIds] = useState<number[]>([])
   const [outreachModalCandidate, setOutreachModalCandidate] = useState<CampaignCandidate | null>(null)
   const [customMessage, setCustomMessage] = useState("")
@@ -295,6 +297,18 @@ export function CompanyCampaignDetailPage() {
           <Layers className="w-4 h-4" />
           <span>{language === "ar" ? "لوحة خط التوظيف (Kanban Board)" : "Pipeline Kanban Board"}</span>
         </button>
+
+        <button
+          onClick={() => setActiveTab("contents")}
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+            activeTab === "contents"
+              ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
+              : "text-muted-foreground hover:text-white hover:bg-white/5"
+          }`}
+        >
+          <FileText className="w-4 h-4" />
+          <span>{language === "ar" ? "محتويات الحملة والوسائط" : "Campaign Contents & Media"}</span>
+        </button>
       </div>
 
       {/* ── TAB 1: TALENT POOL LIST VIEW ─────────────────────── */}
@@ -503,6 +517,11 @@ export function CompanyCampaignDetailPage() {
             )
           })}
         </div>
+      )}
+
+      {/* ── TAB 3: CAMPAIGN CONTENTS & MEDIA (campaign_contents) ── */}
+      {activeTab === "contents" && (
+        <CampaignContentsManager campaignId={campaignId} />
       )}
 
       {/* ── 1-CLICK INMAIL OUTREACH MODAL ────────────────────── */}

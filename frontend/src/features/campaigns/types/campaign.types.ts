@@ -1,7 +1,7 @@
 /**
  * features/campaigns/types/campaign.types.ts
  *
- * Types for the LinkedIn-style Hiring & Recruitment Campaign System.
+ * Types for the Faeda-style Hiring & Recruitment Campaign System.
  */
 
 export type CampaignStage =
@@ -72,6 +72,27 @@ export interface Campaign {
   end_date?: string
   created_at?: string
   stats?: CampaignStats
+  contents?: CampaignContent[]
+}
+
+export interface CampaignContent {
+  id: number
+  campaign_id: number
+  campaignId?: number
+  content_type: string
+  contentType?: string
+  title?: string | null
+  description?: string | null
+  text_content?: string | null
+  textContent?: string | null
+  file_url?: string | null
+  fileUrl?: string | null
+  media_type?: string | null
+  mediaType?: string | null
+  display_order: number
+  displayOrder?: number
+  created_at?: string
+  createdAt?: string
 }
 
 export interface CampaignJob {

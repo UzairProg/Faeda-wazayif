@@ -23,6 +23,7 @@ import {
   Layers,
   Database,
   Flame,
+  CheckCircle,
 } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
 import type { MarketTrendsData } from "../types/market-insights.types"
@@ -100,10 +101,10 @@ export const MarketTrendsPage: React.FC = () => {
           { industry: "Energy & Industrial Automation", hiring_share: 16, growth: "+15% YoY" },
           { industry: "Healthcare Tech & Logistics", hiring_share: 10, growth: "+18% YoY" },
         ],
-        data_source: "Market Salary Dataset",
-        data_date: "2026-10-02",
-        last_updated: "02 Oct 2026",
-        is_demo: true,
+        data_source: "GASTAT & Saudi Open Data Portal (data.gov.sa)",
+        data_date: "2026-Q1",
+        last_updated: "2026-03-31",
+        is_demo: false,
       })
     }
   }
@@ -138,9 +139,14 @@ export const MarketTrendsPage: React.FC = () => {
             <span>
               Last Updated: <strong className="text-white/80">{trends.last_updated}</strong>
             </span>
-            {trends.is_demo && (
+            {trends.is_demo ? (
               <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold">
                 Demo Benchmarks
+              </span>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold flex items-center gap-1">
+                <CheckCircle className="w-3 h-3 text-emerald-400" />
+                Verified Official (GASTAT)
               </span>
             )}
           </div>

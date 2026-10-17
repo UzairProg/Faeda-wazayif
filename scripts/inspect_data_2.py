@@ -1,13 +1,19 @@
-import pandas as pd
+import sqlite3
 
-print("--- Linkedin Jobs ---")
-jobs_file = r"C:\Users\Admin\.cache\kagglehub\datasets\majedalhulayel\linkedin-jobs-data-in-saudi-arabia-2020\versions\1\Linkedin Job Posts in Saudi Arabia 2020.xlsx"
-df_jobs = pd.read_excel(jobs_file, nrows=2)
-print("Columns:", df_jobs.columns.tolist())
-print(df_jobs.head(1).to_dict('records'))
+conn = sqlite3.connect('instance/database.db')
+c = conn.cursor()
+c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")
+tables = [r[0] for r in c.fetchall()]
 
-print("\n--- Resumes ---")
-resume_file = r"C:\Users\Admin\.cache\kagglehub\datasets\snehaanbhawal\resume-dataset\versions\1\Resume\Resume.csv"
-df_resumes = pd.read_csv(resume_file, nrows=2)
-print("Columns:", df_resumes.columns.tolist())
-print(df_resumes.head(1).to_dict('records'))
+print(f"Total tables: {len(tables)}")
+non_empty = 0
+for t in tables:
+    try:
+        cnt = c.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()[0]
+        if cnt > 0:
+            print(f"{t:35} : {cnt} rows")
+            non_empty += 1
+    except Exception as e:
+        print(f"{t:35} : Error: {e}")
+
+print(f"\nNon-empty tables: {non_empty} / {len(tables)}")

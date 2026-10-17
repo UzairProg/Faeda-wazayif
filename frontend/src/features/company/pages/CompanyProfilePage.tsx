@@ -26,6 +26,7 @@ export function CompanyProfilePage() {
     arabicName: "",
     englishName: "",
     faedaName: "",
+    commercialRegister: "",
     descriptionAr: "",
     descriptionEn: "",
     country: "المملكة العربية السعودية",
@@ -55,6 +56,7 @@ export function CompanyProfilePage() {
         arabicName: profile.arabicName || "",
         englishName: profile.englishName || "",
         faedaName: profile.faedaName || "",
+        commercialRegister: profile.commercialRegister || "",
         descriptionAr: profile.descriptionAr || "",
         descriptionEn: profile.descriptionEn || "",
         country: profile.country || "المملكة العربية السعودية",
@@ -229,6 +231,19 @@ export function CompanyProfilePage() {
                 type="text"
                 value={formData.englishName}
                 onChange={(e) => setFormData({ ...formData, englishName: e.target.value })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900/80 text-white text-xs focus:border-emerald-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                {isRTL ? "رقم السجل التجاري (CR)" : "Commercial Registration (CR)"}
+              </label>
+              <input
+                type="text"
+                value={formData.commercialRegister || ""}
+                onChange={(e) => setFormData({ ...formData, commercialRegister: e.target.value })}
+                placeholder="1010XXXXXX"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900/80 text-white text-xs focus:border-emerald-500 focus:outline-none"
               />
             </div>

@@ -45,6 +45,10 @@ export const ROUTES = {
   PORTFOLIO: {
     PUBLIC: (username: string) => `/portfolio/${username}`,
   },
+  UNIVERSITIES: {
+    LIST: "/universities",
+    DETAIL: (id: string | number) => `/universities/${id}`,
+  },
   POSTS: {
     LIST: "/posts",
     DETAIL: (id: string) => `/posts/${id}`,
@@ -114,5 +118,6 @@ export const ROUTES = {
     CATEGORIES: "/admin/categories",
     SETTINGS: "/admin/settings",
     MARKET_DATA: "/admin/market-data",
+    HIRED_CANDIDATES: "/admin/hired-candidates",
   },
 } as const

@@ -33,21 +33,17 @@ def send_email():
 
  
     ##
-    email_sender = os.environ.get('SENDER_EMAIL', 'coursesforyo@gmail.com')
-    email_password = os.environ.get('SENDER_PASSWORD')
-    email_receiver = sender_email
-    subject =  request.form.get('subject')
-    body =  request.form.get('message')
-    em = EmailMessage()
-    em['From'] = email_sender
-    em['To'] = email_receiver
-    em['Subject'] = subject
-    em.set_content(" From " + str(sender_email) + "\n" + " Message is  :" + "\n" + str(body) + "\t \n" + "sender email is : \n" + str(sender_email))
-
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL('smtp.gmail.com',465,context=context) as smtp :
-        smtp.login(email_sender , email_password)
-        smtp.sendmail(email_sender , email_receiver , em.as_string())
+    # Asynchronous background email delivery
+    try:
+        from services.email_service import email_service
+        email_service.send_contact_message_email(
+            sender_email=sender_email,
+            subject=subject or "Inquiry",
+            message_text=message_text or ""
+        )
+    except Exception as e:
+        # Never break user form submission if email enqueue encounters an issue
+        pass
 
 
     message=Message(sender_email=sender_email, subject=subject, message_text=message_text, customer_id=user_id)

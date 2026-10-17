@@ -14,6 +14,7 @@ from services.job import Jobs
 from services.teams import Teams
 from services.team_offer import TeamOffer
 from ai_engine.market_value_calculator import get_market_value_for_customer
+from services.rate_limiter import auth_rate_limit, register_rate_limit
 
 company_panel_bp = Blueprint('company_panel', __name__)
 
@@ -40,6 +41,7 @@ def inject_company_context():
     return dict(current_company=get_current_company())
 
 @company_panel_bp.route('/company/login', methods=['GET', 'POST'])
+@auth_rate_limit
 def company_login():
     if 'company_id' in session and session.get('session_company'):
         return redirect(url_for('company_panel.company_dashboard'))
@@ -149,6 +151,7 @@ def make_offer(team_id):
     return redirect(url_for('company_panel.browse_teams'))
 
 @company_panel_bp.route('/company/register', methods=['GET', 'POST'])
+@register_rate_limit
 def company_register():
     if 'company_id' in session and session.get('session_company'):
         return redirect(url_for('company_panel.company_dashboard'))

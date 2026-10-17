@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "@/i18n"
 import { useCompanyTalent } from "../hooks/useCompanyTalent"
+import { companyService } from "../services/company.service"
 import { TalentCard } from "../components/TalentCard"
 import { EmployerCandidateModal } from "../components/EmployerCandidateModal"
 import type { CompanyTalentDetail } from "../types/company.types"
@@ -22,6 +23,18 @@ export function CompanyTalentPage() {
     field: fieldFilter || undefined,
     experience: experienceFilter || undefined,
   })
+
+  const handleViewTalent = async (cand: any) => {
+    setSelectedTalent(cand as any)
+    try {
+      const fullDetail = await companyService.getTalentDetail(cand.userId || cand.id)
+      if (fullDetail) {
+        setSelectedTalent(fullDetail)
+      }
+    } catch {
+      // Keep candidate snapshot
+    }
+  }
 
   return (
     <div className="space-y-8" dir={isRTL ? "rtl" : "ltr"}>
@@ -129,7 +142,7 @@ export function CompanyTalentPage() {
             <TalentCard
               key={t.id}
               talent={t}
-              onView={(cand) => setSelectedTalent(cand as any)}
+              onView={handleViewTalent}
               isRtl={isRTL}
             />
           ))}

@@ -35,6 +35,13 @@ from datetime import datetime
 from ai_engine.market_value_calculator import get_market_value_for_customer
 from services.customer import CustomerProfileHistory
 from services.auth_token import generate_auth_token
+from services.rate_limiter import (
+    limiter,
+    auth_rate_limit,
+    register_rate_limit,
+    password_reset_rate_limit,
+    public_api_rate_limit,
+)
 
 QS_UNIVERSITIES = []
 
@@ -96,6 +103,7 @@ def get_login():
     return render_template('/new_design/login.html')
 
 @customer.route('/login', methods=['POST'])
+@auth_rate_limit
 def login():
     """
     Handle multi-tenant authentication for Candidates, Companies, Universities, and Admins.
@@ -318,6 +326,7 @@ def generate_unique_user_id():
             return new_user_id
 
 @customer.route('/register', methods=['POST'])
+@register_rate_limit
 def reg_page():
     """
     Process new customer registration.
@@ -424,6 +433,7 @@ def reg_page():
 
 
 @customer.route('/forgot_password', methods=['GET', 'POST'])
+@password_reset_rate_limit
 def post_reset_pass():
     """
     Handle password reset requests.
@@ -444,31 +454,17 @@ def post_reset_pass():
             # Render the email HTML template
             email_html_content = render_template('/new_design/email.html', reset_link=reset_link)
 
-            # Email details
-            # NOTE: Credentials have been moved to the .env file for security.
-            email_sender = os.environ.get('SENDER_EMAIL', 'coursesforyo@gmail.com')
-            email_password = os.environ.get('SENDER_PASSWORD')
-            email_receiver = email
-            subject = "Reset Your Password"
-            em = EmailMessage()
-            em['From'] = email_sender
-            em['To'] = email_receiver
-            em['Subject'] = subject
-            em.set_content(email_html_content, subtype='html')
-
-            # Send the email
+            # Send the email asynchronously via background queue / transactional service
             try:
-                context = ssl.create_default_context()
-                context.check_hostname = False
-                context.verify_mode = ssl.CERT_NONE
-                with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-                    if email_password:
-                        smtp.login(email_sender, email_password)
-                        smtp.sendmail(email_sender, email_receiver, em.as_string())
-                    else:
-                        print(f"Mock email sent to {email_receiver}. Set MAIL_PASSWORD to send real emails.")
+                from services.email_service import email_service
+                email_service.send_email_async(
+                    to_email=email,
+                    subject="Reset Your Password — Faeda Jobs",
+                    html_content=email_html_content,
+                    text_content=f"Reset your Faeda Jobs password by opening this link: {reset_link}"
+                )
             except Exception as e:
-                print(f"Failed to send email: {e}")
+                current_app.logger.error("Failed to enqueue password reset email: %s", e)
 
             flash('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. الرجاء تفقد صندوق الوارد.', 'success')
             return redirect(url_for('customer.get_login'))
@@ -479,6 +475,7 @@ def post_reset_pass():
 
 
 @customer.route('/reset_password', methods=['GET', 'POST'])
+@password_reset_rate_limit
 def reset_password():
     token = request.args.get('token')
     user = Customers.query.filter_by(token=token).first()# noqa: F405
@@ -633,6 +630,8 @@ def apply_for_job(job_id):
 # Route to serve user images
 @customer.route('/download_image/<filename>')
 def download_image(filename):
+    if filename and (filename.startswith('http://') or filename.startswith('https://')):
+        return redirect(filename)
     return send_from_directory('static/uploads/customers/images', filename)
 
 
@@ -911,6 +910,7 @@ def get_add_member(team_id):
 
 
 @customer.route('/api/search_user', methods=['GET'])
+@public_api_rate_limit
 def search_user():
     q = request.args.get('q', '').strip()
     if not q:
@@ -1139,7 +1139,7 @@ def edit_profile_job_data():
         user.years_of_skills = request.form.get('new_years_of_skills')
         user.preferred_field_of_work = request.form.get('new_preferred_field_of_work')
         user.work_type = request.form.get('new_work_type')
-        # Handle Professional Certifications (LinkedIn-style)
+        # Handle Professional Certifications (Faeda-style)
         cert_names = request.form.getlist('cert_name[]')
         cert_orgs = request.form.getlist('cert_org[]')
         cert_issue_months = request.form.getlist('cert_issue_month[]')
@@ -1763,7 +1763,28 @@ def browse_teams():
 # REST API v1 — CANDIDATE WORKSPACE & AUTH IDENTITY
 # ==============================================================================
 
+@customer.route('/api/v1/auth/csrf-token', methods=['GET'])
+@limiter.limit("60 per minute")
+def api_csrf_token():
+    """Return CSRF token for SPA clients / AJAX requests."""
+    from flask_wtf.csrf import generate_csrf
+    token = generate_csrf()
+    resp = jsonify({
+        "success": True,
+        "csrf_token": token
+    })
+    resp.set_cookie(
+        'XSRF-TOKEN',
+        token,
+        samesite=current_app.config.get('SESSION_COOKIE_SAMESITE', 'Lax'),
+        secure=current_app.config.get('SESSION_COOKIE_SECURE', False),
+        httponly=False
+    )
+    return resp
+
+
 @customer.route('/api/v1/auth/me', methods=['GET'])
+@limiter.limit("60 per minute")
 def api_auth_me():
     """Return authenticated user identity & active role."""
     if 'session_customer' in session and 'user_id' in session:
@@ -1916,7 +1937,15 @@ def api_update_candidate_identity():
             filename = secure_filename(f"user_{cust.id}_{int(datetime.utcnow().timestamp())}_{file.filename}")
             file_path = os.path.join(upload_dir, filename)
             file.save(file_path)
-            cust.img = filename
+            from services.storage_service import upload_to_storage
+            upload_res = upload_to_storage(
+                file_path,
+                folder="faeda/avatars",
+                resource_type="image",
+                custom_filename=filename,
+                local_dir=upload_dir
+            )
+            cust.img = upload_res.get('url') if upload_res.get('storage_type') == 'cloudinary' else filename
 
     try:
         log_profile_update(cust, 'تحديث البيانات الشخصية')
@@ -2316,7 +2345,15 @@ def api_upload_candidate_cv():
     filename = secure_filename(f"cv_{cust.id}_{int(datetime.utcnow().timestamp())}_{file.filename}")
     file_path = os.path.join(upload_cv_dir, filename)
     file.save(file_path)
-    cust.cv = filename
+    from services.storage_service import upload_to_storage
+    upload_res = upload_to_storage(
+        file_path,
+        folder="faeda/cvs",
+        resource_type="raw",
+        custom_filename=filename,
+        local_dir=upload_cv_dir
+    )
+    cust.cv = upload_res.get('url') if upload_res.get('storage_type') == 'cloudinary' else filename
 
     # Run ATS parsing safely
     extracted_data = {}
@@ -2362,6 +2399,9 @@ def api_download_candidate_cv():
     cust = Customers.query.get(session['user_id'])
     if not cust or not cust.cv:
         return jsonify({"message": "لا توجد سيرة ذاتية مرفوعة"}), 404
+
+    if cust.cv.startswith('http://') or cust.cv.startswith('https://'):
+        return redirect(cust.cv)
 
     upload_cv_dir = current_app.config.get('UPLOAD_CUSTOMERS_CV')
     return send_from_directory(upload_cv_dir, cust.cv, as_attachment=True)
@@ -2740,13 +2780,15 @@ def api_get_candidate_dashboard():
     if not cust:
         auth_header = request.headers.get('Authorization', '')
         if auth_header.startswith('Bearer '):
-            cust = Customers.query.first()
+            from services.auth_token import verify_jwt_token
+            token = auth_header[7:].strip()
+            payload = verify_jwt_token(token)
+            if payload and payload.get('role') == 'candidate':
+                cand_id = payload.get('user_id') or payload.get('id')
+                cust = Customers.query.get(cand_id)
 
     if not cust:
-        cust = Customers.query.first()
-
-    if not cust:
-        return jsonify({"message": "لم يتم العثور على بيانات المرشح"}), 404
+        return jsonify({"message": "يجب تسجيل الدخول كمرشح للوصول إلى لوحة التحكم"}), 401
         
     dashboard_data = build_candidate_dashboard_dict(cust)
     return jsonify(dashboard_data)
@@ -4308,11 +4350,7 @@ def api_candidate_settings():
     if 'session_customer' in session and 'user_id' in session:
         cust = Customers.query.get(session['user_id'])
     if not cust:
-        auth_header = request.headers.get('Authorization', '')
-        if auth_header.startswith('Bearer '):
-            cust = Customers.query.first()
-    if not cust:
-        cust = Customers.query.first()
+        return jsonify({"error": "غير مصرح به", "message": "يرجى تسجيل الدخول للوصول للإعدادات"}), 401
         
     if request.method == 'GET':
         return jsonify({
@@ -4350,24 +4388,26 @@ def api_candidate_settings():
 
 @customer.route('/api/v1/candidate/change-password', methods=['POST'])
 def api_candidate_change_password():
-    data = request.get_json() or {}
-    new_pwd = data.get('newPassword', '')
-    
     cust = None
     if 'session_customer' in session and 'user_id' in session:
         cust = Customers.query.get(session['user_id'])
     if not cust:
-        auth_header = request.headers.get('Authorization', '')
-        if auth_header.startswith('Bearer '):
-            cust = Customers.query.first()
-    if not cust:
-        cust = Customers.query.first()
-        
+        return jsonify({"error": "غير مصرح به", "message": "يرجى تسجيل الدخول لتغيير كلمة المرور"}), 401
+
+    data = request.get_json() or {}
+    current_pwd = data.get('current_password') or data.get('currentPassword') or data.get('current') or ''
+    new_pwd = data.get('new_password') or data.get('newPassword') or data.get('next') or ''
+
+    if not current_pwd:
+        return jsonify({"success": False, "message": "يرجى إدخال كلمة المرور الحالية"}), 400
+
+    if cust.password != current_pwd:
+        return jsonify({"success": False, "message": "كلمة المرور الحالية غير صحيحة"}), 400
+
     if not new_pwd or len(new_pwd) < 6:
         return jsonify({"success": False, "message": "يجب ألا تقل كلمة المرور الجديدة عن 6 أحرف"}), 400
-        
-    if cust:
-        cust.password = new_pwd
-        db.session.commit()
-        
+
+    cust.password = new_pwd
+    db.session.commit()
     return jsonify({"success": True, "message": "تم تغيير كلمة المرور بنجاح"})
+

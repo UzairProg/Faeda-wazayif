@@ -22,6 +22,7 @@
     <link rel="icon" href="{{ url_for('static', filename='new_design/images/Group.png') }}" type="image/x-icon">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -225,8 +226,8 @@
                     </a>
                     <h5 class="almarai-bold mb-3">تجدونا على</h5>
                     <div>
-                        <a href="https://www.linkedin.com/company/%D8%B4%D8%B1%D9%83%D8%A9-%D9%81%D8%A7%D8%A6%D8%AF%D8%A9-%D9%84%D9%84%D8%AE%D8%AF%D9%85%D8%A7%D8%AA-%D8%A7%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D9%8A%D8%A9/posts/?feedView=all"
-                            class="social-icon"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://www.faeda.com.sa"
+                            class="social-icon" title="فائدة - الموقع الرسمي"><i class="bi bi-globe2"></i></a>
                         <a href="https://www.instagram.com/faeda_2022" class="social-icon"><i
                                 class="bi bi-instagram"></i></a>
                         <a href="https://x.com/Faeda_2022?s=20" class="social-icon"><img
@@ -312,6 +313,7 @@
         });
     </script>
 
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
     {% block extra_js %}{% endblock %}
 
     {% if system_settings.get('ai_assistant_active', 'true') == 'true' %}

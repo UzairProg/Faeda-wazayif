@@ -29,6 +29,8 @@ import {
   ChevronLeft,
   Sparkles,
   ExternalLink,
+  UserCheck,
+  Building2,
 } from "lucide-react"
 import { LanguageSelector } from "@/components/shared/LanguageSelector"
 import faedaWhiteLogo from "@/assets/logos/faeda_white_logo.png"
@@ -48,6 +50,7 @@ export function AdminLayout() {
 
   const pendingJobsCount = dashboardData?.stats?.pending_jobs || 0
   const pendingReportsCount = dashboardData?.stats?.pending_reports || 0
+  const pendingCompaniesCount = dashboardData?.stats?.pending_companies || 0
 
   const handleLogout = async () => {
     await logout()
@@ -79,6 +82,20 @@ export function AdminLayout() {
           label: L("إدارة المستخدمين", "User Management", "उपयोगकर्ता प्रबंधन"),
           end: false,
           badge: null,
+        },
+        {
+          to: ROUTES.ADMIN.COMPANIES,
+          icon: Building2,
+          label: L("إدارة وتوثيق الشركات", "Company Verification", "कंपनी सत्यापन"),
+          end: false,
+          badge: pendingCompaniesCount > 0 ? { count: pendingCompaniesCount, color: "bg-sky-500/20 text-sky-300 border-sky-500/30" } : null,
+        },
+        {
+          to: ROUTES.ADMIN.HIRED_CANDIDATES,
+          icon: UserCheck,
+          label: L("تحليلات المتوظفين", "Hired Candidates", "चयनित उम्मीदवार"),
+          end: false,
+          badge: { count: L("جديد", "NEW", "नया") as any, color: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" },
         },
         {
           to: ROUTES.ADMIN.JOBS,

@@ -1,19 +1,21 @@
 # ==============================================================================
 # app/blueprints/campaigns_v1.py
 # ==============================================================================
-# Comprehensive REST API Blueprint for LinkedIn-Style Marketing & Recruitment Campaigns
+# Comprehensive REST API Blueprint for Faeda-Style Marketing & Recruitment Campaigns
 # Includes complete Social Interactions: Like, Comment, Share, Save, Notifications & Analytics
 # ==============================================================================
 
+import os
 from datetime import datetime
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, current_app
 from sqlalchemy import desc, or_, and_, func
 
 from app import db
 from services.campaign import (
     Campaign, CampaignCandidate, CampaignJob,
     CampaignLike, CampaignComment, CampaignShare,
-    CampaignSave, CampaignView, Notification
+    CampaignSave, CampaignView, Notification,
+    CampaignContent
 )
 from services.company import Company
 from services.customer import Customers
@@ -85,45 +87,51 @@ def get_current_user_identity():
 
     # 1. Candidate session
     if session.get('session_customer') or session.get('user_id'):
-        cand_id = session.get('user_id') or 1
-        cand = Customers.query.get(cand_id)
-        return {
-            "user_type": "candidate",
-            "user_id": cand.id if cand else cand_id,
-            "name": cand.fullname if (cand and cand.fullname) else "عمر المنصور (باحث عن عمل)",
-            "avatar": f"/download_image/{cand.img}" if (cand and cand.img) else "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
-            "title": cand.preferred_field_of_work if (cand and cand.preferred_field_of_work) else "مهندس برمجيات وذكاء اصطناعي",
-            "username": cand.user_id if (cand and cand.user_id) else f"candidate-{cand_id}",
-            "is_admin": False
-        }
+        cand_id = session.get('user_id')
+        if cand_id:
+            cand = Customers.query.get(cand_id)
+            if cand:
+                return {
+                    "user_type": "candidate",
+                    "user_id": cand.id,
+                    "name": cand.fullname or "عمر المنصور (باحث عن عمل)",
+                    "avatar": f"/download_image/{cand.img}" if cand.img else "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
+                    "title": cand.preferred_field_of_work or "مهندس برمجيات وذكاء اصطناعي",
+                    "username": cand.user_id or f"candidate-{cand.id}",
+                    "is_admin": False
+                }
 
     # 2. Company session
     if session.get('session_company') or session.get('company_id'):
-        comp_id = session.get('company_id') or 1
-        comp = Company.query.get(comp_id)
-        return {
-            "user_type": "company",
-            "user_id": comp.id if comp else comp_id,
-            "name": comp.company_arabic_name or comp.company_english_name if comp else "أرامكو الرقمية (شركة)",
-            "avatar": f"/download_image/{comp.company_logo}" if (comp and comp.company_logo) else "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&h=150&fit=crop",
-            "title": comp.company_field if (comp and comp.company_field) else "إدارة استقطاب المواهب والتوظيف الوطني",
-            "username": f"company-{comp_id}",
-            "is_admin": False
-        }
+        comp_id = session.get('company_id')
+        if comp_id:
+            comp = Company.query.get(comp_id)
+            if comp:
+                return {
+                    "user_type": "company",
+                    "user_id": comp.id,
+                    "name": comp.company_arabic_name or comp.company_english_name or "أرامكو الرقمية (شركة)",
+                    "avatar": f"/download_image/{comp.company_logo}" if comp.company_logo else "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&h=150&fit=crop",
+                    "title": comp.company_field or "إدارة استقطاب المواهب والتوظيف الوطني",
+                    "username": f"company-{comp.id}",
+                    "is_admin": False
+                }
 
     # 3. University session
     if session.get('session_university') or session.get('university_id'):
-        univ_id = session.get('university_id') or 1
-        univ = University.query.get(univ_id)
-        return {
-            "user_type": "university",
-            "user_id": univ.id if univ else univ_id,
-            "name": univ.name_ar or univ.name_en if univ else "جامعة الملك فيصل (جامعة)",
-            "avatar": f"/download_image/{univ.logo}" if (univ and univ.logo) else "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=150&h=150&fit=crop",
-            "title": univ.institution_type if (univ and univ.institution_type) else "وكالة الشؤون الأكاديمية والبحث العلمي",
-            "username": f"univ-{univ_id}",
-            "is_admin": False
-        }
+        univ_id = session.get('university_id')
+        if univ_id:
+            univ = University.query.get(univ_id)
+            if univ:
+                return {
+                    "user_type": "university",
+                    "user_id": univ.id,
+                    "name": univ.name_ar or univ.name_en or "جامعة الملك فيصل (جامعة)",
+                    "avatar": f"/download_image/{univ.logo}" if univ.logo else "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=150&h=150&fit=crop",
+                    "title": univ.institution_type or "وكالة الشؤون الأكاديمية والبحث العلمي",
+                    "username": f"univ-{univ.id}",
+                    "is_admin": False
+                }
 
     # 4. Admin session
     if session.get('admin_id'):
@@ -513,6 +521,22 @@ def create_campaign_post():
 
     db.session.add(c)
     db.session.commit()
+
+    # Check if document / PDF content is attached
+    doc_url = data.get('documentUrl') or data.get('pdfUrl') or (data.get('coverImage') if data.get('mediaType') == 'document' else None)
+    if doc_url or data.get('mediaType') == 'document':
+        c.media_type = 'document'
+        content_item = CampaignContent(
+            campaign_id=c.id,
+            content_type='document',
+            title=data.get('documentTitle') or c.title,
+            description=data.get('documentDescription') or c.tagline,
+            file_url=doc_url or "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            media_type='application/pdf',
+            display_order=0
+        )
+        db.session.add(content_item)
+        db.session.commit()
 
     return jsonify({
         "success": True,
@@ -1024,14 +1048,23 @@ def get_current_company():
     comp_id = session.get('company_id')
     if comp_id:
         return Company.query.get(comp_id)
-    return Company.query.first()
+    auth_header = request.headers.get('Authorization', '')
+    if auth_header.startswith('Bearer '):
+        token = auth_header[7:].strip()
+        from services.auth_token import decode_auth_token
+        payload = decode_auth_token(token)
+        if payload and payload.get('role') == 'company':
+            cid = payload.get('user_id') or payload.get('id')
+            if cid:
+                return Company.query.get(cid)
+    return None
 
 
 @campaigns_v1_bp.route('/api/v1/company/campaigns', methods=['GET'])
 def get_company_campaigns():
     comp = get_current_company()
     if not comp:
-        return jsonify({"campaigns": []}), 200
+        return jsonify({"error": "Unauthorized", "message": "Company authentication required"}), 401
 
     campaigns = Campaign.query.filter(
         or_(Campaign.company_id == comp.id, Campaign.account_type == 'company')
@@ -1045,6 +1078,10 @@ def get_company_campaigns():
 
 @campaigns_v1_bp.route('/api/v1/company/campaigns/<int:campaign_id>', methods=['GET'])
 def get_company_campaign_detail(campaign_id):
+    comp = get_current_company()
+    if not comp:
+        return jsonify({"error": "Unauthorized", "message": "Company authentication required"}), 401
+
     c = Campaign.query.get(campaign_id)
     if not c:
         return jsonify({"error": "Campaign not found"}), 404
@@ -1153,6 +1190,9 @@ def run_talent_scan(campaign_id):
 
 @campaigns_v1_bp.route('/api/v1/company/campaigns/<int:campaign_id>/outreach', methods=['POST'])
 def send_outreach(campaign_id):
+    comp = get_current_company()
+    if not comp:
+        return jsonify({"error": "Unauthorized", "message": "Company authentication required"}), 401
     data = request.get_json() or {}
     cids = data.get('candidate_ids', [])
     count = 0
@@ -1172,6 +1212,9 @@ def send_outreach(campaign_id):
 
 @campaigns_v1_bp.route('/api/v1/company/campaigns/<int:campaign_id>/candidates/<int:candidate_id>/stage', methods=['PATCH'])
 def update_candidate_stage(campaign_id, candidate_id):
+    comp = get_current_company()
+    if not comp:
+        return jsonify({"error": "Unauthorized", "message": "Company authentication required"}), 401
     data = request.get_json() or {}
     stage = data.get('stage')
     notes = data.get('notes')
@@ -1195,7 +1238,18 @@ def update_candidate_stage(campaign_id, candidate_id):
 
 @campaigns_v1_bp.route('/api/v1/candidate/campaign-invites', methods=['GET'])
 def get_candidate_invites():
-    cust_id = session.get('customer_id') or session.get('user_id') or 1
+    cust_id = session.get('customer_id') or session.get('user_id')
+    if not cust_id:
+        auth_header = request.headers.get('Authorization', '')
+        if auth_header.startswith('Bearer '):
+            token = auth_header[7:].strip()
+            from services.auth_token import decode_auth_token
+            payload = decode_auth_token(token)
+            if payload and payload.get('role') == 'candidate':
+                cust_id = payload.get('user_id') or payload.get('id')
+    if not cust_id:
+        return jsonify({"error": "Unauthorized", "message": "Candidate authentication required"}), 401
+
     memberships = CampaignCandidate.query.filter_by(customer_id=cust_id).all()
     invites = []
     for m in memberships:
@@ -1220,7 +1274,18 @@ def get_candidate_invites():
 
 @campaigns_v1_bp.route('/api/v1/candidate/campaign-invites/<int:campaign_id>/respond', methods=['POST'])
 def respond_invite(campaign_id):
-    cust_id = session.get('customer_id') or session.get('user_id') or 1
+    cust_id = session.get('customer_id') or session.get('user_id')
+    if not cust_id:
+        auth_header = request.headers.get('Authorization', '')
+        if auth_header.startswith('Bearer '):
+            token = auth_header[7:].strip()
+            from services.auth_token import decode_auth_token
+            payload = decode_auth_token(token)
+            if payload and payload.get('role') == 'candidate':
+                cust_id = payload.get('user_id') or payload.get('id')
+    if not cust_id:
+        return jsonify({"error": "Unauthorized", "message": "Candidate authentication required"}), 401
+
     data = request.get_json() or {}
     action = data.get('action')  # 'accept' or 'decline'
     m = CampaignCandidate.query.filter_by(campaign_id=campaign_id, customer_id=cust_id).first()
@@ -1232,3 +1297,165 @@ def respond_invite(campaign_id):
         "message": "تم قبول الدعوة بنجاح!" if action == "accept" else "تم الاعتذار عن الدعوة.",
         "stage": m.stage if m else "replied"
     }), 200
+
+
+# ── 12. Campaign Contents Management (CRUD) ──────────────────────────────────
+
+@campaigns_v1_bp.route('/api/v1/campaigns/<int:campaign_id>/contents', methods=['GET'])
+def get_campaign_contents(campaign_id):
+    """Fetch all rich content items attached to a specific campaign."""
+    camp = Campaign.query.get(campaign_id)
+    if not camp:
+        return jsonify({"success": False, "error": "Campaign not found"}), 404
+
+    items = camp.contents.order_by(CampaignContent.display_order.asc(), CampaignContent.created_at.asc()).all()
+    return jsonify({
+        "success": True,
+        "campaign_id": campaign_id,
+        "contents": [item.to_dict() for item in items]
+    }), 200
+
+
+@campaigns_v1_bp.route('/api/v1/campaigns/<int:campaign_id>/contents', methods=['POST'])
+def add_campaign_content(campaign_id):
+    """Add a new rich content block (text, image, video, document, banner) to a campaign."""
+    camp = Campaign.query.get(campaign_id)
+    if not camp:
+        return jsonify({"success": False, "error": "Campaign not found"}), 404
+
+    data = request.get_json() or {}
+    
+    # Determine display order
+    explicit_order = data.get('display_order')
+    if explicit_order is None:
+        explicit_order = data.get('displayOrder')
+    if explicit_order is None:
+        last_item = camp.contents.order_by(CampaignContent.display_order.desc()).first()
+        explicit_order = (last_item.display_order + 1) if last_item else 0
+
+    content_item = CampaignContent(
+        campaign_id=campaign_id,
+        content_type=data.get('content_type') or data.get('contentType') or 'text',
+        title=data.get('title'),
+        description=data.get('description'),
+        text_content=data.get('text_content') or data.get('textContent'),
+        file_url=data.get('file_url') or data.get('fileUrl'),
+        media_type=data.get('media_type') or data.get('mediaType'),
+        display_order=int(explicit_order)
+    )
+
+    db.session.add(content_item)
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "message": "Campaign content created successfully",
+        "content": content_item.to_dict()
+    }), 201
+
+
+@campaigns_v1_bp.route('/api/v1/campaigns/<int:campaign_id>/contents/<int:content_id>', methods=['PUT', 'PATCH'])
+def update_campaign_content(campaign_id, content_id):
+    """Update an existing campaign content block."""
+    content_item = CampaignContent.query.filter_by(id=content_id, campaign_id=campaign_id).first()
+    if not content_item:
+        return jsonify({"success": False, "error": "Content item not found"}), 404
+
+    data = request.get_json() or {}
+
+    if 'content_type' in data or 'contentType' in data:
+        content_item.content_type = data.get('content_type') or data.get('contentType')
+    if 'title' in data:
+        content_item.title = data.get('title')
+    if 'description' in data:
+        content_item.description = data.get('description')
+    if 'text_content' in data or 'textContent' in data:
+        content_item.text_content = data.get('text_content') or data.get('textContent')
+    if 'file_url' in data or 'fileUrl' in data:
+        content_item.file_url = data.get('file_url') or data.get('fileUrl')
+    if 'media_type' in data or 'mediaType' in data:
+        content_item.media_type = data.get('media_type') or data.get('mediaType')
+    if 'display_order' in data or 'displayOrder' in data:
+        order_val = data.get('display_order') if 'display_order' in data else data.get('displayOrder')
+        content_item.display_order = int(order_val)
+
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "message": "Campaign content updated successfully",
+        "content": content_item.to_dict()
+    }), 200
+
+
+@campaigns_v1_bp.route('/api/v1/campaigns/<int:campaign_id>/contents/<int:content_id>', methods=['DELETE'])
+def delete_campaign_content(campaign_id, content_id):
+    """Delete a campaign content block."""
+    content_item = CampaignContent.query.filter_by(id=content_id, campaign_id=campaign_id).first()
+    if not content_item:
+        return jsonify({"success": False, "error": "Content item not found"}), 404
+
+    db.session.delete(content_item)
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "message": "Campaign content deleted successfully"
+    }), 200
+
+
+@campaigns_v1_bp.route('/api/v1/campaigns/<int:campaign_id>/contents/reorder', methods=['POST'])
+def reorder_campaign_contents(campaign_id):
+    """Batch reorder campaign content blocks."""
+    camp = Campaign.query.get(campaign_id)
+    if not camp:
+        return jsonify({"success": False, "error": "Campaign not found"}), 404
+
+    data = request.get_json() or {}
+    items = data.get('items', [])  # list of {id, display_order}
+
+    for it in items:
+        cid = it.get('id')
+        order = it.get('display_order') if 'display_order' in it else it.get('displayOrder')
+        if cid is not None and order is not None:
+            CampaignContent.query.filter_by(id=cid, campaign_id=campaign_id).update({"display_order": int(order)})
+
+    db.session.commit()
+
+    updated = camp.contents.order_by(CampaignContent.display_order.asc(), CampaignContent.created_at.asc()).all()
+    return jsonify({
+        "success": True,
+        "message": "Contents reordered successfully",
+        "contents": [item.to_dict() for item in updated]
+    }), 200
+
+
+@campaigns_v1_bp.route('/api/v1/campaigns/upload-document', methods=['POST'])
+def upload_campaign_document():
+    """Upload a PDF brochure or document to attach to a post or campaign."""
+    if 'file' not in request.files:
+        return jsonify({"success": False, "error": "No file uploaded"}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"success": False, "error": "Empty filename"}), 400
+
+    filename = file.filename
+    import time
+    from werkzeug.utils import secure_filename
+    clean_name = secure_filename(filename) or "document.pdf"
+    unique_name = f"{int(time.time())}_{clean_name}"
+
+    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'campaigns', 'documents')
+    os.makedirs(upload_folder, exist_ok=True)
+    file_path = os.path.join(upload_folder, unique_name)
+    file.save(file_path)
+
+    relative_url = f"/static/uploads/campaigns/documents/{unique_name}"
+    return jsonify({
+        "success": True,
+        "file_url": relative_url,
+        "url": relative_url,
+        "filename": unique_name,
+        "original_name": filename,
+        "media_type": "application/pdf"
+    }), 201

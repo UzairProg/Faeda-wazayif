@@ -189,6 +189,7 @@ def update_status(job_id):
 
 
 
+@company.route('/company/download_cv/<string:cv_filename>')
 @company.route('/download_cv/<string:cv_filename>')
 def download_cv(cv_filename):
     cv_dir = current_app.config['UPLOAD_CUSTOMERS_CV']
@@ -769,19 +770,30 @@ def normalize_api_status_to_db(status_str):
 
 
 def get_authenticated_company():
-    """Retrieve the currently authenticated company model instance or None."""
-    if 'session_company' in session and 'company_id' in session:
-        comp_id = session.get('company_id')
-        if comp_id:
-            c = Company.query.get(comp_id)
-            if c:
-                return c
-    # Check Bearer token or allow preview fallback for demo sessions
-    auth_header = request.headers.get('Authorization', '')
-    if auth_header.startswith('Bearer '):
-        c = Company.query.first()
+    """
+    Retrieve the currently authenticated company model instance or None.
+    Strictly requires active session or cryptographically valid Bearer token.
+    """
+    # 1. From session
+    comp_id = session.get('company_id')
+    if comp_id:
+        c = Company.query.get(comp_id)
         if c:
             return c
+
+    # 2. From Bearer auth token if present
+    auth_header = request.headers.get('Authorization', '')
+    if auth_header.startswith('Bearer '):
+        token = auth_header[7:].strip()
+        from services.auth_token import decode_auth_token
+        payload = decode_auth_token(token)
+        if payload and payload.get('role') == 'company':
+            cid = payload.get('user_id') or payload.get('id')
+            if cid:
+                c = Company.query.get(cid)
+                if c:
+                    return c
+
     return None
 
 
@@ -870,6 +882,7 @@ def serialize_company_authenticated_profile(comp):
         "arabicName": comp.company_arabic_name or "",
         "englishName": comp.company_english_name or "",
         "faedaName": comp.company_name_on_faeda or "",
+        "commercialRegister": comp.commercial_register or "",
         "email": comp.company_email or "",
         "mobile": comp.company_mobile or "",
         "descriptionAr": comp.about_company_arabic or "",
@@ -1100,6 +1113,8 @@ def api_update_company_profile():
         comp.company_english_name = data['englishName'].strip()
     if 'faedaName' in data:
         comp.company_name_on_faeda = data['faedaName'].strip()
+    if 'commercialRegister' in data:
+        comp.commercial_register = data['commercialRegister'].strip()
     if 'descriptionAr' in data:
         comp.about_company_arabic = data['descriptionAr'].strip()
     if 'descriptionEn' in data:
@@ -1193,13 +1208,22 @@ def api_upload_company_logo():
     file_path = os.path.join(logo_dir, filename)
     file.save(file_path)
 
-    comp.company_logo = filename
+    from services.storage_service import upload_to_storage
+    upload_res = upload_to_storage(
+        file_path,
+        folder="faeda/companies/logos",
+        resource_type="image",
+        custom_filename=filename,
+        local_dir=logo_dir
+    )
+    final_logo = upload_res.get('url') if upload_res.get('storage_type') == 'cloudinary' else filename
+    comp.company_logo = final_logo
     db.session.commit()
 
     return jsonify({
         "success": True,
         "message": "تم رفع وتحديث شعار المنشأة بنجاح",
-        "logoUrl": f"/static/uploads/company/logo/{filename}"
+        "logoUrl": upload_res.get('url') or f"/static/uploads/company/logo/{filename}"
     })
 
 

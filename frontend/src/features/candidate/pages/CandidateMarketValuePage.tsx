@@ -36,12 +36,14 @@ import {
   ChevronRight,
   ChevronLeft,
   Compass,
+  ShieldCheck,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/glass-card"
 import { ROUTES } from "@/config/routes"
 import { useTranslation } from "@/i18n"
 import { useCandidateDashboard } from "../hooks/useCandidateDashboard"
+import { FaedaProfileOptimizerModal } from "../components/FaedaProfileOptimizerModal"
 import toast from "react-hot-toast"
 
 // Certifications available in the Simulator
@@ -110,6 +112,7 @@ export function CandidateMarketValuePage() {
 
   const { dashboard, isLoading, refetch } = useCandidateDashboard()
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [isOptimizerModalOpen, setIsOptimizerModalOpen] = useState(false)
 
   // Interactive Simulator State
   const [simExpYears, setSimExpYears] = useState<number>(4)
@@ -366,6 +369,16 @@ export function CandidateMarketValuePage() {
           <Button
             variant="outline"
             size="sm"
+            onClick={() => setIsOptimizerModalOpen(true)}
+            className="rounded-xl border-cyan-500/30 bg-cyan-950/20 hover:bg-cyan-950/40 text-cyan-300 hover:text-white gap-2 font-bold text-xs shadow-md shadow-cyan-950/40"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+            <span>{language === "ar" ? "تحسين ملف فائدة" : language === "hi" ? "फायदा प्रोफाइल ऑप्टिमाइज़र" : "Faeda Profile Optimizer"}</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
             onClick={handleShare}
             className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white gap-2 font-medium text-xs"
           >
@@ -567,6 +580,50 @@ export function CandidateMarketValuePage() {
         </div>
 
       </div>
+
+      {/* ── 2.5 Faeda Profile Optimizer & Saudi Market Benchmark Card ── */}
+      <GlassCard className="p-6 bg-gradient-to-r from-slate-900 via-cyan-950/40 to-slate-900 border-cyan-500/30 rounded-3xl shadow-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-600 via-teal-600 to-emerald-400 p-0.5 shadow-lg shadow-cyan-500/25 shrink-0 flex items-center justify-center">
+              <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                <ShieldCheck className="w-7 h-7 text-cyan-400" />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-bold text-white">
+                  {language === "ar"
+                    ? "مطور ملف فائدة وتحليل القيمة السوقية السعودية"
+                    : language === "hi"
+                    ? "फायदा प्रोफाइल ऑप्टिमाइज़र एवं मार्केट वैल्यू"
+                    : "Faeda Profile Optimizer & Saudi Tech Benchmark"}
+                </h3>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  {language === "ar" ? "معيار سوق العمل السعودي" : "Saudi Market Benchmark"}
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                {language === "ar"
+                  ? "تدقيق شامل لملفك الشخصي على منصة فائدة وظائف: فحص العنوان والنبذة والمهارات والظهور لمستقطبي الشركات السعودية مع محاكاة فورية للمعيار السعري."
+                  : language === "hi"
+                  ? "सऊदी जॉब मार्केट में फायदा प्रोफाइल की मजबूती, कौशल विश्लेषण और रिक्रूटर विजिबिलिटी का वास्तविक ऑडिट।"
+                  : "Comprehensive audit of your native Faeda profile: headline, bio, skill gap, and Saudi recruiter visibility with real-time benchmark estimation."}
+              </p>
+            </div>
+          </div>
+
+          <Button
+            onClick={() => setIsOptimizerModalOpen(true)}
+            className="text-xs font-bold bg-gradient-to-r from-cyan-600 via-teal-600 to-emerald-500 hover:from-cyan-500 hover:to-emerald-400 text-white shadow-lg shadow-cyan-600/30 gap-2 rounded-xl py-5 px-5 shrink-0 self-end md:self-center"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>{language === "ar" ? "فتح مطور ملف فائدة الآن" : language === "hi" ? "फायदा प्रोफाइल ऑप्टिमाइज़र खोलें" : "Open Faeda Optimizer"}</span>
+            <ArrowIcon className="w-4 h-4" />
+          </Button>
+        </div>
+      </GlassCard>
 
       {/* ── 3. Interactive Saudi Market Salary Benchmark Chart (Percentiles) ── */}
       <GlassCard className="p-6 sm:p-8 bg-card/60 border-white/10 rounded-3xl space-y-6">
@@ -892,10 +949,10 @@ export function CandidateMarketValuePage() {
             </h3>
             <p className="text-xs text-slate-400">
               {language === "ar"
-                ? "غيّر المتغيرات أدناه لترى كيف تؤثر كل شهادة إضافية أو سنة خبرة أو درجة أكاديمية على راتبك المتوقع في الوقت الفعلي."
+                ? "غيّر المتغيرات أدناه لترى كيف تؤثر كل شهادة إضافية أو سنة خبرة أو درجة أكاديمية على معيار الراتب الاسترشادي بناءً على أحدث بيانات السوق المتاحة."
                 : language === "hi"
-                ? "नीचे दिए गए स्लाइडर्स और विकल्पों को बदलकर देखें कि नया अनुभव या प्रमाणपत्र आपके वेतन को तुरंत कैसे बढ़ाता है।"
-                : "Adjust the levers below to see real-time salary projections if you gain certifications, increase experience, or pursue advanced degrees."}
+                ? "नीचे दिए गए विकल्पों को बदलकर देखें कि नया अनुभव या प्रमाणपत्र सऊदी जॉब मार्केट डेटासेट के आधार पर बेंचमार्क वेतन को कैसे प्रभावित करता है।"
+                : "Adjust the levers below to see projected Saudi Market Salary Benchmarks based on the latest available market dataset."}
             </p>
           </div>
 
@@ -1298,6 +1355,24 @@ export function CandidateMarketValuePage() {
 
         </div>
       </GlassCard>
+
+      {/* AI Faeda Profile Analyzer & Optimizer Modal */}
+      <FaedaProfileOptimizerModal
+        isOpen={isOptimizerModalOpen}
+        onClose={() => setIsOptimizerModalOpen(false)}
+        initialData={{
+          candidate_name: (candidate as any)?.fullname || candidate?.name || "",
+          role: specializationName || (candidate as any)?.preferred_field_of_work || "Full Stack Developer",
+          headline: candidate?.about ? candidate.about.slice(0, 100) : (candidate?.headline || ""),
+          about: candidate?.about || "",
+          skills: (candidate as any)?.skills || ["React", "TypeScript", "Node.js", "Python", "Docker"],
+          experienceYears: typeof (candidate as any)?.years_of_skills === "number" ? (candidate as any).years_of_skills : simExpYears,
+          location: (candidate as any)?.city ? `${(candidate as any).city}, Saudi Arabia` : (candidate?.location || candidate?.country || "Riyadh, Saudi Arabia"),
+          education: (candidate as any)?.educational_qualification || "",
+          projects_count: ((candidate as any)?.projects || []).length,
+          certifications_count: ((candidate as any)?.certifications_list || []).length,
+        }}
+      />
     </div>
   )
 }

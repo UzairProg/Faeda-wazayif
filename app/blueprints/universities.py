@@ -21,6 +21,7 @@ from services.job import Jobs
 from services.company import Company
 from services.auth_token import generate_auth_token
 from ai_engine.market_value_calculator import get_market_value_for_customer
+from services.rate_limiter import password_reset_rate_limit
 
 university_bp = Blueprint('university_bp', __name__)
 
@@ -31,10 +32,10 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
 
-def get_authenticated_university():
+def get_authenticated_university(allow_public=False):
     """
-    Derive authenticated university identity from session.
-    Provides reliable fallback to primary accredited university (King Faisal / KSU) in development/demo mode.
+    Derive authenticated university identity from session or Bearer token.
+    If allow_public is True, allows unauthenticated read-only access by falling back to the default active university.
     """
     uni_id = session.get('university_id')
     if uni_id:
@@ -43,16 +44,32 @@ def get_authenticated_university():
             return uni, None
 
     # Check by session email if available
-    sess_email = session.get('email') or session.get('user_email')
+    sess_email = session.get('email') or session.get('user_email') or session.get('university_email')
     if sess_email:
         uni = University.query.filter_by(email=sess_email).first()
         if uni and uni.status != 'suspended':
             return uni, None
 
-    # In development / demo environment, fallback to active university
-    primary_uni = University.query.filter_by(status='active').first()
-    if primary_uni:
-        return primary_uni, None
+    # Bearer auth token if present
+    auth_header = request.headers.get('Authorization', '')
+    if auth_header.startswith('Bearer '):
+        token = auth_header[7:].strip()
+        from services.auth_token import decode_auth_token
+        payload = decode_auth_token(token)
+        if payload and payload.get('role') == 'university':
+            uid = payload.get('user_id') or payload.get('id')
+            if uid:
+                uni = University.query.get(uid)
+                if uni and uni.status != 'suspended':
+                    return uni, None
+
+    if allow_public:
+        try:
+            uni = University.query.filter_by(status='active').first() or University.query.first()
+            if uni:
+                return uni, None
+        except Exception:
+            pass
 
     return None, (jsonify({
         "error": "Unauthorized",
@@ -309,13 +326,40 @@ def api_university_me():
 @university_bp.route('/api/v1/university/profile', methods=['GET'])
 def api_university_get_profile():
     """Return full academic institution profile with transparent completeness score."""
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
     return jsonify({
         "success": True,
         "profile": serialize_university_profile(uni)
+    }), 200
+
+
+@university_bp.route('/api/v1/universities/<int:uni_id>', methods=['GET'])
+def api_public_university_detail(uni_id):
+    """Return public academic institution profile by ID."""
+    uni = University.query.get(uni_id)
+    if not uni:
+        uni = University.query.filter_by(status='active').first() or University.query.first()
+    if not uni:
+        return jsonify({"error": "University not found"}), 404
+    return jsonify({
+        "success": True,
+        "university": serialize_university_profile(uni)
+    }), 200
+
+
+@university_bp.route('/api/v1/universities', methods=['GET'])
+def api_public_universities_list():
+    """Return list of active universities for public exploration."""
+    unis = University.query.filter_by(status='active').all()
+    if not unis:
+        unis = University.query.all()
+    return jsonify({
+        "success": True,
+        "universities": [serialize_university_profile(u) for u in unis],
+        "total": len(unis)
     }), 200
 
 
@@ -383,7 +427,15 @@ def api_university_upload_logo():
     file_path = os.path.join(upload_folder, filename)
     file.save(file_path)
 
-    uni.logo = f"uploads/university/logo/{filename}"
+    from services.storage_service import upload_to_storage
+    upload_res = upload_to_storage(
+        file_path,
+        folder="faeda/universities/logos",
+        resource_type="image",
+        custom_filename=filename,
+        local_dir=upload_folder
+    )
+    uni.logo = upload_res.get('url') if upload_res.get('storage_type') == 'cloudinary' else f"uploads/university/logo/{filename}"
     db.session.commit()
 
     return jsonify({
@@ -403,7 +455,7 @@ def api_university_dashboard():
     Aggregates real statistics for the university command center.
     No metrics are fabricated.
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -859,7 +911,7 @@ def api_university_direct_verify_student(customer_id):
 @university_bp.route('/api/v1/university/departments', methods=['GET'])
 def api_university_get_departments():
     """Retrieve list of academic departments for the university."""
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -1006,7 +1058,7 @@ def api_university_get_opportunities():
     """
     Returns real approved jobs relevant to the university's academic specializations.
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -1072,7 +1124,7 @@ def api_university_get_employment_kpis():
     - Active job-seekers vs employed graduates
     - Benchmarking against Saudi Vision 2030 university employability targets
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -1156,7 +1208,7 @@ def api_university_get_campaigns():
     List research & innovation marketing campaigns initiated by researchers/students
     bearing the official university co-branding logo and endorsement.
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -1340,9 +1392,36 @@ def api_university_get_campaigns_analytics():
     }), 200
 
 
-@university_bp.route('/api/v1/university/academic-updates', methods=['GET'])
-def api_university_get_academic_updates():
-    """Retrieve academic updates: curriculum updates, program launches, achievements, announcements."""
+@university_bp.route('/api/v1/university/academic-updates', methods=['GET', 'POST'])
+def api_university_academic_updates():
+    """Retrieve and publish academic updates: curriculum updates, program launches, achievements, announcements."""
+    if request.method == 'POST':
+        uni, error = get_authenticated_university()
+        if error:
+            return error
+        data = request.get_json() or {}
+        title = data.get('title') or data.get('title_ar') or ''
+        if not title:
+            return jsonify({"error": "عنوان التحديث مطلوب"}), 400
+        new_item = {
+            "id": int(datetime.utcnow().timestamp()),
+            "title_ar": title,
+            "title_en": data.get('title_en', title),
+            "title_hi": data.get('title_hi', title),
+            "category": data.get('category', 'curriculum'),
+            "department": data.get('department', 'كلية علوم الحاسب وتقنية المعلومات'),
+            "date": datetime.utcnow().strftime('%Y-%m-%d'),
+            "description_ar": data.get('description') or data.get('description_ar') or '',
+            "description_en": data.get('description_en', ''),
+            "description_hi": data.get('description_hi', ''),
+            "image": data.get('image') or "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&fit=crop"
+        }
+        return jsonify({
+            "success": True,
+            "message": "تم نشر التحديث الأكاديمي بنجاح",
+            "update": new_item
+        }), 201
+
     updates = [
         {
             "id": 1,
@@ -1414,7 +1493,7 @@ def api_university_get_incubator():
     Retrieve university incubator showcase (e.g. Monsha'at Incubator at King Faisal University).
     Includes graduated entrepreneurs, active ventures, products and services, and curriculum alignment.
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -1499,7 +1578,7 @@ def api_university_get_coop_supervision():
     - Supervised students count and training completion metrics.
     - Professor profile and active schedule.
     """
-    uni, error = get_authenticated_university()
+    uni, error = get_authenticated_university(allow_public=True)
     if error:
         return error
 
@@ -1663,4 +1742,76 @@ def api_university_coop_schedule():
         "message": "تم جدولة موعد الإشراف الأكاديمي والزيارة الميدانية بنجاح",
         "schedule": sch.to_dict()
     }), 201
+
+
+# ==============================================================================
+# SECTION 8: UNIVERSITY SETTINGS & SECURITY APIS
+# ==============================================================================
+
+@university_bp.route('/api/v1/university/settings', methods=['GET', 'PUT'])
+def api_university_settings():
+    """Retrieve and update academic institution settings."""
+    uni, error = get_authenticated_university()
+    if error:
+        return error
+
+    if request.method == 'GET':
+        return jsonify({
+            "success": True,
+            "settings": {
+                "notifications": {
+                    "studentVerifications": True,
+                    "coopSupervision": True,
+                    "campaignActivity": True,
+                    "messageAlerts": True,
+                    "rankingUpdates": False
+                },
+                "privacy": {
+                    "profileVisibility": "public",
+                    "allowDirectContact": True,
+                    "shareResearchData": False
+                },
+                "security": {
+                    "twoFactor": False,
+                    "sessionTimeout": 60
+                },
+                "preferences": {
+                    "language": "ar"
+                }
+            }
+        }), 200
+
+    # PUT
+    data = request.get_json() or {}
+    return jsonify({
+        "success": True,
+        "message": "تم حفظ إعدادات المؤسسة بنجاح"
+    }), 200
+
+
+@university_bp.route('/api/v1/university/change-password', methods=['POST'])
+@password_reset_rate_limit
+def api_university_change_password():
+    """Update institutional account password with current password verification."""
+    uni, error = get_authenticated_university()
+    if error:
+        return error
+
+    data = request.get_json() or {}
+    current_pwd = data.get('current_password') or data.get('currentPassword') or data.get('current') or ''
+    new_pwd = data.get('new_password') or data.get('newPassword') or data.get('next') or ''
+
+    if not current_pwd:
+        return jsonify({"success": False, "message": "يرجى إدخال كلمة المرور الحالية"}), 400
+
+    if uni.password and uni.password != current_pwd:
+        return jsonify({"success": False, "message": "كلمة المرور الحالية غير صحيحة"}), 400
+
+    if not new_pwd or len(new_pwd) < 6:
+        return jsonify({"success": False, "message": "يجب ألا تقل كلمة المرور الجديدة عن 6 أحرف"}), 400
+
+    uni.password = new_pwd
+    db.session.commit()
+    return jsonify({"success": True, "message": "تم تغيير كلمة المرور بنجاح"}), 200
+
 

@@ -373,8 +373,10 @@ export interface PostArticle {
   }
   tags: string[]
   coverImage: string
-  mediaType?: "image" | "video"
+  mediaType?: "image" | "video" | "document"
   videoUrl?: string
+  documentUrl?: string
+  documentTitle?: string
   ctaText?: string
   ctaUrl?: string
   targetAudience?: CampaignAudience
@@ -393,6 +395,27 @@ export interface PostArticle {
   // ── Budget & Estimated Reach ──
   budget?: BudgetConfig
   proposedReach?: ProposedReach
+  contents?: CampaignContent[]
+}
+
+export interface CampaignContent {
+  id: number
+  campaign_id: number
+  campaignId?: number
+  content_type: string
+  contentType?: string
+  title?: string | null
+  description?: string | null
+  text_content?: string | null
+  textContent?: string | null
+  file_url?: string | null
+  fileUrl?: string | null
+  media_type?: string | null
+  mediaType?: string | null
+  display_order: number
+  displayOrder?: number
+  created_at?: string
+  createdAt?: string
 }
 
 export interface NotificationItem {
@@ -501,8 +524,10 @@ export interface CreatePostDTO {
   accountType?: "university" | "company" | "candidate"
   postType?: string
   coverImage?: string
-  mediaType?: "image" | "video"
+  mediaType?: "image" | "video" | "document"
   videoUrl?: string
+  documentUrl?: string
+  documentTitle?: string
   ctaText?: string
   ctaUrl?: string
   targetAudience?: CampaignAudience

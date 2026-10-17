@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { X, Loader2, CheckCircle2 } from "lucide-react"
 import type { CompanyApplicationItem } from "../types/company.types"
 import { ModalPortal } from "@/shared/components/ui/ModalPortal"
@@ -20,10 +20,17 @@ export const ApplicationStatusModal: React.FC<ApplicationStatusModalProps> = ({
   isLoading = false,
   isRtl = true,
 }) => {
-  if (!isOpen || !application) return null
+  const [selectedStatus, setSelectedStatus] = useState<string>(application?.status || "applied")
+  const [note, setNote] = useState(application?.note || "")
 
-  const [selectedStatus, setSelectedStatus] = useState<string>(application.status)
-  const [note, setNote] = useState(application.note || "")
+  useEffect(() => {
+    if (application) {
+      setSelectedStatus(application.status)
+      setNote(application.note || "")
+    }
+  }, [application, isOpen])
+
+  if (!isOpen || !application) return null
 
   const stages = [
     {

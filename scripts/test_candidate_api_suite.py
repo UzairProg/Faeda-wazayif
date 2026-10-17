@@ -84,6 +84,10 @@ def run_tests():
         assert login_data.get("success") is True
         assert login_data.get("role") == "candidate"
 
+        token = login_data.get("token")
+        if token:
+            session.headers.update({"Authorization": f"Bearer {token}"})
+
         # 2. Test /api/v1/auth/me
         print("\n[2] Testing GET /api/v1/auth/me...")
         me_res = session.get(f"{BASE_URL}/api/v1/auth/me")
@@ -244,11 +248,49 @@ def run_tests():
         assert vis_res.status_code == 200
         assert vis_res.json().get("visibility") == "public"
 
+        # 11b. Test GET & PUT /api/v1/candidate/settings
+        print("\n[11b] Testing GET & PUT /api/v1/candidate/settings...")
+        get_settings_res = session.get(f"{BASE_URL}/api/v1/candidate/settings")
+        print(f"Settings GET Status: {get_settings_res.status_code}")
+        assert get_settings_res.status_code == 200
+        settings_data = get_settings_res.json()
+        assert "notifications" in settings_data
+        assert "privacy" in settings_data
+
+        put_settings_res = session.put(
+            f"{BASE_URL}/api/v1/candidate/settings",
+            json={"privacy": {"visibility": "employers_only"}}
+        )
+        print(f"Settings PUT Status: {put_settings_res.status_code}")
+        assert put_settings_res.status_code == 200
+        assert put_settings_res.json().get("success") is True
+
+        # 11c. Test POST /api/v1/candidate/change-password
+        print("\n[11c] Testing POST /api/v1/candidate/change-password...")
+        # Bad current password
+        bad_pwd_res = session.post(
+            f"{BASE_URL}/api/v1/candidate/change-password",
+            json={"current_password": "WrongPassword!", "new_password": "NewValidPassword123!"}
+        )
+        print(f"Bad Password Status: {bad_pwd_res.status_code}")
+        assert bad_pwd_res.status_code == 400
+        assert bad_pwd_res.json().get("success") is False
+
+        # Correct current password
+        good_pwd_res = session.post(
+            f"{BASE_URL}/api/v1/candidate/change-password",
+            json={"current_password": TEST_PASSWORD, "new_password": "NewValidPassword123!"}
+        )
+        print(f"Good Password Status: {good_pwd_res.status_code}")
+        assert good_pwd_res.status_code == 200
+        assert good_pwd_res.json().get("success") is True
+
         # 12. Test Logout
         print("\n[12] Testing Logout...")
         logout_res = session.post(f"{BASE_URL}/logout", headers={"Accept": "application/json"})
         print(f"Logout Status: {logout_res.status_code}")
         assert logout_res.status_code == 200
+        session.headers.pop("Authorization", None)
 
         # Verify session is cleared
         check_after_logout = session.get(f"{BASE_URL}/api/v1/auth/me")

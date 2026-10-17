@@ -1,12 +1,12 @@
 /**
  * features/public/components/CampaignShareModal.tsx
  *
- * LinkedIn / Instagram style Share & Repost Modal.
+ * Faeda-style Share & Repost Modal.
  * Features:
  * - Repost to feed with optional quotation / thoughts
  * - Retains original campaign author and title
  * - Copy campaign URL to clipboard
- * - Instant social channels share (LinkedIn, Twitter / X, WhatsApp)
+ * - Instant social channels share (Faeda, Twitter / X, WhatsApp)
  * - Invokes backend tracking API (POST /api/v1/posts/:id/share)
  */
 import { useState } from "react"
@@ -88,13 +88,11 @@ export function CampaignShareModal({
     }
   }
 
-  const handleSocialShare = (platform: "linkedin" | "twitter" | "whatsapp") => {
+  const handleSocialShare = (platform: "faeda" | "twitter" | "whatsapp") => {
     const text = encodeURIComponent(`${post.title}\n\n${campaignUrl}`)
     let url = ""
-    if (platform === "linkedin") {
-      url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-        campaignUrl
-      )}`
+    if (platform === "faeda") {
+      url = campaignUrl
     } else if (platform === "twitter") {
       url = `https://twitter.com/intent/tweet?text=${text}`
     } else if (platform === "whatsapp") {
@@ -220,11 +218,11 @@ export function CampaignShareModal({
               <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
-                  onClick={() => handleSocialShare("linkedin")}
-                  className="py-2 px-3 rounded-xl bg-[#0A66C2]/20 hover:bg-[#0A66C2]/30 text-[#70B5F9] border border-[#0A66C2]/40 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
+                  onClick={() => handleSocialShare("faeda")}
+                  className="py-2 px-3 rounded-xl bg-primary/20 hover:bg-primary/30 text-primary border border-primary/40 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
-                  <span>LinkedIn</span>
+                  <span>{language === "ar" ? "فائدة" : "Faeda"}</span>
                 </button>
                 <button
                   type="button"

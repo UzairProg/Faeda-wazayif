@@ -18,6 +18,7 @@ from app import db
 
 job = Blueprint('job' , __name__)
 from ai_engine.recommendation_model import get_job_recommendations
+from services.rate_limiter import public_api_rate_limit
 
 
 
@@ -571,6 +572,7 @@ def serialize_job_detail(j):
 
 
 @job.route('/api/v1/jobs')
+@public_api_rate_limit
 def api_get_jobs():
     q = request.args.get('q', '').strip()
     location = request.args.get('location', '').strip()
@@ -660,6 +662,7 @@ def api_get_job_detail(job_id):
 
 
 @job.route('/api/v1/jobs/suggestions')
+@public_api_rate_limit
 def api_get_job_suggestions():
     q = request.args.get('q', '').strip()
     sug_type = request.args.get('type', 'all').strip().lower()

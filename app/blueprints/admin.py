@@ -28,6 +28,7 @@ from services.subscription import SubscriptionPlan, Subscription, Payment
 from services.system_settings import SystemSetting, SETTING_KEYS
 from services.job_category import JobCategory
 from werkzeug.security import generate_password_hash
+from services.rate_limiter import auth_rate_limit
 
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -111,6 +112,7 @@ def inject_admin_context():
 # ─────────────────────────────────────────────────────────────
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
+@auth_rate_limit
 def admin_login():
     if 'admin_id' in session:
         return redirect(url_for('admin.admin_dashboard'))

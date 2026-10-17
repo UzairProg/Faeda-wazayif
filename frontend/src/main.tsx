@@ -2,15 +2,18 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 import { AppProviders } from './providers/AppProviders'
+import { ErrorBoundary } from './shared/components/ErrorBoundary'
 import './index.css'
 
 const rootElement = document.getElementById('root')
 if (rootElement) {
   createRoot(rootElement).render(
     <React.StrictMode>
-      <AppProviders>
-        <App />
-      </AppProviders>
+      <ErrorBoundary>
+        <AppProviders>
+          <App />
+        </AppProviders>
+      </ErrorBoundary>
     </React.StrictMode>,
   )
 } else {

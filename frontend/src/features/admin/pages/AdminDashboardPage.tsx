@@ -285,7 +285,7 @@ export function AdminDashboardPage() {
       glowColor: "from-sky-500/20 via-primary/10 to-transparent",
       iconColor: "text-sky-400",
       accentBg: "bg-sky-500/10 border-sky-500/25",
-      link: ROUTES.ADMIN.USERS,
+      link: ROUTES.ADMIN.COMPANIES,
     },
     {
       id: "universities",

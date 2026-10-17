@@ -30,7 +30,7 @@ export function Navbar() {
     { label: t("common.nav.jobs"), href: "/jobs" },
     { label: t("common.nav.companies"), href: "/companies" },
     { label: t("common.nav.teams"), href: "/teams" },
-    { label: language === "ar" ? "المقالات" : language === "hi" ? "लेख" : "Articles", href: "/posts" },
+    { label: language === "ar" ? "الحملات والمحتوى" : language === "hi" ? "सोशल अभियान" : "Social Campaigns", href: "/posts" },
     { label: t("common.nav.about"), href: "/about" },
     { label: t("common.nav.contact"), href: "/contact" },
   ]

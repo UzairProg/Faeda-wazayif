@@ -551,7 +551,7 @@ class CustomerIPContribution(db.Model):
 
 
 class CustomerCertification(db.Model):
-    """Model for storing professional certifications with detailed fields (LinkedIn-style)."""
+    """Model for storing professional certifications with detailed fields (Faeda-style)."""
     __tablename__ = 'customer_certifications'
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)

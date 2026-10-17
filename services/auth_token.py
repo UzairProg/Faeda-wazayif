@@ -13,11 +13,41 @@ TOKEN_MAX_AGE = 86400 * 30  # 30 days validity in seconds
 
 
 def get_serializer():
-    """Retrieve serializer initialized with application SECRET_KEY."""
+    """
+    Retrieve serializer initialized with application SECRET_KEY.
+    Hardcoded secret fallbacks have been removed; production strictly requires
+    an explicit, secure SECRET_KEY environment variable.
+    """
+    secret = None
     try:
-        secret = current_app.config.get('SECRET_KEY') or os.environ.get('SECRET_KEY', 'faeda-jobs-secret-key-2026')
+        if current_app:
+            secret = current_app.config.get('SECRET_KEY')
     except Exception:
-        secret = os.environ.get('SECRET_KEY', 'faeda-jobs-secret-key-2026')
+        pass
+
+    if not secret:
+        secret = os.environ.get('SECRET_KEY')
+
+    # Guard against insecure/default secrets in production environments
+    is_prod = False
+    try:
+        if current_app and not current_app.config.get('DEBUG', False) and not current_app.config.get('TESTING', False):
+            is_prod = True
+    except Exception:
+        pass
+    if os.environ.get('FLASK_ENV') == 'production' or os.environ.get('ENV') == 'production':
+        is_prod = True
+
+    insecure_keys = {'default-secret-key-for-dev', 'faeda-jobs-secret-key-2026', 'your_secret_key_here', ''}
+    if is_prod and (not secret or secret in insecure_keys):
+        raise RuntimeError(
+            "CRITICAL SECURITY CONFIGURATION ERROR: Production deployment requires an explicit, "
+            "cryptographically secure SECRET_KEY set in the environment variables."
+        )
+
+    if not secret:
+        secret = 'default-secret-key-for-dev'
+
     return URLSafeTimedSerializer(secret)
 
 
@@ -31,7 +61,20 @@ def decode_auth_token(token: str) -> dict | None:
     """Decode and cryptographically verify an auth token."""
     if not token or token in ('cookie-session-active', 'null', 'undefined'):
         return None
+
+    # Demo bypass tokens are strictly forbidden in production
     if token.startswith('demo-') or token == 'demo-token':
+        is_prod = False
+        try:
+            if current_app and not current_app.config.get('DEBUG', False) and not current_app.config.get('TESTING', False):
+                is_prod = True
+        except Exception:
+            pass
+        if os.environ.get('FLASK_ENV') == 'production':
+            is_prod = True
+        if is_prod:
+            return None
+
         role = token.replace('demo-', '').replace('-token', '').strip()
         if not role or role == 'demo':
             try:
@@ -39,6 +82,7 @@ def decode_auth_token(token: str) -> dict | None:
             except Exception:
                 role = 'candidate'
         return {'role': role, 'user_id': 1}
+
     s = get_serializer()
     try:
         data = s.loads(token, max_age=TOKEN_MAX_AGE)
@@ -63,12 +107,6 @@ def process_request_auth():
     payload = None
     if token and token not in ('cookie-session-active', 'null', 'undefined'):
         payload = decode_auth_token(token)
-
-    if not payload:
-        # Check persona header for interactive testing
-        persona_header = request.headers.get('X-Persona-Role')
-        if persona_header in ('company', 'university', 'candidate', 'admin'):
-            payload = {'role': persona_header, 'user_id': 1}
 
     if not payload or not isinstance(payload, dict):
         return

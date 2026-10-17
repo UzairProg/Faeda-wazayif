@@ -24,6 +24,9 @@ import {
   ChevronLeft,
   Image as ImageIcon,
   Video,
+  FileText,
+  UploadCloud,
+  Loader2,
   Target,
   Rocket,
   ExternalLink,
@@ -104,9 +107,38 @@ export function CampaignCreateWizardModal({
   const [ctaUrl, setCtaUrl] = useState("")
 
   // Media State
-  const [mediaType, setMediaType] = useState<"image" | "video">("image")
+  const [mediaType, setMediaType] = useState<"image" | "video" | "document">("image")
   const [coverImage, setCoverImage] = useState(PRESET_BANNERS[0].url)
   const [videoUrl, setVideoUrl] = useState("")
+  const [documentUrl, setDocumentUrl] = useState("")
+  const [documentTitle, setDocumentTitle] = useState("")
+  const [isUploadingDoc, setIsUploadingDoc] = useState(false)
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setIsUploadingDoc(true)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      const res = await fetch("/api/v1/campaigns/upload-document", {
+        method: "POST",
+        body: formData,
+      })
+      const data = await res.json()
+      if (data.file_url) {
+        setDocumentUrl(data.file_url)
+        if (!documentTitle) setDocumentTitle(file.name.replace(/\.[^/.]+$/, ""))
+        toast.success(language === "ar" ? "تم رفع ملف الـ PDF بنجاح!" : "PDF uploaded successfully!")
+      } else {
+        toast.error(data.error || "Upload failed")
+      }
+    } catch {
+      toast.error(language === "ar" ? "تعذر رفع الملف" : "Failed to upload file")
+    } finally {
+      setIsUploadingDoc(false)
+    }
+  }
 
   // Target Audience State
   const [targetRoles, setTargetRoles] = useState<("candidate" | "company" | "university")[]>([
@@ -261,9 +293,11 @@ export function CampaignCreateWizardModal({
             : "المشاريع والأعمال",
         accountType,
         postType: selectedPostType,
-        coverImage: mediaType === "image" ? coverImage : undefined,
+        coverImage: mediaType === "image" ? coverImage : (mediaType === "document" ? "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1200&h=600&fit=crop" : undefined),
         mediaType,
         videoUrl: mediaType === "video" ? videoUrl : undefined,
+        documentUrl: mediaType === "document" ? (documentUrl || "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf") : undefined,
+        documentTitle: mediaType === "document" ? (documentTitle || title.trim()) : undefined,
         ctaText: ctaText.trim() || undefined,
         ctaUrl: ctaUrl.trim() || undefined,
         targetAudience,
@@ -618,6 +652,25 @@ export function CampaignCreateWizardModal({
                     <Video className="w-4 h-4" />
                     <span>{language === "ar" ? "فيديو ترويجي (Video Campaign)" : "Video Campaign"}</span>
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMediaType("document")
+                      if (!documentUrl) {
+                        setDocumentUrl("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf")
+                        setDocumentTitle(title || (language === "ar" ? "كتيب ومستند الحملة التعريفي" : "Campaign Career Brochure"))
+                      }
+                    }}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
+                      mediaType === "document"
+                        ? "bg-amber-500 text-white shadow-md shadow-amber-500/25"
+                        : "text-muted-foreground hover:text-white"
+                    }`}
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>{language === "ar" ? "ملف / كتيب PDF (PDF Post)" : "PDF Document / Post"}</span>
+                  </button>
                 </div>
 
                 {mediaType === "image" ? (
@@ -667,7 +720,7 @@ export function CampaignCreateWizardModal({
                       </div>
                     )}
                   </div>
-                ) : (
+                ) : mediaType === "video" ? (
                   <div className="space-y-3">
                     <div>
                       <label className="text-xs font-bold text-slate-300 block mb-1">
@@ -689,6 +742,103 @@ export function CampaignCreateWizardModal({
                           : "The video will be seamlessly embedded with an interactive play button in user feeds."}
                       </p>
                     </div>
+                  </div>
+                ) : (
+                  /* ── Document / PDF Upload Section ── */
+                  <div className="space-y-4">
+                    {/* File upload box */}
+                    <div className="p-5 rounded-2xl border-2 border-dashed border-white/15 bg-card/40 hover:border-amber-500/50 transition-colors text-center space-y-3">
+                      <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center mx-auto">
+                        {isUploadingDoc ? <Loader2 className="w-6 h-6 animate-spin" /> : <UploadCloud className="w-6 h-6" />}
+                      </div>
+                      <div>
+                        <h5 className="text-xs sm:text-sm font-bold text-white">
+                          {language === "ar" ? "رفع ملف PDF للحملة" : "Upload Campaign PDF Document"}
+                        </h5>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">
+                          {language === "ar"
+                            ? "انقر لاختيار كتيب التوظيف، البحث الأكاديمي، أو ملف العرض (PDF)"
+                            : "Click to select a career brochure, research paper, or presentation (PDF)"}
+                        </p>
+                      </div>
+                      <label className="inline-block cursor-pointer">
+                        <span className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-all shadow-md shadow-amber-500/20">
+                          {language === "ar" ? "اختيار ملف من جهازك" : "Browse PDF from Computer"}
+                        </span>
+                        <input
+                          type="file"
+                          accept=".pdf,application/pdf"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-300 block">
+                        {language === "ar" ? "عنوان المستند (Document Title)" : "Document Title"}
+                      </label>
+                      <input
+                        type="text"
+                        value={documentTitle}
+                        onChange={(e) => setDocumentTitle(e.target.value)}
+                        placeholder={language === "ar" ? "مثال: الكتيب الرسمي لبرنامج تدريب واستقطاب الكفاءات" : "e.g. Official Talent Acquisition Brochure"}
+                        className="w-full px-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-muted-foreground text-xs focus:outline-none focus:border-amber-400"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-300 block">
+                        {language === "ar" ? "رابط ملف الـ PDF (أو مسار الملف)" : "PDF URL / Path"}
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={documentUrl}
+                          onChange={(e) => setDocumentUrl(e.target.value)}
+                          placeholder="https://.../brochure.pdf"
+                          className="w-full px-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-muted-foreground text-xs focus:outline-none focus:border-amber-400 font-mono"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDocumentUrl("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf")
+                            if (!documentTitle) setDocumentTitle("كتيب ومستند الحملة الرسمي")
+                          }}
+                          className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[11px] font-bold text-slate-300 shrink-0"
+                        >
+                          {language === "ar" ? "تجربة ملف افتراضي" : "Use Sample PDF"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* PDF Preview Card */}
+                    {documentUrl && (
+                      <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
+                            <FileText className="w-5 h-5" />
+                          </div>
+                          <div className="min-w-0">
+                            <span className="text-xs font-bold text-white block truncate">
+                              {documentTitle || (language === "ar" ? "مستند PDF مرفق بالحملة" : "Attached PDF Document")}
+                            </span>
+                            <span className="text-[10px] text-amber-300/80 font-mono truncate block">
+                              {documentUrl}
+                            </span>
+                          </div>
+                        </div>
+                        <a
+                          href={documentUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold flex items-center gap-1 shrink-0 border border-amber-500/30"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span>{language === "ar" ? "معاينة" : "Preview"}</span>
+                        </a>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -950,7 +1100,33 @@ export function CampaignCreateWizardModal({
                 {/* Preview Card */}
                 <div className="rounded-3xl border border-white/15 bg-card/60 overflow-hidden shadow-2xl space-y-4 p-5 backdrop-blur-xl">
                   {/* Card Media */}
-                  {coverImage && (
+                  {mediaType === "document" ? (
+                    <div className="p-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
+                          <FileText className="w-6 h-6" />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase block w-fit mb-1">
+                            PDF Document Post 📄
+                          </span>
+                          <h4 className="text-sm font-bold text-white truncate">
+                            {documentTitle || title || "كتيب ومستند الحملة"}
+                          </h4>
+                          <span className="text-[11px] text-muted-foreground">ملف PDF مرفق مع المنشور</span>
+                        </div>
+                      </div>
+                      <a
+                        href={documentUrl || "#"}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-4 py-2 rounded-xl bg-amber-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-amber-500/20 shrink-0"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>{language === "ar" ? "تحميل وقراءة الكتيب" : "Read / Download PDF"}</span>
+                      </a>
+                    </div>
+                  ) : coverImage ? (
                     <div className="relative h-44 rounded-2xl overflow-hidden border border-white/10">
                       <img src={coverImage} alt={title} className="w-full h-full object-cover" />
                       {mediaType === "video" && (
@@ -973,7 +1149,7 @@ export function CampaignCreateWizardModal({
                         </span>
                       </div>
                     </div>
-                  )}
+                  ) : null}
 
                   <div className="space-y-2">
                     <h3 className="text-lg font-black text-white">{title || "عنوان الحملة التجريبي"}</h3>

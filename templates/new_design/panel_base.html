@@ -19,6 +19,7 @@
     <link rel="icon" href="{{ url_for('static', filename='new_design/images/Group.png') }}" type="image/x-icon">
     
     <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -174,6 +175,7 @@
             document.getElementById('sidebar').classList.toggle('show');
         });
     </script>
+    <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -930,11 +930,23 @@ class PostsService {
     userType?: string,
     userId?: number | string
   ): Promise<{ success: boolean; campaigns: PostArticle[]; total: number }> {
-    const { data } = await apiClient.get<{ success: boolean; campaigns: PostArticle[]; total: number }>(
-      API_CONFIG.ENDPOINTS.POSTS.BY_USER,
-      { params: { user_type: userType, user_id: userId } }
-    )
-    return data
+    try {
+      const { data } = await apiClient.get<{ success: boolean; campaigns: PostArticle[]; total: number }>(
+        API_CONFIG.ENDPOINTS.POSTS.BY_USER,
+        { params: { user_type: userType, user_id: userId } }
+      )
+      return data
+    } catch {
+      let filtered = this.localArticles
+      if (userType) {
+        filtered = filtered.filter((p) => p.accountType === userType)
+      }
+      return {
+        success: true,
+        campaigns: filtered,
+        total: filtered.length,
+      }
+    }
   }
 
   async getNotifications(): Promise<{ success: boolean; notifications: NotificationItem[]; unreadCount: number }> {

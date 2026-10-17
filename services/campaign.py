@@ -1,7 +1,7 @@
 # ==============================================================================
 # services/campaign.py
 # ==============================================================================
-# Domain Models for LinkedIn-Style Hiring, Marketing & Recruitment Campaigns
+# Domain Models for Faeda-Style Hiring, Marketing & Recruitment Campaigns
 # Includes complete Social Interactions: Likes, Comments, Shares, Saves, Analytics & Notifications
 # ==============================================================================
 
@@ -79,6 +79,7 @@ class Campaign(db.Model):
     shares = db.relationship('CampaignShare', backref='campaign', lazy='dynamic', cascade='all, delete-orphan')
     saves = db.relationship('CampaignSave', backref='campaign', lazy='dynamic', cascade='all, delete-orphan')
     views = db.relationship('CampaignView', backref='campaign', lazy='dynamic', cascade='all, delete-orphan')
+    contents = db.relationship('CampaignContent', backref='campaign', lazy='dynamic', cascade='all, delete-orphan')
 
     def get_author_info(self):
         """Derive author details from relationships or fallback stored fields."""
@@ -157,6 +158,10 @@ class Campaign(db.Model):
         word_count = len(content_str.split())
         read_time_mins = max(2, word_count // 150)
 
+        doc_content = self.contents.filter(CampaignContent.content_type.in_(['document', 'pdf'])).first()
+        doc_url = doc_content.file_url if doc_content else (self.banner_url if self.media_type == 'document' else None)
+        doc_title = doc_content.title if doc_content else None
+
         data = {
             "id": self.id,
             "title": self.title,
@@ -170,6 +175,8 @@ class Campaign(db.Model):
             "coverImage": self.banner_url or "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&h=600&fit=crop",
             "mediaType": self.media_type or "image",
             "videoUrl": self.video_url,
+            "documentUrl": doc_url,
+            "documentTitle": doc_title,
             "ctaText": self.cta_text,
             "ctaUrl": self.cta_url,
             "targetAudience": {
@@ -222,6 +229,7 @@ class Campaign(db.Model):
                 "min": self.proposed_reach_min,
                 "max": self.proposed_reach_max,
             },
+            "contents": [c.to_dict() for c in self.contents.order_by(CampaignContent.display_order.asc(), CampaignContent.created_at.asc()).all()],
         }
 
         # Candidate recruitment funnel stats (for company panel)
@@ -529,4 +537,40 @@ class CampaignJob(db.Model):
             "location": j.location if j else "",
             "work_type": j.work_type if j else "",
             "salary": f"{j.min_salary} - {j.max_salary} SAR" if j and j.min_salary else None,
+        }
+
+
+class CampaignContent(db.Model):
+    __tablename__ = 'campaign_contents'
+
+    id = db.Column(db.Integer, primary_key=True)
+    campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id', ondelete='CASCADE'), nullable=False)
+    content_type = db.Column(db.String(50), default='text')  # 'text', 'image', 'video', 'document', 'link', 'banner'
+    title = db.Column(db.String(255), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    text_content = db.Column(db.Text, nullable=True)
+    file_url = db.Column(db.String(500), nullable=True)
+    media_type = db.Column(db.String(50), nullable=True)     # e.g. 'image', 'video', 'document', 'application/pdf'
+    display_order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "campaignId": self.campaign_id,
+            "campaign_id": self.campaign_id,
+            "contentType": self.content_type,
+            "content_type": self.content_type,
+            "title": self.title,
+            "description": self.description,
+            "textContent": self.text_content,
+            "text_content": self.text_content,
+            "fileUrl": self.file_url,
+            "file_url": self.file_url,
+            "mediaType": self.media_type,
+            "media_type": self.media_type,
+            "displayOrder": self.display_order,
+            "display_order": self.display_order,
+            "createdAt": self.created_at.isoformat() if self.created_at else None,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
         }

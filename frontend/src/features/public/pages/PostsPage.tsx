@@ -31,6 +31,7 @@ import {
   Filter,
   Target,
   Video,
+  FileText,
   ExternalLink,
   Bookmark,
 } from "lucide-react"
@@ -749,6 +750,14 @@ export function PostsPage() {
                                 <span>{language === "ar" ? "فيديو" : "Video"}</span>
                               </span>
                             )}
+
+                            {/* PDF Document Badge */}
+                            {(featuredPost.mediaType === "document" || featuredPost.documentUrl) && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/90 text-white backdrop-blur-md flex items-center gap-1 shadow-sm">
+                                <FileText className="w-3 h-3" />
+                                <span>PDF</span>
+                              </span>
+                            )}
                           </div>
                         </div>
 
@@ -910,6 +919,14 @@ export function PostsPage() {
                                     <span>{language === "ar" ? "فيديو" : "Video"}</span>
                                   </span>
                                 )}
+
+                                {/* PDF Document Badge */}
+                                {(post.mediaType === "document" || post.documentUrl) && (
+                                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/90 text-white backdrop-blur-md flex items-center gap-1 shadow-sm">
+                                    <FileText className="w-2.5 h-2.5" />
+                                    <span>PDF</span>
+                                  </span>
+                                )}
                               </div>
                             </div>
 
@@ -935,6 +952,19 @@ export function PostsPage() {
                                 {post.summary}
                               </p>
                             </div>
+
+                            {/* PDF Attachment preview */}
+                            {(post.mediaType === "document" || post.documentUrl) && (
+                              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between text-xs">
+                                <span className="text-amber-200 font-medium truncate flex items-center gap-1.5">
+                                  <FileText className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                                  <span className="truncate">{post.documentTitle || (language === "ar" ? "مستند PDF مرفق بالمنشور" : "Attached PDF Document")}</span>
+                                </span>
+                                <span className="text-[10px] text-amber-400 font-bold ms-2 shrink-0">
+                                  {language === "ar" ? "قراءة الكتيب ←" : "Read PDF →"}
+                                </span>
+                              </div>
+                            )}
 
                             {/* Target Audience Metadata */}
                             {post.targetAudience?.roles && post.targetAudience.roles.length > 0 && (

@@ -12,6 +12,8 @@ from ai_engine.market_value_calculator import get_market_value_for_customer, cal
 class CandidateDashboardTestSuite(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
+        self.app.config['TESTING'] = True
+        self.app.config['WTF_CSRF_ENABLED'] = False
         self.client = self.app.test_client()
         self.ctx = self.app.app_context()
         self.ctx.push()
