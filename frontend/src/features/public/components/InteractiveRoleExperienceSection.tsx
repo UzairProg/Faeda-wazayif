@@ -222,8 +222,8 @@ export function InteractiveRoleExperienceSection() {
         ? "स्नातक तत्परता को ट्रैक करें और शैक्षणिक कौशलों को उद्योग की जरूरतों के साथ संरेखित करें।"
         : "تابِع جاهزية الخريجين وربط التخصصات التعليمية باحتياجات التوظيف.",
       icon: GraduationCap,
-      ctaText: t("common.nav.contact"),
-      ctaLink: ROUTES.PUBLIC.CONTACT,
+      ctaText: language === "en" ? "Register Academic Institution" : language === "hi" ? "संस्थान पंजीकृत करें" : "تسجيل حساب مؤسسة أكاديمية",
+      ctaLink: `${ROUTES.AUTH.REGISTER}?role=university`,
       steps: language === "en" ? [
         { name: "01. Academic Profile", desc: "Present faculties and programs." },
         { name: "02. Student Readiness", desc: "Measure graduate skills alignment." },

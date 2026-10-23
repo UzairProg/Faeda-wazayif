@@ -105,6 +105,46 @@ class AuthService {
 
   async register(data: RegisterDTO): Promise<AuthResponse> {
     try {
+      if (data.role === "university") {
+        const payload = {
+          name_ar: data.universityNameAr || data.name,
+          name_en: data.universityNameEn || "",
+          dean_name: data.deanName || data.name,
+          email: data.email.trim(),
+          password: data.password,
+          institution_type: data.institutionType || "جامعة حكومية",
+          location: data.location || "",
+          phone: data.phone || "",
+          website: data.website || "",
+        }
+
+        const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.UNIVERSITY.REGISTER}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(payload),
+          credentials: "include",
+        })
+
+        const resData = await response.json().catch(() => null)
+
+        if (!response.ok) {
+          throw new Error(resData?.error || resData?.message || "فشل تسجيل المؤسسة الأكاديمية. يرجى مراجعة البيانات.")
+        }
+
+        return {
+          user: {
+            id: String(resData.user?.id || data.email),
+            email: data.email,
+            role: "university",
+            name: resData.user?.name || payload.name_ar,
+          },
+          token: resData.token || "cookie-session-active",
+          message: resData.message || "تم إنشاء حساب المؤسسة الأكاديمية بنجاح.",
+        }
+      }
       const names = data.name.trim().split(" ")
       const fName = names[0] || data.name
       const lName = names.slice(1).join(" ") || " "

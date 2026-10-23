@@ -4,10 +4,10 @@
  * Authentication registration page.
  * Fully localized for Arabic (RTL), English (LTR), and Hindi (LTR).
  */
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { motion } from "framer-motion"
-import { UserPlus, Mail, Lock, User, Building2, Eye, EyeOff, Globe, ArrowLeft, ArrowRight, AlertCircle, Loader2, ChevronRight, ChevronLeft } from "lucide-react"
+import { UserPlus, Mail, Lock, User, Building2, Eye, EyeOff, Globe, ArrowLeft, ArrowRight, AlertCircle, Loader2, ChevronRight, ChevronLeft, GraduationCap, MapPin, Phone, Globe2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/glass-card"
 import { RoleSelector } from "../components/RoleSelector"
@@ -21,14 +21,29 @@ import faedaWhiteLogo from "@/assets/logos/faeda_white_logo.png"
 
 export function Register() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const loginStore = useAuthStore((state) => state.login)
   const { t, language, setLanguage, isRTL } = useTranslation()
 
   const [step, setStep] = useState<1 | 2>(1)
   const [selectedRole, setSelectedRole] = useState<RegisterRole | null>(null)
 
+  // Candidate fields
   const [fullName, setFullName] = useState("")
+
+  // Company fields
   const [companyName, setCompanyName] = useState("")
+
+  // University Official fields
+  const [universityNameAr, setUniversityNameAr] = useState("")
+  const [universityNameEn, setUniversityNameEn] = useState("")
+  const [officialName, setOfficialName] = useState("")
+  const [institutionType, setInstitutionType] = useState("جامعة حكومية")
+  const [city, setCity] = useState("")
+  const [phone, setPhone] = useState("")
+  const [website, setWebsite] = useState("")
+
+  // Common fields
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -39,6 +54,18 @@ export function Register() {
 
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
   const StepBackIcon = isRTL ? ChevronRight : ChevronLeft
+
+  // Pre-select role if specified in query string (?role=university, etc.)
+  useEffect(() => {
+    const roleParam = searchParams.get("role")?.toLowerCase()
+    if (roleParam === "university") {
+      setSelectedRole("university")
+    } else if (roleParam === "company") {
+      setSelectedRole("company")
+    } else if (roleParam === "candidate") {
+      setSelectedRole("candidate")
+    }
+  }, [searchParams])
 
   const toggleLang = () => {
     const nextLang: Language = language === "ar" ? "en" : language === "en" ? "hi" : "ar"
@@ -68,6 +95,17 @@ export function Register() {
       return
     }
 
+    if (selectedRole === "university") {
+      if (!universityNameAr.trim()) {
+        setErrorMessage(t("auth.errors.requiredUniName"))
+        return
+      }
+      if (!officialName.trim()) {
+        setErrorMessage(t("auth.errors.requiredOfficialName"))
+        return
+      }
+    }
+
     if (!email.trim()) {
       setErrorMessage(t("auth.errors.invalidEmail"))
       return
@@ -86,6 +124,25 @@ export function Register() {
     setIsLoading(true)
 
     try {
+      if (selectedRole === "university") {
+        const res = await authService.register({
+          role: "university",
+          name: universityNameAr.trim(),
+          email: email.trim(),
+          password,
+          universityNameAr: universityNameAr.trim(),
+          universityNameEn: universityNameEn.trim(),
+          deanName: officialName.trim(),
+          institutionType,
+          location: city.trim(),
+          phone: phone.trim(),
+          website: website.trim(),
+        })
+        loginStore(res.user, res.token)
+        navigate(ROUTES.UNIVERSITY.DASHBOARD, { replace: true })
+        return
+      }
+
       const nameToSubmit = selectedRole === "candidate" ? fullName.trim() : companyName.trim()
       const roleToSubmit = selectedRole === "company" ? "company" : "candidate"
       const res = await authService.register({
@@ -93,9 +150,10 @@ export function Register() {
         email: email.trim(),
         password,
         role: roleToSubmit,
+        organizationName: selectedRole === "company" ? companyName.trim() : undefined,
       })
       loginStore(res.user, res.token)
-      navigate(ROUTES.PUBLIC.HOME, { replace: true })
+      navigate(selectedRole === "company" ? ROUTES.COMPANY.DASHBOARD : ROUTES.CANDIDATE.PROFILE, { replace: true })
     } catch (err: any) {
       setErrorMessage(err.message || t("auth.errors.generic"))
     } finally {
@@ -203,7 +261,7 @@ export function Register() {
                 </button>
               </div>
 
-              {selectedRole === "candidate" ? (
+              {selectedRole === "candidate" && (
                 <div className="space-y-1.5">
                   <label htmlFor="reg-name" className="text-xs font-bold text-white block">
                     {t("auth.form.fullName")} <span className="text-rose-400">*</span>
@@ -221,7 +279,9 @@ export function Register() {
                     <User className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
                   </div>
                 </div>
-              ) : (
+              )}
+
+              {selectedRole === "company" && (
                 <div className="space-y-1.5">
                   <label htmlFor="reg-company" className="text-xs font-bold text-white block">
                     {t("auth.form.companyName")} <span className="text-rose-400">*</span>
@@ -237,6 +297,154 @@ export function Register() {
                       className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60"
                     />
                     <Building2 className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                  </div>
+                </div>
+              )}
+
+              {selectedRole === "university" && (
+                <div className="space-y-3.5">
+                  <div className="p-3 rounded-xl bg-primary/10 border border-primary/20 flex items-start gap-2.5">
+                    <GraduationCap className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <p className="text-[11px] text-primary-foreground/90 leading-relaxed font-medium">
+                      {language === "en"
+                        ? "Official Institutional Registration for University Representatives, Deanships, and Coop Coordinators."
+                        : language === "hi"
+                        ? "विश्वविद्यालय प्रतिनिधियों, डीनशिप और सह-ऑप समन्वयकों के लिए आधिकारिक संस्थागत पंजीकरण।"
+                        : "تسجيل مؤسسي معتمد لممثلي الجامعات، عمادات القبول والتسجيل، ومشرفي التدريب التعاوني."}
+                    </p>
+                  </div>
+
+                  {/* University Name Arabic */}
+                  <div className="space-y-1.5">
+                    <label htmlFor="reg-uni-ar" className="text-xs font-bold text-white block">
+                      {t("auth.form.universityNameAr")} <span className="text-rose-400">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="reg-uni-ar"
+                        type="text"
+                        required
+                        value={universityNameAr}
+                        onChange={(e) => setUniversityNameAr(e.target.value)}
+                        placeholder={t("auth.form.universityNameArPlaceholder")}
+                        className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60"
+                      />
+                      <GraduationCap className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* University Name English */}
+                  <div className="space-y-1.5">
+                    <label htmlFor="reg-uni-en" className="text-xs font-bold text-white block">
+                      {t("auth.form.universityNameEn")}
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="reg-uni-en"
+                        type="text"
+                        dir="ltr"
+                        value={universityNameEn}
+                        onChange={(e) => setUniversityNameEn(e.target.value)}
+                        placeholder={t("auth.form.universityNameEnPlaceholder")}
+                        className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60 text-start"
+                      />
+                      <Building2 className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Official / Dean Name */}
+                  <div className="space-y-1.5">
+                    <label htmlFor="reg-official-name" className="text-xs font-bold text-white block">
+                      {t("auth.form.officialName")} <span className="text-rose-400">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="reg-official-name"
+                        type="text"
+                        required
+                        value={officialName}
+                        onChange={(e) => setOfficialName(e.target.value)}
+                        placeholder={t("auth.form.officialNamePlaceholder")}
+                        className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60"
+                      />
+                      <User className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Institution Type & Location Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label htmlFor="reg-inst-type" className="text-xs font-bold text-white block">
+                        {t("auth.form.institutionType")}
+                      </label>
+                      <select
+                        id="reg-inst-type"
+                        value={institutionType}
+                        onChange={(e) => setInstitutionType(e.target.value)}
+                        className="w-full h-11 px-3 rounded-xl bg-[#0b1329] border border-white/10 text-white text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                      >
+                        <option value="جامعة حكومية">{t("auth.form.institutionTypeGovernment")}</option>
+                        <option value="جامعة أهلية">{t("auth.form.institutionTypePrivate")}</option>
+                        <option value="كلية تطبيقية">{t("auth.form.institutionTypeApplied")}</option>
+                        <option value="معهد تقني">{t("auth.form.institutionTypeInstitute")}</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label htmlFor="reg-city" className="text-xs font-bold text-white block">
+                        {t("auth.form.city")}
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="reg-city"
+                          type="text"
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                          placeholder={t("auth.form.cityPlaceholder")}
+                          className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60"
+                        />
+                        <MapPin className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Phone & Website Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label htmlFor="reg-phone" className="text-xs font-bold text-white block">
+                        {t("auth.form.phone")}
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="reg-phone"
+                          type="tel"
+                          dir="ltr"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder={t("auth.form.phonePlaceholder")}
+                          className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60 text-start"
+                        />
+                        <Phone className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label htmlFor="reg-website" className="text-xs font-bold text-white block">
+                        {t("auth.form.website")}
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="reg-website"
+                          type="url"
+                          dir="ltr"
+                          value={website}
+                          onChange={(e) => setWebsite(e.target.value)}
+                          placeholder={t("auth.form.websitePlaceholder")}
+                          className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/60 text-start"
+                        />
+                        <Globe2 className="w-4 h-4 text-muted-foreground absolute end-3.5 top-3.5 pointer-events-none" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -358,10 +566,10 @@ export function Register() {
           <GlassCard className="p-6 bg-card/40 border-white/10 space-y-3">
             <p className="text-sm font-semibold text-white leading-relaxed">
               {language === "en"
-                ? "Join thousands of professionals and top employers on Faeda Jobs."
+                ? "Join thousands of professionals, top employers, and leading academic institutions on Faeda Jobs."
                 : language === "hi"
-                ? "फ़ायदा जॉब्स पर हज़ारों पेशेवरों और शीर्ष नियोक्ताओं से जुड़ें।"
-                : "انضم لآلاف المحترفين كمرشح أو شركة واكتشف الفرص الموثوقة."}
+                ? "फ़ायदा जॉब्स पर हज़ारों पेशेवरों, शीर्ष नियोक्ताओं और अग्रणी शैक्षणिक संस्थानों से जुड़ें।"
+                : "انضم لآلاف المحترفين والشركات الرائدة والمؤسسات الأكاديمية والجامعات على منظومة فائدة."}
             </p>
           </GlassCard>
         </div>

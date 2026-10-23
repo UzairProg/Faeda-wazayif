@@ -126,6 +126,7 @@ export const API_CONFIG = {
       TEAM_DETAIL: (id: string | number) => `/api/v1/company/teams/${id}`,
     },
     UNIVERSITY: {
+      REGISTER: "/api/v1/university/register",
       ME: "/api/v1/university/me",
       PROFILE: "/api/v1/university/profile",
       LOGO_UPLOAD: "/api/v1/university/logo",

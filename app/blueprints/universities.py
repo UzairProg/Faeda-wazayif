@@ -212,6 +212,106 @@ def serialize_student_academic_summary(cand: Customers, uni: University):
 # AUTHENTICATION & IDENTITY APIS
 # ==============================================================================
 
+@university_bp.route('/api/v1/university/register', methods=['POST'])
+def api_university_register():
+    """
+    Register a new university/academic institution official account.
+    Validates institutional data, prevents email duplicates, creates record,
+    and returns authenticated session and token.
+    """
+    data = request.get_json(silent=True) or request.form.to_dict() or {}
+
+    name_ar = str(data.get('name_ar') or data.get('name') or '').strip()
+    name_en = str(data.get('name_en') or '').strip()
+    email = str(data.get('email') or '').strip().lower()
+    password = str(data.get('password') or '')
+    dean_name = str(data.get('dean_name') or data.get('official_name') or '').strip()
+    institution_type = str(data.get('institution_type') or 'جامعة حكومية').strip()
+    location = str(data.get('location') or data.get('city') or '').strip()
+    phone = str(data.get('phone') or '').strip()
+    website = str(data.get('website') or '').strip()
+
+    if not name_ar:
+        return jsonify({"error": "يرجى إدخال الاسم الرسمي للجامعة بالعربية"}), 400
+
+    if not email or '@' not in email:
+        return jsonify({"error": "يرجى إدخال بريد إلكتروني جامعي صحيح"}), 400
+
+    if not dean_name:
+        return jsonify({"error": "يرجى إدخال اسم ممثل الجامعة أو المسؤول الأكاديمي"}), 400
+
+    if not password or len(password) < 8:
+        return jsonify({"error": "يجب أن تتكون كلمة المرور من 8 خانات على الأقل"}), 400
+
+    # Duplicate email checks across ecosystem
+    existing_uni = University.query.filter_by(email=email).first()
+    if existing_uni:
+        return jsonify({"error": "البريد الإلكتروني مسجل بالفعل لمؤسسة أكاديمية أخرى"}), 409
+
+    existing_cust = Customers.query.filter_by(email=email).first()
+    if existing_cust:
+        return jsonify({"error": "هذا البريد الإلكتروني مسجل مسبقاً كحساب مرشح"}), 409
+
+    existing_comp = Company.query.filter_by(company_email=email).first()
+    if existing_comp:
+        return jsonify({"error": "هذا البريد الإلكتروني مسجل مسبقاً كحساب منشأة"}), 409
+
+    try:
+        new_uni = University(
+            name_ar=name_ar,
+            name_en=name_en if name_en else None,
+            email=email,
+            password=password,
+            dean_name=dean_name if dean_name else None,
+            institution_type=institution_type,
+            location=location if location else None,
+            phone=phone if phone else None,
+            website=website if website else None,
+            is_verified=True,
+            status="active"
+        )
+        db.session.add(new_uni)
+        db.session.commit()
+
+        # Establish server-side session
+        session['session_university'] = True
+        session['show_banner'] = True
+        session['university_id'] = new_uni.id
+        session['university_email'] = new_uni.email
+
+        from services.auth_token import generate_auth_token
+        token = generate_auth_token({
+            "id": new_uni.id,
+            "user_id": new_uni.id,
+            "university_id": new_uni.id,
+            "email": new_uni.email,
+            "role": "university"
+        })
+
+        uni_display_name = new_uni.name_ar or new_uni.name_en or "مؤسسة أكاديمية"
+
+        return jsonify({
+            "success": True,
+            "message": "تم إنشاء حساب المؤسسة الأكاديمية بنجاح",
+            "role": "university",
+            "token": token,
+            "user": {
+                "id": str(new_uni.id),
+                "name": uni_display_name,
+                "email": new_uni.email,
+                "role": "university",
+                "dean_name": new_uni.dean_name,
+                "institution_type": new_uni.institution_type
+            },
+            "redirect_url": "/university/dashboard"
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"University registration failed: {str(e)}")
+        return jsonify({"error": "حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة لاحقاً."}), 500
+
+
 @university_bp.route('/api/v1/university/me', methods=['GET'])
 def api_university_me():
     """Return authenticated university identity & active session info."""
