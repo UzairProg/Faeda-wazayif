@@ -66,6 +66,9 @@ import { MarketTrendsPage } from "./features/market-insights/pages/MarketTrendsP
 import { AdminMarketDataPage } from "./features/market-insights/pages/AdminMarketDataPage"
 import { AdminHiredCandidatesPage } from "./features/admin/pages/AdminHiredCandidatesPage"
 import { AdminCompaniesPage } from "./features/admin/pages/AdminCompaniesPage"
+import { AdminFinancePage } from "./features/admin/pages/AdminFinancePage"
+import { AdminMarketingPage } from "./features/admin/pages/AdminMarketingPage"
+import { AdminApprovalsPage } from "./features/admin/pages/AdminApprovalsPage"
 
 // Guards
 import { AuthGuard } from "./shared/components/guards/AuthGuard"
@@ -230,6 +233,9 @@ function App() {
               <Route path="market-data" element={<AdminMarketDataPage />} />
               <Route path="hired-candidates" element={<AdminHiredCandidatesPage />} />
               <Route path="placements" element={<AdminHiredCandidatesPage />} />
+              <Route path="finance" element={<AdminFinancePage />} />
+              <Route path="marketing" element={<AdminMarketingPage />} />
+              <Route path="approvals" element={<AdminApprovalsPage />} />
               <Route path="*" element={<Navigate to="/admin" replace />} />
             </Route>
           </Route>

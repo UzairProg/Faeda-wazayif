@@ -119,16 +119,16 @@ export function UniversityLayout() {
       ],
     },
     {
-      title_ar: "الريادة وحاضنات الأعمال",
-      title_en: "ENTREPRENEURSHIP",
-      title_hi: "उद्यमिता और इनक्यूबेटर",
+      title_ar: "الابتكار وحاضنات الأعمال",
+      title_en: "INNOVATION & INCUBATION",
+      title_hi: "नवाचार एवं इनक्यूबेशन",
       items: [
         {
           to: ROUTES.UNIVERSITY.INCUBATOR,
           icon: Lightbulb,
-          label_ar: "حاضنة منشآت والشركات",
-          label_en: "Monsha'at Incubator",
-          label_hi: "मनशाआत इनक्यूबेटर",
+          label_ar: "الابتكار وحاضنات الأعمال (منشآت)",
+          label_en: "University Innovation & Incubation",
+          label_hi: "विश्वविद्यालय नवाचार एवं इनक्यूबेशन",
           end: false,
         },
       ],

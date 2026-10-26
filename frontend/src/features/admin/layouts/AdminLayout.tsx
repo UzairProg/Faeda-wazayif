@@ -31,6 +31,9 @@ import {
   ExternalLink,
   UserCheck,
   Building2,
+  DollarSign,
+  Megaphone,
+  Lock,
 } from "lucide-react"
 import { LanguageSelector } from "@/components/shared/LanguageSelector"
 import faedaWhiteLogo from "@/assets/logos/faeda_white_logo.png"
@@ -110,6 +113,32 @@ export function AdminLayout() {
           label: L("الفلاتر والتصنيفات", "Taxonomy & Filters", "वर्गीकरण एवं फ़िल्टर"),
           end: false,
           badge: null,
+        },
+      ],
+    },
+    {
+      title: L("العمليات والإدارة المالية", "ERP & OPERATIONS", "संचालन एवं वित्त"),
+      items: [
+        {
+          to: ROUTES.ADMIN.FINANCE,
+          icon: DollarSign,
+          label: L("المالية والمحاسبة والأسعار", "Finance & Pricing ERP", "वित्त एवं लेखा"),
+          end: false,
+          badge: null,
+        },
+        {
+          to: ROUTES.ADMIN.MARKETING,
+          icon: Megaphone,
+          label: L("التسويق والمحتوى والتصاميم", "Marketing Operations", "विपणन एवं सामग्री"),
+          end: false,
+          badge: null,
+        },
+        {
+          to: ROUTES.ADMIN.APPROVALS,
+          icon: Lock,
+          label: L("طابور اعتمادات الأسعار والخدمات", "Change Approvals Queue", "अनुमोदन कतार"),
+          end: false,
+          badge: { count: L("4-عيون", "4-Eyes", "समीक्षा") as any, color: "bg-amber-500/20 text-amber-300 border-amber-500/30" },
         },
       ],
     },

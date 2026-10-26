@@ -224,6 +224,9 @@ class UniversityIncubatorVenture(db.Model):
     graduation_cohort = db.Column(db.String(100), default="الدفعة الرابعة - حاضنة منشآت 2024")
     
     # Business & Market Offerings
+    entity_type = db.Column(db.String(50), default="graduated")  # incubator, startup, graduated, partner
+    company_location = db.Column(db.String(250), default="المملكة العربية السعودية")
+    google_maps_url = db.Column(db.String(500), nullable=True)
     business_activity = db.Column(db.String(200), nullable=False)
     products_and_services = db.Column(db.Text, nullable=False)
     status = db.Column(db.String(60), default="خريج حاضنة - شركة نشطة تجارياً")
@@ -231,6 +234,10 @@ class UniversityIncubatorVenture(db.Model):
     # Economic & Criteria Impact
     jobs_created = db.Column(db.Integer, default=5)
     funding_raised_sar = db.Column(db.Integer, default=750000)
+    target_companies_goal = db.Column(db.Integer, default=30)
+    hired_continuity_count = db.Column(db.Integer, default=40)
+    retention_duration_months = db.Column(db.Integer, default=18)
+    committee_notes = db.Column(db.Text, nullable=True)
     university_criteria_connection = db.Column(db.Text, nullable=True)
     academic_material_updates = db.Column(db.Text, nullable=True)
     
@@ -243,8 +250,11 @@ class UniversityIncubatorVenture(db.Model):
             "university_id": self.university_id,
             "university_name": uni.name_ar if uni else "الجامعة",
             "incubator_name": self.incubator_name,
+            "entity_type": self.entity_type or "graduated",
             "company_name_ar": self.company_name_ar,
             "company_name_en": self.company_name_en or "",
+            "company_location": self.company_location or (uni.location if uni else "المملكة العربية السعودية"),
+            "google_maps_url": self.google_maps_url or "",
             "logo": self.logo or "",
             "founder_name": self.founder_name,
             "founder_major": self.founder_major or "خريج الجامعة",
@@ -255,6 +265,10 @@ class UniversityIncubatorVenture(db.Model):
             "status": self.status,
             "jobs_created": self.jobs_created,
             "funding_raised_sar": self.funding_raised_sar,
+            "target_companies_goal": self.target_companies_goal or 30,
+            "hired_continuity_count": self.hired_continuity_count or 40,
+            "retention_duration_months": self.retention_duration_months or 18,
+            "committee_notes": self.committee_notes or "",
             "university_criteria_connection": self.university_criteria_connection or "",
             "academic_material_updates": self.academic_material_updates or "",
             "created_at": self.created_at.isoformat() if self.created_at else None

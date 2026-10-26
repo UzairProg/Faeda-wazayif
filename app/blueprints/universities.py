@@ -1544,6 +1544,9 @@ def api_university_create_incubator_venture():
         incubator_name=data.get('incubator_name', f"حاضنة منشآت - {uni.name_ar}"),
         company_name_ar=company_name_ar,
         company_name_en=data.get('company_name_en', ''),
+        entity_type=data.get('entity_type', 'graduated'),
+        company_location=data.get('company_location', uni.location or 'المملكة العربية السعودية'),
+        google_maps_url=data.get('google_maps_url', ''),
         logo=data.get('logo') or "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=150&h=150&fit=crop",
         founder_name=founder_name,
         founder_major=data.get('founder_major', 'خريج الجامعة'),
@@ -1554,6 +1557,10 @@ def api_university_create_incubator_venture():
         status=data.get('status', 'خريج حاضنة - شركة نشطة'),
         jobs_created=int(data.get('jobs_created', 4)),
         funding_raised_sar=int(data.get('funding_raised_sar', 500000)),
+        target_companies_goal=int(data.get('target_companies_goal', 30)),
+        hired_continuity_count=int(data.get('hired_continuity_count', 40)),
+        retention_duration_months=int(data.get('retention_duration_months', 18)),
+        committee_notes=data.get('committee_notes', 'متابعة لجنة تحقيق الأهداف مع مسؤولي الموارد البشرية لضمان الاستمرارية الوظيفية'),
         university_criteria_connection=data.get('university_criteria_connection', 'ربط مخرجات الحاضنة بالتنمية المستدامة ومعايير الاعتماد'),
         academic_material_updates=data.get('academic_material_updates', 'تم إدراج دراسة حالة عن الشركة في المناهج الأكاديمية')
     )

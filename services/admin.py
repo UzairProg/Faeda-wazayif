@@ -14,14 +14,16 @@ ROLE_SUPER_ADMIN = 'super_admin'
 ROLE_SUPPORT_MODERATOR = 'support_moderator'
 ROLE_CONTENT_MODERATOR = 'content_moderator'
 ROLE_FINANCE_ADMIN = 'finance_admin'
+ROLE_MARKETING_ADMIN = 'marketing_admin'
 
-ALL_ROLES = [ROLE_SUPER_ADMIN, ROLE_SUPPORT_MODERATOR, ROLE_CONTENT_MODERATOR, ROLE_FINANCE_ADMIN]
+ALL_ROLES = [ROLE_SUPER_ADMIN, ROLE_SUPPORT_MODERATOR, ROLE_CONTENT_MODERATOR, ROLE_FINANCE_ADMIN, ROLE_MARKETING_ADMIN]
 
 ROLE_LABELS = {
     ROLE_SUPER_ADMIN: 'مدير عام',
     ROLE_SUPPORT_MODERATOR: 'مشرف دعم',
     ROLE_CONTENT_MODERATOR: 'مشرف محتوى',
     ROLE_FINANCE_ADMIN: 'مدير مالي',
+    ROLE_MARKETING_ADMIN: 'مدير تسويق وإعلانات',
 }
 
 # Permissions map: role -> set of allowed module keys
@@ -34,6 +36,8 @@ ROLE_PERMISSIONS = {
         'reports', 'reports.resolve',
         'audit_logs',
         'billing', 'billing.crud',
+        'marketing', 'marketing.crud',
+        'approvals', 'approvals.approve',
         'settings', 'settings.admins',
     },
     ROLE_SUPPORT_MODERATOR: {
@@ -47,12 +51,19 @@ ROLE_PERMISSIONS = {
         'teams', 'teams.crud',
         'jobs', 'jobs.crud',
         'reports', 'reports.resolve',
+        'marketing',
     },
     ROLE_FINANCE_ADMIN: {
         'dashboard',
         'users',  # view-only
         'companies',
         'billing', 'billing.crud',
+        'approvals',
+    },
+    ROLE_MARKETING_ADMIN: {
+        'dashboard',
+        'marketing', 'marketing.crud',
+        'approvals',
     },
 }
 

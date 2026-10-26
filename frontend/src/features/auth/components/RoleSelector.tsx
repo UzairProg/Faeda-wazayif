@@ -4,7 +4,7 @@
  * Role selector component for registration.
  * Fully localized for Arabic (RTL) and English (LTR).
  */
-import { User, Building2, GraduationCap, CheckCircle2, Clock } from "lucide-react"
+import { User, Building2, GraduationCap, CheckCircle2 } from "lucide-react"
 import { useTranslation } from "@/i18n"
 import type { RegisterRole } from "../types/auth.types"
 

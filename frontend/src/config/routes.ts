@@ -119,5 +119,8 @@ export const ROUTES = {
     SETTINGS: "/admin/settings",
     MARKET_DATA: "/admin/market-data",
     HIRED_CANDIDATES: "/admin/hired-candidates",
+    FINANCE: "/admin/finance",
+    MARKETING: "/admin/marketing",
+    APPROVALS: "/admin/approvals",
   },
 } as const

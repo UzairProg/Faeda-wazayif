@@ -28,6 +28,12 @@ function getInitialDemoUser(): { user: AuthUser; token: string } {
         token: "demo-candidate-token",
       }
     }
+    if (p.startsWith("/university")) {
+      return {
+        user: { id: "univ-demo-kfu", name: "جامعة الملك فيصل - الأحساء (د. خالد السليمان)", email: "careers@kfu.edu.sa", role: "university" },
+        token: "demo-university-token",
+      }
+    }
     if (p.startsWith("/admin")) {
       return {
         user: { id: "1", name: "مدير النظام (Admin)", email: "admin@faeda.jobs", role: "admin" },
@@ -43,7 +49,7 @@ function getInitialDemoUser(): { user: AuthUser; token: string } {
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set) => {
+    (set, get) => {
       const initial = getInitialDemoUser()
       return {
         user: initial.user,
@@ -67,7 +73,7 @@ export const useAuthStore = create<AuthStore>()(
             const roleUsers: Record<string, AuthUser> = {
               candidate: { id: "1", name: "عمر المنصور", email: "omar.mansoor@example.com", role: "candidate" },
               company: { id: "1", name: "Aramco Digital Solutions", email: "info@aramco-digital.com", role: "company" },
-              university: { id: "1", name: "جامعة الملك فيصل", email: "careers@kfu.edu.sa", role: "university" },
+              university: { id: "univ-demo-kfu", name: "جامعة الملك فيصل (د. خالد السليمان)", email: "careers@kfu.edu.sa", role: "university" },
               admin: { id: "1", name: "مدير النظام (Admin)", email: "admin@faeda.jobs", role: "admin" },
             }
             set({ user: roleUsers[forcedRole], token: `demo-${forcedRole}-token`, isAuthenticated: true, isCheckingSession: false })
@@ -75,7 +81,39 @@ export const useAuthStore = create<AuthStore>()(
           }
 
           const path = window.location.pathname
+          if (path.startsWith("/university")) {
+            const current = get()
+            if (current.user?.role === "university" && current.isAuthenticated) {
+              return
+            }
+            set({
+              user: { id: "univ-demo-kfu", name: "جامعة الملك فيصل - الأحساء (د. خالد السليمان)", email: "careers@kfu.edu.sa", role: "university" },
+              token: "demo-university-token",
+              isAuthenticated: true,
+              isCheckingSession: false,
+            })
+            return
+          }
+
+          if (path.startsWith("/admin")) {
+            const current = get()
+            if (current.user?.role === "admin" && current.isAuthenticated) {
+              return
+            }
+            set({
+              user: { id: "1", name: "مدير النظام (Admin)", email: "admin@faeda.jobs", role: "admin" },
+              token: "demo-admin-token",
+              isAuthenticated: true,
+              isCheckingSession: false,
+            })
+            return
+          }
+
           if (path.startsWith("/company")) {
+            const current = get()
+            if (current.user?.role === "company" && current.isAuthenticated) {
+              return
+            }
             set({
               user: { id: "1", name: "Aramco Digital Solutions", email: "info@aramco-digital.com", role: "company" },
               token: "demo-company-token",
@@ -84,6 +122,11 @@ export const useAuthStore = create<AuthStore>()(
             })
             return
           }
+        }
+
+        const current = get()
+        if (current.isAuthenticated && current.token?.includes("demo") && current.user) {
+          return
         }
 
         set({ isCheckingSession: true })

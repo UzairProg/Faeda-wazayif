@@ -15,7 +15,7 @@ from werkzeug.utils import secure_filename
 from app import db
 from services.admin import (
     Admin, ROLE_SUPER_ADMIN, ROLE_SUPPORT_MODERATOR,
-    ROLE_CONTENT_MODERATOR, ROLE_FINANCE_ADMIN, ROLE_PERMISSIONS, ROLE_LABELS, ALL_ROLES
+    ROLE_CONTENT_MODERATOR, ROLE_FINANCE_ADMIN, ROLE_MARKETING_ADMIN, ROLE_PERMISSIONS, ROLE_LABELS, ALL_ROLES
 )
 from services.customer import Customers, customer_jobs
 from services.company import Company

@@ -20,7 +20,7 @@ from sqlalchemy import or_, desc
 from app import db
 from services.admin import (
     Admin, ROLE_SUPER_ADMIN, ROLE_SUPPORT_MODERATOR,
-    ROLE_CONTENT_MODERATOR, ROLE_FINANCE_ADMIN, ROLE_PERMISSIONS, ROLE_LABELS
+    ROLE_CONTENT_MODERATOR, ROLE_FINANCE_ADMIN, ROLE_MARKETING_ADMIN, ROLE_PERMISSIONS, ROLE_LABELS
 )
 from services.customer import Customers
 from services.company import Company

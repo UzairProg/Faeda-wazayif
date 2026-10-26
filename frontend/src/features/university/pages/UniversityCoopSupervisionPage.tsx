@@ -53,6 +53,8 @@ import {
   ShieldCheck,
   Info,
   User,
+  Navigation,
+  ExternalLink,
 } from "lucide-react"
 
 
@@ -1667,11 +1669,25 @@ export function UniversityCoopSupervisionPage({ initialPersona }: UniversityCoop
                         </span>
                       </td>
 
-                      {/* 8. Partnership Location */}
+                      {/* 8. Partnership Location with Google Maps */}
                       <td className="px-4 py-4 text-xs text-slate-300">
-                        <div className="flex items-center gap-1.5 max-w-[170px]" title={student.partnership_location || student.company_location}>
-                          <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                          <span className="truncate">{student.partnership_location || student.company_location}</span>
+                        <div className="flex flex-col gap-1 max-w-[190px]" title={student.partnership_location || student.company_location}>
+                          <div className="flex items-center gap-1.5 text-slate-200">
+                            <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                            <span className="truncate font-medium">{student.partnership_location || student.company_location}</span>
+                          </div>
+                          <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((student.partnership_location || student.company_location || "المملكة العربية السعودية") + " " + student.company_name)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-400 hover:text-sky-300 transition-colors"
+                            title={tl(language, "عرض الموقع على خرائط Google", "View on Google Maps", "Google Maps वर पहा")}
+                          >
+                            <Navigation className="w-2.5 h-2.5" />
+                            <span>{tl(language, "خرائط Google", "Google Maps", "Google Maps")}</span>
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </a>
                         </div>
                       </td>
 
@@ -1864,9 +1880,23 @@ export function UniversityCoopSupervisionPage({ initialPersona }: UniversityCoop
                       <span>{student.company_name}</span>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs text-slate-300">
-                      <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                      <span>{student.company_location}</span>
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-300">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                        <span>{student.company_location}</span>
+                      </div>
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((student.company_location || "المملكة العربية السعودية") + " " + student.company_name)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-sky-500/15 hover:bg-sky-500 text-sky-300 hover:text-white border border-sky-500/30 transition-all shadow-sm"
+                        title={tl(language, "عرض الموقع على خرائط Google", "View on Google Maps", "Google Maps वर पहा")}
+                      >
+                        <Navigation className="w-3 h-3" />
+                        <span>{tl(language, "خرائط Google", "Google Maps", "Google Maps")}</span>
+                        <ExternalLink className="w-2.5 h-2.5 ml-0.5" />
+                      </a>
                     </div>
                   </div>
 

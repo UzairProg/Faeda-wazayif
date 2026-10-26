@@ -271,6 +271,8 @@ export interface CreateThesisCampaignPayload {
 // MONSHA'AT INCUBATOR & ENTREPRENEURSHIP SHOWCASE TYPES
 // ==============================================================================
 
+export type InnovationEntityType = 'incubator' | 'startup' | 'graduated' | 'partner'
+
 export interface UniversityIncubatorVenture {
   id: number
   university_id: number
@@ -290,7 +292,32 @@ export interface UniversityIncubatorVenture {
   funding_raised_sar: number
   university_criteria_connection: string
   academic_material_updates: string
+  entity_type?: InnovationEntityType
+  company_location?: string
+  google_maps_url?: string
+  target_companies_goal?: number
+  hired_continuity_count?: number
+  retention_duration_months?: number
+  committee_notes?: string
   created_at?: string
+}
+
+export interface AcademicDoctorThesis {
+  id: number
+  doctor_id: string
+  doctor_name: string
+  degree: 'phd' | 'masters'
+  title_ar: string
+  title_en?: string
+  field_of_study: string
+  year: string
+  abstract: string
+  file_url?: string
+  linked_company_name?: string
+  company_location?: string
+  google_maps_url?: string
+  coop_relevance: string
+  created_at: string
 }
 
 export interface IncubatorInfo {
@@ -303,12 +330,19 @@ export interface IncubatorInfo {
   total_jobs_created: number
   total_funding_raised_sar: number
   criteria_compliance_score: string
+  targeted_companies_target?: number
+  targeted_companies_achieved?: number
+  hired_continuity_target?: number
+  hired_continuity_achieved?: number
+  avg_retention_months?: number
+  committee_status?: string
 }
 
 export interface IncubatorShowcaseResponse {
   success: boolean
   incubator_info: IncubatorInfo
   ventures: UniversityIncubatorVenture[]
+  theses?: AcademicDoctorThesis[]
 }
 
 export interface CreateIncubatorVenturePayload {
